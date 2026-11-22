@@ -83,5 +83,6 @@ internal static class PagePalettes
             SvgStyle.Variables(SvgTheme.Flat.Dark) + " " + FlatCardsDark + " " + Transparent) + "\n" +
         PageScheme.ThemeRules(PageScheme.Glass,
             SvgStyle.Variables(SvgTheme.Site.Light) + " " + PictureLook.Light + " " + SmokeWhite + " " + Transparent,
-            SvgStyle.Variables(SvgTheme.Site.Dark) + " " + PictureLook.Dark + " " + Transparent) + "\n" + Cards + "\n" + FlatLights + "\n" + FlatFills;
+            SvgStyle.Variables(SvgTheme.Site.Dark) + " " + PictureLook.Dark + " " + Transparent) + "\n" + Cards +
+        "\n" + FlatLights + "\n" + FlatFills;
 }

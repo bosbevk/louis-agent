@@ -21,7 +21,8 @@ public class ThePagesGroundTests
     public void NoSheet_LaysAPictureOverThePage()
     {
         var drawn = Directory.EnumerateFiles(Styles, "*.scss", SearchOption.AllDirectories)
-            .Where(file => Bodies(File.ReadAllText(file)).Any(body => body.Contains("background", StringComparison.Ordinal)))
+            .Where(file => Bodies(File.ReadAllText(file))
+                .Any(body => body.Contains("background", StringComparison.Ordinal)))
             .Select(file => Path.GetRelativePath(Styles, file));
 
         Assert.That(drawn, Is.Empty);

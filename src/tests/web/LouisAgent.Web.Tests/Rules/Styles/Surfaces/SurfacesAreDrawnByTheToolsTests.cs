@@ -72,7 +72,9 @@ public class SurfacesAreDrawnByTheToolsTests
         return Drawing.Contains(property) && Paints.Any(mark => value.Contains(mark, StringComparison.Ordinal));
     }
 
-    /// <summary>No sheet draws a surface by hand, so a theme reaches every piece and a new sheet can't slip one in.</summary>
+    /// <summary>
+    /// No sheet draws a surface by hand, so a theme reaches every piece and a new sheet can't slip one in.
+    /// </summary>
     [Test]
     public void NoSheet_DrawsASurfaceByHand()
     {

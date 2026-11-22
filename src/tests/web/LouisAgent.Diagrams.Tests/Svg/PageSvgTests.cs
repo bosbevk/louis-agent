@@ -218,11 +218,14 @@ public class PageSvgTests
                 ".crd-rail, .seq-beam, .crd-badge:not([class*=\"tone-\"])) { fill: var(--violet-line); }"));
             Assert.That(page, Does.Contain(flat + ".seq-life, .mrq-rule) { fill: var(--pic-hair); opacity: 1; }"));
             Assert.That(page, Does.Contain(flat +
-                ".seq-swatch) { fill: var(--pic-body); fill-opacity: 1; stroke: var(--pic-hair); stroke-opacity: 1; }"));
+                ".seq-swatch) { fill: var(--pic-body); fill-opacity: 1; " +
+                "stroke: var(--pic-hair); stroke-opacity: 1; }"));
         });
     }
 
-    /// <summary>One picture of each kind that draws a fade or a blur of its own, the smallest that still draws.</summary>
+    /// <summary>
+    /// One picture of each kind that draws a fade or a blur of its own, the smallest that still draws.
+    /// </summary>
     private static IEnumerable<DiagramSource> EveryKind()
     {
         yield return Flow();

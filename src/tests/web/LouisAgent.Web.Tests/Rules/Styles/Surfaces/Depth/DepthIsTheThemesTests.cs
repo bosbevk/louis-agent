@@ -88,7 +88,9 @@ public class DepthIsTheThemesTests
         });
     }
 
-    /// <summary>The blur behind a piece is a theme's, the pane's unless a caller names another, never a number.</summary>
+    /// <summary>
+    /// The blur behind a piece is a theme's, the pane's unless a caller names another, never a number.
+    /// </summary>
     [Test]
     public void Frosted_WritesNoBlurOfItsOwn()
     {
@@ -101,7 +103,9 @@ public class DepthIsTheThemesTests
         });
     }
 
-    /// <summary>The page behind the search window is blurred by the theme's veil, as what the stage shows through is.</summary>
+    /// <summary>
+    /// The page behind the search window is blurred by the theme's veil, as what the stage shows through is.
+    /// </summary>
     [Test]
     public void TheSearchWindowsBackdrop_TakesTheVeilsBlur() =>
         Holds("layout/_panels.scss", "@include surface.frosted(var(--web-veil-blur));");

@@ -65,7 +65,8 @@ public class ThemeTests
         Assert.Multiple(() =>
         {
             Assert.That(sheet, Does.Contain($":root[data-theme=\"retro\"][data-style=\"{style}\"] {{"));
-            Assert.That(sheet.Count(letter => letter == OpensABlock), Is.EqualTo(1), "one block, and no rule beside it");
+            Assert.That(sheet.Count(letter => letter == OpensABlock), Is.EqualTo(1),
+                "one block, and no rule beside it");
         });
     }
 
