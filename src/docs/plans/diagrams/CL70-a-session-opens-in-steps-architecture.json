@@ -1,0 +1,25 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "CL70: the architecture",
+  "caption": "SessionHandlers reads the wire request into a SessionRequest; AgentSessions opens it through SessionOpening and the engine factory.",
+  "flow": {
+    "nodes": [
+      { "id": "wire", "label": "POST /v1/sessions\nCreateSessionRequest", "icon": "world", "tone": "blue" },
+      { "id": "handler", "label": "SessionHandlers\nbuilds the SessionRequest (2)", "icon": "exchange", "tone": "teal", "group": "api" },
+      { "id": "sessions", "label": "AgentSessions\nCreate: open, register (3)", "icon": "stack", "tone": "teal", "group": "api" },
+      { "id": "opening", "label": "SessionOpening\nthe steps in order (3)", "icon": "branch", "tone": "violet", "group": "api" },
+      { "id": "factory", "label": "AgentEngineFactory\nan engine per profile", "icon": "chip", "tone": "green" }
+    ],
+    "edges": [
+      { "from": "wire", "to": "handler" },
+      { "from": "handler", "to": "sessions", "word": "a request" },
+      { "from": "sessions", "to": "opening" },
+      { "from": "opening", "to": "factory", "word": "GetOrCreate" }
+    ],
+    "groups": [
+      { "id": "api", "label": "LouisAgent.Api" }
+    ],
+    "direction": "down"
+  }
+}

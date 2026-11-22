@@ -1,0 +1,61 @@
+{
+  "kind": "classes",
+  "title": "CL70: the interface design",
+  "caption": "AgentSessions.Create takes one SessionRequest and lets a SessionOpening run the steps; each refusal's text has its holes record.",
+  "classes": {
+    "types": [
+      {
+        "id": "Sessions",
+        "name": "AgentSessions",
+        "kind": "class",
+        "members": [
+          "+Create(SessionRequest) AgentSession: open, register, return (2, 3)",
+          "+Get(id) AgentSession?",
+          "+Remove(id) bool"
+        ]
+      },
+      {
+        "id": "Request",
+        "name": "SessionRequest",
+        "kind": "record",
+        "members": [
+          "+Toolsets, Tags, Depth, Role, Place (2)",
+          "+Llm, Tool, Format, Replay, Opener, Identity (2)"
+        ]
+      },
+      {
+        "id": "Opening",
+        "name": "SessionOpening",
+        "kind": "class",
+        "members": [
+          "+Open() AgentSession (3)",
+          "-Identity(), CheckDepth(), Level() (3)",
+          "-CheckTool(), Toolsets(), CheckLookupAsksNoOne() (3)",
+          "-Chain(), Engine() (3)"
+        ]
+      },
+      {
+        "id": "Holes",
+        "name": "SessionDepthInvalidHoles and eight more",
+        "kind": "record",
+        "members": [
+          "one per refusal's template (1)"
+        ]
+      },
+      {
+        "id": "Factory",
+        "name": "AgentEngineFactory",
+        "kind": "class",
+        "members": [
+          "+GetOrCreate(toolsets, role, level, llm, tool)"
+        ]
+      }
+    ],
+    "relations": [
+      { "from": "Sessions", "to": "Opening", "kind": "creates" },
+      { "from": "Opening", "to": "Request", "kind": "uses" },
+      { "from": "Opening", "to": "Holes", "kind": "uses" },
+      { "from": "Opening", "to": "Factory", "kind": "uses" }
+    ]
+  }
+}

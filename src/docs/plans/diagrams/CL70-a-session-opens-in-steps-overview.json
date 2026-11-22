@@ -1,0 +1,59 @@
+{
+  "kind": "cards",
+  "title": "CL70 A session opens in steps: the overview",
+  "caption": "AgentSessions.Create becomes a method object: one request record, one opening class of named steps, its messages' holes as records.",
+  "cards": {
+    "rows": [
+      {
+        "cards": [
+          {
+            "id": "cl70",
+            "icon": "stack",
+            "title": "CL70 A session opens in steps",
+            "code": "sessions.Create(new SessionRequest(...))",
+            "look": "highlight",
+            "text": "Same behaviour, read as the order the checks run in."
+          }
+        ]
+      },
+      {
+        "cards": [
+          {
+            "id": "holes",
+            "icon": "tag",
+            "title": "Holes records",
+            "code": "step 1",
+            "text": "Nine messages lose their anonymous objects."
+          },
+          {
+            "id": "request",
+            "icon": "file",
+            "title": "One request",
+            "code": "step 2",
+            "text": "Eleven parameters become SessionRequest."
+          },
+          {
+            "id": "opening",
+            "icon": "branch",
+            "title": "The opening in steps",
+            "code": "step 3",
+            "text": "SessionOpening: its decisions as fields, a method per job."
+          },
+          {
+            "id": "docs",
+            "icon": "book",
+            "title": "The docs",
+            "code": "step 4",
+            "text": "The API's design doc, the write-up, the plan folded."
+          }
+        ]
+      }
+    ],
+    "links": [
+      { "from": "cl70", "to": "holes" },
+      { "from": "cl70", "to": "request" },
+      { "from": "cl70", "to": "opening" },
+      { "from": "cl70", "to": "docs" }
+    ]
+  }
+}

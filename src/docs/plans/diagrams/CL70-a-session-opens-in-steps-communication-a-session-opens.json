@@ -1,0 +1,22 @@
+{
+  "kind": "sequence",
+  "title": "CL70: a session opens",
+  "caption": "The handler builds one request; SessionOpening runs its steps in the order they check; the session is registered and returned.",
+  "sequence": {
+    "participants": [
+      { "id": "handler", "label": "SessionHandlers", "icon": "exchange", "tone": "teal" },
+      { "id": "sessions", "label": "AgentSessions", "icon": "stack", "tone": "teal" },
+      { "id": "opening", "label": "SessionOpening", "icon": "branch", "tone": "violet" },
+      { "id": "factory", "label": "AgentEngineFactory", "icon": "chip", "tone": "green" }
+    ],
+    "steps": [
+      { "step": "message", "from": "handler", "to": "sessions", "text": "Create(new SessionRequest(...))" },
+      { "step": "message", "from": "sessions", "to": "opening", "text": "Open()" },
+      { "step": "note", "over": ["opening"], "text": "Identity, CheckDepth, Level, CheckTool, Toolsets, CheckLookupAsksNoOne, Chain" },
+      { "step": "message", "from": "opening", "to": "factory", "text": "GetOrCreate(toolsets, role, level, llm, tool)" },
+      { "step": "reply", "from": "factory", "to": "opening", "text": "the engine" },
+      { "step": "reply", "from": "opening", "to": "sessions", "text": "the session" },
+      { "step": "reply", "from": "sessions", "to": "handler", "text": "registered, returned" }
+    ]
+  }
+}

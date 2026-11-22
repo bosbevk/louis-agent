@@ -1,0 +1,21 @@
+{
+  "kind": "flow",
+  "type": "object",
+  "title": "CL70: objects in memory",
+  "caption": "One SessionOpening for one request, holding what it decided, then the session it made.",
+  "flow": {
+    "nodes": [
+      { "id": "request", "label": "SessionRequest\nRole testprod.specialist, Depth 1", "icon": "file", "tone": "teal" },
+      { "id": "opening", "label": "SessionOpening\nwho, level, toolsets, chain", "icon": "branch", "tone": "violet" },
+      { "id": "engine", "label": "AgentEngine\nfrom the factory", "icon": "chip", "tone": "green" },
+      { "id": "session", "label": "AgentSession\nsess_…, its chain", "icon": "message", "tone": "green" }
+    ],
+    "edges": [
+      { "from": "opening", "to": "request", "word": "reads" },
+      { "from": "opening", "to": "engine", "word": "gets" },
+      { "from": "opening", "to": "session", "word": "makes" },
+      { "from": "session", "to": "engine" }
+    ],
+    "direction": "down"
+  }
+}
