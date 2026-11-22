@@ -92,7 +92,7 @@
 .composer .attachments { margin-bottom: 8px; }
 .input-row {
     display: flex; align-items: flex-end; gap: 8px; @include surface.tint(var(--bs-secondary-bg-rgb), .9); @include surface.frosted();
-    @include surface.lined(); border-radius: 22px; padding: 9px 9px 9px 12px; @include surface.raised($more: true);
+    @include surface.lined(); border-radius: 22px; padding: 9px 9px 9px 12px; @include surface.hovering();
     transition: border-color .25s var(--web-ease), box-shadow .25s var(--web-ease);
 }
 .input-row:focus-within { @include surface.edged(rgba(var(--bs-primary-rgb), .6)); @include surface.glowing(); }

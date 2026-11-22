@@ -29,7 +29,6 @@
 .delegation { @include surface.depth(14px, 34px, -14px, .28, $shine: .05, $close: 3px 8px .06); transition: box-shadow .3s var(--web-ease), transform .3s var(--web-ease); }
 .delegation:not([open]):hover { transform: translateY(-2px); @include surface.depth(18px, 40px, -14px, .34, $shine: .05, $close: 4px 10px .08); }
 .tool:hover, .suggestion:hover { @include surface.depth(16px, 34px, -14px, .3, $close: 3px 8px .06); }
-.input-row { @include surface.depth(18px, 40px, -18px, .35, $shine: .05, $close: 4px 12px .06); }
 .markdown pre { @include surface.depth(8px, 20px, -14px, .25, $shine: .05); }
 
 /* Below Bootstrap's lg breakpoint: a frosted top bar, and the sidebar slides in as an offcanvas. */

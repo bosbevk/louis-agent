@@ -34,7 +34,34 @@ public class DepthIsTheThemesTests
         int start = source.IndexOf($"@mixin {name}(", StringComparison.Ordinal);
         Assert.That(start, Is.GreaterThanOrEqualTo(0), $"@mixin {name} in {file}");
 
-        int open = source.IndexOf('{', start);
+        return BodyFrom(source, source.IndexOf('{', start));
+    }
+
+    /// <summary>
+    /// Every rule a sheet of the framework's web writes for a selector, the tool and the settings left out: each
+    /// rule's body, from the brace after the selector to the brace that closes it.
+    /// </summary>
+    private static List<string> RulesFor(string selector)
+    {
+        var bodies = new List<string>();
+        var sheets = Directory.EnumerateFiles(Styles, "*.scss", SearchOption.AllDirectories)
+            .Where(file => !file.Contains("/tools/", StringComparison.Ordinal) &&
+                           !file.Contains("/settings/", StringComparison.Ordinal));
+        foreach (string source in sheets.Select(File.ReadAllText))
+        {
+            // A rule starts a line, and its selector is followed by the brace that opens it.
+            for (int at = source.IndexOf($"\n{selector} {{", StringComparison.Ordinal);
+                 at >= 0;
+                 at = source.IndexOf($"\n{selector} {{", at + 1, StringComparison.Ordinal))
+                bodies.Add(BodyFrom(source, source.IndexOf('{', at)));
+        }
+
+        return bodies;
+    }
+
+    /// <summary>What stands between an opening brace and the brace that closes it.</summary>
+    private static string BodyFrom(string source, int open)
+    {
         int depth = 0;
         for (int at = open; at < source.Length; at++)
         {
@@ -78,4 +105,40 @@ public class DepthIsTheThemesTests
     [Test]
     public void TheSearchWindowsBackdrop_TakesTheVeilsBlur() =>
         Holds("layout/_panels.scss", "@include surface.frosted(var(--web-veil-blur));");
+
+    /// <summary>
+    /// The row a chat is typed in floats as the search window does, by the theme's floating shadow, and no sheet
+    /// gives it a deeper shadow of its own.
+    /// </summary>
+    [Test]
+    public void TheTypingRow_Floats()
+    {
+        var rules = RulesFor(".input-row");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(rules.Any(rule => rule.Contains("@include surface.hovering();", StringComparison.Ordinal)),
+                Is.True, "a rule for .input-row includes surface.hovering()");
+            Assert.That(rules.Where(rule => rule.Contains("surface.raised(", StringComparison.Ordinal) ||
+                                            rule.Contains("surface.depth(", StringComparison.Ordinal)), Is.Empty);
+        });
+    }
+
+    /// <summary>
+    /// While it is typed in, the row keeps its pale ring and throws the theme's floating shadow beside it, and no
+    /// shadow written as numbers; the chat's other box lights by the same mixin, so the ring is written once.
+    /// </summary>
+    [Test]
+    public void TypedIn_IsARingBesideTheFloatingShadow()
+    {
+        string typedIn = Mixin("_talk.scss", "typed-in");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(typedIn, Does.Contain("var(--web-float-shadow);"));
+            Assert.That(typedIn, Does.Not.Contain("40px"));
+            Assert.That(typedIn.Split("var(--web-shadow-rgb)").Length, Is.EqualTo(1), "no shadow of its own");
+            Assert.That(Mixin("_panes.scss", "lit"), Does.Contain("@include typed-in();"));
+        });
+    }
 }

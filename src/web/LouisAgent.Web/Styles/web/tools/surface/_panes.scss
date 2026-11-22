@@ -1,4 +1,5 @@
 @use "drawn" as *;
+@use "talk" as *;
 
 /* The surface tool's panes (F151.4): what holds other things. A card or a panel, what is set into the page, a
    field, a bar, and what floats over the page, each with its states. */
@@ -54,11 +55,10 @@
     box-shadow: var(--web-sunk-lit);
 }
 
-/* A pane that is typed in, such as the chat's box: its line in the brand's colour, a soft ring of it, the shadow
-   of what floats, and the theme's focus drawing. */
+/* A pane that is typed in, such as the chat's box: typed in as the chat's row is, its line in the brand's colour, a
+   soft ring of it and the shadow of what floats, with the theme's focus drawing laid on it. */
 @mixin lit() {
-    border-color: color-mix(in srgb, var(--bs-primary) 55%, var(--bs-body-bg));
-    box-shadow: 0 0 0 4px rgba(var(--bs-primary-rgb), .12), var(--web-float-shadow);
+    @include typed-in();
     @include drawing(focus-pane);
 }
 
