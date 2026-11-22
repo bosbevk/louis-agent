@@ -17,6 +17,7 @@ public enum FilmExportUserText
     RepoNotFound,
 
     [Description("The site didn't answer at {Address}.")]
+    [Holes(typeof(SiteNotReadyHoles))]
     SiteNotReady,
 
     [Description("The encoder failed. Is Docker running? {Output}")]
@@ -46,4 +47,17 @@ public enum FilmExportUserText
                  + "whole title.")]
     [Holes(typeof(TitleWithoutSiteHoles))]
     TitleWithoutSite,
+
+    [Description("{Page}: its type didn't load, so its card would be drawn in another. Nothing was written.")]
+    [Holes(typeof(CardTypeMissingHoles))]
+    CardTypeMissing,
+
+    [Description("{Page}: its card's words end at {EndsAt}, past {Limit}, the middle a cut to 3 to 2 keeps. Nothing "
+                 + "was written.")]
+    [Holes(typeof(CardRunsPastHoles))]
+    CardRunsPast,
+
+    [Description("A page's card: {Path}, its words end at {EndsAt} of {Limit}")]
+    [Holes(typeof(PageCardWrittenHoles))]
+    PageCardWritten,
 }

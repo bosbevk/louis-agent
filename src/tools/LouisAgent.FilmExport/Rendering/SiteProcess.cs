@@ -3,12 +3,13 @@ using System.Net;
 using System.Net.Sockets;
 using LouisAgent.Composition.Messages;
 using LouisAgent.FilmExport.Messages;
+using LouisAgent.FilmExport.Messages.Holes;
 
 namespace LouisAgent.FilmExport.Rendering;
 
 /// <summary>
-/// The site, running on a spare port for as long as an export needs it, from the code as it is now: since F124 the
-/// framework's site, served by its own host.
+/// A site, running on a spare port for as long as an export needs it, from the code as it is now: louis-agent.dev's
+/// host for the films and that site's card, and the framework's host for its page cards (F169.6).
 /// </summary>
 public sealed class SiteProcess : IDisposable
 {
@@ -22,11 +23,21 @@ public sealed class SiteProcess : IDisposable
         Address = address;
     }
 
+    /// <summary>louis-agent.dev's host, from the repo's root.</summary>
+    public const string BusinessSite = "src/site/LouisAgent.SiteApi";
+
+    /// <summary>What dotnet is asked, to run a host from the repo with none of its launch profiles.</summary>
+    public static IReadOnlyList<string> Arguments(string repoRoot, string host) =>
+        ["run", "--no-launch-profile", "--project", Path.Combine(repoRoot, host)];
+
     /// <summary>Where it answers.</summary>
     public Uri Address { get; }
 
-    /// <summary>Starts the host and waits until it answers, or throws if it stops or takes too long.</summary>
-    public static async Task<SiteProcess> StartAsync(string repoRoot)
+    /// <summary>
+    /// Starts this host, a project's folder from the repo's root, and waits until it answers, or throws if it stops or
+    /// takes too long.
+    /// </summary>
+    public static async Task<SiteProcess> StartAsync(string repoRoot, string host)
     {
         var address = new Uri($"http://127.0.0.1:{SparePort()}/");
         var start = new ProcessStartInfo("dotnet")
@@ -39,11 +50,7 @@ public sealed class SiteProcess : IDisposable
                 ["ASPNETCORE_URLS"] = address.AbsoluteUri
             },
         };
-        foreach (string argument in new[]
-                 {
-                     "run", "--no-launch-profile", "--project",
-                     Path.Combine(repoRoot, "src/site/LouisAgent.SiteApi"),
-                 })
+        foreach (string argument in Arguments(repoRoot, host))
             start.ArgumentList.Add(argument);
 
         var site = new SiteProcess(Process.Start(start)!, address);
@@ -78,7 +85,8 @@ public sealed class SiteProcess : IDisposable
             await Task.Delay(TimeSpan.FromSeconds(1));
         }
 
-        throw new InvalidOperationException(MessageText.Format(FilmExportUserText.SiteNotReady, new { Address }));
+        var notReady = new SiteNotReadyHoles(Address);
+        throw new InvalidOperationException(MessageText.Format(FilmExportUserText.SiteNotReady, notReady));
     }
 
     /// <summary>A port nothing is using right now.</summary>

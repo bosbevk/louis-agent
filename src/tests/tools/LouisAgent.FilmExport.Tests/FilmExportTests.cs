@@ -41,6 +41,24 @@ public class FilmExportTests
         Assert.That(arguments, Does.Contain("-kmax 12").And.Contain("-kmin 6"));
     }
 
+    /// <summary>
+    /// The site it starts is the host it is told: the framework's for its page cards, and louis-agent.dev's for the
+    /// films and that site's own card.
+    /// </summary>
+    [Test]
+    public void TheSiteStarted_IsTheHostItIsTold()
+    {
+        var framework = SiteProcess.Arguments("/repo", "src/site/LouisAgent.SiteFrameworkApi");
+        var business = SiteProcess.Arguments("/repo", SiteProcess.BusinessSite);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(framework.Last(), Is.EqualTo(Path.Combine("/repo", "src/site/LouisAgent.SiteFrameworkApi")));
+            Assert.That(business.Last(), Is.EqualTo(Path.Combine("/repo", "src/site/LouisAgent.SiteApi")));
+            Assert.That(framework.Take(3), Is.EqualTo(new[] { "run", "--no-launch-profile", "--project" }));
+        });
+    }
+
     /// <summary>Whole seconds of film at a frame rate.</summary>
     [Test]
     public void AFilm_TakesItsLengthTimesTheFrameRate()
