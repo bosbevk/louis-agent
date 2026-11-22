@@ -54,7 +54,7 @@ internal sealed class SitePageHandler(
         var rendered = await _rendered.GetOrAdd(page, _ => RenderAsync(page, new Uri(site, route)));
         if (rendered is null || rendered.Description.Length == 0) return Html(_index.Value, StatusCodes.Status200OK);
 
-        return Html(PageShell.Fill(_index.Value, rendered, site, route), StatusCodes.Status200OK);
+        return Html(PageShell.Fill(_index.Value, rendered, site, route, null), StatusCodes.Status200OK);
     }
 
     /// <summary>Whether the site knows its address and this request came to another host, such as www.</summary>
