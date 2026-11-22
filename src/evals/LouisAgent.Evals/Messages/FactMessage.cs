@@ -35,5 +35,24 @@ public enum FactMessage
 
     [Description("The answer holds '{Text}'.")]
     [Holes(typeof(AnswerTextHoles))]
-    AnswerHolds
+    AnswerHolds,
+
+    [Description("Agents asked: {Addresses}.")]
+    [Holes(typeof(AgentsAskedHoles))]
+    AgentsAsked,
+
+    [Description("No agent was asked.")]
+    NoAgentAsked,
+
+    [Description("Asked {Address} in this turn and in an earlier one.")]
+    [Holes(typeof(AgentAddressHoles))]
+    AskedNowAndBefore,
+
+    [Description("{Address} wasn't asked in this turn.")]
+    [Holes(typeof(AgentAddressHoles))]
+    NotAskedNow,
+
+    [Description("Asked {Address} in this turn, but in no earlier one.")]
+    [Holes(typeof(AgentAddressHoles))]
+    NotAskedBefore
 }

@@ -76,12 +76,6 @@ public class FactsTests
         Assert.That(Tell("under 30s", Turn(seconds: seconds)),
             Is.EqualTo(new Mark("under 30s", met, $"Took {seconds} s.")));
 
-    /// <summary>The two facts about another agent aren't told yet: step 9 tells them.</summary>
-    [TestCase("routed-to seemeeu-guesthouse")]
-    [TestCase("continued seemeeu-guesthouse")]
-    public void TheFactsAboutAnotherAgent_AreNotToldYet(string fact) =>
-        Assert.That(() => Tell(fact, Turn()), Throws.InstanceOf<NotSupportedException>());
-
     /// <summary>never-says is met when the text is nowhere in the answer as it was sent.</summary>
     [Test]
     public void NeverSays_IsMetWhenTheTextIsNowhere() =>
