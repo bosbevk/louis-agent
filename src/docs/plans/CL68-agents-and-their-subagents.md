@@ -191,4 +191,10 @@ checked to be paths only.
 
 ## Approved during the build
 
-Nothing yet.
+- **2026-11-22, the louis-agent demo moves too** (Louis's pick A of three, when CL68 started again after F170): the
+  coding agent and the triage team move with the engine in each child, so every test stays green and every pull
+  request merges on green. The plan's "the demos stay as they are" was for Puls, who has since left the repository,
+  and the louis-agent demo stays. Chosen over leaving them broken (every merge after CL68.1 on red) and over the
+  engine reading both layouts (ADR 0049).
+- **2026-11-22, CL68.1's open choice:** each project embeds its prompt folders by name and the provider reads from
+  the root, with no filter (Louis's pick A), since the files that weren't prompts left with Puls.

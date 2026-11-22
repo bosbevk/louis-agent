@@ -1,0 +1,26 @@
+{
+  "kind": "flow",
+  "type": "object",
+  "title": "CL68.1: objects in memory",
+  "caption": "One catalogue holds one provider per project; the showroom's three identities hold the same provider, and the catalogue keeps it once.",
+  "flow": {
+    "nodes": [
+      { "id": "catalog", "label": "AgentCatalog\nPrompts: one per project", "icon": "stack", "tone": "teal" },
+      { "id": "guide", "label": "GuideIdentity\nits Prompts", "icon": "message", "tone": "green" },
+      { "id": "koringland", "label": "KoringlandAttorneys", "icon": "home", "tone": "green" },
+      { "id": "seemeeu", "label": "SeemeeuGuesthouse", "icon": "home", "tone": "green" },
+      { "id": "wheatfield", "label": "WheatfieldKitchen", "icon": "home", "tone": "green" },
+      { "id": "shared", "label": "ShowroomIdentity's provider\nagents/ of all three, once", "icon": "folder", "tone": "violet" },
+      { "id": "guideFiles", "label": "the guide's provider\nagents/louis-agent-guide/", "icon": "folder", "tone": "violet" }
+    ],
+    "edges": [
+      { "from": "guide", "to": "guideFiles" },
+      { "from": "koringland", "to": "shared" },
+      { "from": "seemeeu", "to": "shared" },
+      { "from": "wheatfield", "to": "shared" },
+      { "from": "catalog", "to": "guideFiles" },
+      { "from": "catalog", "to": "shared", "word": "once" }
+    ],
+    "direction": "down"
+  }
+}
