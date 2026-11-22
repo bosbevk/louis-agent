@@ -50,7 +50,19 @@ internal static class PagePalettes
         "{ fill: var(--pic-body); fill-opacity: 1; stroke: var(--pic-hair); stroke-opacity: 1; }";
 
     /// <summary>
-    /// The rules a page's copy of a picture carries: each theme's colours, light and dark, and its cards.
+    /// On a flat page a picture has no glow and no light, since flat has no shading: the glow behind a rail and a
+    /// beam, the light behind the top, a panel's edge of light and a ticket's light are hidden (F169.4).
+    /// </summary>
+    /// <remarks>
+    /// Louis's pick 3, "A: no fade, no blur, the six colours kept", over making every tone the one violet as well,
+    /// which would leave a box's kind to its shape and words. So only the shading goes, and the tones stay.
+    /// </remarks>
+    private static string FlatLights => PageScheme.PartRule(PageScheme.Flat,
+        ".crd-rail-glow, .seq-beam-glow, .mrq-light, .mrq-edge, .ticket-light", "display: none;");
+
+    /// <summary>
+    /// The rules a page's copy of a picture carries: each theme's colours, light and dark, its cards, and flat's
+    /// parts.
     /// </summary>
     public static string Rules =>
         PageScheme.ThemeRules(PageScheme.Flat,
@@ -58,5 +70,5 @@ internal static class PagePalettes
             SvgStyle.Variables(SvgTheme.Flat.Dark) + " " + FlatCardsDark + " " + Transparent) + "\n" +
         PageScheme.ThemeRules(PageScheme.Glass,
             SvgStyle.Variables(SvgTheme.Site.Light) + " " + PictureLook.Light + " " + SmokeWhite + " " + Transparent,
-            SvgStyle.Variables(SvgTheme.Site.Dark) + " " + PictureLook.Dark + " " + Transparent) + "\n" + Cards;
+            SvgStyle.Variables(SvgTheme.Site.Dark) + " " + PictureLook.Dark + " " + Transparent) + "\n" + Cards + "\n" + FlatLights;
 }

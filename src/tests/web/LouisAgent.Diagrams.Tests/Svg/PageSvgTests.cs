@@ -174,4 +174,26 @@ public class PageSvgTests
     [Test]
     public void TheFile_WearsNoSitesTheme() =>
         Assert.That(DiagramRenderers.Render(Flow()), Does.Not.Contain("data-theme"));
+
+    /// <summary>The parts of a picture that are a glow or a light, which a flat page hides.</summary>
+    private const string Lights =
+        ":is(.crd-rail-glow, .seq-beam-glow, .mrq-light, .mrq-edge, .ticket-light) { display: none; }";
+
+    /// <summary>
+    /// F169.4: on a flat page a picture has no glow and no light (Louis's pick 3, "A: no fade, no blur, the six colours
+    /// kept"): the glow behind a rail and a beam, the light behind the top, a panel's edge of light and a ticket's
+    /// light are hidden, in light and dark alike, and only on a flat page. The file for the docs holds none of it.
+    /// </summary>
+    [Test]
+    public void OnAFlatPage_APicture_HasNoGlowAndNoLight()
+    {
+        string page = DiagramRenderers.RenderForPage(Flow());
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(page, Does.Contain($"[data-theme=\"flat\"] :scope {Lights}"));
+            Assert.That(page, Does.Not.Contain($"[data-theme=\"glass\"] :scope {Lights}"));
+            Assert.That(DiagramRenderers.Render(Flow()), Does.Not.Contain(Lights));
+        });
+    }
 }
