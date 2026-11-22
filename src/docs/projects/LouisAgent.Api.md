@@ -81,6 +81,20 @@ reads the setting.
 The page's JSON-LD scripts go into the served head just as they are. And every page under the landing gets a
 `BreadcrumbList` with the site's name (`og:site_name`) and the page's title at its route (`PageBreadcrumb`).
 
+**A page can wear a share card of its own.** When someone pastes a page's address into a chat, the chat shows the
+picture the head names in `og:image`, and says what it shows with `og:image:alt`. Every site's `index.html` names the
+site's own picture and its description, and most pages wear that. A page gets its own by where a file is, with no
+code: `/getting-started` wears `social-cards/getting-started.png` in the site's web root, and
+`social-cards/getting-started.txt` beside it holds the words that say what the picture shows. `PageCards` looks for
+that pair, and keeps what it found for each route, as the handler keeps a rendered page. A picture with no words
+beside it is no card, so a picture never shows with another picture's words, and the root always wears the site's
+own. The handler asks with the route of the page it matched, never the address that was asked for, so a section's
+address gets its page's card and nothing a visitor types reaches the file system. `PageShell` then writes the
+card's picture, on the site's own address, and its words into the head. The two size tags stay as the file has them,
+since every card of a site is drawn at one size. The price of this rule is that a person has to know it, which is
+why it is written here; the framework's site's cards are drawn by a tool and held to their pages by a test, as
+[its design doc](LouisAgent.SiteFramework.md) says.
+
 **The pages a site's areas bring are drawn too.** A site may turn on a package of pages, such as the framework's
 pages or the account pages, among its areas. The host never names such a package. `SiteRoutes` runs the services the
 program hands it, finds the `SitePageAssemblies` the framework's web registered there for the areas, and reads the
@@ -103,7 +117,7 @@ style or a script holds, so a diagram's rules and a page's code never turn up as
 
 *Decided in:* F121, [ADR 0109](../adr/0109-a-page-is-served-as-html.md), F123, F164.1,
 [ADR 0110](../adr/0110-a-page-says-what-it-is-in-one-head.md), FX216,
-[ADR 0128](../adr/0128-a-site-names-one-address-per-page.md).
+[ADR 0128](../adr/0128-a-site-names-one-address-per-page.md), F169.6.
 
 ### 4. Prices and rates, open to anyone
 
@@ -306,7 +320,7 @@ These are the types involved:
 | `Endpoints/Info/InfoEndpoints.cs` | `/health`, `/v1/prices`, `/v1/rates`, `/v1/rates/display`, `/v1/feeds`, `/v1/feeds/{name}`, `/v1/feeds/{name}/{id}`, `/v1/toolsets`, `/v1/model`, `/v1/roles`, `/v1/llm-profiles`: what this instance is and has |
 | `Endpoints/Sessions/SessionEndpoints.cs` | `POST /v1/sessions` (`201` with `Location`; with `"stream"`, the format, refused as a 400 when unknown), `GET` and `DELETE /v1/sessions/{id}`, `GET /v1/sessions/{id}/work` (its steps from its history, without its thinking; `Sessions/Work/SessionWorkReplyFactory`, F127.4.2), `POST /v1/sessions/{id}/cancel` and `/messages` (the turn as SSE, through `TurnStream`) |
 | `Endpoints/ApiErrors.cs` | The one error body every endpoint returns |
-| `Site/` | A site's pages as HTML (F121): `SitePages.MapLouisAgentSite`, the one call; `SiteRoutes`, the page an address names, among the site's pages and those its areas bring through `SitePageAssemblies` (F164.1) (an address under `/admin` names none: a site's own admin page is never rendered for a search engine or listed for the guide, F142; nor does a page with `[Authorize]`, F164.1); `SitePageHandler`, the endpoint with the rendered pages it keeps; `PageShell`, the page put into `index.html`; `Rendering/`, the page rendered with `HtmlRenderer` and a `HeadOutlet` (`PagePrerenderer`, `PrerenderRoot`, `RenderedPage`, and the stand-ins for navigation and scripts); `Places/` (F127.7, ADR 0121), every section, card and piece of the site's pages, read from those renders (`SitePlaces`, rendered once when first asked; `PlaceReader` and `HtmlTag`, plain string reading; `PlaceSearch`, word matching), which `MapLouisAgentSite` hands the engines' context for the site pack's `FindPlace`, and `SitePlaceSearch`, the open route a visitor's search asks (F164.2) |
+| `Site/` | A site's pages as HTML (F121): `SitePages.MapLouisAgentSite`, the one call; `SiteRoutes`, the page an address names, among the site's pages and those its areas bring through `SitePageAssemblies` (F164.1) (an address under `/admin` names none: a site's own admin page is never rendered for a search engine or listed for the guide, F142; nor does a page with `[Authorize]`, F164.1); `SitePageHandler`, the endpoint with the rendered pages it keeps; `PageShell`, the page put into `index.html`; `Cards/`, a page's own share card found by where its file is (`PageCards`, `PageCard`, F169.6); `Rendering/`, the page rendered with `HtmlRenderer` and a `HeadOutlet` (`PagePrerenderer`, `PrerenderRoot`, `RenderedPage`, and the stand-ins for navigation and scripts); `Places/` (F127.7, ADR 0121), every section, card and piece of the site's pages, read from those renders (`SitePlaces`, rendered once when first asked; `PlaceReader` and `HtmlTag`, plain string reading; `PlaceSearch`, word matching), which `MapLouisAgentSite` hands the engines' context for the site pack's `FindPlace`, and `SitePlaceSearch`, the open route a visitor's search asks (F164.2) |
 | `Endpoints/Workspace/WorkspaceEndpoints.cs` | `GET /v1/workspace/entries`, `GET /v1/workspace/file` (text ≤ 1 MB; secret files listed but not readable) |
 | `Endpoints/Git/Changes/GitChangesEndpoints.cs` | `GET /v1/git/status`, `GET /v1/git/diff`, `POST /v1/git/stage` · `unstage` · `discard`: the working tree and the index |
 | `Endpoints/Git/Commits/GitCommitsEndpoints.cs` | `POST /v1/git/commits` (`201` with `Location`), `GET /v1/git/commits?count=` (the log across branches), `GET /v1/git/commits/{sha}` |
@@ -386,7 +400,9 @@ For the site's pages, `PagePrerendererTests` draw a sample page, and `PageShellT
 `index.html`. `SitePagesTests` ask the test server for a page, a section, a page with no description, one that throws,
 and an address with no page. They check that a section's canonical link names its page, that with no site address it
 comes from the request's own, and that with `SITE_ADDRESS` a page on another host is sent there while a file and an
-API route are not. `SiteAddressOptionsTests` hold which settings count as an address. `SitePlaceSearchTests`
+API route are not, and that a page whose card is in the web root names it, at a section's address too, while a page
+with none wears the site's own. `PageCardsTests` hold where a card is looked for, and that a picture with no words, the
+root and a page with neither file have none. `SiteAddressOptionsTests` hold which settings count as an address. `SitePlaceSearchTests`
 hold the search: a word finds its places, a word too short finds none, and the route is open. `PlaceReaderTests` hold
 how a place's words are read.
 
