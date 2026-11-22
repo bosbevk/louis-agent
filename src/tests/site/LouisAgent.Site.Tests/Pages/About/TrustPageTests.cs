@@ -60,6 +60,19 @@ public class TrustPageTests
     }
 
     /// <summary>
+    /// Rebuilt from code is in place, held to the framework's own Bicep file, which describes everything the two
+    /// sites stand on in Azure (F170).
+    /// </summary>
+    [Test]
+    public void RebuiltFromCode_IsInPlace_HeldToTheBicepFile()
+    {
+        var fact = TrustFacts.IfSomethingBreaks.Single(fact => fact.Title == "Rebuilt from code");
+
+        Assert.That(fact.Status, Is.EqualTo(TileStatus.Done));
+        Assert.That(fact.Source, Is.EqualTo("src/site/deploy/azure/main.bicep"));
+    }
+
+    /// <summary>
     /// No fact rests on a demo's file: a demo can leave and take its files with it, and the fact would point at nothing
     /// (FX215, Puls's Bicep file).
     /// </summary>
