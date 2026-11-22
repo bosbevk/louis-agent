@@ -36,6 +36,17 @@ public partial class Band : IDisposable
     /// <summary>The site's own classes for this band's look, after <c>band</c>; none for a plain band.</summary>
     [Parameter] public string? Class { get; set; }
 
+    /// <summary>
+    /// A mark over the topic, such as the site's orb opening its first page; none for every other band. It is
+    /// drawing only, so a screen reader skips it.
+    /// </summary>
+    /// <remarks>
+    /// A named slot (Blazor's templated component, a second <see cref="RenderFragment"/>), as <c>CornerLink</c> and
+    /// the site's frame take theirs: the band knows nothing of what the mark is, so no section learns of the orb, and
+    /// the mark stays inside the section it opens (Louis's pick A of three, 2026-11-22).
+    /// </remarks>
+    [Parameter] public RenderFragment? Mark { get; set; }
+
     /// <summary>The band's content, under the topic.</summary>
     [Parameter] public RenderFragment? ChildContent { get; set; }
 

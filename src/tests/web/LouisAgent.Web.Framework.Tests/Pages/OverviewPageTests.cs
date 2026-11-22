@@ -51,6 +51,28 @@ public class OverviewPageTests
     }
 
     /// <summary>
+    /// F169.3: the mark opens the page (Louis's pick 5, "B: A, and the mark opens the page"): the first section holds
+    /// one orb before its topic, hidden from a screen reader since the name is in the header, and no other section
+    /// holds one.
+    /// </summary>
+    [Test]
+    public void TheFirstSection_OpensWithTheMark_AndNoOtherSectionHasOne()
+    {
+        using var ctx = Context();
+
+        var cut = ctx.Render<OverviewPage>();
+        var mark = cut.Find("section#top .band-mark");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(mark.QuerySelectorAll(".orb"), Has.Length.EqualTo(1));
+            Assert.That(mark.GetAttribute("aria-hidden"), Is.EqualTo("true"));
+            Assert.That(mark.NextElementSibling!.ClassName, Is.EqualTo("topic"));
+            Assert.That(cut.FindAll(".orb"), Has.Count.EqualTo(1), "no other section has one");
+        });
+    }
+
+    /// <summary>
     /// The hero's program is the coding agent's real one, the lines that start it, so the page can't show a program
     /// that no longer runs.
     /// </summary>
