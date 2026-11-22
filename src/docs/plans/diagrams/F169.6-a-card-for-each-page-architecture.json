@@ -1,0 +1,73 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F169.6 a card for each page: the architecture",
+  "caption": "The card tool draws from the running site into the site's web root. The host reads the web root and writes a page's head. The framework's site's tests read both, and hold the files to the pages. The number in brackets is the step that changes the part.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "dev",
+        "icon": "user",
+        "tone": "blue",
+        "label": "A developer\nruns framework-cards\nafter a heading changes",
+        "shape": "terminal"
+      },
+      {
+        "id": "tool",
+        "icon": "code",
+        "tone": "teal",
+        "label": "LouisAgent.FilmExport\nCards/Pages: the site, a page's words,\nthe two cards' pages, the check (5, 6, 7)\nRendering: PageCardRenderer (7)"
+      },
+      {
+        "id": "running",
+        "icon": "browser",
+        "tone": "blue",
+        "label": "The framework's site, running\nstarted by SiteProcess (7)\nits header's name, each page's\ntitle and first heading"
+      },
+      {
+        "id": "root",
+        "icon": "file",
+        "tone": "amber",
+        "label": "The site's web root\nsocial-card.png\nsocial-cards/: eight pictures,\neight text files (8)\nindex.html: its own picture (8)",
+        "shape": "data"
+      },
+      {
+        "id": "host",
+        "icon": "box",
+        "tone": "green",
+        "label": "LouisAgent.Api, Site\nPageCards finds a route's card (4)\nPageShell writes it into the head (3)"
+      },
+      {
+        "id": "crawler",
+        "icon": "user",
+        "tone": "blue",
+        "label": "A platform's crawler\nreads the head, runs no script",
+        "shape": "terminal"
+      },
+      {
+        "id": "sites",
+        "icon": "file",
+        "tone": "violet",
+        "label": "The four sites' index.html\neach says what its picture shows (2)",
+        "shape": "data"
+      },
+      {
+        "id": "tests",
+        "icon": "chart",
+        "tone": "violet",
+        "label": "LouisAgent.SiteFramework.Tests\nSiteCardsTests (8): every page has\nits card, and the card says\nwhat the page says"
+      }
+    ],
+    "edges": [
+      { "from": "dev", "to": "tool", "word": "one command" },
+      { "from": "tool", "to": "running", "word": "starts, photographs, reads" },
+      { "from": "tool", "to": "root", "word": "writes" },
+      { "from": "host", "to": "root", "word": "reads" },
+      { "from": "crawler", "to": "host", "word": "a page's address" },
+      { "from": "host", "to": "sites", "word": "fills", "style": "dashed" },
+      { "from": "tests", "to": "root", "word": "holds", "style": "dashed" },
+      { "from": "tests", "to": "host", "word": "draws each page with", "style": "dashed" }
+    ],
+    "direction": "down"
+  }
+}
