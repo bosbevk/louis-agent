@@ -18,7 +18,7 @@ public class WorkStatusTests
     /// <summary>
     /// A running turn that asked the cook, whose own turn (in this role, as its stream reports) has these blocks.
     /// </summary>
-    private static Turn Running(string role, params Block[] specialist) => new()
+    private static Turn Running(string role, params Block[] subagent) => new()
     {
         Blocks =
         [
@@ -35,7 +35,7 @@ public class WorkStatusTests
                 SubTurn = new Turn
                 {
                     Role = role,
-                    Blocks = [.. specialist]
+                    Blocks = [.. subagent]
                 }
             }
         ]
@@ -95,9 +95,9 @@ public class WorkStatusTests
                     Tool("FindProducts", null)), Text),
             Is.EqualTo("Soek bestanddele"));
 
-    /// <summary>A role with no phases, or no specialist, is just busy.</summary>
+    /// <summary>A role with no phases, or no subagent, is just busy.</summary>
     [Test]
-    public void ARoleWithoutPhases_OrNoSpecialist_IsJustBusy()
+    public void ARoleWithoutPhases_OrNoSubagent_IsJustBusy()
     {
         Assert.That(WorkStatus.Label(Running("puls-other", Tool("WebSearch", "…")), Text), Is.EqualTo("BESIG"));
         Assert.That(WorkStatus.Label(new Turn { Blocks = [Tool("WebSearch", null)] }, Text), Is.EqualTo("BESIG"));

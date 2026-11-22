@@ -2,11 +2,15 @@ using System.Text.Json;
 
 namespace LouisAgent.SessionStream;
 
-/// <summary>Maps an SSE item to its record. The JSON is cloned out of its document, so each event outlives the parse.</summary>
+/// <summary>
+/// Maps an SSE item to its record. The JSON is cloned out of its document, so each event outlives the parse.
+/// </summary>
 internal static class SessionEventMapper
 {
-    /// <summary>A data line that isn't JSON (a cut-off connection, say) is kept as an UnknownEvent whose Data is its text,
-    /// so the events after it are still read.</summary>
+    /// <summary>
+    /// A data line that isn't JSON (a cut-off connection, say) is kept as an UnknownEvent whose Data is its text, so
+    /// the events after it are still read.
+    /// </summary>
     public static SessionEvent Map(string type, string data)
     {
         try
@@ -59,7 +63,9 @@ internal static class SessionEventMapper
         return new MessageStarted(data, toolsets, role);
     }
 
-    /// <summary>A specialist's event carries the event it sent in "event" and its JSON in "data"; the inner one is mapped too.</summary>
+    /// <summary>
+    /// A subagent's event carries the event it sent in "event" and its JSON in "data"; the inner one is mapped too.
+    /// </summary>
     private static SessionEvent MapSubSession(JsonElement data)
     {
         var toolUseId = data.TryGetProperty("tool_use_id", out var id) ? id.GetString() ?? "" : "";

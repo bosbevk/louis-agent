@@ -105,7 +105,7 @@ internal sealed class AgentSession(
     /// <summary>The LLM profile the session runs on (F30), or null for the instance's own model.</summary>
     public string? Llm { get; } = llm;
 
-    /// <summary>A minion's one tool (F30, depth 2); null for every other session, which has toolsets.</summary>
+    /// <summary>A lookup agent's one tool (F30, depth 2); null for every other session, which has toolsets.</summary>
     public string? Tool { get; } = tool;
 
     /// <summary>The longest attachment kept, as in the prompt: one file can't fill an asked agent's context.</summary>

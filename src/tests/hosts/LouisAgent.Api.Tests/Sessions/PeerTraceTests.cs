@@ -11,7 +11,7 @@ namespace LouisAgent.Api.Tests.Sessions;
 
 /// <summary>
 /// The peer's half of a sub-session's trace (F52 step 4): a message that arrives with a W3C <c>traceparent</c> runs
-/// its turn in that trace, so a specialist's <c>invoke_agent</c> sits under the parent's tool call that sent it.
+/// its turn in that trace, so a subagent's <c>invoke_agent</c> sits under the parent's tool call that sent it.
 /// ASP.NET Core reads the header on its own and makes its request span a child of it; this proves the turn's span
 /// is a child of that request.
 /// </summary>

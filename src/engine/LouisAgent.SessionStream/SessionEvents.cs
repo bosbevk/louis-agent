@@ -35,7 +35,7 @@ public sealed record MessageDelta(JsonElement Data) : SessionEvent("message_delt
 /// <summary>The turn is over.</summary>
 public sealed record MessageStopped(JsonElement Data) : SessionEvent("message_stop", Data);
 
-/// <summary>A specialist's event, nested: <see cref="Inner"/> is what the specialist sent.</summary>
+/// <summary>A subagent's event, nested: <see cref="Inner"/> is what the subagent sent.</summary>
 public sealed record SubSessionStreamed(JsonElement Data, string ToolUseId, SessionEvent Inner)
     : SessionEvent("sub_session", Data);
 

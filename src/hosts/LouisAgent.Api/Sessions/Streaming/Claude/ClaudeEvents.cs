@@ -27,7 +27,7 @@ internal sealed record MessageStartBody(
     IReadOnlyList<string> Toolsets,
     string? SessionRole);
 
-/// <summary>A specialist's own event, nested under the call that opened its session (F5).</summary>
+/// <summary>A subagent's own event, nested under the call that opened its session (F5).</summary>
 internal sealed record SubSessionEventData(string? ToolUseId, string Agent, string Event, JsonElement Data)
 {
     /// <summary>The event's name inside its data.</summary>

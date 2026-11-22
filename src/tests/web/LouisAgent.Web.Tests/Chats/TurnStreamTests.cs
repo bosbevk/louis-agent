@@ -21,10 +21,10 @@ public class TurnStreamTests
         e.GetProperty(name).EnumerateArray().Select(v => v.GetString()!).ToArray();
 
     /// <summary>
-    /// The web app sees the same tool calls as the harness, Puls's own and the specialist's under its delegation.
+    /// The web app sees the same tool calls as the harness, Puls's own and the subagent's under its delegation.
     /// </summary>
     [Test]
-    public async Task TurnStream_ReadsPulssCallsAndTheSpecialistsAsTheHarnessDoes()
+    public async Task TurnStream_ReadsPulssCallsAndTheSubagentsAsTheHarnessDoes()
     {
         // F31 step 7a; CL11 put one C# reader under the three, and T1 moved this here from the API's tests.
         var turn = await SessionStreamFixture.ReplayAsync();
@@ -34,8 +34,8 @@ public class TurnStreamTests
         Assert.That(tools.Select(b => b.ToolName), Is.EqualTo(Strings(expected, "puls_tools")));
         var delegation = tools.Single(b => b.ToolName == Delegation.AskToolName);
         Assert.That(delegation.ToolInput, Does.Contain(expected.GetProperty("role").GetString()));
-        var specialist = delegation.SubTurn!.Blocks.Where(b => b.Kind == BlockKind.Tool).Select(b => b.ToolName);
-        Assert.That(specialist, Is.EqualTo(Strings(expected, "specialist_tools")));
+        var subagent = delegation.SubTurn!.Blocks.Where(b => b.Kind == BlockKind.Tool).Select(b => b.ToolName);
+        Assert.That(subagent, Is.EqualTo(Strings(expected, "subagent_tools")));
     }
 
     /// <summary>
@@ -168,7 +168,7 @@ public class TurnStreamTests
     }
 
     /// <summary>
-    /// What a specialist streams lands inside the call that started it, as a turn of its own.
+    /// What a subagent streams lands inside the call that started it, as a turn of its own.
     /// </summary>
     [Test]
     public void ASubSessionEvent_FoldsIntoTheDelegationCallsOwnTurn()

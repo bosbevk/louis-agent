@@ -11,7 +11,7 @@ namespace LouisAgent.Api.Tests.Sessions;
 /// of the child's own stream: each session's message_start says its role (session_role: "role" is already Claude's
 /// speaker) and what it loaded.
 /// </summary>
-public class ContinuedSpecialistRoleTests
+public class ContinuedSubagentRoleTests
 {
     /// <summary>A session's stream starts by saying its role.</summary>
     [Test]

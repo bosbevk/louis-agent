@@ -38,7 +38,7 @@ public class SessionStreamReaderTests
         var names = events.OfType<SubSessionStreamed>().SelectMany(ToolUseNames).ToList();
 
         Assert.That(names,
-            Is.EqualTo(Expected().GetProperty("specialist_tools").EnumerateArray().Select(n => n.GetString())));
+            Is.EqualTo(Expected().GetProperty("subagent_tools").EnumerateArray().Select(n => n.GetString())));
     }
 
     /// <summary>The route is the address the turn's ask named (F127.3.1).</summary>

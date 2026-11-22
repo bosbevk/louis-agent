@@ -22,11 +22,12 @@ namespace LouisAgent.Core.Web.Browsing;
 /// visit: connect, a new page with every request it makes put to <see cref="RenderPolicy"/> and no WebSockets, the page
 /// loaded (30 s at most) and given up to 10 s more for its scripts to fetch what they draw, the responses a caller
 /// asked for kept, the page closed and the connection dropped. No connection is kept, so a browser restart costs
-/// nothing; at most <see cref="MaxPages"/> pages are open at once across the process, so a cook's minions don't open a
-/// tab each. Chrome answers its DevTools address only by IP or as localhost, so a service name (a compose stack's
-/// browser) is resolved first. A visit with a session (the cookies it starts with) or a script (one of ours, run once
-/// the page has loaded) has a browser context of its own, dropped after, and hands back the cookies the site set (F34):
-/// one area's store never reaches another visit. A plain visit shares the browser's default context, as before.
+/// nothing; at most <see cref="MaxPages"/> pages are open at once across the process, so a cook's lookup agents don't
+/// open a tab each. Chrome answers its DevTools address only by IP or as localhost, so a service name (a compose
+/// stack's browser) is resolved first. A visit with a session (the cookies it starts with) or a script (one of ours,
+/// run once the page has loaded) has a browser context of its own, dropped after, and hands back the cookies the site
+/// set (F34): one area's store never reaches another visit. A plain visit shares the browser's default context, as
+/// before.
 /// </summary>
 public sealed class ChromeWebBrowser(
     Uri browserUrl,
@@ -34,8 +35,9 @@ public sealed class ChromeWebBrowser(
     TimeSpan? budget = null,
     string? userAgent = null) : IWebBrowser
 {
-    /// <summary>The one failure the library loses on every page that goes early (FX57): no error for that
-    /// one.</summary>
+    /// <summary>
+    /// The one failure the library loses on every page that goes early (FX57): no error for that one.
+    /// </summary>
     static ChromeWebBrowser() => LastChance.Expect(LostContexts.Are);
 
     /// <summary>What every page this browser opens tells the site it is (FX21); null leaves Chrome's own.</summary>
@@ -214,8 +216,9 @@ public sealed class ChromeWebBrowser(
         }
     }
 
-    /// <summary>Closes a page that may already be closing (cancelled) or gone with its connection; never
-    /// throws.</summary>
+    /// <summary>
+    /// Closes a page that may already be closing (cancelled) or gone with its connection; never throws.
+    /// </summary>
     private static async Task CloseQuietlyAsync(IPage page)
     {
         try
@@ -385,8 +388,9 @@ public sealed class ChromeWebBrowser(
         }
     }
 
-    /// <summary>Keeps one captured response's body; one that can't be read (the page moved on) is logged and left
-    /// out.</summary>
+    /// <summary>
+    /// Keeps one captured response's body; one that can't be read (the page moved on) is logged and left out.
+    /// </summary>
     private static async Task KeepAsync(IResponse response, List<string> captured, TaskCompletionSource answered)
     {
         try

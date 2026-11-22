@@ -1,7 +1,7 @@
 namespace LouisAgent.SessionStream.Wire.Replies;
 
 /// <summary>
-/// A session now: whether it's busy, its tools, the specialists it keeps open by handle (never the peer's session id)
+/// A session now: whether it's busy, its tools, the subagents it keeps open by handle (never the peer's session id)
 /// and its usage in the stream format's shape (null when the API doesn't record usage).
 /// </summary>
 public sealed record SessionReply(

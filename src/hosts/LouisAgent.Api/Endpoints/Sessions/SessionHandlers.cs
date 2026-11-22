@@ -182,7 +182,7 @@ internal sealed class SessionHandlers(AgentHostContext host)
         session.Windows = request.Windows ?? [];
         // The page it came from, for the turn's line in the log; a message that sends none keeps the last one's.
         session.Page = request.Page ?? session.Page;
-        // The session keeps its attachments, so a later turn can still hand them to a specialist (F22).
+        // The session keeps its attachments, so a later turn can still hand them to a subagent (F22).
         foreach (var attachment in request.Attachments ?? [])
             session.Remember(attachment.Name, attachment.Content);
 

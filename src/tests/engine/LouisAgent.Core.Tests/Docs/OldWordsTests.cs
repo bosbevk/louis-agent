@@ -48,30 +48,6 @@ public class OldWordsTests
         "demos/louis-agent/tests/LouisAgent.Coding.Catalog.Tests/Golden/ModelRequestSnapshot.json",
         "demos/louis-agent/tests/LouisAgent.Coding.Catalog.Tests/Golden/ModelRequestSnapshotTests.cs",
         "packs/tests/LouisAgent.Packs.Web.Tests/Quotes/VerifyQuoteTests.cs",
-        "src/engine/LouisAgent.Composition/Packs/IAgentIdentity.cs",
-        "src/engine/LouisAgent.Core.Web/Browsing/ChromeWebBrowser.cs",
-        "src/engine/LouisAgent.SessionStream/SessionEventMapper.cs",
-        "src/engine/LouisAgent.SessionStream/SessionEvents.cs",
-        "src/engine/LouisAgent.SessionStream/Wire/Replies/SessionCreatedReply.cs",
-        "src/engine/LouisAgent.SessionStream/Wire/Replies/SessionReply.cs",
-        "src/engine/LouisAgent.SessionStream/Wire/Replies/SubSessionRow.cs",
-        "src/engine/LouisAgent.SessionStream/Wire/Requests/CreateSessionRequest.cs",
-        "src/hosts/LouisAgent.Api.Contracts/Admin/Prompts/PromptRows.cs",
-        "src/hosts/LouisAgent.Api/Endpoints/Sessions/SessionHandlers.cs",
-        "src/hosts/LouisAgent.Api/Sessions/AgentSession.cs",
-        "src/hosts/LouisAgent.Api/Sessions/AgentSessions.cs",
-        "src/hosts/LouisAgent.Api/Sessions/Opening/LookupChecks.cs",
-        "src/hosts/LouisAgent.Api/Sessions/SessionReplyFactories.cs",
-        "src/hosts/LouisAgent.Api/Sessions/Streaming/Claude/ClaudeEvents.cs",
-        "src/hosts/LouisAgent.Api/Sessions/TurnStream.cs",
-        "src/tests/engine/LouisAgent.SessionStream.Tests/Fixtures/session-stream.expected.json",
-        "src/tests/engine/LouisAgent.SessionStream.Tests/SessionStreamReaderTests.cs",
-        "src/tests/hosts/LouisAgent.Acp.Tests/AcpTranscriptTests.cs",
-        "src/tests/hosts/LouisAgent.Api.Tests/Sessions/ContinuedSpecialistRoleTests.cs",
-        "src/tests/hosts/LouisAgent.Api.Tests/Sessions/PeerTraceTests.cs",
-        "src/tests/hosts/LouisAgent.Api.Tests/Sessions/Requests/ReplayResolutionTests.cs",
-        "src/tests/hosts/LouisAgent.Api.Tests/Sessions/StreamGoldenTests.cs",
-        "src/tests/hosts/LouisAgent.Api.Tests/WorkStatusTests.cs",
         "src/tests/shared/LouisAgent.Testing/TestTools.cs",
         "src/tests/web/LouisAgent.Diagrams.Tests/Flow/GraphLayoutTests.cs",
         "src/tests/web/LouisAgent.Web.Testing/FixtureApi.cs",
@@ -80,7 +56,6 @@ public class OldWordsTests
         "src/tests/web/LouisAgent.Web.Tests/Chats/ImageSourcesTests.cs",
         "src/tests/web/LouisAgent.Web.Tests/Chats/SpecialistAnswerTests.cs",
         "src/tests/web/LouisAgent.Web.Tests/Chats/TurnStreamImageTests.cs",
-        "src/tests/web/LouisAgent.Web.Tests/Chats/TurnStreamTests.cs",
         "src/tests/web/LouisAgent.Web.Tests/Chats/WorkStatusTests.cs",
         "src/tests/web/LouisAgent.Web.Tests/Components/DelegationCardTests.cs",
         "src/tests/web/LouisAgent.Web.Tests/Components/Site/CardDeckTests.cs",
@@ -200,15 +175,16 @@ public class OldWordsTests
     /// </summary>
     private static bool SaysAnOldWord(string text)
     {
-        string ours = GoneNames.Aggregate(WithoutLouissQuotes(text),
+        string ours = NamesThatStay.Aggregate(WithoutLouissQuotes(text),
             (rest, gone) => rest.Replace(gone, "", StringComparison.Ordinal));
         return OldWords.Any(word => ours.Contains(word, StringComparison.OrdinalIgnoreCase));
     }
 
     /// <summary>
-    /// Old names a test writes to prove they are gone: <c>MINION_LLMS</c>, which sets nothing since CL68.3 (ADR 0049).
+    /// Names that keep an old word and are no word anyone reads: <c>MINION_LLMS</c>, which a test writes to prove it
+    /// sets nothing since CL68.3 (ADR 0049), and ADR 0021's file name, which links to it.
     /// </summary>
-    private static readonly string[] GoneNames = ["MINION_LLMS"];
+    private static readonly string[] NamesThatStay = ["MINION_LLMS", "0021-minions-one-task-one-tool.md"];
 
     /// <summary>
     /// The text with each quote of Louis's taken out: from <c>Louis</c> to the next opening quote within a few words

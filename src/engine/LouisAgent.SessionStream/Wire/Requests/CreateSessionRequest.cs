@@ -5,7 +5,7 @@ namespace LouisAgent.SessionStream.Wire.Requests;
 /// <summary>
 /// What you send to open a session: its toolsets (F5), its role (F21), its LLM profile (F30), who answers (F109.3),
 /// where the user is (F22), and tags for the usage ledger, kept short and printable. Depth is 1 when another agent
-/// opens it as a sub-session, 2 for a minion.
+/// opens it as a sub-session, 2 for a lookup agent.
 /// </summary>
 /// <remarks>
 /// Data Transfer Object (Fowler, PoEAA), shared since F127.3.1: the API reads it, and core's sub-sessions and the
