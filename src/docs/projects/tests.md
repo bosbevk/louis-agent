@@ -102,7 +102,9 @@ holds the diagram engine to asking its types. `PromptFolderTests` holds that the
 and `SkillsLayoutTests` that skill files follow the levels.
 
 The docs have their ratchets in `Docs/`: the work log, the roadmap, the write-ups, the size of what Claude loads, the
-programs the guides hold, and one seam for a pack's screens.
+programs the guides hold, and one seam for a pack's screens. `OldWordsTests` sits there too: no file outside a few
+kept places says "specialist" or "minion", and no text a model or a person reads ever does, since the levels below
+a voice are a subagent and a lookup agent. It was a ratchet while CL69 renamed them, and holds every file now.
 
 ### 6. The API's tests
 

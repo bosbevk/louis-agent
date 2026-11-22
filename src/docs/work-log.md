@@ -14,11 +14,11 @@
 |---|---|---|
 | Features (`F`) | 152 | 77 |
 | Fixes (`FX`) | 213 | 4 |
-| Cleanups (`CL`) | 46 | 27 |
+| Cleanups (`CL`) | 47 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (108 in the TODO)
+## Open (107 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
@@ -129,7 +129,6 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups |
 | CL61 | `ToolCallGuards` past 200 lines once laid out: split it, holes into records (ADR 0119), and end the turn through `TurnEnding.Ends` | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
-| CL69 | The old words left in code: "specialist" in the framework's web library (`SpecialistAnswer` and its tests, about 20 files' summaries) and "minion" in about 30 files' comments and 25 test methods' names (`AMinion_OpensAtDepthTwo…`): rename them to subagent and lookup agent through Rider (found in CL68.2 and CL68.3, ADR 0133, ADR 0021) | Cleanups |
 
 ## Features (152 done)
 
@@ -506,10 +505,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | FX2 | 2026-10-10 | The usage probe says which model to pull on an Ollama 404 |
 | FX1 | 2026-10-10 | Keep the tools on the request after the 10-round limit |
 
-## Cleanups (46 done)
+## Cleanups (47 done)
 
 | Id | When | What |
 |---|---|---|
+| CL69 | 2026-11-22 | The old words left in code: specialist and minion leave everything outside the evals (Louis's pick A), held by OldWordsTests, a ratchet that ended empty; the web texts' 48 holes records, a long tool description as a raw string, C# on LF everywhere |
 | CL70 | 2026-11-22 | A session opens in steps: AgentSessions.Create takes one SessionRequest record (Introduce Parameter Object) and hands it to SessionOpening, a method object whose steps run in order, with LookupChecks beside it; the eleven refusals' holes records (Louis's pick A, over a builder and a chain of checks) |
 | CL68 | 2026-11-22 | Agents and their subagents, all three children done: no prompts/ wrapper, every agent at agents/{identity}/ with its voice, its skills (SKILL.md folders), its subagents and its lookup agents, each named by its address; ADR 0133, ADR 0021 amended, PartWords (ADR 0132), PromptFolder and PromptFileName |
 | CL68.3 | 2026-11-22 | Minions are lookup agents: agents/{identity}/lookups/{name}/voice.md with level: lookup and the base agents/{identity}/lookup.md (Louis's pick B, a folder of their own), RoleLevel.Lookup, LookupAsk, LOOKUP_LLMS, the API's lookups, the chat's Lookup agent and every word the model reads; ADR 0021 amended |

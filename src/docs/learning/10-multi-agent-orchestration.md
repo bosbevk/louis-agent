@@ -250,8 +250,8 @@ contract every identity and pack follows. And a test that forbids a lowercase `p
 the new C# folder `Prompts/`, because Windows ignores case when it looks a folder up; it now compares the name exactly.
 
 What wasn't done: no live run (only names and paths moved; the coding agent's prompt changed by one word, which its
-golden file shows). The framework's web library still calls its chat code by the old word (`SpecialistAnswer` and
-others), and the eval protocol's `specialist_calls` waits for the evals to be rebuilt. Puls follows when it moves to
+golden file shows). The framework's web library still called its chat code by the old word (`SpecialistAnswer` and
+others) until CL69, and the eval protocol's `specialist_calls` waits for the evals to be rebuilt. Puls follows when it moves to
 this version.
 
 ## Lookup agents beside the subagents (CL68.3, 2026-11-22)
@@ -278,14 +278,50 @@ and every `[Description]` for the old word after a rename, not to trust the step
 
 That closes CL68. The prompt tree now reads the way the engine reads it: `agents/{identity}/` holds a voice, its
 skills, its subagents and its lookup agents, each named by an address that is also its path. What's left of the old
-words in code comments and test names is CL69. `AgentSessions.Create`, which Louis found ugly on the way, became a
-method object in CL70 (in the [extensibility write-up](20-extensibility.md)).
+words in code comments and test names is CL69, below. `AgentSessions.Create`, which Louis found ugly on the way, became
+a method object in CL70 (in the [extensibility write-up](20-extensibility.md)).
+
+## One word for one thing, in the code too (CL69, 2026-11-22)
+
+CL68 renamed the levels where the model and the visitor read them. The code kept the old words: a class in the web
+library (`SpecialistAnswer`), about forty test names, a test subagent called `testprod.specialist`, and comments in a
+hundred more files. That matters for the same reason the prompts did. A reader, or a model reading the code, meets two
+names for one idea and wonders whether a specialist is still a level. A search found far more than the TODO said, 517
+lines in 133 files outside the evals, so the scope went to Louis first. He picked everything outside the evals, the
+test fixtures included; the eval code waits for its rework, which he has said will start over.
+
+The work started with a guard, not a rename. `OldWordsTests` reads the repo and holds two things: no `[Description]`
+says either word, since a word the model reads steers what it does, and only the files on a list may still say them.
+The list began with today's 134 files, and each step took its own off, so the change could land in nine reviewable
+steps and never slide back. That is a ratchet, the same shape as `WriteUpsTests`. At the end the list was empty and the
+test became a plain rule. Its first run found something the plan had missed: a fourth text the model reads,
+`VerifyQuote`'s own description, which still said "every quote a minion returns".
+
+Most of the rest was renaming, and the lessons are about how a mass rename goes wrong. Symbols went through Rider's
+rename, which follows every reference; the words in comments went through a small word map, and every step's diff was
+read. The map made four kinds of mistake that the tests or the reading caught. It rewrote two of Louis's quotes, so the
+map and the test now leave a quote of his alone. It changed tests that say the old words on purpose, to prove the old
+level names are refused, so those tests are kept places. It turned a local variable called `minion` into two words,
+because a name collected once per name rather than once per file slipped past Rider. And it broke an ADR's link, whose
+file name keeps the old word. Names like that, and the old setting `MINION_LLMS` that a test proves sets nothing, are a
+short list the guard doesn't count.
+
+Two things grew out of the rule that a touched file is fixed whole. Changing one word in the web pack's quote tool
+touched the web toolset's messages, whose 37 texts had no holes records; Louis chose to do all of them in a step of
+their own, 48 records with about 70 call sites, held by a new check in `MessageEnumTests`. And a long tool description
+joined with `+` looked bad in Rider, so Louis asked how to lose the `+`. A tool's description is now a raw string. A raw
+string's line breaks are its file's, and git was turning them into Windows line endings here and plain ones on Linux,
+so the model would have read different text on each; `.gitattributes` now keeps every C# file on plain line endings,
+and the rule is in the C# rules.
+
+What it cost: nothing was paid for. The usage probe, which has no tests, was checked by running the old and the new
+build on two real ledgers: the same output, line for line.
 
 ## Next
 
 Decide how often Puls should delegate (keep research and long work, answer short read-only questions itself?) and
 measure it the same way; Puls on `AskAgent`, measured when Puls resumes (F135); more evals per role for quality, not
-only cost; parallel subagents for a task with independent parts; and CL69, the old words left in code.
+only cost; and parallel subagents for a task with independent parts.
 
 ---
 [Learning](README.md) · [Goal](../GOAL.md)

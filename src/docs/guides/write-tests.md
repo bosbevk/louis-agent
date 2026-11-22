@@ -158,6 +158,8 @@ test.
 | `RazorHasNoCodeTests` | No `@code` block in a `.razor`; its `PendingCode` list can only shrink |
 | `SkillsLayoutTests` | Every built-in prompt in its level's folder, embedded, a guide per toolset |
 | `HostMessageEnumTests` | Every host, pack and identity message has a template with well-formed holes |
+| `MessageEnumTests` | Every core message has a template; a record named by `[Holes]` matches it, and in an enum on its done list every member with holes names one ([ADR 0119](../adr/0119-declare-name-then-pass.md)) |
+| `OldWordsTests` | No file outside the kept places says "specialist" or "minion", and no `[Description]` does ([ADR 0133](../adr/0133-subagents-live-inside-their-agent.md)) |
 | `PackConvertibilityTests` | Every pack's tools fit MCP's shapes ([ADR 0028](../adr/0028-packs-stay-convertible-to-mcp.md)) |
 
 The two ratchet lists (`Oversized`, `PendingCode`) take a file off when you split it. Never add one to get green.
