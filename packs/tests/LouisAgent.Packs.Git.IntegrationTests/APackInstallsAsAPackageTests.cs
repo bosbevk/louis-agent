@@ -70,7 +70,10 @@ public class APackInstallsAsAPackageTests
         }
     }
 
-    /// <summary>Runs the SDK in a folder.</summary>
+    /// <summary>
+    /// Runs the SDK in a folder, with no build helper left behind. MSBuild otherwise keeps a worker alive for 15
+    /// minutes, and that worker holds our output pipe open, so the run doesn't end until the worker does.
+    /// </summary>
     private static ProcessRunner.Result Run(string folder, params string[] arguments) =>
-        ProcessRunner.Run("dotnet", arguments, folder, Build);
+        ProcessRunner.Run("dotnet", [.. arguments, "-nodeReuse:false"], folder, Build);
 }

@@ -513,6 +513,20 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX225 · A finished process can still hold your pipe
+
+The test that proves a pack installs from a package ran `dotnet pack` three times, and CI spent about 16 minutes on
+it, every run. The packs were done in 8 seconds. What kept the test waiting was a helper. MSBuild keeps a worker
+process alive after a build, so the next build can reuse it. That's node reuse, and the worker waits up to 15
+minutes for more work. The worker inherited the test's output pipes. `ProcessRunner` ends with a `WaitForExit()`
+that has no time limit, and that call waits for the redirected output to close as well as for the process to exit.
+So the test waited for the worker, not for `dotnet`. Killing the worker let the test pass 2 seconds later. Passing
+`-nodeReuse:false`, as the agent's own dotnet tool already did, made it take 7 seconds.
+
+Two lessons. A slow test is measured before it is tuned. Here one test out of hundreds was the whole cost, and
+its own time in the log said so. And a process that has exited can still hold its parent's pipe through a child
+it left behind. When you read a child's output, ask what else it starts. Skill 18 (testing and shipping).
+
 ## FX224 · The same script, two PowerShells, two files
 
 `deploy.ps1 update` wrote its filled yaml with `Set-Content -Encoding utf8`. On the release runner that is
