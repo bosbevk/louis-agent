@@ -1,0 +1,11 @@
+/* The footer's links (F169.3, Louis's pick 12c of the design review): quiet, in the page's second grey, underlined
+   only under the pointer or the keyboard's ring, so the name and its line stay what the eye meets first. The site's
+   own, since another site's footer keeps its look. Their spacing is Bootstrap's gap in the markup. */
+.framework-footer-links a {
+    color: var(--bs-secondary-color);
+    text-decoration: none;
+}
+.framework-footer-links a:hover, .framework-footer-links a:focus-visible {
+    color: var(--bs-emphasis-color);
+    text-decoration: underline;
+}

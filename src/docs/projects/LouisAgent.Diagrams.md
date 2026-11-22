@@ -634,8 +634,11 @@ builder puts together, all the kinds but the ticket, has a header and a footer. 
 and, at its right, its type, over a hairline. The footer, under a hairline, holds the key at its left and the
 louis-agent brand at its right: the site's wordmark, "l", the violet mark standing in for its "o", then "uis-agent",
 on the line the key's heading stands on. The header's words and the brand stand a little in from the picture's sides.
-The wordmark is one line of text with the mark as a disc character in it, so the browser sets the letters and the
-mark together and the engine measures no font. The ticket is a card in the chat, not a picture, so it carries no
+The wordmark is one line of text with the mark as Geist's own bullet in it, so the browser sets the letters and the
+mark together from the picture's own font, and the engine measures no font. The bullet is set at 1.41 times the
+letters, so its disc is 0.41 of them, the same share as the name's ball on a flat page, and a tenth of a letter
+down, 1.5 of the 15 pixel letters, so it stands on their line; the letters after it are lifted back by as much. A
+disc character Geist lacks would be drawn from another font on each reader's machine, larger and above the line. The ticket is a card in the chat, not a picture, so it carries no
 brand.
 
 **Fonts** (`Svg/Theme/Looks/PictureFonts`). Every picture is written in the site's fonts. On a page it reads the

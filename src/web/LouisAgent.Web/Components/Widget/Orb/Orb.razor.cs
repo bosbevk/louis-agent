@@ -26,6 +26,12 @@ public partial class Orb
     [Parameter]
     public string? Mark { get; set; }
 
+    /// <summary>
+    /// The mark an agent wears on its orb: the first letter of its name, as the design drew it, so the bar and the
+    /// panel's head put the same letter on it.
+    /// </summary>
+    public static string? InitialOf(string name) => name.Length > 0 ? name[..1] : null;
+
     /// <summary>The orb's classes: itself, and its state.</summary>
     private string Classes => $"orb is-{State.Wire()}";
 

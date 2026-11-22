@@ -1,0 +1,10 @@
+/* The agent's mark on the button that opens it (F169.3, Louis's pick 5 of the design review): the orb, 20 across,
+   standing still with no ring, since a mark on a button is not an agent at work. Its room from the words is the
+   button's own gap. A letter on it keeps its share of the disc, 17 of 46. */
+.open-agent-mark { display: inline-flex; }
+.open-agent-mark ::deep .orb {
+    width: 20px;
+    height: 20px;
+    font-size: calc(20px * 17 / 46);
+}
+.open-agent-mark ::deep .orb::before, .open-agent-mark ::deep .orb::after { display: none; }

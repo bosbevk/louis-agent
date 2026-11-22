@@ -137,8 +137,8 @@
         radial-gradient(900px 600px at 78% -8%, rgba(var(--bs-primary-rgb), .13), transparent 62%),
         radial-gradient(800px 600px at 12% 108%, rgba(var(--web-success-text-rgb), .09), transparent 60%),
         radial-gradient(600px 500px at 50% 45%, rgba(var(--bs-primary-rgb), .04), transparent 70%);
-    // The mark as a letter of the name: a full disc a little above the small letters.
-    --web-wordmark-o: .76em;
+    // The mark as a letter of the name: the header's share of the letters, wherever the name stands (F169.3).
+    --web-wordmark-o: .62em;
     // Under the pointer the presses keep their colours; a tile's icon stands on the panel with a soft shadow.
     --web-press-hover-fill: var(--web-press-fill);
     --web-quiet-hover-fill: transparent;

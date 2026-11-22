@@ -162,10 +162,12 @@ purple already had a light value of its own. `LightAccentsTests` holds every acc
 4.5 to 1 against white.
 
 Flat's mark is a flat violet disc with the brand's white l on it, and a hard step of deeper violet under the l. The
-l is a drawing, as glass's is, so the letter a site hands the orb gets no ink. As a letter of the site's name the
-mark is smaller than glass's, half the letters' size against 0.76: glass's o is a ball inside a glass bubble, and
-flat's is the ball alone, as big as glass's ball, with no bubble round it; the framework
-works out how far it drops from its size, so it stands on the line at any size.
+l is a drawing, as glass's is, so the letter a site hands the orb gets no ink. As a letter of the site's name each
+theme says the ball's share of the name's letters with `--web-wordmark-o`, and the name's orb takes the name's own
+size, so that share holds wherever the name stands, header, footer or slide. Flat's is 0.41, about a small letter's
+height, since flat's o is the ball alone with no bubble round it. Glass's is 0.62, a ball inside its glass bubble,
+and code review's retro and the framework's own default say the same. The framework works out how far the ball
+drops from its size, so it stands on the line at any size.
 
 In both themes your own message sits under the same ink as a press, since the framework writes both with one name,
 `--web-on-primary`. Their ink is white, so your message is a dark grey in the dark and black in the light.
