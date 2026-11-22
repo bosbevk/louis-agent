@@ -1,6 +1,7 @@
 using LouisAgent.Diagrams.Engine.Flow;
 using LouisAgent.Diagrams.Engine.Words;
 using LouisAgent.Diagrams.Sequence.Spec;
+using LouisAgent.Diagrams.Sequence.Spec.Steps;
 
 namespace LouisAgent.Diagrams.Engine.Sequence.Listed;
 
@@ -79,6 +80,13 @@ public sealed record StepListMeasures
     /// <summary>Words broken at each written break, then wrapped so no line is wider than the room.</summary>
     public IReadOnlyList<string> Lines(string text, double room) =>
         text.Split('\n').SelectMany(part => TextWrap.Lines(part, (int)WordFace.Holds(room))).ToList();
+
+    /// <summary>A block's label, broken for the room its frame leaves beside the kind's pill.</summary>
+    public IReadOnlyList<string> LabelLines(BlockKind kind, string label, double room) =>
+        Lines(label, room - Frames.TabWidth(kind, []));
+
+    /// <summary>An other case's label, broken for the room its frame leaves beside the "else" pill.</summary>
+    public IReadOnlyList<string> CaseLines(string label, double room) => Lines(label, room - Frames.ElseWidth([]));
 
     /// <summary>A participant's name on one line, its written breaks made spaces.</summary>
     public static string Name(Participant participant) => participant.Label.Replace('\n', ' ');
