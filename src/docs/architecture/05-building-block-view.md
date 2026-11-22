@@ -68,7 +68,7 @@ of that profile from `AgentEngineFactory`, and keeps it for its whole life. No l
 that's unknown or not available here is a 400 that lists the valid ones. Sessions with the same list share one
 engine, and so one prefix the provider can cache. `GET /v1/toolsets` lists the names, descriptions and whether each
 is available (never the tool definitions), and `GET /v1/sessions/{id}` returns a session's toolsets. A session's
-`depth` runs from 0, the agent a person talks to, to `AGENT_MAX_DEPTH` (4 by default), and a minion may not load
+`depth` runs from 0, the agent a person talks to, to `AGENT_MAX_DEPTH` (4 by default), and a lookup agent may not load
 `agents`.
 
 *Decided in:* F5.
@@ -269,7 +269,7 @@ Then comes the role, so who the agent is frames everything after it. At level 0 
 its routing, which says which toolset a task needs and how asking another agent works. The coding agent's default is
 `louis-agent/voice`; the triage team's manager has `triage/voice`; the orchestrator has
 `louis-agent/voice-orchestrator`. At level 1 it's a subagent's voice, such as `triage.sorter`'s, which
-says what it does and how it reports. A minion's role comes after its product's minion base. Below level 0 there's
+says what it does and how it reports. A lookup agent's voice comes after its agent's `lookup.md`. Below level 0 there's
 no routing. At level 0 the identity's own skills follow its voice: the ones it always loads in full, then a list of
 the ones it reads when it needs them.
 

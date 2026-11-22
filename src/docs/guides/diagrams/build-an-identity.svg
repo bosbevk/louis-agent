@@ -272,9 +272,9 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M14 21v-2" />
         <path d="M10 21v-2" />
       </g>
-      <text class="crd-name" x="523" y="263" text-anchor="start">Minions</text>
-      <rect class="mrq-pill" x="477" y="280" width="74.4" height="22" rx="11" />
-      <text class="mrq-code" x="487" y="295" text-anchor="start">minions/</text>
+      <text class="crd-name" x="523" y="263" text-anchor="start">Lookup agents</text>
+      <rect class="mrq-pill" x="477" y="280" width="169.6" height="22" rx="11" />
+      <text class="mrq-code" x="487" y="295" text-anchor="start">agents/{name}/lookups/</text>
       <text class="pic-text" x="477" y="326" text-anchor="start">One task with one tool.</text>
       <rect class="mrq-glass" x="688.5" y="222" width="207.5" height="142" rx="14" />
       <rect class="mrq-edge" x="716.5" y="221.5" width="151.5" height="1.6" rx="0" />

@@ -157,7 +157,7 @@ and core has a `CLAUDE.md` of its own. Claude Code loads each when such a file i
 [.claude/README.md](../../.claude/README.md) lists them, with what each holds and when it loads.
 
 The how-tos are in [guides/](guides/README.md): [Add a skill](guides/add-a-skill.md), modes and roles in
-[Build an identity](guides/build-an-identity.md#modes-roles-and-minions-the-rules),
+[Build an identity](guides/build-an-identity.md#modes-subagents-and-lookup-agents-the-rules),
 [Debug and logs](guides/debug-and-logs.md), [Common errors](guides/common-errors.md).
 
 **Known limitations** are the TODO's [list](../../TODO.md#known-limitations); when work removes one, delete it there.

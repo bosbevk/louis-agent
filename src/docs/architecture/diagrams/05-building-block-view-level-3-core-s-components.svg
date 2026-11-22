@@ -226,7 +226,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       </g>
       <text class="pic-name" x="390.6" y="311" text-anchor="start">Delegation</text>
       <text class="pic-name" x="390.6" y="327" text-anchor="start">AskAgent, sub-sessions,</text>
-      <text class="pic-name" x="390.6" y="343" text-anchor="start">minions</text>
+      <text class="pic-name" x="390.6" y="343" text-anchor="start">lookup agents</text>
       <rect class="pic-panel" x="665.8" y="272" width="210.4" height="100" rx="10" />
       <rect class="pic-fill tone-amber" x="681.8" y="308" width="28" height="28" rx="9" />
       <g class="pic-badge-icon" transform="translate(687.8 314) scale(0.6667)">
