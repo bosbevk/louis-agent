@@ -1,0 +1,74 @@
+{
+  "kind": "classes",
+  "title": "CL69: the interface design",
+  "caption": "The types and fixtures renamed, each with the step that does it, and the test that reads the repo for the old words.",
+  "classes": {
+    "types": [
+      {
+        "id": "guard",
+        "name": "OldWordsTests",
+        "kind": "new in step 1, core's tests",
+        "tone": "violet",
+        "members": [
+          "+NoText_SaysTheOldWords()",
+          "+OnlyTheListedFiles_StillSayThem()",
+          "-StillToRename: today's files, none at step 8"
+        ]
+      },
+      {
+        "id": "message",
+        "name": "SkillErrorMessage",
+        "kind": "enum, step 2",
+        "members": [
+          "LookupNeedsRole (was MinionNeedsRole)"
+        ]
+      },
+      {
+        "id": "fixture",
+        "name": "TestAgent",
+        "kind": "API's test agent, step 3",
+        "members": [
+          "+Researcher (was Specialist)",
+          "+LookupBase testagent-lookup (was -minion)"
+        ]
+      },
+      {
+        "id": "answer",
+        "name": "SubagentAnswer",
+        "kind": "was SpecialistAnswer, step 7",
+        "members": [
+          "a subagent's answer as its card shows it"
+        ]
+      },
+      {
+        "id": "panel",
+        "name": "WorkPanel",
+        "kind": "chat panel, step 7",
+        "members": [
+          "-SubagentUsage (was SpecialistUsage)"
+        ]
+      },
+      {
+        "id": "card",
+        "name": "DelegationCard",
+        "kind": "component, step 7",
+        "members": [
+          "reads a SubagentAnswer"
+        ]
+      },
+      {
+        "id": "evals",
+        "name": "ModelLevel, SpecialistCalls",
+        "kind": "the eval protocol, unchanged",
+        "tone": "amber"
+      }
+    ],
+    "relations": [
+      { "from": "guard", "to": "message", "kind": "uses", "word": "reads its texts" },
+      { "from": "guard", "to": "fixture", "kind": "uses", "word": "reads" },
+      { "from": "guard", "to": "answer", "kind": "uses", "word": "reads" },
+      { "from": "card", "to": "answer", "kind": "uses" },
+      { "from": "panel", "to": "answer", "kind": "uses" }
+    ]
+  }
+}
