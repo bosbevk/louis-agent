@@ -19,6 +19,22 @@
     max-width: 100%;
 }
 
+/* A picture with no narrow form yet, the sequence until F169.7, keeps the size it was drawn at below Bootstrap's
+   medium screen, the width where the narrow drawings show, and slides sideways in its own frame with a slim bar
+   under it, so the page stays as wide as the screen. */
+@media (max-width: 767.98px) {
+    .diagram-slides {
+        overflow-x: auto;
+        padding-bottom: 8px;
+        text-align: left;
+        scrollbar-width: thin;
+    }
+    .diagram-slides ::deep svg {
+        width: auto;
+        max-width: none;
+    }
+}
+
 .diagram-figure figcaption {
     margin-top: 8px;
     font-size: 13px;

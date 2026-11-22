@@ -31,7 +31,10 @@ public partial class DiagramFigure
     /// <summary>The drawing, written by the engine and encoded there, so it goes into the page as it is.</summary>
     private MarkupString Svg => new(DiagramRenderers.RenderForPage(Source));
 
-    /// <summary>Whether the engine can draw this picture for a phone (F169.5); the figure asks, and never guesses.</summary>
+    /// <summary>
+    /// Whether the engine can draw this picture for a phone (F169.5); the figure asks, and never guesses. One that
+    /// can't slides on a phone instead.
+    /// </summary>
     private bool HasNarrow => NarrowFit.Has(Source);
 
     /// <summary>The drawing for a phone, the picture's narrow form, as the engine draws it.</summary>
