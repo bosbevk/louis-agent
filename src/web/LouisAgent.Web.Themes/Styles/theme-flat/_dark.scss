@@ -33,7 +33,7 @@
     --bs-primary-bg-subtle: #110a40;
     --bs-primary-text-emphasis: #e2dfff;
     --bs-success: #2b2b33;                                // your messages, under the same white ink as a press
-    --web-success-deep: #1a1a1f;
+    --web-success-deep: var(--bs-success);                // one solid colour: your message has no fade
     --bs-success-bg-subtle: #1a1a1f;
     --web-sidebar-foot: #141418;
     --web-sidebar-foot-deep: #000000;

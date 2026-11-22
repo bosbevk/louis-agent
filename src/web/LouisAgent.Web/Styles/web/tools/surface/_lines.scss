@@ -118,21 +118,6 @@ $-mark-offsets: (left: 1 0, right: -1 0, top: 0 1, bottom: 0 -1);
     backdrop-filter: $blur;
 }
 
-/* The depth of a piece that lies on the page: a shadow under it, how far down, how soft, how far pulled in and how
-   strong; a line of light inside its top where it has one; and a closer shadow, as how far down, how soft and
-   how strong. */
-@mixin depth($down, $soft, $pull, $strength, $shine: null, $close: null) {
-    $shadows: (0 $down $soft $pull rgba(var(--web-shadow-rgb), $strength),);
-    @if $shine != null {
-        $shadows: list.join((0 1px 0 rgba(var(--web-overlay-rgb), $shine) inset,), $shadows, comma);
-    }
-    @if $close != null {
-        $closer: 0 list.nth($close, 1) list.nth($close, 2) rgba(var(--web-shadow-rgb), list.nth($close, 3));
-        $shadows: list.append($shadows, $closer, comma);
-    }
-    box-shadow: $shadows;
-}
-
 /* The colour of an outline a piece already has, such as the dashes round words that can be changed. */
 @mixin outline-colour($colour: var(--bs-primary)) {
     outline-color: $colour;

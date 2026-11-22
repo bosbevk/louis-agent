@@ -24,12 +24,9 @@
 .sidebar-hidden .sidebar-tab { opacity: 1; pointer-events: auto; transform: none; }
 .sidebar-tab:hover { transform: translateY(-2px); @include surface.cast(14px, 28px, -8px, .55); }
 
-/* More depth: layered, tinted shadows that lift on hover. */
-.user-message { @include surface.depth(12px, 28px, -12px, .75, $shine: .12, $close: 2px 6px .15); }
-.delegation { @include surface.depth(14px, 34px, -14px, .28, $shine: .05, $close: 3px 8px .06); transition: box-shadow .3s var(--web-ease), transform .3s var(--web-ease); }
-.delegation:not([open]):hover { transform: translateY(-2px); @include surface.depth(18px, 40px, -14px, .34, $shine: .05, $close: 4px 10px .08); }
-.tool:hover, .suggestion:hover { @include surface.depth(16px, 34px, -14px, .3, $close: 3px 8px .06); }
-.markdown pre { @include surface.depth(8px, 20px, -14px, .25, $shine: .05); }
+/* A helper's card lifts a little under the pointer, its shadow the raised piece's the theme gives it. */
+.delegation { transition: box-shadow .3s var(--web-ease), transform .3s var(--web-ease); }
+.delegation:not([open]):hover { transform: translateY(-2px); }
 
 /* Below Bootstrap's lg breakpoint: a frosted top bar, and the sidebar slides in as an offcanvas. */
 .topbar { display: none; }

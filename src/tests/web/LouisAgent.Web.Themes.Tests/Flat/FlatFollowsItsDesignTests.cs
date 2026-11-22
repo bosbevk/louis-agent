@@ -159,4 +159,13 @@ public class FlatFollowsItsDesignTests
     [TestCase(SiteStyle.Light)]
     public void TheWordmarksO_IsTheHeadersShareOfTheLetters(SiteStyle style) =>
         Assert.That(Value(style, "--web-wordmark-o"), Is.EqualTo(".41em"));
+
+    /// <summary>
+    /// F169.4: your own message is one solid colour, since the deeper shade its bubble runs into is the message's own
+    /// colour, so the run has nothing to fade between (Louis's pick 13, "A: its hairline and the dimmed page").
+    /// </summary>
+    [TestCase(SiteStyle.Dark)]
+    [TestCase(SiteStyle.Light)]
+    public void YourMessage_IsOneSolidColour(SiteStyle style) =>
+        Assert.That(Value(style, "--web-success-deep"), Is.EqualTo("var(--bs-success)"));
 }

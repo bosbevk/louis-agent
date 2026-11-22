@@ -51,6 +51,5 @@ body:has(.site.page-moves)::after { inset: -6%; animation: web-page-drift 40s ea
 @media (prefers-reduced-motion: reduce) { body:has(.site.page-moves)::after { animation: none; } }
 .conversation { background: transparent; }
 .composer { @include surface.fades-up(.92, 55%); }
-.user-message { @include surface.spoken-deep(); }
 .new-chat { @include surface.cast(8px, 22px, -8px, .6); }
 .tagline { color: var(--bs-secondary-color); }

@@ -165,4 +165,28 @@ public class DepthIsTheThemesTests
             Assert.That(Mixin("_presses.scss", "press-shadow"), Does.Contain("box-shadow: var(--web-press-shadow);"));
         });
     }
+
+    /// <summary>
+    /// The pieces of a talk take the theme's small shadow: your message by the bubble's own mixin and a code block by
+    /// a raised piece's, and no sheet of the framework's web lays a deeper shadow of its own on any of them.
+    /// </summary>
+    [Test]
+    public void TheTalksPieces_TakeTheThemesSmallShadow()
+    {
+        var sheets = Directory.EnumerateFiles(Styles, "*.scss", SearchOption.AllDirectories)
+            .Where(file => !file.Contains("/tools/", StringComparison.Ordinal))
+            .Select(File.ReadAllText).ToList();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(Mixin("_talk.scss", "spoken"), Does.Contain("box-shadow: var(--bs-box-shadow-sm);"));
+            Assert.That(RulesFor(".markdown pre").Any(rule =>
+                rule.Contains("@include surface.raised();", StringComparison.Ordinal)), Is.True,
+                "a code block's rule includes surface.raised()");
+            Assert.That(sheets.Count(sheet => sheet.Contains("surface.depth(", StringComparison.Ordinal)), Is.Zero,
+                "no sheet includes surface.depth(");
+            Assert.That(sheets.Count(sheet => sheet.Contains("surface.spoken-deep(", StringComparison.Ordinal)),
+                Is.Zero, "no sheet includes surface.spoken-deep(");
+        });
+    }
 }

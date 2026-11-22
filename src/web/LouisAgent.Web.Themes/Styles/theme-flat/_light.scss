@@ -39,7 +39,7 @@
     --bs-primary-bg-subtle: #e2dfff;
     --bs-primary-text-emphasis: #3a22c4;
     --bs-success: #0b0b0e;                                // your messages: a visitor is black in the light
-    --web-success-deep: #000000;
+    --web-success-deep: var(--bs-success);                // one solid colour: your message has no fade
     --bs-success-bg-subtle: #dcdee8;
     --web-sidebar-foot: #dcdee8;
     --web-sidebar-foot-deep: #cdd0dc;
