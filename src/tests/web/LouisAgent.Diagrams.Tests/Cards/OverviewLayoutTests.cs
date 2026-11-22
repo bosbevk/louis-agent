@@ -3,6 +3,8 @@ using LouisAgent.Diagrams.Cards.Links;
 using LouisAgent.Diagrams.Engine.Cards;
 using LouisAgent.Diagrams.Engine.Cards.Placed;
 using LouisAgent.Diagrams.Engine.Cards.Rails;
+using LouisAgent.Diagrams.Engine.Messages;
+using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Icons;
 
 namespace LouisAgent.Diagrams.Tests.Cards;
@@ -169,6 +171,79 @@ public class OverviewLayoutTests
                 Is.EqualTo(new[] { bottom + RailPlaces.Stem, bottom + RailPlaces.Stem + RailPlaces.Step }));
             Assert.That(Card(placed, "a").Box.Top,
                 Is.EqualTo(bottom + RailPlaces.Stem + RailPlaces.Step + RailPlaces.Drop));
+        });
+    }
+
+    /// <summary>The usual shape, saying it runs down (F169.5).</summary>
+    private static CardsSpec Down() => Usual() with { Direction = FlowDirection.Down };
+
+    /// <summary>
+    /// F169.5: a picture that runs down puts each card under the one before, the headline first and as wide as the
+    /// picture, the rest just in from the trunk on the left, as the sketch Louis picked from draws them.
+    /// </summary>
+    [Test]
+    public void RunningDown_EachCardStandsUnderTheOneBefore()
+    {
+        var placed = OverviewLayout.Place(Down(), 342);
+        var order = new[] { "top", "a", "b", "c", "loose", "spare" }.Select(id => Card(placed, id)).ToList();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(Card(placed, "top").Box.Left, Is.Zero);
+            Assert.That(Card(placed, "top").Box.Width, Is.EqualTo(342), "the headline has the whole width");
+            Assert.That(order.Skip(1).Select(card => card.Box.Left), Is.All.EqualTo(OverviewLayout.TrunkRoom));
+            Assert.That(order.Skip(1).Select(card => card.Box.Right), Is.All.EqualTo(342));
+            for (int at = 1; at < order.Count; at++)
+                Assert.That(order[at].Box.Top, Is.GreaterThan(order[at - 1].Box.Bottom), order[at].Card.Id);
+            Assert.That(placed.Width, Is.EqualTo(342));
+            Assert.That(placed.Height, Is.EqualTo(Card(placed, "spare").Box.Bottom));
+        });
+    }
+
+    /// <summary>
+    /// F169.5: in place of a rail, one trunk down the picture's left, from the headline's foot to the last linked
+    /// card's middle, with a branch to each linked card, an arrowhead where the link points; the quiet cards have
+    /// none.
+    /// </summary>
+    [Test]
+    public void RunningDown_OneTrunkFeedsTheLinkedCards()
+    {
+        var placed = OverviewLayout.Place(Down(), 342);
+        var trunk = placed.Trunks.Single();
+        var linked = new[] { "a", "b", "c" }.Select(id => Card(placed, id)).ToList();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(placed.Rails, Is.Empty, "no rail is placed");
+            Assert.That(trunk.Top.X, Is.LessThan(OverviewLayout.TrunkRoom));
+            Assert.That(trunk.Bottom.X, Is.EqualTo(trunk.Top.X));
+            Assert.That(trunk.Top.Y, Is.EqualTo(Card(placed, "top").Box.Bottom + OverviewLayout.HeadlineClear));
+            Assert.That(trunk.Bottom.Y, Is.EqualTo(linked[^1].Box.Middle.Y));
+            Assert.That(trunk.Branches.Select(end => end.Card), Is.EqualTo(new[] { "a", "b", "c" }));
+            Assert.That(trunk.Branches.Select(end => end.At.X), Is.All.EqualTo(OverviewLayout.TrunkRoom));
+            Assert.That(trunk.Branches.Select(end => end.At.Y), Is.EqualTo(linked.Select(card => card.Box.Middle.Y)));
+            Assert.That(trunk.Branches.Select(end => end.Arrow), Is.All.True);
+        });
+    }
+
+    /// <summary>
+    /// F169.5: a picture whose rail leaves two cards can't run down, since one trunk would no longer say which card
+    /// feeds which; the layout says so, in the engine's words, and says it can't before it is asked to. A layout
+    /// running across is unchanged, so every picture file stays as it was.
+    /// </summary>
+    [Test]
+    public void ARailLeavingTwoCards_CantRunDown()
+    {
+        var spec = new CardsSpec(
+            [new CardRow([Plain("one"), Plain("two")]), new CardRow([Plain("a"), Plain("b")])],
+            [new CardLink("one", "a"), new CardLink("two", "a")], FlowDirection.Down);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(OverviewLayout.CanRunDown(spec), Is.False);
+            Assert.That(OverviewLayout.CanRunDown(Down()), Is.True);
+            Assert.That(() => OverviewLayout.Place(spec, 342), Throws.TypeOf<NotSupportedException>()
+                .With.Message.EqualTo(DiagramText.Format(DrawingMessage.CardsCantRunDown)));
         });
     }
 

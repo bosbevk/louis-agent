@@ -3,6 +3,7 @@ using LouisAgent.Diagrams.Engine.Cards.Placed;
 using LouisAgent.Diagrams.Engine.Cards.Rails;
 using LouisAgent.Diagrams.Engine.Cards.Sizes;
 using LouisAgent.Diagrams.Engine.Geometry;
+using LouisAgent.Diagrams.Flow.Spec;
 
 namespace LouisAgent.Diagrams.Engine.Cards;
 
@@ -29,6 +30,12 @@ public static class OverviewLayout
     /// </summary>
     public const double HeadlineClear = 4;
 
+    /// <summary>How far in from the picture's left a card hung from a trunk stands, the trunk in that room.</summary>
+    public const double TrunkRoom = 24;
+
+    /// <summary>Whether the picture can run down: it can unless its links leave more than one card (F169.5).</summary>
+    public static bool CanRunDown(CardsSpec spec) => DownwardLayout.Allows(spec);
+
     /// <summary>
     /// The overview placed across the given width, from the origin. Its boxes and points are of the geometry
     /// handed in, and of the one in use when none is.
@@ -36,6 +43,8 @@ public static class OverviewLayout
     public static PlacedOverview Place(CardsSpec spec, int width = 896, IGeometry? geometry = null)
     {
         geometry ??= Geometries.InUse;
+        // A picture that says it runs down is laid out the second way, for a narrow screen (F169.5).
+        if (spec.Direction == FlowDirection.Down) return DownwardLayout.Place(spec, width, geometry);
 
         // A card no link touches is quiet, in a picture that has links.
         var linked = spec.Links.SelectMany(link => new[] { link.From, link.To }).ToHashSet(StringComparer.Ordinal);
@@ -69,7 +78,7 @@ public static class OverviewLayout
         [
             .. spans.Select(span =>
                 new PlacedRail(span.Rail, heights[span], span.Left, span.Right, Ends(span, byId, geometry)))
-        ]);
+        ], []);
     }
 
     /// <summary>A row's cards across the width: a gap between them, each as tall as the row's tallest.</summary>
@@ -99,7 +108,7 @@ public static class OverviewLayout
     ];
 
     /// <summary>The edge of a card a rail's line runs to.</summary>
-    private static double Edge(PlacedCard card, bool above) => (above, card.Card.Look) switch
+    internal static double Edge(PlacedCard card, bool above) => (above, card.Card.Look) switch
     {
         (true, CardLook.Plain) => card.Box.Bottom,
         (false, CardLook.Plain) => card.Box.Top,

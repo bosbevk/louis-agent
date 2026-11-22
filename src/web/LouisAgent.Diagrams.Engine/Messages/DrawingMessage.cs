@@ -15,6 +15,10 @@ public enum DrawingMessage
     [Description("There is no renderer for a {Kind} diagram yet.")]
     NoRenderer,
 
+    // A cards picture asked to run down whose links leave more than one card: one trunk can't show who feeds whom.
+    [Description("A cards picture whose links leave more than one card can't run down.")]
+    CardsCantRunDown,
+
     // The heading over a picture's own key, in any kind that has one.
     [Description("How to read it")] KeyHeading,
 
