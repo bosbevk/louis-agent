@@ -113,15 +113,32 @@ done when Claude has written its learning write-up and Louis has read it.
 | 3d | Localisation: every text from a resource file beside its enum | Configured, not coded | Next, after the framework | F46 |
 | 3e | Puls's local specialists: the where-to-buy, shop-prices and weather packs, then one specialist at a time | Measured | Next, after the framework; F50.2 done | [Puls's TODO](https://github.com/bosbevk/puls/blob/main/TODO.md) |
 | 4 | The sales playground: the demo identity, each pitch a simulation over made-up data, cost on screen | Measured | Next, after the framework | F40 |
-| 5 | Cost you can see and stop: estimates, budgets that warn, ask or stop, cost per customer, the bill check | Cost | Next | F7 |
+| 5 | Cost you can see and stop: estimates, budgets that warn, ask or stop, cost per customer, the bill check | Cost | Now, after F8 (2026-11-22) | F7 |
 | 6 | Orchestration, the engine's workflow: one delegation function, hand-off, typed results checked in code (the orchestrator as an identity dropped, 2026-11-07) | Checked, not trusted | Now, after the builder | F39 |
-| 7 | Checked and guarded: append-only history, drafts a person approves, safety and audit | Guards in code | Next | FX4, F41, F42 |
+| 7 | Checked and guarded: append-only history, drafts a person approves, safety and audit | Guards in code | Now: FX4 after durable sessions, F41 and F42 after F7 (2026-11-22) | FX4, F41, F42 |
 | 8 | Their systems, no code: someone else's MCP server plugged in as a pack, our guards around it | Their systems | Next | F36 |
-| 9 | What a sale needs: accounts and tenants, reliability, local models, the engine as a product, hosting | Your data, your model | Next; F61.1 to F61.5 built the accounts and F61.4 put Puls in Azure, taken down again on 2026-11-09 (louis-agent.dev runs alone); F43's first child, durable sessions, comes after F171.1 and before F157 (2026-11-22) | F43, F8, F15, F44, F51, F61 |
-| Framework | The framework's track: a builder for the common path, its own docs, an example outside Puls, a side-by-side with Microsoft Agent Framework, packaging in place; its own repo after the engine features | The engine | Now; the example outside Puls has its service, pack, identity and recorded demo (F106.3.1, F106.3.2, F106.3.4), its workflow and second department remain; the builder is next (F140) | F106, F140, F74, F44, F47, F126 |
+| 9 | What a sale needs: accounts and tenants, reliability, local models, the engine as a product, hosting | Your data, your model | Next; F61.1 to F61.5 built the accounts and F61.4 put Puls in Azure, taken down again on 2026-11-09 (louis-agent.dev runs alone); F43's first child, durable sessions, comes after F171.1 and before F157, and F8's reliability follows FX4 (2026-11-22) | F43, F8, F15, F44, F51, F61 |
+| Framework | The framework's track: a builder for the common path, its own docs, an example outside Puls, a side-by-side with Microsoft Agent Framework, packaging in place; its own repo after the engine features | The engine | Now; the example outside Puls has its service, pack, identity and recorded demo (F106.3.1, F106.3.2, F106.3.4), its workflow and second department remain; the builder comes after F42 (F140, 2026-11-22) | F106, F140, F74, F44, F47, F126 |
 | The site | louis-agent.dev: a website that sells websites with agents, its guide, its showroom, then the chat on any website and a site set up by talking to it | The offer, shown | Now, first since 2026-11-09 (ADR 0112); F124, F127, F128 and F144 done | F146, F147, F145, F139, F141, F138, F125, F131, F132, F130, F133, F134, F137, F143 |
 | Puls | Places, local businesses, sources as data, credits, vision, the cook's waves | Puls | Between the phases | [Puls's TODO](https://github.com/bosbevk/puls/blob/main/TODO.md) |
 | Later | Knowledge and retrieval, long chats, settings per role, the coding identity, and the rest | — | Later | the TODO's *Later* rows |
+
+**Production ready first.** Louis, 2026-11-22: "to get it ready production ready for apps to be built on it", "The
+framework production ready". So the rows that make the framework safe to build on come before the products, whatever
+phase they sit in. After the old words are renamed (CL69) come the evals (F126), so every later change can be proved
+to have kept an agent working. Then a photo or a PDF reaches a tool (F171.1), which is engine work though the bill
+checker asked for it, and then durable sessions (F43's first child), so a restart no longer ends a conversation.
+Five rows from Phases 5, 7 and 9 follow, in the order of what hurts a person using an agent first: append-only
+history (FX4), reliability (F8), budgets (F7), drafts and approvals (F41), and safety and audit (F42). The builder
+(F140) closes the run, so the first product host outside this repository is written on it. The bill checker's
+other children and the Google suite (F157) come after. The order follows what others name for production, read on
+2026-11-22: evals early and a regression suite
+([Anthropic](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)), sessions that survive a
+restart ([Microsoft](https://learn.microsoft.com/en-us/azure/durable-task/sdks/durable-agents-microsoft-agent-framework),
+[LangGraph](https://docs.langchain.com/oss/python/langgraph/persistence)), a person approving a high-risk action
+([OpenAI](https://openai.com/business/guides-and-resources/a-practical-guide-to-building-ai-agents/)), and prompt
+injection, excessive agency and unbounded consumption on
+[OWASP's 2025 list](https://genai.owasp.org/llm-top-10/).
 
 **3b to 3e.** 3b is built (F49.1 to F49.5: the checks catalogue, evals as files, checks in packs, the studio). 3c: F35's
 recipe sources, library and minion are built and F48's maths too (`ScaleRecipe`, yields, a recipe or a meal); the rest
