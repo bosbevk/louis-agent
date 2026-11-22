@@ -1835,6 +1835,45 @@ every pack held to the rules, and the full suite green.
 Concept: *18 Testing and shipping* in the [goal](../GOAL.md): a rule held by the one project that sees everything goes
 wherever that project goes, so splitting a repository means asking which guards leave with each part.
 
+## The sites' Azure, made from code (F170, 2026-11-22)
+
+The two sites ran in an environment built once from Puls's Bicep file, and that file left with Puls. So the releases
+worked every merge, but nothing in the repository could make their environment again, and the trust page said so.
+F170 wrote the framework's own file, `src/site/deploy/azure/main.bicep`, for everything the apps stand on: the logs
+and Application Insights, the network, the environment, the registry, the vault and its identity, the storage and
+its share, and the rights between them. Every name is a parameter, and our own names sit in `main.bicepparam`, so the
+same file builds another business's sites.
+
+The interesting part was describing something that already runs. A Bicep file is a desired state, and deploying it
+over what stands changes whatever differs, so the bar for each step was Azure's `what-if` showing nothing to create
+and nothing to delete. Microsoft's verified modules were the base, and their defaults are safe for a new resource and
+dangerous for ours. Read from the modules' own code at their pinned versions, a deploy with the defaults would have
+turned on the vault's purge protection, which can never be undone; denied every address at the registry and the
+storage, cutting the environment off from its images and its share; turned off the workspace's key sign-in, which
+the environment's logs use; stopped masking visitors' IP addresses in Insights; and taken both sites off the internet
+through the environment's public access. Each was set back to what stands, and the ones that would hurt most are
+held by a test that reads the file.
+
+Two modules couldn't say what stands at all. The environment's has no setting for its telemetry agent, so a deploy
+through it would have stopped the logs and traces reaching Insights, and the network's names a subnet's delegation
+after its service, which would rename the live one under a running environment. Louis picked plain Bicep for those
+two. Bicep's own types even lagged the API there: reading the environment back at three stable versions proved the
+settings exist, so those two lines silence the type warning with the reason beside them. Reading every rights list
+also turned up four leftovers of Puls, a subnet and rights given to identities that no longer exist, and each went
+as a fix of its own first (FX221, FX223).
+
+Then the deploy, by a person, since the file gives rights the release identity can't. Azure recorded the four outputs
+under `louis-agent-infra`, each equal to the old build's, and both apps were released from them. That release met
+FX224: Windows PowerShell writes a byte-order mark where PowerShell 7 on the runner doesn't, and the yaml reader
+took the mark's line for a key. The trust page's *Rebuilt from code* is in place now, held to the file.
+
+What it cost: nothing but a few minutes of the two apps' revisions. The throwaway rebuild into an empty group, which
+would prove *from nothing* rather than *over what stands*, wasn't run.
+
+Concept: *18 Testing and shipping* in the [goal](../GOAL.md): infrastructure as code is a desired state, so the first
+file written for running infrastructure is proved by the difference it would make, and a module's safe defaults are
+read before they are trusted.
+
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md) · [Plans](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL15-engine-identities-packs.md), [CL19](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL19-config-by-place.md) · [Deploying to Azure](../guides/deploy-the-sites.md) ·
 [Write and run tests](../guides/write-tests.md) · [ADR 0027](../adr/0027-engine-identities-and-packs.md) · [ADR 0066](../../../demos/louis-agent/docs/adr/0066-the-site-is-static-razor.md) · [The site, now the app's](../../../demos/louis-agent/docs/projects/LouisAgent.CodeReview.md)

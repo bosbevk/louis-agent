@@ -513,6 +513,16 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX224 · The same script, two PowerShells, two files
+
+`deploy.ps1 update` wrote its filled yaml with `Set-Content -Encoding utf8`. On the release runner that is
+PowerShell 7, which writes plain UTF-8. On Windows it is PowerShell 5.1, which puts a byte-order mark in front, and
+the three invisible bytes turned the first line, a comment, into text the yaml reader took for a key. The error
+pointed at column 69 of line 1, where the comment's second colon sits, nowhere near the cause. Two lessons. When a
+script runs in more than one shell, an encoding is something to say exactly, here with .NET's UTF-8 that writes no
+mark, never the shell's word for it. And a confusing parse error at the very start of a file is worth reading as
+bytes before as text. Skill 18 (testing and shipping).
+
 ## FX223 · A right outlives the one it was given to
 
 The vault still gave two rights to identities that no longer existed. Azure keeps a role assignment after its

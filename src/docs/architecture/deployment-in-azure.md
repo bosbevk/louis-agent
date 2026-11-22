@@ -8,8 +8,9 @@
 
 ![The two sites in Azure: what runs where, a release, a secret's path, a chat and the network](diagrams/deployment-in-azure.svg)
 
-This page is for seeing the shape of it before you change it. It goes from what runs, to how a merge reaches it, to
-how a secret gets there, to what a visitor's chat passes through, and ends with what the network lets in.
+This page is for seeing the shape of it before you change it. It goes from what runs, to where that comes from, to
+how a merge reaches it, to how a secret gets there, to what a visitor's chat passes through, and ends with what the
+network lets in.
 
 ## What runs where
 
@@ -23,6 +24,17 @@ the registry, and calls the model with the key both sites share. Their logs and 
 Application Insights.
 
 ![Two apps in one environment, each asleep until someone visits, sharing an identity that reads the vault and a share that holds each one's logs](diagrams/deployment-in-azure-what-runs-where.svg)
+
+## Made from code
+
+Everything the two apps stand on is described in one Bicep file, `src/site/deploy/azure/main.bicep`: the network and
+its subnet, the environment with its telemetry agent, the registry, the vault and the identity that reads it, the
+storage account and its share, the logs and Application Insights, and the rights between them. The apps themselves
+aren't in it. Each merge releases them, and a Bicep deploy would fight the release over them. The file is deployed by
+a person, since it gives rights the release identity doesn't hold, and Azure shows its what-if before anything
+changes. The releases read the environment, the identity and the vault from what that deploy recorded, so the file
+and the apps can never disagree about where the apps run. Its own names are in a parameters file beside it, which is
+what lets the same file build someone else's sites.
 
 ## A release
 

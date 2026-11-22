@@ -11,6 +11,8 @@
       { "cards": [
         { "id": "runs", "icon": "browser", "title": "What runs where",
           "text": "Two apps that sleep until someone visits, sharing an identity and a share." },
+        { "id": "code", "icon": "code", "title": "Made from code",
+          "text": "Everything the apps stand on is one Bicep file, deployed by a person on a yes." },
         { "id": "release", "icon": "branch", "title": "A release",
           "text": "A merge signs in without a password and releases louis-agent.dev, then the framework's site." },
         { "id": "secret", "icon": "file", "title": "A secret's path",
