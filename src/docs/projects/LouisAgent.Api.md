@@ -407,8 +407,7 @@ changed. And anything that changes how the agent behaves belongs in core, not he
 
 The tests are in `src/tests/hosts/LouisAgent.Api.Tests`. They cover the sessions' toolsets, the default, unknown
 names, the depth and the lookup agent's toolsets, shared engines with separate histories, roles, a role opening only at its own
-level, and a sub-session with no role getting none. The model client in these tests is never called. The eval
-studio's tests are in `LouisAgent.Api.Evals.Tests`.
+level, and a sub-session with no role getting none. The model client in these tests is never called.
 
 For the routes, `ApiRoutesSnapshot.json` pins every route, its method and who may call it, and `ApiRouteRuleTests`
 checks ADR 0039's rule on that table. The in-memory host, `ApiTestHost`, runs the key gate (`AgentKeyGateTests`), a

@@ -133,11 +133,6 @@ runner with the harness's general checks only. It copies the framework's templat
 gives the built-in `stub` and `template-example`, and the integration tests read a file eval's identity, dataset and
 graders from it.
 
-The eval studio's API has its own project, `LouisAgent.Api.Evals.Tests`. Its scenario and draft tests need an eval
-with more in it than the template has. `SampleEvalWorkspace` writes one into a temporary workspace for each test
-class: a dev scenario with a follow-up, an expected budget and shop, and its categories, a held-out scenario, and the
-name of one that isn't there. It writes the files through the same records the API reads them with.
-
 *Decided in:* F5, F18 step 7.4, F166.1, [ADR 0076](../adr/0076-core-ships-no-agent.md).
 
 ### 7. The orchestrator's tests

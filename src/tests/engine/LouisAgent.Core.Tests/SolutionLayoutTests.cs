@@ -45,7 +45,7 @@ public class SolutionLayoutTests
         "LouisAgent.Core.OpenAi.Tests")]
     [TestCase("src/tests/hosts", "LouisAgent.Acp.Tests", "LouisAgent.Mcp.Tests",
         "LouisAgent.Accounts.Tests", "LouisAgent.Accounts.IntegrationTests", "LouisAgent.Api.Tests",
-        "LouisAgent.Api.IntegrationTests", "LouisAgent.Api.Evals.Tests", "LouisAgent.Api.Testing",
+        "LouisAgent.Api.IntegrationTests", "LouisAgent.Api.Testing",
         "LouisAgent.Api.StandIn", "LouisAgent.Api.TestRunner")]
     [TestCase("src/tests/web", "LouisAgent.Web.Tests", "LouisAgent.Web.Testing", "LouisAgent.Web.Accounts.Tests",
         "LouisAgent.Web.Themes.Tests", "LouisAgent.Web.Framework.Tests",

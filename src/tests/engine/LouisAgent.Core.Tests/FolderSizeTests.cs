@@ -36,7 +36,6 @@ public class FolderSizeTests
         "src/web/LouisAgent.Web/Chats",
         "src/tests/hosts/LouisAgent.Api.Tests",
         "src/tests/hosts/LouisAgent.Api.Tests/Endpoints",
-        "src/tests/hosts/LouisAgent.Api.Evals.Tests/Endpoints",
         "src/tests/hosts/LouisAgent.Api.Tests/Sessions",
         "src/tests/engine/LouisAgent.Core.Tests",
         "src/tests/engine/LouisAgent.Core.Tests/Agent",
