@@ -21,9 +21,6 @@
     <ProjectReference Include="..\..\identity\LouisAgent.Identities.Triage\LouisAgent.Identities.Triage.csproj" />
     <!-- The roles catalogue that reads a mode and its roles is the engine's. -->
     <ProjectReference Include="..\..\..\..\src\engine\LouisAgent.Core\LouisAgent.Core.csproj" />
-    <!-- F106.3.2 step 7: the team's evals, copied beside these tests, and the harness that loads them as the runner does. -->
-    <ProjectReference Include="..\..\evals\LouisAgent.Identities.Triage.Evals\LouisAgent.Identities.Triage.Evals.csproj" />
-    <ProjectReference Include="..\..\..\..\src\evals\LouisAgent.Evals\LouisAgent.Evals.csproj" />
     <!-- The fakes every test project shares (CL15 step 5). -->
     <ProjectReference Include="..\..\..\..\src\tests\shared\LouisAgent.Testing\LouisAgent.Testing.csproj" />
   </ItemGroup>

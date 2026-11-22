@@ -10,7 +10,7 @@
         "kind": "top-level, what the app is made of",
         "members": [
           "ChatStore, AgentApi, GitState, GitHistory, ChatText",
-          "AddLouisAgentAccounts(), AddLouisAgentEvals()",
+          "AddLouisAgentAccounts()",
           "SiteFrames(Admin, Account), PackViews, ChatHandoff"
         ]
       },
@@ -48,15 +48,15 @@
         "tone": "violet"
       },
       {
-        "id": "studio",
-        "name": "AddLouisAgentEvals, AddLouisAgentAccounts",
-        "kind": "LouisAgent.Web.Evals and .web.accounts",
+        "id": "accounts",
+        "name": "AddLouisAgentAccounts",
+        "kind": "LouisAgent.Web.Accounts",
         "tone": "violet"
       }
     ],
     "relations": [
       { "from": "program", "to": "web", "kind": "uses", "word": "registers" },
-      { "from": "program", "to": "studio", "kind": "uses", "word": "opts into" },
+      { "from": "program", "to": "accounts", "kind": "uses", "word": "opts into" },
       { "from": "program", "to": "views", "kind": "creates" },
       { "from": "packviews", "to": "views", "kind": "uses", "word": "add to" },
       { "from": "chatpage", "to": "empty", "kind": "holds" },

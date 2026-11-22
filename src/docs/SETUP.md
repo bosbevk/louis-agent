@@ -103,7 +103,7 @@ environment by the tools themselves:
 
 | Setting | Meaning |
 |---|---|
-| `EVAL_RUNNER` | The eval runner's dll: the API lists the evals with `dotnet {EVAL_RUNNER} --list` and starts one with `run`. Each image sets its own (`/app/evals/LouisAgent.CodingEvalRunner.dll` in the code-review API's); set it yourself only outside a container, where a relative path is resolved from the API's working directory |
+| `EVAL_RUNNER` | The eval runner's dll: the API lists the evals with `dotnet {EVAL_RUNNER} --list` and starts one with `run`. No image sets it any more, since the demo's runner was deleted (F126.1); set it yourself only outside a container, where a relative path is resolved from the API's working directory |
 | `BENCHMARK_API_URL` | Where a run started from the admin portal reaches this API back. Default: the container's own port, `http://127.0.0.1:8080/` |
 | `EVALS` | Which identities' evals the runner lists and runs, comma separated (`EVALS=puls`). Unset: every eval; a name no eval proves is refused |
 | `EVAL_JUDGE_PROVIDER`, `EVAL_JUDGE_MODEL`, `EVAL_JUDGE_ENDPOINT` | The judge of the evals' model graders. No model: no judge, a model grader's grade is unknown and the run goes on. No provider: a `claude*` model is Anthropic's (paid, so only on purpose), any other is Ollama's; the endpoint is a local server's URL ([Run the evals](guides/run-the-evals.md)) |

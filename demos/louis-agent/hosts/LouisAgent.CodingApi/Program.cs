@@ -7,7 +7,6 @@ using LouisAgent.Accounts;
 using LouisAgent.Accounts.Config;
 using LouisAgent.Api;
 using LouisAgent.Api.Site;
-using LouisAgent.Api.Evals;
 using LouisAgent.Coding;
 using LouisAgent.Core.Hosting;
 
@@ -38,5 +37,4 @@ app.MapLouisAgentSite(typeof(LouisAgent.CodeReview.App).Assembly, services =>
 
 app.MapLouisAgentAccounts();
 app.MapLouisAgentApi(host);
-app.MapLouisAgentEvals(host);
 app.Run();

@@ -12,7 +12,7 @@ place to look things up.
 
 
 - [Setup](SETUP.md), [Quick start](QUICK_START_AGENT.md)
-- Its programs, each naming what the framework's host loads: `hosts/LouisAgent.CodingCli`, `hosts/LouisAgent.CodingAcp`, `hosts/LouisAgent.CodingMcp`, `hosts/LouisAgent.CodingEvalRunner`, `hosts/LouisAgent.CodingApi`
+- Its programs, each naming what the framework's host loads: `hosts/LouisAgent.CodingCli`, `hosts/LouisAgent.CodingAcp`, `hosts/LouisAgent.CodingMcp`, `hosts/LouisAgent.CodingApi`
 - Change it: [the web app and its site](guides/change-the-web-app.md),
   [the orchestrator](guides/change-the-orchestrator.md)
 - [The demos](demos.md): what each demo on the site shows, how it was made, and what it would mean for a business

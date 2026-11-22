@@ -177,8 +177,7 @@ The admin's eval pages are served by the eval studio's API, `LouisAgent.Api.Eval
 `--list` gives each eval its name, identity, version and `proves` line, and the portal shows the `proves` as the check's
 title. The eval's name is its check's id.
 
-1. Write the eval as a folder of files in its demo's evals project (for the triage team,
-   `demos/louis-agent/evals/LouisAgent.Identities.Triage.Evals/Evals/`), with its scenarios, checks and reference
+1. Write the eval as a folder of files in its demo's evals project, with its scenarios, checks and reference
    transcripts.
    [Add an eval](add-an-eval.md) walks through it.
 2. Check the runner lists it: `dotnet src/evals/LouisAgent.Evals.Runner/bin/Debug/net10.0/LouisAgent.Evals.Runner.dll --list`

@@ -20,8 +20,6 @@
     <ProjectReference Include="..\..\..\..\src\web\LouisAgent.Web\LouisAgent.Web.csproj" />
     <!-- CL30: the account pages and their client; a site that has accounts opts in here. -->
     <ProjectReference Include="..\..\..\..\src\web\LouisAgent.Web.Accounts\LouisAgent.Web.Accounts.csproj" />
-    <!-- CL57: the eval studio's pages and their client; a site that has the studio opts in here. -->
-    <ProjectReference Include="..\..\..\..\src\web\LouisAgent.Web.Evals\LouisAgent.Web.Evals.csproj" />
     <!-- F151.5: the framework's themes, glass and flat; the app's own, retro, is in this project. -->
     <ProjectReference Include="..\..\..\..\src\web\LouisAgent.Web.Themes\LouisAgent.Web.Themes.csproj" />
     <ProjectReference Include="..\..\..\..\packs\web\LouisAgent.Packs.Files.Web\LouisAgent.Packs.Files.Web.csproj" />

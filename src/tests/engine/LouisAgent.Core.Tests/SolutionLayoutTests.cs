@@ -28,7 +28,6 @@ public class SolutionLayoutTests
         "LouisAgent.Packs.Git", "LouisAgent.Packs.DotNet", "LouisAgent.Packs.Calculator", "LouisAgent.Packs.Docs", "LouisAgent.Packs.Triage", "LouisAgent.Packs.Leads",
         "LouisAgent.Packs.Site")]
     [TestCase("packs/web", "LouisAgent.Packs.Files.Web", "LouisAgent.Packs.Git.Web")]
-    [TestCase("demos/louis-agent/evals", "LouisAgent.Identities.Triage.Evals")]
     [TestCase("demos/starter/web", "LouisAgent.Starter")]
     [TestCase("demos/starter/hosts", "LouisAgent.Starter.Api")]
     [TestCase("demos/starter/tests", "LouisAgent.Starter.Tests", "LouisAgent.Starter.IntegrationTests")]
@@ -40,8 +39,7 @@ public class SolutionLayoutTests
         "LouisAgent.Identities.Framework.Tests")]
     [TestCase("demos/louis-agent/web", "LouisAgent.CodeReview")]
     [TestCase("demos/louis-agent/hosts", "LouisAgent.Orchestrator", "LouisAgent.CodingCli",
-        "LouisAgent.CodingAcp", "LouisAgent.CodingMcp", "LouisAgent.CodingEvalRunner",
-        "LouisAgent.CodingApi", "LouisAgent.Coding.Catalog")]
+        "LouisAgent.CodingAcp", "LouisAgent.CodingMcp", "LouisAgent.CodingApi", "LouisAgent.Coding.Catalog")]
     [TestCase("src/tests/engine", "LouisAgent.Core.Tests", "LouisAgent.Core.IntegrationTests",
         "LouisAgent.Choices.Tests", "LouisAgent.SessionStream.Tests", "LouisAgent.Core.Web.Tests",
         "LouisAgent.Core.Telemetry.Tests", "LouisAgent.Core.Anthropic.Tests", "LouisAgent.Core.Ollama.Tests",
