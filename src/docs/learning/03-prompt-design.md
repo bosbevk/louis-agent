@@ -72,4 +72,4 @@ is only held if the tests read the disk the same way the engine does: the rule t
 the rule that every skill is a folder each read the project files, so the next project can't drift.
 
 ---
-[Learning write-ups](README.md) · [Goal](../GOAL.md) · [CL68](../plans/CL68-agents-and-their-subagents.md) · [ADR 0063](../adr/0063-a-prompt-says-what-it-is.md) · [Build an identity](../guides/build-an-identity.md)
+[Learning write-ups](README.md) · [Goal](../GOAL.md) · [ADR 0133](../adr/0133-subagents-live-inside-their-agent.md) · [ADR 0063](../adr/0063-a-prompt-says-what-it-is.md) · [Build an identity](../guides/build-an-identity.md)

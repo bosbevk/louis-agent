@@ -25,8 +25,8 @@ public class ProfileKeyTests
         SampleToolset.Alpha + "|cook|subagent")]
     [TestCase(new[] { SampleToolset.Alpha }, null, RoleLevel.Agent, "ollama-puls", null,
         SampleToolset.Alpha + "|llm:ollama-puls")]
-    [TestCase(new[] { SampleToolset.Alpha }, "puls-minion-reader", RoleLevel.Minion, null, "ReadPage",
-        SampleToolset.Alpha + "|puls-minion-reader|minion|tool:ReadPage")]
+    [TestCase(new[] { SampleToolset.Alpha }, "puls-minion-reader", RoleLevel.Lookup, null, "ReadPage",
+        SampleToolset.Alpha + "|puls-minion-reader|lookup|tool:ReadPage")]
     [TestCase(new string[0], null, RoleLevel.Agent, null, null, "")]
     public void Text_IsExactlyTheStringTheFactoryBuiltBefore(string[] toolsets, string? role, RoleLevel level,
         string? llm, string? tool, string expected) =>
@@ -39,8 +39,8 @@ public class ProfileKeyTests
             Is.EqualTo(SampleToolset.Alpha));
         Assert.That(ProfileKey.Of(Toolsets(SampleToolset.Alpha), null, RoleLevel.Subagent, null, null).Text,
             Is.EqualTo(SampleToolset.Alpha + "|subagent"));
-        Assert.That(ProfileKey.Of(Toolsets(SampleToolset.Alpha), null, RoleLevel.Minion, null, null).Text,
-            Is.EqualTo(SampleToolset.Alpha + "|minion"));
+        Assert.That(ProfileKey.Of(Toolsets(SampleToolset.Alpha), null, RoleLevel.Lookup, null, null).Text,
+            Is.EqualTo(SampleToolset.Alpha + "|lookup"));
     }
 
     [Test]

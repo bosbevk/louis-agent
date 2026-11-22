@@ -4,16 +4,16 @@ using LouisAgent.Core.Skills.Roles;
 namespace LouisAgent.Core.Tests.Skills.Roles;
 
 /// <summary>
-/// A role's level is where its file is (F127.3.1 step 6), on the tests' own prompts: a mode under <c>agent/</c>, a
-/// specialist under <c>specialists/</c>, a minion role under <c>minions/</c>. Since the folder names the level, a role
-/// name may sit in one folder only.
+/// A role's level is where its file is (F127.3.1 step 6), on the tests' own prompts: a mode under <c>agents/</c>, a
+/// subagent under its agent's <c>subagents/</c>, a lookup agent under its <c>lookups/</c>. Since the folder names the
+/// level, a role name may sit in one folder only.
 /// </summary>
 public class RoleLevelOfTests
 {
     /// <summary>Each role is at the level of its folder.</summary>
     [TestCase("testprod/voice-en", RoleLevel.Agent)]
     [TestCase("testprod.specialist", RoleLevel.Subagent)]
-    [TestCase("testprod-minion-lookup", RoleLevel.Minion)]
+    [TestCase("testprod.lookup", RoleLevel.Lookup)]
     public void ARole_IsAtItsFoldersLevel(string role, RoleLevel level) =>
         Assert.That(RoleCatalog.LevelOf(role), Is.EqualTo(level));
 

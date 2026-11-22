@@ -1,4 +1,5 @@
 using LouisAgent.Api.Sessions;
+using LouisAgent.Api.Sessions.Opening;
 using LouisAgent.Api.Sessions.Streaming;
 using LouisAgent.Api.Testing;
 using LouisAgent.Choices;
@@ -38,8 +39,9 @@ public class AskDepthTests
         var sessions = Fresh();
         string agents = CoreToolset.Agents.Wire();
 
-        var specialist = sessions.Create([agents, TestToolset.Web.Wire()], depth: 1, role: Specialist);
-        var reader = sessions.Create([agents], depth: 2, role: TestAgent.Reader);
+        var specialist =
+            sessions.Create(new SessionRequest([agents, TestToolset.Web.Wire()], Depth: 1, Role: Specialist));
+        var reader = sessions.Create(new SessionRequest([agents], Depth: 2, Role: TestAgent.Reader));
 
         Assert.Multiple(() =>
         {
@@ -47,8 +49,9 @@ public class AskDepthTests
             Assert.That(reader.Toolsets, Does.Contain(agents));
             foreach (string asked in new[] { agents, agents + ToolsetCatalog.OptionalMark })
                 Assert.That(
-                    () => sessions.Create([asked], ParentOf(specialist), depth: 2, role: TestAgent.Minion,
-                        tool: "FetchUrl"),
+                    () => sessions.Create(new SessionRequest([asked], ParentOf(specialist), Depth: 2,
+                        Role: TestAgent.Lookup,
+                        Tool: "FetchUrl")),
                     Throws.TypeOf<ToolsetException>().With.Message.Contain("asks no one"));
         });
     }
@@ -61,15 +64,16 @@ public class AskDepthTests
     public void BelowTheTop_TheLevelIsTheRoles()
     {
         var sessions = Fresh();
-        var voice = sessions.Create([TestToolset.Web.Wire()], role: TestAgent.Voice);
+        var voice = sessions.Create(new SessionRequest([TestToolset.Web.Wire()], Role: TestAgent.Voice));
 
-        var minion = sessions.Create(null, ParentOf(voice), depth: 1, role: TestAgent.Minion, tool: "FetchUrl");
-        var specialist = sessions.Create([TestToolset.Web.Wire()], depth: 2, role: Specialist);
+        var minion = sessions.Create(new SessionRequest(null, ParentOf(voice), Depth: 1, Role: TestAgent.Lookup,
+            Tool: "FetchUrl"));
+        var specialist = sessions.Create(new SessionRequest([TestToolset.Web.Wire()], Depth: 2, Role: Specialist));
 
         Assert.Multiple(() =>
         {
             Assert.That((minion.Depth, minion.Tool), Is.EqualTo((1, "FetchUrl")));
-            Assert.That(minion.Engine.SkillDocumentation, Does.Contain(TestAgent.MinionHeading));
+            Assert.That(minion.Engine.SkillDocumentation, Does.Contain(TestAgent.LookupHeading));
             Assert.That((specialist.Depth, specialist.Role, specialist.Tool),
                 Is.EqualTo((2, Specialist, (string?)null)));
         });
@@ -79,10 +83,10 @@ public class AskDepthTests
     [Test]
     public void TheDeepestSession_IsTheSettings()
     {
-        Assert.That(Fresh().Create([TestToolset.Files.Wire()], depth: 4).Depth, Is.EqualTo(4));
-        Assert.That(() => Fresh().Create([TestToolset.Files.Wire()], depth: 5),
+        Assert.That(Fresh().Create(new SessionRequest([TestToolset.Files.Wire()], Depth: 4)).Depth, Is.EqualTo(4));
+        Assert.That(() => Fresh().Create(new SessionRequest([TestToolset.Files.Wire()], Depth: 5)),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("between 0 and 4"));
-        Assert.That(() => Fresh(maxDepth: 2).Create([TestToolset.Files.Wire()], depth: 3),
+        Assert.That(() => Fresh(maxDepth: 2).Create(new SessionRequest([TestToolset.Files.Wire()], Depth: 3)),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("between 0 and 2"));
     }
 
@@ -95,19 +99,22 @@ public class AskDepthTests
     public void AnAgentAlreadyInTheChain_IsRefused_AndATurnRunsInsideItsChain()
     {
         var sessions = Fresh();
-        var voice = sessions.Create([TestToolset.Web.Wire()], role: TestAgent.Voice);
-        var specialist = sessions.Create([TestToolset.Web.Wire()], ParentOf(voice), depth: 1, role: Specialist);
+        var voice = sessions.Create(new SessionRequest([TestToolset.Web.Wire()], Role: TestAgent.Voice));
+        var specialist =
+            sessions.Create(new SessionRequest([TestToolset.Web.Wire()], ParentOf(voice), Depth: 1, Role: Specialist));
 
-        var reader = sessions.Create([TestToolset.Files.Wire()], ParentOf(specialist), depth: 2,
-            role: TestAgent.Reader);
+        var reader = sessions.Create(new SessionRequest([TestToolset.Files.Wire()], ParentOf(specialist), Depth: 2,
+            Role: TestAgent.Reader));
 
         Assert.Multiple(() =>
         {
             Assert.That(reader.Chain, Is.EqualTo(new[] { Agent, Specialist, TestAgent.Reader }));
             Assert.That(
-                () => sessions.Create([TestToolset.Web.Wire()], ParentOf(specialist), depth: 2, role: Specialist),
+                () => sessions.Create(new SessionRequest([TestToolset.Web.Wire()], ParentOf(specialist), Depth: 2,
+                    Role: Specialist)),
                 Throws.TypeOf<RoleException>().With.Message.Contain(Specialist));
-            Assert.That(() => sessions.Create(null, ParentOf(specialist), depth: 2, identity: Agent),
+            Assert.That(
+                () => sessions.Create(new SessionRequest(null, ParentOf(specialist), Depth: 2, Identity: Agent)),
                 Throws.TypeOf<RoleException>().With.Message.Contain(Agent));
         });
 

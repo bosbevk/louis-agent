@@ -111,7 +111,7 @@ public static class AgentHost
                                  Path.Combine(agent.WorkspaceRoot, "config");
         var sessionLlms =
             SessionLlmLoader.Load(agent, clientFactory, configDirectory, Environment.GetEnvironmentVariable);
-        SessionLlmLoader.CheckMinionLlms(agent);
+        SessionLlmLoader.CheckLookupLlms(agent);
         var engines = new AgentEngineFactory(chatClient, agent, llm.ResolveSupportsTools(),
             UsageLedger.Open(agent, prices),
             clientFactory.CreateUsageMapper(llm), display, llm.ResolveThinking(), rates: rates,

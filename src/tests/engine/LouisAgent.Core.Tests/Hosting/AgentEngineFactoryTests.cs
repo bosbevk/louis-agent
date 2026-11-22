@@ -403,20 +403,20 @@ public class AgentEngineFactoryTests
         // follow.
         var factory = Factory();
 
-        var minion = factory.GetOrCreate([TestToolset.Web.Wire()], "testprod-minion-lookup", RoleLevel.Minion,
+        var minion = factory.GetOrCreate([TestToolset.Web.Wire()], "testprod.lookup", RoleLevel.Lookup,
             tool: "FetchUrl");
 
         Assert.That(ListToolNames(minion), Is.EqualTo(new[] { "FetchUrl" }),
             "one tool: no clock, no ExecuteSkill, no WebSearch");
-        Assert.That(minion.SkillDocumentation, Does.Contain("# Testprod minion: Lookup").And
-            .Contain("You are a **minion**")
+        Assert.That(minion.SkillDocumentation, Does.Contain("# Testprod lookup agent: Lookup").And
+            .Contain("You are a **lookup agent**")
             .And.Not.Contain("# Web Skills").And.Not.Contain("# Testprod - Routing"));
-        Assert.That(factory.Profiles, Is.EqualTo(new[] { "web|testprod-minion-lookup|minion|tool:FetchUrl" }));
+        Assert.That(factory.Profiles, Is.EqualTo(new[] { "web|testprod.lookup|lookup|tool:FetchUrl" }));
         Assert.That(
-            factory.GetOrCreate([TestToolset.Web.Wire()], "testprod-minion-lookup", RoleLevel.Minion, tool: "FetchUrl"),
+            factory.GetOrCreate([TestToolset.Web.Wire()], "testprod.lookup", RoleLevel.Lookup, tool: "FetchUrl"),
             Is.SameAs(minion));
         Assert.That(
-            factory.GetOrCreate([TestToolset.Web.Wire()], "testprod-minion-lookup", RoleLevel.Minion,
+            factory.GetOrCreate([TestToolset.Web.Wire()], "testprod.lookup", RoleLevel.Lookup,
                 tool: "ReadRenderedPage"), Is.Not.SameAs(minion),
             "the tool is part of the key");
     }
@@ -428,7 +428,7 @@ public class AgentEngineFactoryTests
         var factory = Factory();
 
         var ex = Assert.Throws<ToolsetException>(() =>
-            factory.GetOrCreate([TestToolset.Web.Wire()], "testprod-minion-lookup", RoleLevel.Minion,
+            factory.GetOrCreate([TestToolset.Web.Wire()], "testprod.lookup", RoleLevel.Lookup,
                 tool: "ReadWorkspaceFile"))!;
 
         Assert.That(ex.Message, Does.Contain("ReadWorkspaceFile").And.Contain(TestToolset.Web.Wire()));

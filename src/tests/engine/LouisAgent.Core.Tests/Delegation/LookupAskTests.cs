@@ -23,13 +23,13 @@ namespace LouisAgent.Core.Tests.Delegation;
 /// A specialist hands one task and one of its own tools to a minion on a cheap model (F30 step 5; MinionS: small
 /// single-step tasks for the local model, the cloud model coordinates). The peer is a stub: no network, no model.
 /// </summary>
-public class MinionAskTests
+public class LookupAskTests
 {
     /// <summary>The minion every test hands work to, by its address (F127.5).</summary>
     private const string Address = "testprod.lookup";
 
     /// <summary>That minion's role file, which the session opens with.</summary>
-    private const string Role = "testprod-minion-lookup";
+    private const string Role = "testprod.lookup";
 
     /// <summary>The identity the cook's turn runs as: it may ask that minion and its own voice, nothing else.</summary>
     private static readonly FakeIdentity Testprod =
@@ -94,7 +94,7 @@ public class MinionAskTests
         IReadOnlyDictionary<string, IReadOnlyList<string>>? llms = null, TimeSpan? timeout = null,
         IUsageSink? sink = null) =>
         new(new AskAgentTools(Self, [Testprod], "the-key", new HttpClient(handler), usageSink: sink,
-            minionLlms: llms ?? Cascade, minionTimeout: timeout));
+            lookupLlms: llms ?? Cascade, lookupTimeout: timeout));
 
     /// <summary>A minion asked through <c>AskAgent</c>, its arguments in the order these tests write them.</summary>
     private sealed class Minions(AskAgentTools tools)
@@ -151,16 +151,16 @@ public class MinionAskTests
             "the cheapest model in the role's list first");
         Assert.That(body.GetProperty("parent").GetString(), Is.EqualTo("sess_cook#2"),
             "the specialist's turn, so the ledger chains Puls → cook → minion");
-        Assert.That(body.GetProperty("task").GetString(), Is.EqualTo($"minion:{Role}"));
+        Assert.That(body.GetProperty("task").GetString(), Is.EqualTo($"lookup:{Role}"));
         Assert.That(body.GetProperty("toolsets").ValueKind, Is.EqualTo(JsonValueKind.Null),
             "the peer derives the toolset from the tool");
 
         Assert.That(answer,
             Does.StartWith("shop: Checkers").And
-                .Contain($"[Minion {Role} on ollama-puls with FetchUrl"));
+                .Contain($"[Lookup {Role} on ollama-puls with FetchUrl"));
         UsageRecord row = sink.Records.Single();
         Assert.That((row.Purpose, row.Model, row.Session, row.Turn, row.Parent),
-            Is.EqualTo(("sub_session", $"minion:{Role}", "sess_cook", (int?)2, "sess_puls#1")));
+            Is.EqualTo(("sub_session", $"lookup:{Role}", "sess_cook", (int?)2, "sess_puls#1")));
         Assert.That(row.Cost, Is.EqualTo(new UsageCost("USD", 0m, null)),
             "the local model's cost, 0, is still a number: never unknown");
     }
@@ -239,7 +239,7 @@ public class MinionAskTests
             Assert.That(await tools.AskMinion("testprod.specialist", "FetchUrl", "a page"),
                 Does.StartWith("Error:").And.Contain("testprod.specialist"), "a specialist is no minion");
             Assert.That(await tools.AskMinion("testprod", "FetchUrl", "a page"),
-                Does.StartWith("Error:").And.Contain("only a minion"), "an identity alone is no minion");
+                Does.StartWith("Error:").And.Contain("only a lookup agent"), "an identity alone is no minion");
             Assert.That(await tools.AskMinion("not an address", "FetchUrl", "a page"), Does.StartWith("Error:"));
         }
 
@@ -252,7 +252,7 @@ public class MinionAskTests
     {
         var creates = new List<JsonDocument>();
         var tools = new AskAgentTools(Self, [Testprod], "the-key", new HttpClient(Peer(creates)),
-            minionLlms: Cascade);
+            lookupLlms: Cascade);
 
         using (CooksTurn())
             Assert.That(await tools.AskAgent(Address, "a page"),
@@ -325,7 +325,7 @@ public class MinionAskTests
 
             var noListForIt = new Dictionary<string, IReadOnlyList<string>> { ["another-minion"] = ["instance"] };
             string refused = await Tools(Peer(creates), noListForIt).AskMinion(Address, "FetchUrl", "a page");
-            Assert.That(refused, Does.StartWith("Error:").And.Contain("MINION_LLMS"),
+            Assert.That(refused, Does.StartWith("Error:").And.Contain("LOOKUP_LLMS"),
                 "no list for the role and no default");
             Assert.That(creates, Has.Count.EqualTo(1));
         }
@@ -341,10 +341,10 @@ public class MinionAskTests
         // One GPU answers one request at a time, so the limit counts the whole tree of Puls's turn: two specialists
         // under the same Puls turn share it. Every shop's price goes through a minion (Louis, F30 hand check), so a
         // meal of about eight ingredients at two shops needs sixteen.
-        Assert.That(MinionAsk.MaxPerTurn, Is.EqualTo(16));
+        Assert.That(LookupAsk.MaxPerTurn, Is.EqualTo(16));
         var creates = new List<JsonDocument>();
         var tools = Tools(Peer(creates));
-        int first = MinionAsk.MaxPerTurn - 2;
+        int first = LookupAsk.MaxPerTurn - 2;
 
         using (CooksTurn(session: "sess_cook", turn: 1, parent: "sess_puls#4"))
             for (int i = 0; i < first; i++)
@@ -361,7 +361,7 @@ public class MinionAskTests
             Assert.That(await tools.AskMinion(Address, "FetchUrl", "next turn"), Does.Not.StartWith("Error:"),
                 "another user turn starts fresh");
 
-        Assert.That(creates, Has.Count.EqualTo(MinionAsk.MaxPerTurn + 1));
+        Assert.That(creates, Has.Count.EqualTo(LookupAsk.MaxPerTurn + 1));
     }
 
     /// <summary>A minion that takes too long is stopped after its own timeout and deleted on the peer.</summary>
@@ -394,7 +394,7 @@ public class MinionAskTests
 
         Assert.That(answer, Does.StartWith("Error:").And.Contain("didn't finish"));
         Assert.That(deleted, Is.True);
-        Assert.That(MinionAsk.DefaultTimeout, Is.EqualTo(TimeSpan.FromMinutes(2)), "inside the specialist's 5");
+        Assert.That(LookupAsk.DefaultTimeout, Is.EqualTo(TimeSpan.FromMinutes(2)), "inside the specialist's 5");
     }
 
     /// <summary>Even in a chat a minion is never kept: it's deleted as soon as it answers.</summary>
@@ -435,12 +435,12 @@ public class MinionAskTests
     }
 
     /// <summary>
-    /// MINION_LLMS gives each role, or the default, its models cheapest first; broken entries are dropped.
+    /// LOOKUP_LLMS gives each lookup agent, or the default, its models cheapest first; broken entries are dropped.
     /// </summary>
     [Test]
-    public void TheMinionModels_AreParsedFromMinionLlms_RoleOrStar_CheapestFirst()
+    public void TheLookupModels_AreParsedFromLookupLlms_RoleOrStar_CheapestFirst()
     {
-        var llms = AgentOptions.ParseMinionLlms(
+        var llms = AgentOptions.ParseLookupLlms(
             " *=Ollama-Puls > instance , puls-minion-web-summary=instance, broken, =x, puls-minion-a=");
 
         Assert.That(llms["*"], Is.EqualTo(new[] { "ollama-puls", "instance" }));
@@ -448,9 +448,12 @@ public class MinionAskTests
         Assert.That(llms.Keys, Is.EquivalentTo(new[] { "*", "puls-minion-web-summary" }),
             "an entry without a role or a model is dropped");
         Assert.That(
-            AgentOptions.FromEnvironment(name => name == "MINION_LLMS" ? "*=ollama-puls>instance" : null)
-                .MinionLlms["*"], Is.EqualTo(new[] { "ollama-puls", "instance" }));
-        Assert.That(AgentOptions.FromEnvironment(_ => null).MinionLlms, Is.Empty, "unset: no minions toolset");
+            AgentOptions.FromEnvironment(name => name == "LOOKUP_LLMS" ? "*=ollama-puls>instance" : null)
+                .LookupLlms["*"], Is.EqualTo(new[] { "ollama-puls", "instance" }));
+        Assert.That(
+            AgentOptions.FromEnvironment(name => name == "MINION_LLMS" ? "*=instance" : null).LookupLlms, Is.Empty,
+            "the old name sets nothing (CL68.3, ADR 0049)");
+        Assert.That(AgentOptions.FromEnvironment(_ => null).LookupLlms, Is.Empty, "unset: no minions toolset");
     }
 
     /// <summary>A minion model that is neither a known profile nor the instance's own stops start-up.</summary>
@@ -460,16 +463,16 @@ public class MinionAskTests
         var agent = new AgentOptions
         {
             SessionLlmProfiles = ["ollama-puls"],
-            MinionLlms = new Dictionary<string, IReadOnlyList<string>> { ["*"] = ["ollama-puls", "gpt-local"] }
+            LookupLlms = new Dictionary<string, IReadOnlyList<string>> { ["*"] = ["ollama-puls", "gpt-local"] }
         };
 
-        var ex = Assert.Throws<SessionLlmException>(() => SessionLlmLoader.CheckMinionLlms(agent))!;
+        var ex = Assert.Throws<SessionLlmException>(() => SessionLlmLoader.CheckLookupLlms(agent))!;
 
         Assert.That(ex.Message, Does.Contain("gpt-local").And.Contain("ollama-puls").And.Contain("instance"));
-        Assert.DoesNotThrow(() => SessionLlmLoader.CheckMinionLlms(new AgentOptions
+        Assert.DoesNotThrow(() => SessionLlmLoader.CheckLookupLlms(new AgentOptions
         {
             SessionLlmProfiles = ["ollama-puls"],
-            MinionLlms = new Dictionary<string, IReadOnlyList<string>> { ["*"] = ["instance", "ollama-puls"] }
+            LookupLlms = new Dictionary<string, IReadOnlyList<string>> { ["*"] = ["instance", "ollama-puls"] }
         }));
     }
 

@@ -1257,3 +1257,45 @@ Concept: *20 Extensibility* in the [goal](../GOAL.md): when the layout and the d
 picture, a second way of drawing the same data became one new folder of each and one line in the place that asks.
 And *18 Testing and shipping*: the layout is held by numbers, the drawing by what it marks, and the look by a browser
 at 390 wide.
+
+## CL70: a long method becomes a class of its own (2026-11-22)
+
+Every chat, every agent asking another and every lookup agent opens its session through one method in the API,
+`AgentSessions.Create`. Over many features it had grown eleven parameters, most of them optional, and a body of
+about fifty lines where every check read and changed the same handful of locals: the role, the tool, the level, the
+toolsets. Louis looked at it on his screen and asked, "why is this so ugly can we not add a pattern here like a
+builder? or something better". Three patterns were read at Refactoring.Guru that day. A builder would only have
+tidied the calls, and the checks would still sit in one long method behind it. A chain of check objects would have
+made a type for each rule, for a list of rules that never changes while the program runs. He picked the third, a
+method object with its request as one record.
+
+The two halves are old, named refactorings. *Introduce Parameter Object* (Fowler) turns the eleven parameters into
+one record, `SessionRequest`, each value with today's default, so a caller names only what it sets:
+`new SessionRequest(Toolsets: [web], Depth: 1, Role: "triage.sorter")`. *Replace Method with Method Object*
+(Refactoring.Guru) is the part that made the body readable. A method whose locals are tangled can't be split into
+smaller methods, because each piece would need half the others' locals passed in and back. So the method becomes a
+class, `SessionOpening`, made for one request; its locals become fields; and then each job can be its own small
+method that reads and sets those fields. Its `Open()` now reads like the list it always was: find the identity,
+check the depth, work out the level, check the tool, pick the toolsets, refuse a lookup agent that asks, find the
+chain, get the engine. `AgentSessions` kept only the store, and went from 251 lines to 95. A lookup agent's five
+checks went to a small class of their own, `LookupChecks`, so each file holds one concern.
+
+It was done in three steps that each left everything working. First the eleven error messages the method built from
+anonymous objects got their holes records (ADR 0119), held by a test that every member with holes names its
+record. Then the request record, with every caller changed to pass one: the API's handler and 67 calls in the tests.
+Then the method object. The last step added no new test, and that was the point: a refactoring changes the inside
+"without changing its observable behavior", in Fowler's words, so the 386 API tests that already asserted every
+refusal, the levels, the chain and the toolsets had to pass unchanged, and did. The do-a-step skill now says so.
+
+What didn't go well. In the first step the formatter and git's line-ending conversion together wrote `\r\r\n` at the
+end of every line of `AgentSessions.cs`, so a change of twenty lines showed as the whole file. It was found by
+comparing the diff with and without whitespace, and fixed by stripping the stray carriage returns before staging.
+The first draft of the level step also nested one conditional inside another, which ADR 0051 forbids; it went back to
+guard clauses before it was shown. And a few edits were made with small scripts, the same slip earlier sections
+record.
+
+What it cost: nothing was paid for.
+
+Concept: *20 Extensibility* in the [goal](../GOAL.md): a method object is how a method too tangled to split becomes
+steps you can read, and a new check is now one small method in its place in the list. And *18 Testing and shipping*:
+a refactoring is safe when the tests stay still while the shape changes.

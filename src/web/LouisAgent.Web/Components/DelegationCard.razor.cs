@@ -36,11 +36,11 @@ public partial class DelegationCard
         ? named
         : Block.SubAgent ?? Delegation.ResultAgent ?? Text.Subagent;
 
-    /// <summary>Who the work went to, as the user sees it: a minion's address, else the agent.</summary>
+    /// <summary>Who the work went to, as the user sees it: a lookup agent's address, else the agent.</summary>
     private string Who => Delegation.Role ?? Agent;
 
-    /// <summary>The letter in the card's avatar: "m" for a minion, else who it went to.</summary>
-    private string Initial => Delegation.Minion ? "m" : Who[..1].ToUpperInvariant();
+    /// <summary>The letter in the card's avatar: "l" for a lookup agent, else who it went to.</summary>
+    private string Initial => Delegation.Lookup ? "l" : Who[..1].ToUpperInvariant();
 
     /// <summary>The cost shown on the rolled-up line.</summary>
     private string? CostLine => Block.SubTurn?.Usage is { } usage ? UsageFormat.Cost(usage, Currency) : null;

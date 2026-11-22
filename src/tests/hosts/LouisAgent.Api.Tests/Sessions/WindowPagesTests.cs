@@ -1,4 +1,5 @@
 using LouisAgent.Api.Sessions.Streaming;
+using LouisAgent.Api.Sessions.Opening;
 using LouisAgent.Choices;
 using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Usage.Records;
@@ -17,7 +18,7 @@ public class WindowPagesTests
     [Test]
     public void AMessagesWindowPages_AreTheTurns()
     {
-        var session = AgentSessionsTests.Sessions().Create([TestToolset.Files.Wire()]);
+        var session = AgentSessionsTests.Sessions().Create(new SessionRequest([TestToolset.Files.Wire()]));
         var page = new PageRequest("https://acme.example/", "Acme", "Four rooms.");
 
         session.Windows = [new WindowPageRequest("acme", page)];

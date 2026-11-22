@@ -112,13 +112,13 @@ reads each of their project files and fails on a reference to a demo or to a pac
 
 The agent they talk to is made up. `TestAgent`, in `LouisAgent.Api.Testing`, is an identity called `testagent`
 with the shape a real one has: two language voices that share a routing voice, a subagent whose role adds the web
-and the calculator, a reader that adds nothing of its own, and two minions on a shared base. Its prompts are held in
+and the calculator, a reader that adds nothing of its own, and two lookup agents on a shared base. Its prompts are held in
 memory, each with the header the engine reads from a real file. Its packs are fakes under the real packs' names,
 `TestTools.WebPack` and `TestTools.CalculatorPack`, because nothing under `src/` may reference a real pack. The
 in-memory host, `ApiTestHost`, builds the API on this agent and the tests' own fake tools.
 
 `AgentSessionsTests` covers how a session gets its toolsets and tools: the `skills` default, an empty list, unknown
-names, the depth and the minion's toolsets, and sessions that share an engine but not a history. It needs no web
+names, the depth and the lookup agent's toolsets, and sessions that share an engine but not a history. It needs no web
 host, no network and no model. The sessions are built on an `AgentEngineFactory` with a chat client that throws if
 it's ever called. `AskDepthTests` uses the same agent for who may ask whom: a subagent under itself, or the agent
 under the subagent it asked, is refused.
@@ -265,11 +265,11 @@ The folders of `src/tests/engine/LouisAgent.Core.Tests`, to look things up.
 | `Logging/` | Serilog behind `ILogger`: stderr only, holes bound by name, tags, the run file and the JSON-lines records |
 | `Messages/` | Every message enum member, core's and each host's (from source), has a template with well-formed holes |
 | `Pricing/` | The price table and the shipped `config/prices.json`, costs, the pricing sink, exchange rates, the display currency |
-| `Skills/` | `MarkdownSkillLoader` (procedures, parameters, fence languages); `Providers/`: each skill provider and the composite (order, de-duplication, the role first); `Headers/`: a prompt's header and the catalogue that reads them once (CL27; the loader's side in `Hosting/Prompts/SkillLoaderHeadersTests`); `Roles/`: the role catalogue, minions' roles, and `RoleNamingTests` (nothing in core named "personality", CL13, CL14); the API has `ApiRoleNamingTests` |
+| `Skills/` | `MarkdownSkillLoader` (procedures, parameters, fence languages); `Providers/`: each skill provider and the composite (order, de-duplication, the role first); `Headers/`: a prompt's header and the catalogue that reads them once (CL27; the loader's side in `Hosting/Prompts/SkillLoaderHeadersTests`); `Roles/`: the role catalogue, lookup agents' roles, and `RoleNamingTests` (nothing in core named "personality", CL13, CL14); the API has `ApiRoleNamingTests` |
 | `RepeatedNames/` | The ratchets of ADR 0043: a wire name written as a string outside its enum (`RepeatedNameTests`, with `Scanning/`: a C# lexer, the scan, the compiled-code reader), and `.Wire()` as the one way out (`WireTextTests`: no direct `SettingChoice.Wire`, no case-folded `ToString()`, no `ToString()` of an enum in the compiled code). Five exemptions, each with its reason, narrowed rather than lengthened (F18 step 7.5) |
 | `Usage/` | Scopes and their totals, the ledger file, reports, the usage text and sessions, `CacheGaps` |
 | `Guardrails/` | The workspace boundary and secret files, the SSRF guard, and `HostAuth`, the key rule every host shares |
-| `Delegation/` | Asking another agent: addresses and the `Calls` that allow them, `AskAgent`'s limits, follow-ups and peers, the did line, `ReadAgentWork`, minions, and the sub-session's stream, keys, bodies, usage and trace |
+| `Delegation/` | Asking another agent: addresses and the `Calls` that allow them, `AskAgent`'s limits, follow-ups and peers, the did line, `ReadAgentWork`, lookup agents, and the sub-session's stream, keys, bodies, usage and trace |
 | `Sessions/` | A session's replay and its store, and the sub-sessions a chat keeps with their work |
 | `Telemetry/` | The seam with no collector (`HostTelemetryTests`) and a turn's span (`TurnSpansTests`) |
 | `Composition/` | What core uses from the composition: the process runner, the workspace listing, an agent's address, a turn's identity |
@@ -277,7 +277,7 @@ The folders of `src/tests/engine/LouisAgent.Core.Tests`, to look things up.
 | `Docs/` | The ratchets on the docs: the work log, the roadmap, the write-ups, the guides' listings, one seam for screens, and under `Instructions/` the size of what Claude loads and the skill files |
 | `Projects/` | Core's packages (`CorePackagesTests`) |
 | `Testing/`, `TestHttp/` | The tests of the shared `Outside` and `TestPaths`, and a header-echo handler |
-| The root | `ArchitectureTests`, `FileSizeTests`, `CodeLineCountTests`, `FolderSizeTests`, `SolutionLayoutTests`, `SiteBoundaryTests`, `PackWebBoundaryTests`, `ChoicesProjectTests`, `EvalProtocolProjectTests`, `DiagramsProjectTests`, `EngineAsksItsTypesTests`, `PromptFolderTests`, `SkillsLayoutTests` (part 5), and `TestPrompts`, the `[SetUpFixture]` that registers the tests' own prompts (`agents/` with a subagent inside, `minions/`: a product, a subagent, a minion) before the first is read |
+| The root | `ArchitectureTests`, `FileSizeTests`, `CodeLineCountTests`, `FolderSizeTests`, `SolutionLayoutTests`, `SiteBoundaryTests`, `PackWebBoundaryTests`, `ChoicesProjectTests`, `EvalProtocolProjectTests`, `DiagramsProjectTests`, `EngineAsksItsTypesTests`, `PromptFolderTests`, `SkillsLayoutTests` (part 5), and `TestPrompts`, the `[SetUpFixture]` that registers the tests' own prompts (`agents/` with a subagent and a lookup agent inside: a product, a subagent, a lookup agent and its base) before the first is read |
 
 ## Extending it
 

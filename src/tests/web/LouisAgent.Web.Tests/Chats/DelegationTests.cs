@@ -40,13 +40,13 @@ public class DelegationTests
     {
         var block = Call(Delegation.AskToolName,
             """{"address":"sample.lookup","message":"Prys van rys","tool":"WebSearch"}""",
-            SampleRole.Fill("R24,99\n\n[Minion <RoleZeta> on ollama-puls with WebSearch]"));
+            SampleRole.Fill("R24,99\n\n[Lookup <RoleZeta> on ollama-puls with WebSearch]"));
 
         var delegation = Delegation.From(block)!;
 
         Assert.Multiple(() =>
         {
-            Assert.That(delegation.Minion, Is.True);
+            Assert.That(delegation.Lookup, Is.True);
             Assert.That(delegation.Role, Is.EqualTo("sample.lookup"));
             Assert.That(delegation.Toolsets, Is.EqualTo(new[] { "WebSearch" }));
             Assert.That(delegation.Task, Is.EqualTo("Prys van rys"));
@@ -64,7 +64,7 @@ public class DelegationTests
         var delegation = Delegation.From(Call(Delegation.AskToolName,
             """{"address":"sample.lookup","message":"Prys","tool":"WebSearch"}""", refusal))!;
 
-        Assert.That((delegation.Minion, delegation.Answer, delegation.Failed), Is.EqualTo((true, refusal, true)));
+        Assert.That((delegation.Lookup, delegation.Answer, delegation.Failed), Is.EqualTo((true, refusal, true)));
     }
 
     /// <summary>Input that isn't JSON still gives a card, with what can be shown.</summary>

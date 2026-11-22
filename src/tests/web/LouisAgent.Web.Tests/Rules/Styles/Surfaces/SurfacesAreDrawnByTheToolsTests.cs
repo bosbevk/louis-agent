@@ -155,7 +155,7 @@ public class SurfacesAreDrawnByTheToolsTests
     [TestCase("ground")]
     [TestCase("hovering")]
     [TestCase("grip")]
-    [TestCase("minion")]
+    [TestCase("lookup")]
     [TestCase("page-light")]
     [TestCase("outline-colour")]
     [TestCase("spotlit")]

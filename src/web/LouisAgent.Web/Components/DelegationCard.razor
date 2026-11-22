@@ -5,13 +5,13 @@
 
 @inject ChatText Text
 
-<details class="delegation @Status @(Delegation.Minion ? "minion" : "")" open="@Running">
+<details class="delegation @Status @(Delegation.Lookup ? "lookup" : "")" open="@Running">
     <summary class="delegation-head">
         <span class="delegation-avatar" aria-hidden="true">@Initial</span>
         <span class="delegation-title">
-            <span class="delegation-agent">@(Delegation.Minion ? Text.MinionLabel : Text.DelegatedTo) <strong>@Who</strong></span>
+            <span class="delegation-agent">@(Delegation.Lookup ? Text.LookupLabel : Text.DelegatedTo) <strong>@Who</strong></span>
             <span class="delegation-toolsets">
-                @if (Delegation.Minion && Delegation.Llm is { } llm)
+                @if (Delegation.Lookup && Delegation.Llm is { } llm)
                 {
                     <span class="toolset-chip model">@Text.OnModel @llm</span>
                 }

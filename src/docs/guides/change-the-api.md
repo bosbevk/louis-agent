@@ -66,7 +66,8 @@ A session's options are fixed when it opens, as its toolsets are, so its prompt 
    `JsonPropertyName`, as `time_zone` does). The API reads it in `Sessions/Requests/CreateSessionRequestReading.cs`, with
    a test in `CreateSessionRequestTests` for its parsing and its limits.
 2. Validate it before any engine is built, and refuse a bad value with a 400 and its reason, as an unknown role is.
-3. Pass it through `SessionEndpoints` to `AgentSessions`, which opens the session with it; a test in
+3. Add it to `SessionRequest` in `Sessions/Opening/`, with its default, and set it where `SessionHandlers` builds
+   the request. `SessionOpening` reads it in the step it belongs to, or `AgentSession` carries it; a test in
    `AgentSessionsTests` with the fake model client.
 4. If it is a choice of a fixed set, it is an enum parsed once with `SettingChoice`
    ([ADR 0024](../adr/0024-choices-are-enums.md)). Add the field to `AgentApi.CreateSessionAsync` in

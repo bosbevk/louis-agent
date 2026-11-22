@@ -22,12 +22,17 @@ public class SubagentWordTests
 
     /// <summary>No page and no page record says specialist.</summary>
     [Test]
-    public void NoFrameworkPage_SaysSpecialist()
-    {
-        var saying = PageFiles()
-            .Where(file => File.ReadAllText(file).Contains(OldWord, StringComparison.OrdinalIgnoreCase))
-            .Select(file => Path.GetRelativePath(TestPaths.RepoRoot, file).Replace('\\', '/'));
+    public void NoFrameworkPage_SaysSpecialist() => Assert.That(PagesSaying(OldWord), Is.Empty);
 
-        Assert.That(saying, Is.Empty);
-    }
+    /// <summary>
+    /// No page says minion either: the smallest helper is a lookup agent (CL68.3, ADR 0021 as amended).
+    /// </summary>
+    [Test]
+    public void NoFrameworkPage_SaysMinion() => Assert.That(PagesSaying("minion"), Is.Empty);
+
+    /// <summary>The pages and page records that say a word, in any case, by their paths in the repo.</summary>
+    private static IEnumerable<string> PagesSaying(string word) =>
+        PageFiles()
+            .Where(file => File.ReadAllText(file).Contains(word, StringComparison.OrdinalIgnoreCase))
+            .Select(file => Path.GetRelativePath(TestPaths.RepoRoot, file).Replace('\\', '/'));
 }

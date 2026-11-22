@@ -40,6 +40,12 @@ A step that changes behaviour starts with its test (ADR 0014).
 A docs-only or configuration-only step has no test first. A change the tests can't reach says so when it is shown,
 with how it was checked instead.
 
+A refactor that changes no behaviour has no new test first either. Fowler defines a refactoring as a change to the
+code's inside "without changing its observable behavior", so the tests already there are what hold it, and they
+must pass before and after, unchanged. When it is shown, name those tests and what they assert, and say that no
+new one was written. Logic that only moves, into a new class too, stays held by them. A refactor that adds logic the
+old code didn't have, or changes what a caller sees, is not pure: that part gets its test first.
+
 The shared fakes, the golden files and where a new test project goes are in `src/docs/guides/write-tests.md`.
 
 ## Which tests to run while you build
@@ -85,3 +91,5 @@ a browser with `/check-a-page`.
 - [ADR 0052: edit, never a script](../../../src/docs/adr/0052-edit-never-script.md) and
   [ADR 0054](../../../src/docs/adr/README.md) on pure moves
 - [Write and run tests](../../../src/docs/guides/write-tests.md): the commands, the shared fakes, the golden files
+- Martin Fowler, [Definition of refactoring](https://martinfowler.com/bliki/DefinitionOfRefactoring.html) and
+  [refactoring.com](https://refactoring.com/): "a series of small behavior preserving transformations"

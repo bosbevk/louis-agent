@@ -61,8 +61,9 @@ public static class FrameworkFeatures
         new(Engine, "Follow-ups that remember", "SubSessionRegistry",
             "In a chat on the API, a subagent's own chat stays open after it answers, so the next question to it " +
             "carries on where it left off, with the files you attached passed to it by name.", CoreDoc),
-        new(Engine, "Small jobs on a cheap model", "MINION_LLMS",
-            "A minion role runs on the model you set for it, cheapest first, a local one if you like.", CoreDoc),
+        new(Engine, "Small jobs on a cheap model", "LOOKUP_LLMS",
+            "A lookup agent does one task with one of its asker's tools, on the model you set for it, " +
+            "cheapest first, a local one if you like.", CoreDoc),
         new(Engine, "An agent that grows its tools", "CreateTool",
             "The agent can write a new skill or a script-backed tool, and it waits for your /approve before any " +
             "later session loads it.", "src/docs/architecture/06-runtime-view.md"),

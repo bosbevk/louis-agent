@@ -1,4 +1,5 @@
 using LouisAgent.Api.Sessions;
+using LouisAgent.Api.Sessions.Opening;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Agent.Toolsets;
@@ -34,7 +35,7 @@ public class AskedVoiceTests
     [Test]
     public void AnIdentitysVoice_AskedAtDepthOne_OpensAsItsVoice_WithItsPacks()
     {
-        var session = Sessions().Create(depth: 1, identity: TestBusiness.Identity.Name);
+        var session = Sessions().Create(new SessionRequest(Depth: 1, Identity: TestBusiness.Identity.Name));
 
         Assert.Multiple(() =>
         {
@@ -51,6 +52,7 @@ public class AskedVoiceTests
     /// </summary>
     [Test]
     public void AnAskedAgent_MayAskFurther() =>
-        Assert.That(Sessions().Create([CoreToolset.Agents.Wire()], depth: 1, identity: TestBusiness.Identity.Name)
+        Assert.That(Sessions()
+            .Create(new SessionRequest([CoreToolset.Agents.Wire()], Depth: 1, Identity: TestBusiness.Identity.Name))
             .Toolsets, Does.Contain(CoreToolset.Agents.Wire()));
 }

@@ -26,16 +26,15 @@ The steps are [Build a pack](../../docs/guides/build-a-pack.md). What holds for 
 - **A guide is plain markdown, embedded**, and loads only when a session has the toolset
   (`SkillLoader.Load(agent, toolsets)`). No provider class per toolset.
 - **Core's own toolsets are `agents` and `skills`.** `agents` is in `Delegation/`, named in
-  `Agent/Toolsets/ToolsetCatalog.cs`, and it asks minions too. `skills` is in `Agent/EngineTools/`, registered by
+  `Agent/Toolsets/ToolsetCatalog.cs`, and it asks lookup agents too. `skills` is in `Agent/EngineTools/`, registered by
   `AgentEngine` because it needs the registry. Only something that needs the engine's own insides belongs here.
   Anything else is a pack.
 
 ### Skill files we control are plain markdown, always
 
-- **That covers every file in a project's prompt folders** (`agents/`, its subagents' `subagents/` inside it,
-  `minions/`, `toolsets/`, `shared/`, at the project's root; their names are `PromptFolder`), and the function
-  skills the agent writes into a demo's
-  `skills/agents/functions/`. `SkillFilesTests` fails if a provider class for one of them appears.
+- **That covers every file in a project's prompt folders** (`agents/`, with its subagents' `subagents/` and its
+  lookup agents' `lookups/` inside it, `toolsets/`, `shared/`, at the project's root; their names are
+  `PromptFolder`), and the function skills the agent writes into a demo's `skills/agents/functions/`. `SkillFilesTests` fails if a provider class for one of them appears.
 - **Every prompt opens with its front matter**: `name`, `description`, `metadata.level` and `toolsets`
   (ADR 0063). `PromptCatalog` reads it once and strips it before the model sees the file.
   `EveryPromptHasAHeaderTests` holds it.
@@ -62,8 +61,8 @@ a change to one (a new provider, a new tool, a new guard) touches one folder.
    provider's own library, as in *Changing the LLM*.
 3. **Prompts are content, not code.** The system prompt's text and procedures stay in the prompt folders at a
    project's root: `agents/{identity}/` with its voice, its skills and its subagents (`subagents/{name}/voice.md`,
-   ADR 0133), `minions/`, and `toolsets/` and `shared/` for what every level shares. They are embedded and read only
-   from the assembly, and C# only loads them. `SkillsLayoutTests` fails on a misplaced file, and
+   ADR 0133) and its lookup agents (`lookups/{name}/voice.md`, ADR 0021), and `toolsets/` and `shared/` for what
+   every level shares. They are embedded and read only from the assembly, and C# only loads them. `SkillsLayoutTests` fails on a misplaced file, and
    `EveryPromptHasAHeaderTests` on a header whose level isn't its place's.
 4. **Hosts stay thin.** A host project maps the agent's stream to its protocol and holds no agent behaviour. Its
    `Program.cs` is start-up only. Its routes are in `Endpoints/`, one file per group. The rest sits in a folder
@@ -88,7 +87,7 @@ This table is for looking a folder up.
 |---|---|
 | `Agent/` | The engine (`AgentEngine`, the facade that wires one agent) and its tool registry at the top; one folder per thing it does, one layer: `Turns/` (one turn: `TurnRunner`, the `ChatPipeline` middleware order, the tool-call guards that call the model, a call's text for displays), `Commands/` (what the user types that the model never sees: `/tools`, `/approve`, `/reject`, `/usage`), `EngineTools/` (what the engine registers itself: the skill tools, the agent-built tools with their `Scripts/`, and the `Clock/`), `Toolsets/` (a toolset's definition, context and core's catalogue), `Catalog/` (the contracts an identity or a pack implements, and the catalogue built from them: the seam a later contracts project would be cut from) |
 | `Llm/` | The model: the client factory at the top (`ILlmClientFactory`, `LlmClientFactory`, the registry of the providers a host gave) and `Providers/` (the `ILlmProvider` seam and `LlmLimits`; each SDK is a library on core, CL57); `Caching/` (how a provider marks a request for its prompt cache: the strategy, the no-op default, the middleware); `UsageMapping/` (a provider's usage into our record: the mapper and the recording middleware) |
-| `Delegation/` | Asking another agent by its address or handing work to a minion: `Agents/` (`AskAgent`, `ReadAgentWork`), `Addresses/` (an address resolved), the minions' tools, the sub-sessions and the usage they roll up. The engine's own (ADR 0031, ADR 0117) |
+| `Delegation/` | Asking another agent by its address or handing work to a lookup agent: `Agents/` (`AskAgent`, `ReadAgentWork`), `Addresses/` (an address resolved), the lookup agents' runner (`LookupAsk`), the sub-sessions and the usage they roll up. The engine's own (ADR 0031, ADR 0117) |
 | `Web/` | The seam for what the engine needs from the web (CL33): `IWebAccess` (the search provider, the browser if any, the renderer, a fetcher per call), `NoWebAccess` (every part says it isn't set up) and `WebParts` (web access from parts given). The browser, search, rendering, robots and the recorders are `LouisAgent.Core.Web`'s, which a host hands in through `HostServices` |
 | `Sessions/` | What a host sets for one session's turn and the tools read: the user's place (F22) and the attachments at the top; `SubSessions/` (the sub-sessions a chat keeps, F26, and the live feed of a child's events). Not what the model can do, and not the loop |
 | `Skills/` | Loading the markdown skills and a session's role into the prompt: the contract at the top (`ISkillProvider`, the embedded files, `SkillFolder`: where a file comes from), its implementations in `Providers/`, in `Languages/` the script languages a fence can name (`ScriptLanguage`, a leaf every other folder may use), in `Headers/` every prompt's front matter (`PromptHeaders`, `PromptCatalog`, CL27), and in `Roles/` what a session is (`RoleCatalog`, CL13; `RoleFiles`: which roles this instance offers); `RoleLevel` sits at the top |

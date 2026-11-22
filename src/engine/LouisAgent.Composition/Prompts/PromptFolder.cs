@@ -28,8 +28,11 @@ public enum PromptFolder
     /// <summary>The function skills the agent runs and writes: <c>agents/functions/</c>.</summary>
     [WireName("functions")] Functions,
 
-    /// <summary>The minions, one function each: <c>minions/{name}.md</c>.</summary>
-    [WireName("minions")] Minions,
+    /// <summary>
+    /// An agent's lookup agents, inside its folder apart from its subagents (CL68.3, ADR 0021):
+    /// <c>agents/{identity}/lookups/{name}/voice.md</c>.
+    /// </summary>
+    [WireName("lookups")] Lookups,
 
     /// <summary>The toolsets' guides: <c>toolsets/{name}.md</c>.</summary>
     [WireName("toolsets")] Toolsets,

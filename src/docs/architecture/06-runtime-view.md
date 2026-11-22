@@ -4,7 +4,7 @@
 > step by step with its guards, what each host shows, and the scenarios that span several agents. **Elsewhere:** every
 > message on the wire in [AGENT_COMMUNICATION.md](../AGENT_COMMUNICATION.md); adding
 > [a C# tool](../../engine/LouisAgent.Core/CLAUDE.md#adding-a-tool), [a toolset](../../engine/LouisAgent.Core/CLAUDE.md#adding-a-tool),
-> [a skill](../guides/add-a-skill.md), [a mode or a role](../guides/build-an-identity.md#modes-roles-and-minions-the-rules) or
+> [a skill](../guides/add-a-skill.md), [a mode or a role](../guides/build-an-identity.md#modes-subagents-and-lookup-agents-the-rules) or
 > [another agent on core](../../engine/LouisAgent.Core/CLAUDE.md#building-another-agent-on-core) in the development guides.
 
 ![The runtime view: tools and skills, one chat turn, and the work across agents](diagrams/06-runtime-view.svg)
@@ -66,13 +66,13 @@ The system prompt is put together from skill files, in a fixed order, by the eng
 It opens with the principles (`shared/principles.md`), which are the same for every agent. Then comes the role. At
 level 0 that's the session's mode, its voice and then its routing: the default `louis-agent/voice`, or Puls's language
 file (`puls/voice-af`) followed by Puls's shared `puls/voice.md`. At level 1 it's a subagent's voice from inside its
-agent, `agents/{identity}/subagents/{name}/voice.md`, with no routing, because its toolsets were chosen for it. At level 2 it's a minion's function from
-`minions/`, after its product's minion base, the file that says what every minion is.
+agent, `agents/{identity}/subagents/{name}/voice.md`, with no routing, because its toolsets were chosen for it. At level 2 it's a lookup agent's voice from
+its agent's `lookups/`, after the agent's `lookup.md`, the file that says what every lookup agent is.
 
 At level 0 the identity's own skills follow the voice. The ones it always needs are there whole, and the ones it reads
 on demand are listed by name, each with the line that says when to read it.
 
-Next comes the guide of each toolset the session loaded (`toolsets/{toolset}.md`), and no other. A minion gets no
+Next comes the guide of each toolset the session loaded (`toolsets/{toolset}.md`), and no other. A lookup agent gets no
 guide, because its role says what to do with its one tool. A session with the `agents` toolset then gets the list of
 the agents it may ask, its identity's `Calls`, the same list `AskAgent` checks. Last, and only with the `skills`
 toolset, comes every function skill the agent wrote.

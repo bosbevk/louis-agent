@@ -254,12 +254,38 @@ golden file shows). The framework's web library still calls its chat code by the
 others), and the eval protocol's `specialist_calls` waits for the evals to be rebuilt. Puls follows when it moves to
 this version.
 
+## Lookup agents beside the subagents (CL68.3, 2026-11-22)
+
+The smallest helper got the same treatment as the subagents. A minion was a worker on a cheap model that does one
+task with one tool its asker hands it; Louis's words for it were "lookup-agents sub-agents", and that's now its name
+everywhere but the evals: in the code (`RoleLevel.Lookup`, `LookupAsk`), the setting (`LOOKUP_LLMS`), the API's roles
+reply, the chat's card ("Lookup agent", with an "l"), and every word the model reads, down to the footer under its
+answer, `[Lookup acme.lookup on ollama with WebSearch]`.
+
+It lives inside its agent too, but in a folder of its own: `agents/{identity}/lookups/{name}/voice.md`, beside
+`subagents/`, with the base every lookup agent loads first at `agents/{identity}/lookup.md`. The plan had put it in
+`subagents/` and told the two apart by the header's level. Building that showed `RoleCatalog` would have to read the
+headers, which core's architecture rule keeps it from. Louis picked a folder of their own over bending the rule: "B
+will read better thinking of big identities which does alot". So the folder says the kind, the header says it too,
+and the header rule test holds that they agree.
+
+Two smaller things came out of it. The prompt folders and files became the shared enums CL68.2 started
+(`PromptFolder.Lookups`, `PromptFileName.Lookup`), so nothing spells `lookups` or `lookup.md` by hand. And every message
+`LookupAsk` and `AskAgent` built from an anonymous object now has a named holes record, in a holes folder split by
+concern. One honest slip: step 7 claimed the model's words were done, and a grep for the old word found five more
+places it reads, fixed in the next step with their golden files. The lesson for the procedure is to grep every prompt
+and every `[Description]` for the old word after a rename, not to trust the step's own list.
+
+That closes CL68. The prompt tree now reads the way the engine reads it: `agents/{identity}/` holds a voice, its
+skills, its subagents and its lookup agents, each named by an address that is also its path. What's left of the old
+words in code comments and test names is CL69. `AgentSessions.Create`, which Louis found ugly on the way, became a
+method object in CL70 (in the [extensibility write-up](20-extensibility.md)).
+
 ## Next
 
 Decide how often Puls should delegate (keep research and long work, answer short read-only questions itself?) and
 measure it the same way; Puls on `AskAgent`, measured when Puls resumes (F135); more evals per role for quality, not
-only cost; parallel subagents for a task with independent parts; and CL68.3, minions as lookup agents beside the
-subagents.
+only cost; parallel subagents for a task with independent parts; and CL69, the old words left in code.
 
 ---
 [Learning](README.md) · [Goal](../GOAL.md)

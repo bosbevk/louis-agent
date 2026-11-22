@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using LouisAgent.Api.Sessions.Opening;
 using LouisAgent.Composition.Logging;
 using LouisAgent.Composition.Logging.Content;
 using LouisAgent.Composition.Messages;
@@ -109,14 +110,13 @@ internal sealed class SessionHandlers(AgentHostContext host)
 
         // Who opened it, when a signed-in person did (F61.2): read from the cookie's claims, never from the body.
         var opener = SessionOpener.Of(principal);
+        var tags = request is null ? null : new UsageTags(request.Task, request.Run, request.Service, request.Parent);
+        var asked = new SessionRequest(request?.Toolsets, tags, request?.Depth ?? 0, request?.RoleOrNull(),
+            request?.Place(), request?.Llm, request?.Tool, format, replay, opener, request?.IdentityOrNull());
         AgentSession session;
         try
         {
-            session = sessions.Create(request?.Toolsets,
-                request is null ? null : new UsageTags(request.Task, request.Run, request.Service, request.Parent),
-                request?.Depth ?? 0,
-                request?.RoleOrNull(), request?.Place(), request?.Llm, request?.Tool, format, replay, opener,
-                request?.IdentityOrNull());
+            session = sessions.Create(asked);
         }
         catch (Exception ex) when (ex is ToolsetException or RoleException or SessionLlmException)
         {

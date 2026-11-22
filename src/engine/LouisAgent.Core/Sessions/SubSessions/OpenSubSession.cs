@@ -25,7 +25,7 @@ public sealed record OpenSubSession(
     public string Handle { get; init; } = "";
 
     /// <summary>A minion's kind (F30): <c>AskAgent</c> never keeps one (F127.5), so nothing continues it.</summary>
-    public const string MinionKind = "minion";
+    public const string LookupKind = "lookup";
 
     /// <summary>An asked agent's kind (F127.3.1): what <c>AskAgent</c> keeps, by its address.</summary>
     public const string AgentKind = "agent";
@@ -36,11 +36,11 @@ public sealed record OpenSubSession(
     /// <summary>What it has done in this chat so far, every reply's events in order.</summary>
     public AgentWork Work { get; init; } = AgentWork.None;
 
-    /// <summary>What was kept: <see cref="AgentKind"/> or <see cref="MinionKind"/>.</summary>
+    /// <summary>What was kept: <see cref="AgentKind"/> or <see cref="LookupKind"/>.</summary>
     public string Kind { get; init; } = AgentKind;
 
     /// <summary>
-    /// A minion's model, as <c>MINION_LLMS</c> named it (F30); null for an asked agent or the instance's own model.
+    /// A minion's model, as <c>LOOKUP_LLMS</c> named it (F30); null for an asked agent or the instance's own model.
     /// </summary>
     public string? Llm { get; init; }
 }

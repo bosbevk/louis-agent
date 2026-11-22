@@ -19,7 +19,7 @@ public static class RoleFiles
         if (string.IsNullOrEmpty(role))
         {
             // A minion with no role would be the coding agent's voice with one tool (F30): it always opens with a role.
-            if (level == RoleLevel.Minion)
+            if (level == RoleLevel.Lookup)
                 throw new RoleException(MessageText.Format(SkillErrorMessage.MinionNeedsRole,
                     new { Available = string.Join(", ", Enabled(agent, level)) }));
             return agent.DefaultVoice is { } voice ? RoleCatalog.FileName(voice, RoleLevel.Agent) : null;

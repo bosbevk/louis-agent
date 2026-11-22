@@ -25,13 +25,13 @@ public class AgentPromptsTests
             new UsageTokens(10, 0, 0, 1, null), 100, "stop", new UsageCost("USD", 0.01m, "2026-10-10"),
             PromptHash: hash);
 
-    /// <summary>The main session, a specialist and a minion each get their own hashes, in each mode.</summary>
+    /// <summary>The main session, a subagent and a lookup agent each get their own hashes, in each mode.</summary>
     [Test]
     public void EachAgent_GetsItsOwnHashes_PerMode()
     {
         UsageRecord[] rows =
         [
-            Row("bobotie", "a"), Row("sub-session:puls-cook", "c"), Row("minion:pricer", "m"),
+            Row("bobotie", "a"), Row("sub-session:puls-cook", "c"), Row("lookup:pricer", "m"),
             Row("bobotie", "b", mode: SampleMode.Alpha),
         ];
 
@@ -41,8 +41,8 @@ public class AgentPromptsTests
             Is.EqualTo(new[]
             {
                 new AgentPrompt(SampleMode.Alpha, AgentPrompts.Main, ["b"]),
+                new AgentPrompt(SampleMode.Beta, "lookup:pricer", ["m"]),
                 new AgentPrompt(SampleMode.Beta, AgentPrompts.Main, ["a"]),
-                new AgentPrompt(SampleMode.Beta, "minion:pricer", ["m"]),
                 new AgentPrompt(SampleMode.Beta, "sub-session:puls-cook", ["c"]),
             }).Using<AgentPrompt>(Same));
     }

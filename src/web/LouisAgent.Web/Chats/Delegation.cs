@@ -23,7 +23,7 @@ public sealed partial record Delegation(
     bool Failed,
     string? ResultAgent = null,
     string? Role = null,
-    bool Minion = false,
+    bool Lookup = false,
     string? Llm = null)
 {
     /// <summary>The tool that asks another agent, or a minion, by its address (F127.3.1, F127.5).</summary>
@@ -42,7 +42,7 @@ public sealed partial record Delegation(
     public static Delegation? From(Block block)
     {
         if (block.Kind != BlockKind.Tool || !IsDelegationTool(block.ToolName)) return null;
-        return HandsATool(block) ? FromMinion(block) : FromAsk(block);
+        return HandsATool(block) ? FromLookup(block) : FromAsk(block);
     }
 
     /// <summary>Whether the ask's input names a tool, which makes it a minion's.</summary>
@@ -65,7 +65,7 @@ public sealed partial record Delegation(
     /// A minion's ask (F30, F127.5): its address, the one tool and the task, and once it returned, its answer and
     /// the model the footer names.
     /// </summary>
-    private static Delegation FromMinion(Block block)
+    private static Delegation FromLookup(Block block)
     {
         string task = "";
         string? role = null, tool = null;
@@ -83,7 +83,7 @@ public sealed partial record Delegation(
 
         string? answer = null, llm = null;
         bool failed = block.ToolResult?.StartsWith("Error:", StringComparison.Ordinal) == true;
-        if (block.ToolResult is { } result && !failed && MinionFooter().Match(result) is { Success: true } match)
+        if (block.ToolResult is { } result && !failed && LookupFooter().Match(result) is { Success: true } match)
         {
             answer = result[..match.Index].TrimEnd();
             llm = Blank(match.Groups["llm"].Value);
@@ -92,7 +92,7 @@ public sealed partial record Delegation(
         }
 
         return new Delegation("", tool is null ? [] : [tool], task, answer ?? (failed ? block.ToolResult : null),
-            failed, null, role, Minion: true, Llm: llm);
+            failed, null, role, Lookup: true, Llm: llm);
     }
 
     /// <summary>
@@ -136,7 +136,10 @@ public sealed partial record Delegation(
     /// <summary>The text, trimmed, or none when it's empty.</summary>
     private static string? Blank(string? value) => string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 
-    /// <summary>A minion's footer at the end of its answer: <c>[Minion {role} on {llm} with {tool}]</c>.</summary>
-    [GeneratedRegex(@"\n\n\[Minion (?<role>\S+) on (?<llm>\S+) with (?<tool>\S+)\]\s*$")]
-    private static partial Regex MinionFooter();
+    /// <summary>
+    /// A lookup agent's footer at the end of its answer: matches <c>[Lookup acme.lookup on ollama with WebSearch]</c>,
+    /// not <c>[Answered by acme]</c>.
+    /// </summary>
+    [GeneratedRegex(@"\n\n\[Lookup (?<role>\S+) on (?<llm>\S+) with (?<tool>\S+)\]\s*$")]
+    private static partial Regex LookupFooter();
 }
