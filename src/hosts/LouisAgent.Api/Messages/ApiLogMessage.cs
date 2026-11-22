@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using LouisAgent.Api.Messages.Holes.Pages;
 using LouisAgent.Api.Messages.Holes.Sessions;
 using LouisAgent.Api.Messages.Holes.Turns;
 using LouisAgent.Composition.Messages;
@@ -32,5 +33,6 @@ public enum ApiLogMessage
 
     [Description("The page {Page} couldn't be rendered for search engines, so {Route} answers the plain shell until "
                  + "the next deploy")]
+    [Holes(typeof(PagePrerenderFailedHoles))]
     PagePrerenderFailed,
 }

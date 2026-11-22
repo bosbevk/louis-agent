@@ -3,8 +3,10 @@ namespace LouisAgent.Web.Tests.Rules.Sites;
 /// <summary>
 /// A link to a site makes a card wherever it is pasted (Facebook, LinkedIn, Slack, a chat), and the card is read from
 /// the page's own head by a crawler that runs no script: so every site's <c>index.html</c> carries its title, its
-/// description, its picture and its address as Open Graph tags (Louis, 2026-11-08, on a bare card: "this must be in
-/// the framework"). The words and the picture are the site's own; the rule is the framework's.
+/// description, its picture, what that picture shows and its address as Open Graph tags (Louis, 2026-11-08, on a
+/// bare card: "this must be in the framework"). The protocol asks a page that names a picture to say what it shows,
+/// and X reads that line for someone who can't see it. The words and the picture are the site's own; the rule is
+/// the framework's.
 /// </summary>
 [TestFixture]
 public class SiteLinkCardTests
@@ -13,7 +15,7 @@ public class SiteLinkCardTests
     private static readonly string[] Tags =
     [
         "name=\"description\"", "property=\"og:title\"", "property=\"og:description\"", "property=\"og:image\"",
-        "property=\"og:url\"", "name=\"twitter:card\""
+        "property=\"og:url\"", "name=\"twitter:card\"", "property=\"og:image:alt\""
     ];
 
     private static IEnumerable<TestCaseData> Sites() =>

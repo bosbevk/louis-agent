@@ -129,6 +129,18 @@ repo lays them, so their links hold: the repo's `README.md`, `ROADMAP.md` and `T
 without the films, each demo's docs and the packs'. `DOCS_ROOT` points at them. In Rider, the host's
 `site-framework` profile runs it on 127.0.0.1:5085, reading the docs from the repo itself (`DOCS_ROOT=../../..`). The site lists every page in `wwwroot/sitemap.xml`, one address each and no section (ADR 0128), and `robots.txt` names it.
 
+A link to the site shows a share card of its own. The Overview, and any page with no card of its own, wears the
+site's card, `wwwroot/social-card.png`: the name large, "The C# AI agent framework" and the address, which
+`index.html` names with words that say what it shows. Every other page wears a card of its own in
+`wwwroot/social-cards/`, named for its address: the site's name small, the page's own name large, its first heading
+under it and its address on a grey band, in flat's light look. Beside each picture is a text file with the card's
+words in one line, which the host puts in the head as what the picture shows ([LouisAgent.Api](LouisAgent.Api.md) says
+how the host finds them). The cards are drawn by the repo's card tool, which starts this host, reads each page's name
+and heading as a crawler reads them, and photographs the site's own name from its header, so the card's name is the
+one the site draws. A card is a picture of words, so it goes stale when a heading changes. A test catches that: it
+draws each page as the host does and holds the words beside its card to the page. The guide to
+[changing the site](../guides/change-the-site.md#draw-the-framework-sites-page-cards) says when to draw them again.
+
 In Azure it is the Container App `louis-agent-framework-app`, beside louis-agent.dev's in the same environment, on the
 same image, from `src/site/deploy/azure/louis-agent-framework-app.yaml`. Every merge to `main` releases it, after
 louis-agent.dev. It reads the vault with louis-agent.dev's identity and keeps its logs and usage ledger in
@@ -153,7 +165,7 @@ The place to look a file up.
 | `LouisAgent.SiteFramework/Components/Orbi/` | `FrameworkOrbi`, the chat placed once; `OrbiAsks`, the words of every way to ask it |
 | `LouisAgent.SiteFramework/Errors/NotFound.razor` | The page for an address the site has no page for |
 | `LouisAgent.SiteFramework/Styles/app.scss`, `layout/_footer.scss` | The framework's Sass and the flat theme, then the site's one partial, its footer's links; the build makes `wwwroot/css/app.css` |
-| `LouisAgent.SiteFramework/wwwroot/` | `index.html` with its first paint, the icon, `sitemap.xml` and `robots.txt` |
+| `LouisAgent.SiteFramework/wwwroot/` | `index.html` with its first paint, the icon, `sitemap.xml` and `robots.txt`; `social-card.png`, the site's own share card, and `social-cards/`, each page's card and its words, drawn by the card tool |
 | `LouisAgent.SiteFrameworkApi/Program.cs` | The host |
 | `LouisAgent.SiteFrameworkApi/FrameworkCatalog.cs` | What the host runs: the framework Orbi, and the docs and site packs |
 | `LouisAgent.SiteFrameworkApi/FrameworkPageServices.cs` | What a page the host draws asks for |
@@ -186,7 +198,10 @@ the compose service and the run profile to the docs, the door and Orbi. `Layout/
 doc links lead to GitHub, that the site opens in flat and offers flat alone, that it wears the docs layout, that Orbi
 stands docked beside the page, and that the search, Ask Orbi and Ask about this page are where they belong.
 `Styles/StylesheetTests` hold that the site's styles carry the chat's rules. `Meta/SitemapTests` hold
-the sitemap to every page, and `robots.txt` to the sitemap. `Pages/PlacesTests` hold a family's address to
+the sitemap to every page, and `robots.txt` to the sitemap. `Meta/SiteCardsTests` hold that every page but the
+Overview has a card where the host looks, with words that are the page's name and first heading as the host draws it
+today, that every picture is 2400 by 1260, as the head says, and under WhatsApp's 600 KB, and that the head names the
+site's own picture. `Pages/PlacesTests` hold a family's address to
 the Overview at its section, and the router to the catch-all. `Pages/SiteMapTests` hold that every project the
 framework ships is named on some page of the site.
 

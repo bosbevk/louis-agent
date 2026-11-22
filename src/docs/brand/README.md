@@ -63,6 +63,11 @@ exactly the site's. It lays that photograph into the card's page, a template bes
 (`Cards/social-card.html`) with Geist and Geist Mono loaded as the site loads them, and photographs the card at twice
 its size. Run it again whenever the ball's look changes; the guide to changing the site says how.
 
+framework.louis-agent.dev has cards of its own, kept with that site rather than here, in
+`src/site/LouisAgent.SiteFramework/wwwroot/`: `social-card.png`, the name large with "The C# AI agent framework" under
+it, and `social-cards/`, one card a page. They are flat and light, as that site opens, and their name is photographed
+from that site's header, so its o is flat's violet dot. The same tool draws them, with `framework-cards`.
+
 ## Colour
 
 The brand's colour is one purple, Ultraviolet, in five steps from light to dark. The middle one, `#6b4dff`, is the

@@ -1,4 +1,5 @@
 using LouisAgent.Api.Site;
+using LouisAgent.Api.Site.Cards;
 using LouisAgent.Api.Site.Rendering;
 
 namespace LouisAgent.Api.Tests.Site;
@@ -17,11 +18,13 @@ public class PageShellTests
     private static readonly RenderedPage Page = new("Measured · louis-agent", "Every number & its \"source\".",
         "<section id=\"top\"><h2>Every number</h2></section>");
 
-    /// <summary>The head carries the page's own title, description, link card and canonical address, its route.</summary>
+    /// <summary>
+    /// The head carries the page's own title, description, link card and canonical address, its route.
+    /// </summary>
     [Test]
     public void TheHead_IsThePages()
     {
-        string html = PageShell.Fill(Index, Page, Site, "/proof");
+        string html = PageShell.Fill(Index, Page, Site, "/proof", null);
 
         Assert.Multiple(() =>
         {
@@ -43,7 +46,7 @@ public class PageShellTests
     [Test]
     public void TheWords_SitInsideTheApp_HiddenBehindTheLoader()
     {
-        string html = PageShell.Fill(Index, Page, Site, "/proof");
+        string html = PageShell.Fill(Index, Page, Site, "/proof", null);
 
         int app = html.IndexOf("<div id=\"app\">", StringComparison.Ordinal);
         int loader = html.IndexOf("BOOTING LOUIS AGENT", StringComparison.Ordinal);
@@ -63,9 +66,46 @@ public class PageShellTests
     [Test]
     public void NoDescription_KeepsTheSites()
     {
-        string html = PageShell.Fill(Index, Page with { Description = "" }, Site, "/proof");
+        string html = PageShell.Fill(Index, Page with { Description = "" }, Site, "/proof", null);
 
         Assert.That(html, Does.Contain("<meta name=\"description\" content=\"A website for your small business"));
+    }
+
+    /// <summary>
+    /// A page with a card of its own names that picture in its head, on the site's own address, and says what it
+    /// shows; the two size tags stay as the file has them, since every card of a site is one size.
+    /// </summary>
+    [Test]
+    public void ACard_IsThePagesPicture_WithItsDescription()
+    {
+        var card = new PageCard("social-cards/proof.png", "louis-agent: Measured. Every number & its \"source\".");
+
+        string html = PageShell.Fill(Index, Page, Site, "/proof", card);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(html, Does.Contain(
+                "<meta property=\"og:image\" content=\"https://louis-agent.dev/social-cards/proof.png\""));
+            Assert.That(html, Does.Contain("<meta property=\"og:image:alt\" content=\"louis-agent: Measured. "
+                                           + "Every number &amp; its &quot;source&quot;.\""));
+            Assert.That(html, Does.Contain("<meta property=\"og:image:width\" content=\"2400\""));
+            Assert.That(html, Does.Contain("<meta property=\"og:image:height\" content=\"1260\""));
+        });
+    }
+
+    /// <summary>A page with no card wears the site's own picture, and the site's own words for it.</summary>
+    [Test]
+    public void NoCard_KeepsTheSitesPicture()
+    {
+        string html = PageShell.Fill(Index, Page, Site, "/proof", null);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(html, Does.Contain(
+                "<meta property=\"og:image\" content=\"https://louis-agent.dev/social-card.png\""));
+            Assert.That(html, Does.Contain(
+                "<meta property=\"og:image:alt\" content=\"The name louis-agent with a glass ball as its o"));
+        });
     }
 
     /// <summary>
@@ -77,8 +117,8 @@ public class PageShellTests
     {
         var page = Page with { Schemas = ["<script type=\"application/ld+json\">{\"@type\":\"WebSite\"}</script>"] };
 
-        string html = PageShell.Fill(Index, page, Site, "/proof");
-        string landing = PageShell.Fill(Index, page with { Title = "louis-agent" }, Site, "/");
+        string html = PageShell.Fill(Index, page, Site, "/proof", null);
+        string landing = PageShell.Fill(Index, page with { Title = "louis-agent" }, Site, "/", null);
 
         string head = html[..html.IndexOf("</head>", StringComparison.Ordinal)];
         Assert.Multiple(() =>
