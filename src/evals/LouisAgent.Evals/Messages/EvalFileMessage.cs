@@ -39,5 +39,40 @@ public enum EvalFileMessage
 
     [Description("'{Words}': never-says names the text the answer must not hold.")]
     [Holes(typeof(NeverSaysNeedsTextHoles))]
-    NeverSaysNeedsText
+    NeverSaysNeedsText,
+
+    [Description("{Place} (line {Line}): {Reason}")]
+    [Holes(typeof(FaultOfShapeHoles))]
+    FaultOfShape,
+
+    [Description("{Place}: {Reason}")]
+    [Holes(typeof(FaultOfMeaningHoles))]
+    FaultOfMeaning,
+
+    [Description("An eval file holds at least one conversation.")]
+    NoConversations,
+
+    [Description("A conversation needs an id, a name used once in its file.")]
+    NoId,
+
+    [Description("'{Id}' is used twice. A conversation's id is used once in its file.")]
+    [Holes(typeof(IdUsedTwiceHoles))]
+    IdUsedTwice,
+
+    [Description("A conversation has at least one turn.")]
+    NoTurns,
+
+    [Description("The turn asks nothing. Write what the person asks.")]
+    EmptyAsk,
+
+    [Description("A criterion is empty. Write it as a plain sentence the judge can mark.")]
+    EmptyCriterion,
+
+    [Description("'{Page}' is no page. A page is an address on the site, starting with /, as '/identities'.")]
+    [Holes(typeof(PageNotAnAddressHoles))]
+    PageNotAnAddress,
+
+    [Description("The conversation checks nothing, so it would pass whatever the agent said. " +
+                 "Give a turn a fact or a criterion.")]
+    ChecksNothing
 }
