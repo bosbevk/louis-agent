@@ -12,13 +12,13 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 146 | 73 |
+| Features (`F`) | 147 | 72 |
 | Fixes (`FX`) | 213 | 4 |
 | Cleanups (`CL`) | 41 | 27 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (104 in the TODO)
+## Open (103 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
@@ -74,7 +74,6 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F15 | Model limits and local models | Next |
 | F108 | The admin portal is a role of a signed-in person, not a key: ADMIN_API_KEY goes once an account can carry the admin role (Louis, 2026-11-08: "should this not be a role?") | Next |
 | F51 | Hosting for public traffic | Next |
-| F170 | The framework's own Bicep for what the two sites stand on in Azure | Next |
 | FX59 | binary attachments sent as files, not text | Later |
 | FX60 | a continued specialist's ledger rows name the turn that continued it | Later |
 | FX61 | A site whose host has no `ACCOUNTS_SQL_URL` still calls `/account/me` and `/account/providers`, gets `index.html` back and dies on the JSON (the starter's login and chat pages show Blazor's error bar); the client should take a host without accounts as "nobody signed in" (found in CL58) | Fixes |
@@ -127,10 +126,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL61 | `ToolCallGuards` past 200 lines once laid out: split it, holes into records (ADR 0119), and end the turn through `TurnEnding.Ends` | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (146 done)
+## Features (147 done)
 
 | Id | When | What |
 |---|---|---|
+| F170 | 2026-11-22 | The framework's own Bicep for what the two sites stand on in Azure, proved by what-if and deployed as louis-agent-infra; Rebuilt from code in place |
 | F169.2 | 2026-11-21 | The docs page's type and edges, F169's second child: a band that is a part of a section draws an h3, the Overview's five families parts of one section; headings by rank in the docs layout, 74, 40 and 28 (40, 32 and 24 on a phone), louis-agent.dev's unchanged; four corner names and a step's six set by every theme, Orbi's panel at 18; flat's step a squared label, glass's circle kept; a list of terms as wide as a list of steps, the page turn in the gutter, the menu's line to the page's foot |
 | F166 | 2026-11-21 | Puls in its own repository, closed: its four children built (F166.1 the framework's parts out of `demos/puls`, F166.2 the framework as packages, F166.3 Puls moved to `github.com/bosbevk/puls`, F166.4 Puls gone from louis-agent); louis-agent is the framework and its own demos, and Puls the first product built on it from outside |
 | F166.4 | 2026-11-21 | Puls gone from louis-agent, F166's fourth child: `demos/puls` and the three packs leave with their 26 projects, the framework's pages show Puls as a product built elsewhere (an `ExampleHome`, a `RepositoryLink`, ADR 0100's narrow exception), the pack rules that left with Puls come back over every pack in `LouisAgent.Packs.Rules.Tests` (DevOps and Paymo listed under FX83), and every doc says what is here |

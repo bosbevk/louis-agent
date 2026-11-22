@@ -15,8 +15,10 @@ is one Azure Container App that sleeps when nobody visits, so the first visitor 
 seconds for it to wake.
 
 One script, `src/site/deploy/azure/deploy.ps1`, beside the two apps' yaml, does every job, and one GitHub workflow runs it on every merge. So in
-practice you merge a pull request and both sites go out. This guide first says what is in Azure, then how a release
-works, then the jobs you do by hand: the first time an app goes live, its domain, its secrets, and rolling back.
+practice you merge a pull request and both sites go out. Beside the script, one Bicep file, `main.bicep`, describes
+everything the two apps stand on in Azure, so that can be made again from code too. This guide first says what is in
+Azure, then how a release works, then the jobs you do by hand: the first time an app goes live, its domain, its
+secrets, rebuilding everything from nothing, and rolling back.
 
 ## What is in Azure
 
@@ -37,7 +39,17 @@ then, and their story is in git, FX122 and ADRs 0095 and 0098.
 | Storage | `pulsstorage`, the share `louis-agent-workspace` | Mounted on the environment as `louis-agent-vol`; each app's logs and louis-agent.dev's saved CV |
 | Logs and traces | `puls-logs`, `puls-insights` | Each app's logs, and its traces through the environment's agent (F52) |
 
-The two apps share one identity and one share on purpose (Louis's pick for F164.3). Microsoft lets one user-assigned
+Everything in the table but the two apps is described in `main.bicep`. It takes every name as a parameter, and our
+own names, the ones above, are in `main.bicepparam` beside it, so another business deploys the same file with a
+parameters file of its own. Most parts come from Microsoft's Azure Verified Modules, each pinned to a version. The
+network and the environment are plain Bicep, since the environment's module has no setting for the telemetry agent
+and the network's would rename the subnet's delegation. Each part is told what stands wherever a module's default
+differs, so a deploy over the running sites changes nothing. The file also gives the rights a release needs: the
+apps' identity reads the vault, the environment pulls from the registry, the release identity updates the apps and
+lists the vault, and the person who fills the vault manages its secrets. CI builds and lints the file on every pull
+request, and deploys nothing.
+
+The two apps share one identity and one share on purpose. Microsoft lets one user-assigned
 identity serve several resources, and lets several apps mount one share, each in a folder of its own, so a second
 site needed nothing new in Azure but the app.
 
@@ -110,9 +122,15 @@ deploy\azure\deploy.ps1 logs -App louis-agent-framework-app      # its last line
 `build` and `update` run on their own too, `update` with the `-Tag` of an image already built and a `-Revision`.
 `workspace` copies an app's price tables into `config/` on its share, though both images now carry their own.
 
-The script has no verb that builds the infrastructure. The environment, the identity and the vault were made once by
-an older Bicep build, which stays with Puls, and the script reads them back from the outputs Azure recorded for that
-deployment, `puls-build`.
+`infra` deploys `main.bicep`. Azure shows its what-if first, every resource it would create, change or delete, and
+deploys only when you answer yes, under the deployment name `louis-agent-infra`. Every other verb reads the
+environment, the identity and the vault from the outputs Azure recorded for that deployment. A release identity can't
+give rights, and the file gives them, so `infra` is run by a person, signed in as someone who can, never by the
+workflow:
+
+```powershell
+deploy\azure\deploy.ps1 infra    # what-if, then a deploy on your yes
+```
 
 ## An app's secrets
 
@@ -175,6 +193,16 @@ the films left out, and the price tables, at `/app/config`. A new revision carri
 | `data/` | What louis-agent.dev keeps of its own: the CV as the admin last saved it (F142) |
 | `framework/logs/` | The same as `logs/`, for framework.louis-agent.dev; its release makes the folder |
 | `config/` | The price tables `deploy.ps1 workspace` copies, which neither image needs now |
+
+## Rebuilding from nothing
+
+If the resource group were lost, the sites come back from code in four steps, each one a command this guide already
+has. First `deploy.ps1 infra`, which makes the network, the environment, the registry, the vault, the identity, the
+storage and the rights. Then, for each app, `deploy.ps1 secrets -App <app>` puts its keys in the new vault from its
+git-ignored file, `deploy.ps1 release -App <app>` builds its image and makes the app, and `deploy.ps1 domain -App <app>`
+prints the DNS records for Cloudflare and binds the certificate once they resolve, as *A domain and its certificate*
+says. The registry, the vault and the storage account have names the whole of Azure shares, and a deleted vault
+keeps its name for 90 days, so a rebuild beside the old group needs a parameters file with new names.
 
 ## Rolling back
 
