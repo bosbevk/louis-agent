@@ -65,8 +65,14 @@ The header carries the louis-agent wordmark and the line "The C# AI agent framew
 and Ask Orbi. The left column is the docs' menu, the framework's pages under their groups. The middle column is the page,
 with the page before and after at its foot. The right column holds the framework Orbi, docked, and while Orbi is
 closed, on an extra-large screen, "On this page", the page's sections, the same list the frame's section index
-reads, under the button Ask about this page. The footer names the framework, "an AI agent framework in C#". The
-frame's way back up is switched off. The layout holds nothing but the framework's parts given the site's words.
+reads, under the button Ask about this page. Below an extra-large screen, Orbi's button in the lower-right corner
+wears the mark and says "Ask Orbi", the header button's words. The footer is one row of two groups, which the
+frame's footer pushes to its ends: on the left the wordmark and the header's own line, and on the right three quiet
+links, GitHub to the repository, Licence to the README's Licence section, and louis-agent.dev, each opening a new
+tab. The links are the page's second grey, underlined only under the pointer or the keyboard's ring; their rule is
+the site's own partial, `Styles/layout/_footer.scss`, so louis-agent.dev's footer keeps its look. The header's
+line and the links' words are written once in `Layout/FrameworkWords`, and the repository's name and addresses in
+`FrameworkAreas`, where the doc links read the name too. The frame's way back up is switched off. The layout holds nothing but the framework's parts given the site's words.
 
 ### 3. Asking the framework Orbi
 
@@ -141,12 +147,12 @@ The place to look a file up.
 
 | Path | What's in it |
 |---|---|
-| `LouisAgent.SiteFramework/FrameworkAreas.cs` | The site's areas and its home word |
+| `LouisAgent.SiteFramework/FrameworkAreas.cs` | The site's areas, its home word, and the repository's name and addresses |
 | `LouisAgent.SiteFramework/App.razor`, `Program.cs` | The router, and the browser's program |
-| `LouisAgent.SiteFramework/Layout/FrameworkLayout.razor` | The site's frame, on `SiteShell` in its docs layout, with the search, Ask Orbi and Orbi docked |
+| `LouisAgent.SiteFramework/Layout/FrameworkLayout.razor`, `FrameworkWords.cs` | The site's frame, on `SiteShell` in its docs layout, with the search, Ask Orbi, Orbi docked and the footer's links; the frame's words, written once |
 | `LouisAgent.SiteFramework/Components/Orbi/` | `FrameworkOrbi`, the chat placed once; `OrbiAsks`, the words of every way to ask it |
 | `LouisAgent.SiteFramework/Errors/NotFound.razor` | The page for an address the site has no page for |
-| `LouisAgent.SiteFramework/Styles/app.scss` | The framework's Sass and the flat theme; the build makes `wwwroot/css/app.css` |
+| `LouisAgent.SiteFramework/Styles/app.scss`, `layout/_footer.scss` | The framework's Sass and the flat theme, then the site's one partial, its footer's links; the build makes `wwwroot/css/app.css` |
 | `LouisAgent.SiteFramework/wwwroot/` | `index.html` with its first paint, the icon, `sitemap.xml` and `robots.txt` |
 | `LouisAgent.SiteFrameworkApi/Program.cs` | The host |
 | `LouisAgent.SiteFrameworkApi/FrameworkCatalog.cs` | What the host runs: the framework Orbi, and the docs and site packs |
@@ -169,7 +175,7 @@ repo.
 ## Extending it
 
 A part the site needs is named among its areas in `FrameworkAreas`. A new page belongs to the pages' package, not to
-this site. A look of the site's own would go in `Styles/`, but the site keeps to flat's.
+this site. A look of the site's own goes in `Styles/`, as the footer's links do; the rest keeps to flat's.
 
 ## Tests
 
