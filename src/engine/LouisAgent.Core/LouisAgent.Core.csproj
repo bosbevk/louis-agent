@@ -41,8 +41,6 @@
       <InternalsVisibleTo Include="LouisAgent.Core.IntegrationTests" />
       <!-- The API's file browser applies the same workspace and secret-file rules as the agent's tools. -->
       <InternalsVisibleTo Include="LouisAgent.Api" />
-      <InternalsVisibleTo Include="LouisAgent.Api.Evals" />
-      <InternalsVisibleTo Include="LouisAgent.Api.Evals.Tests" />
       <!-- The orchestrator runs git and dotnet against the service it watches without a shell, like the tools do. -->
       <InternalsVisibleTo Include="LouisAgent.Orchestrator" />
       <InternalsVisibleTo Include="LouisAgent.Orchestrator.Tests" />

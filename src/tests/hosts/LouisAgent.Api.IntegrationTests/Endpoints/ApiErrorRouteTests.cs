@@ -1,31 +1,19 @@
 using System.Diagnostics;
 using System.Net;
 using System.Text.Json;
-using LouisAgent.Api.Evals.List;
-using LouisAgent.Api.Evals.Runs;
-using LouisAgent.Api.Evals.Store;
-using LouisAgent.Api.Evals.Store.Recording;
 using Microsoft.AspNetCore.TestHost;
 
 namespace LouisAgent.Api.IntegrationTests.Endpoints;
 
 /// <summary>
-/// Pins the error JSON of the two kinds of error that need a process to happen: git refusing, and a run started while
-/// another one is going. The other kinds are pinned in the API's unit tests.
+/// Pins the error JSON of the kind of error that needs a process to happen: git refusing. The other kinds are pinned
+/// in the API's unit tests.
 /// </summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 [Category("Integration")]
 public class ApiErrorRouteTests
 {
-    /// <summary>The admin key the test API is built with.</summary>
-    private const string AdminKey = "admin-secret";
-
-    /// <summary>
-    /// The stand-in's check that prints its start, then sleeps two seconds: a run that is surely going.
-    /// </summary>
-    private const string Slow = "slow";
-
-    /// <summary>A fresh folder per test: no git repository, and where the runner works.</summary>
+    /// <summary>A fresh folder per test: no git repository.</summary>
     private string _workspace = "";
 
     /// <summary>Makes the test's own folder.</summary>
@@ -59,41 +47,6 @@ public class ApiErrorRouteTests
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
         Assert.That(body, Is.EqualTo(
             $$$"""{"type":"error","error":{"type":"git_error","message":{{{JsonSerializer.Serialize(message)}}}}}"""));
-    }
-
-    /// <summary>Starting a run while another one is going is a conflict that names the run that's going.</summary>
-    [Test]
-    public async Task StartingARun_WhileOneRuns_IsAConflict_ByteForByte()
-    {
-        // The stand-in's slow check, and a store with its recorder so a start gets as far as the runner.
-        var store = new InMemoryEvalStore();
-        var catalog = new EvalList([new EvalEntry(Slow, "Slow")]);
-        var runner = new EvalProcess(catalog, _workspace, "http://127.0.0.1:1/", StandInBuild.Dll);
-        await using var app = ApiTestHost.Build(workspaceRoot: _workspace, adminKey: AdminKey, store: store,
-            runner: runner, recorder: new EvalRecorder(store), catalog: catalog);
-        await app.StartAsync();
-
-        // The slow check sleeps two seconds by design, so it is still going when the second start arrives on any
-        // machine; a real run's speed decided that before, and a small runner on CI finished first (F166.1, Louis's
-        // pick 1 of three).
-        var busy = runner.Start(Slow, 1)!;
-        // The start takes a JSON body, so the route only matches a request that sends one.
-        using var request = new HttpRequestMessage(HttpMethod.Post, $"/v1/admin/evals/{Slow}/runs")
-        {
-            Content = new StringContent("{}", System.Text.Encoding.UTF8, "application/json")
-        };
-        request.Headers.Add("x-api-key", AdminKey);
-        using var response = await app.GetTestClient().SendAsync(request);
-        string body = await response.Content.ReadAsStringAsync();
-
-        // Let the busy run finish before the test ends.
-        await foreach (string _ in runner.EventsAsync(busy.Id))
-        {
-        }
-
-        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Conflict));
-        Assert.That(body, Is.EqualTo(
-            """{"type":"error","error":{"type":"conflict_error","message":"A run of slow is in progress; wait for it to end. The containers are shared, so one runs at a time."}}"""));
     }
 
     /// <summary>We can only ask git if it's on this machine.</summary>

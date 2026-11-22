@@ -20,7 +20,7 @@ that references it; the full licence texts are at the links.
 | Markdig | [BSD-2-Clause](https://licenses.nuget.org/BSD-2-Clause) | Alexandre Mutel |
 | Microsoft.AspNetCore.Components.Web, .WebAssembly, .WebAssembly.Server, .WebAssembly.DevServer | [MIT](https://licenses.nuget.org/MIT) | Microsoft |
 | Microsoft.AspNetCore.Identity.EntityFrameworkCore, .Authentication.Google, .Authentication.MicrosoftAccount, .Authentication.OpenIdConnect, .Components.Authorization, Microsoft.EntityFrameworkCore.SqlServer, System.Security.Cryptography.Pkcs (the accounts) | [MIT](https://licenses.nuget.org/MIT) | Microsoft |
-| Microsoft.Extensions.AI, .AI.Evaluation, .AI.OpenAI | [MIT](https://licenses.nuget.org/MIT) | Microsoft |
+| Microsoft.Extensions.AI, .AI.OpenAI | [MIT](https://licenses.nuget.org/MIT) | Microsoft |
 | Microsoft.Extensions.FileProviders.Composite, .Embedded | [MIT](https://licenses.nuget.org/MIT) | Microsoft |
 | ModelContextProtocol, ModelContextProtocol.AspNetCore | [Apache-2.0](https://licenses.nuget.org/Apache-2.0) | ModelContextProtocol authors |
 | MongoDB.Driver | [Apache-2.0](https://licenses.nuget.org/Apache-2.0) | MongoDB Inc. |

@@ -57,7 +57,6 @@ so both can run at once. Secrets still come from `config/.env.secrets`.
 | `RECIPES_MONGO_URL` | The MongoDB the recipe library keeps each new read in, for good (ADR 0082); a secret. Unset: nothing is kept and no feed is published |
 | `RECIPES_MONGO_DATABASE` | The database on that server. Default `recipe_library` |
 | `RECIPE_LIBRARY_URL` | The API whose open feed the cook reads the library from, this instance's own in Puls's compose. Unset: the cook reads no library |
-| `RECIPE_LIBRARY_IN_EVALS` | `true` lets an eval's trials use the library, for a run that measures it. Unset: they leave it alone, so one run doesn't change the next |
 | `LLM_SESSION_PROFILES` | The LLM profiles a session may name besides the instance's own model (F30), comma separated (`ollama-puls`); each is read from `config/.env.{name}` (in a container, the mounted workspace's `config/`), and only its API key settings come from the environment. A session that names another is refused; a listed profile without its file stops start-up. Empty: every session runs on the instance's model |
 | `SUB_SESSION_PROMPT_BUDGET` | The most tokens a sub-session's prompt should reach (FX14): when the next request is expected to pass it, the subagent answers from what it has instead of calling more tools. Default `80000`, under Claude Haiku 5.5's long-prompt price step at 100k; `0` turns it off |
 | `ACP_MOUNT_MAPPINGS` | `HOST_PATH=/container/path` pairs, so Rider's Windows paths (attachments, open file) resolve in the container |
@@ -82,7 +81,7 @@ so both can run at once. Secrets still come from `config/.env.secrets`.
 | `LOG_CONTENT` | What a log line shows of the values it was given: `hashed` (the default: a keyed hash and the length, so a log shows what ran and how it ended, never what it was given) or `full` (the values; only on your own machine, never on a hosted instance). An unknown value stops the host ([Debug and logs](guides/debug-and-logs.md)) |
 | `OTEL_EXPORTER_OTLP_ENDPOINT` | The standard OpenTelemetry setting: when set, the logs and traces also go to that collector (`http://localhost:4317` for the dashboard); the rest of `OTEL_*` is read as the standard says ([Debug and logs](guides/debug-and-logs.md#traces-and-the-dashboard)) |
 | `HOST_TIME_ZONE` | The time zone `GetToday` and the API's place line use when the user shared none, an IANA name (`Africa/Johannesburg`); one the machine doesn't know stops the host. Unset: the machine's own |
-| `WEB_REPLAY` | The default web of an eval session only (F18): `off` (unset), `record` (save every page the browser reads) or `replay` (answer only from a recording, never opening the network). A live chat is never recorded or replayed ([Run the evals](guides/run-the-evals.md)) |
+| `WEB_REPLAY` | The default web of a session that sends `replay`, an eval's session: `off` (unset), `record` (save every page the browser reads) or `replay` (answer only from a recording, never opening the network). A live chat is never recorded or replayed |
 | `REPLAY_DIRECTORY` | Where those saved pages live: on the machine that made them, never committed. Unset keeps no recordings, and `record` or `replay` is refused |
 
 Set by compose for the containers, so normally not in `.env`: `WORKSPACE_ROOT`, `SKILLS_DIRECTORY`, `LOG_DIRECTORY`.
@@ -97,18 +96,6 @@ environment by the tools themselves:
 | `PYTHON_PATH` | The Python for `PythonRun`. Default: `py -3`, `python` or `python3` on Windows; `python3` or `python` elsewhere |
 | `PYTHON_VENV` | Where `PythonRun` keeps the virtual environment for packages it installs. Default: a per-user folder (`%LOCALAPPDATA%/louis-agent/python-venv`, `~/.local/share/louis-agent/python-venv` on Linux) |
 | `AGENT_WORKING_DIRECTORY` | The working directory for bash, PowerShell and Python scripts. Default: the workspace root |
-
-**The eval studio and the eval runner**, read by `LouisAgent.Api.Evals` and by the runner; the store's
-`EVALS_MONGO_URL` and `EVALS_MONGO_DATABASE` are in [Puls's Setup](https://github.com/bosbevk/louis-agent/blob/puls-moved-out/demos/puls/docs/SETUP.md#pulss-own-settings):
-
-| Setting | Meaning |
-|---|---|
-| `EVAL_RUNNER` | The eval runner's dll: the API lists the evals with `dotnet {EVAL_RUNNER} --list` and starts one with `run`. Each image sets its own (`/app/evals/LouisAgent.CodingEvalRunner.dll` in the code-review API's); set it yourself only outside a container, where a relative path is resolved from the API's working directory |
-| `BENCHMARK_API_URL` | Where a run started from the admin portal reaches this API back. Default: the container's own port, `http://127.0.0.1:8080/` |
-| `EVALS` | Which identities' evals the runner lists and runs, comma separated (`EVALS=puls`). Unset: every eval; a name no eval proves is refused |
-| `EVAL_JUDGE_PROVIDER`, `EVAL_JUDGE_MODEL`, `EVAL_JUDGE_ENDPOINT` | The judge of the evals' model graders. No model: no judge, a model grader's grade is unknown and the run goes on. No provider: a `claude*` model is Anthropic's (paid, so only on purpose), any other is Ollama's; the endpoint is a local server's URL ([Run the evals](guides/run-the-evals.md)) |
-| `EVAL_JUDGE_API_KEY` | A secret, in `.env.secrets`: the judge's key. An Anthropic judge without it uses `ANTHROPIC_API_KEY` |
-| `AGENT_API`, `BENCHMARK_RUN` | The API sets both for a run it starts; by hand only for a command-line run. The agent API the run talks to (default `http://127.0.0.1:5070/`; `PULS_API`, its old name, is still read), and the run's name, which is its tag in the ledger |
 
 **The packs' own settings**; each pack's doc has the detail:
 

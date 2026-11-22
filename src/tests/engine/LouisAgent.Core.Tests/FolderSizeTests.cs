@@ -27,24 +27,16 @@ public class FolderSizeTests
     /// </summary>
     private static readonly HashSet<string> Oversized =
     [
-        "src/evals/LouisAgent.Evals/Api",
-        "src/evals/LouisAgent.Evals/Running",
         "src/engine/LouisAgent.Core/Pricing/Prices",
         "src/engine/LouisAgent.Core/Delegation/SubSessions",
         "src/engine/LouisAgent.Core/Usage/Records",
-        "src/hosts/LouisAgent.Api.Evals/Replies",
-        "src/web/LouisAgent.Web.Evals/Admin/Grades",
-        "src/web/LouisAgent.Web.Evals/Admin/Reviews",
         "src/web/LouisAgent.Web/Chats",
         "src/tests/hosts/LouisAgent.Api.Tests",
         "src/tests/hosts/LouisAgent.Api.Tests/Endpoints",
-        "src/tests/hosts/LouisAgent.Api.Evals.Tests/Endpoints",
         "src/tests/hosts/LouisAgent.Api.Tests/Sessions",
         "src/tests/engine/LouisAgent.Core.Tests",
         "src/tests/engine/LouisAgent.Core.Tests/Agent",
         "src/tests/engine/LouisAgent.Core.Tests/RepeatedNames/Scanning",
-        "src/tests/evals/LouisAgent.Evals.Tests/Running",
-        "src/tests/web/LouisAgent.Web.Evals.Tests/Admin/Reviews",
         "src/tests/shared/LouisAgent.Testing",
         "src/tests/web/LouisAgent.Web.Tests/Chats",
     ];

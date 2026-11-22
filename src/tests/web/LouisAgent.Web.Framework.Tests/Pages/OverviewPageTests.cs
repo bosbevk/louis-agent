@@ -122,9 +122,13 @@ public class OverviewPageTests
                 string picture = section.QuerySelector("figure.diagram-figure svg")!.InnerHtml;
                 Assert.That(family.Projects.Where(project => !picture.Contains(project.Name)), Is.Empty,
                     $"{family.Name} names every project it ships");
-                // Its cards wear its colour (Louis: "give each one a color this color we can then reuse").
-                Assert.That(picture, Does.Contain($"class=\"crd-tint tone-{family.Tone.Wire()}\""),
-                    $"{family.Name}'s cards in its colour");
+                // Its cards wear its colour (Louis: "give each one a color this color we can then reuse"): the head's
+                // badge always, and each project's tint, so a family that ships no project yet still shows it.
+                Assert.That(picture, Does.Contain($"class=\"crd-badge tone-{family.Tone.Wire()}\""),
+                    $"{family.Name}'s head in its colour");
+                if (family.Projects.Count > 0)
+                    Assert.That(picture, Does.Contain($"class=\"crd-tint tone-{family.Tone.Wire()}\""),
+                        $"{family.Name}'s projects in its colour");
             }
         });
     }

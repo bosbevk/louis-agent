@@ -271,9 +271,8 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
       </g>
       <text class="crd-name" x="676" y="263" text-anchor="start">Across agents</text>
-      <text class="pic-text" x="630" y="298" text-anchor="start">An agent asks another by its address, an</text>
-      <text class="pic-text" x="630" y="316" text-anchor="start">eval runs real sessions, the</text>
-      <text class="pic-text" x="630" y="334" text-anchor="start">orchestrator fixes an error.</text>
+      <text class="pic-text" x="630" y="298" text-anchor="start">An agent asks another by its address,</text>
+      <text class="pic-text" x="630" y="316" text-anchor="start">and the orchestrator fixes an error.</text>
     </g>
     <rect class="mrq-rule" x="0" y="418" width="896" height="1" rx="0" />
     <g class="pic-brand" transform="translate(0 0)">

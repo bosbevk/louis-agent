@@ -12,17 +12,17 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 152 | 77 |
+| Features (`F`) | 153 | 75 |
 | Fixes (`FX`) | 213 | 4 |
-| Cleanups (`CL`) | 47 | 26 |
+| Cleanups (`CL`) | 47 | 24 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (107 in the TODO)
+## Open (103 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
-| F126 | Evals, redesigned: one `.eval.json` of conversations with turns, six facts in code, criteria a judge marks, flips to correct it, its own eval host, six screens; today's evals deleted, not ported; five children since 2026-11-22: F126.1 delete the old evals (plan approved 2026-11-22); F126.2 the file and the grading; F126.3 runs and the run page; F126.4 flips, re-grade and better-or-worse; F126.5 new evals | Now, after CL69 |
+| F126 | Evals, redesigned: one `.eval.json` of conversations with turns, six facts in code, criteria a judge marks, flips to correct it, its own eval host, six screens; today's evals deleted, not ported; five children since 2026-11-22: F126.1 delete the old evals (done 2026-11-22); F126.2 the file and the grading; F126.3 runs and the run page; F126.4 flips, re-grade and better-or-worse; F126.5 new evals; F126.2 decides whether closeness of meaning is a fact in code or a criterion the judge marks (F93 folded in) | Now |
 | F171 | The bill checker (Louis, 2026-11-21; 2026-11-22: "this feature is next"): a phone app that reads a Western Cape municipal account from a photo or a PDF, checks every line against Cape Town's, Swartland's and Overstrand's own tariffs and drafts the dispute, free to download with one subscription; the product in its own private `bill-checker` repository on the framework's packages, the framework's parts here: F171.1 a photo or PDF reaches a tool (started 2026-11-22); F171.2 the bills pack reads and checks; F171.3 the dispute letter; F171.4 the identity and evals; F171.5 the account, consent and our own subscriptions part; F171.6 the phone app; F171.7 the stores; F171.8 the monthly report | Now, F171.1 after F126; F171.2 on after F140 |
 | F43 | Accounts, tenants and durable sessions; its first child, durable sessions, after F171.1 and before F157 | Now, its first child after F171.1 |
 | FX4 | Append-only history | Now, after F43's first child |
@@ -43,7 +43,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F147 | Page squares under the guide's choices: three grouped "go to" squares the guide picks; its own plan | Now, after F146 |
 | F145 | Who a talk was with: the visitor's IP on the overview, a retention rule, the privacy page told about both (the page itself came in F145.1); its own plan | Now, after F147 |
 | F139 | A site draws its own cards: a card, a receipt and a form slot, each site its own SVG; the form turns Sending then Sent in place; its own plan | Now |
-| F141 | Every part of the framework's web ready for an agent: the account pages, the admin and the studio name their focus and selectable pieces; an admin helper; its own plan | Now |
+| F141 | Every part of the framework's web ready for an agent: the account pages and the admin name their focus and selectable pieces; an admin helper; its own plan | Now |
 | F138 | The guide explains with drawings: a tool gives the model a docs diagram's JSON and the widget draws it in the chat with `LouisAgent.Diagrams`; its own plan, after F127.4 | Now |
 | F132 | Found for the searches business owners make (Louis, 2026-11-10, of a search for "ai agents for my website": "is our seo geared for a search like this?"; his pick of three): a page for "AI agent for your website" (South Africa, from R500, what it does, an FAQ with FAQPage and Service data), the three demos titled for their business searches ("AI agent for a guesthouse website"), and "AI" in the landing's title; the long and local searches first, since the head term is ads and big brands; its own plan | Next, after F127.2 |
 | F130 | The subdomains, together (Louis, 2026-11-10: "demos. and framework. together, with a redesign of the framework website"), a parent with three children: F130.1 the host by name (one app answering several host names: DNS and certificates, a page per host, canonical links, sitemap and robots per host, old addresses redirected for good; about 4 steps), F130.2 `demos.louis-agent.dev` (F127.1's showroom at its root, the guide's page index and the links moved; about 3 steps), F130.3 `framework.louis-agent.dev` redesigned (what the framework is, how it works and how to build on it, for developers, while `louis-agent.dev` sells; the framework's sections move there; research, mockups and Louis's picks first); each child its own plan | Next |
@@ -57,7 +57,6 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F66 | Each pack declares what it needs | Now |
 | F67 | A whole menu | Now |
 | F69 | The framework's `_Imports.razor` is about 90 lines | Now |
-| F70 | Long comment lines in the eval pages | Now |
 | F71 | At the next run, read the hand-off lines | Now |
 | F73 | Check the 47 new own-prices rows | Now |
 | F125 | An agentic site: docs the standard way and public over MCP, buttons and cards in the guide, gaps, live demos, tools over MCP and discovery | Now |
@@ -80,7 +79,6 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | FX61 | A site whose host has no `ACCOUNTS_SQL_URL` still calls `/account/me` and `/account/providers`, gets `index.html` back and dies on the JSON (the starter's login and chat pages show Blazor's error bar); the client should take a host without accounts as "nobody signed in" (found in CL58) | Fixes |
 | F90 | WhatsApp as a host | Later |
 | F92 | Voice: the person talks, our API turns it into text behind the chat's seam, the text lands in the box to check (Louis's pick B, 2026-11-11) | Later |
-| F93 | The `similar` check, when an eval asks for closeness of meaning | Later |
 | F45 | Knowledge and retrieval | Later |
 | F94 | Searching PDFs, investigate much later | Later |
 | F47 | The CLI and Rider's host on the agent API | Later |
@@ -122,18 +120,17 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL46 | Web tests | Cleanups |
 | CL47 | The portal's old benchmark routes and words removed, after Phase 3 | Cleanups |
 | CL48 | Remove the `/v1/admin/benchmarks/…` route aliases | Cleanups |
-| CL49 | Remove the eval store's old setting names | Cleanups |
 | CL52 | The rest of the size list | Cleanups |
 | CL53 | A price format per country | Cleanups |
 | CL54 | A pack can't add itself to a router | Cleanups |
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups |
 | CL61 | `ToolCallGuards` past 200 lines once laid out: split it, holes into records (ADR 0119), and end the turn through `TurnEnding.Ends` | Cleanups |
-| CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (152 done)
+## Features (153 done)
 
 | Id | When | What |
 |---|---|---|
+| F126.1 | 2026-11-22 | The old evals deleted, F126's first child: the harness, its protocol, check contract and runner, the studio's API, the eval pages, their stores and tests, from the outside in, nothing ported; 32,892 lines of code and 35,466 of tests; ADR 0134 supersedes nine; the trust page shows one open eval tile; F70, F93, CL49 and CL59 closed with it |
 | F169.7 | 2026-11-22 | The sequence drawn for a phone, F169's seventh child: on a phone a sequence is its steps down the page (`StepListLayout`, `StepListDrawing`), each call or answer naming both ends with the wide drawing's own beam or dashes between them, its words under them, blocks as the wide drawing's frames a level in; `NarrowFit` says every sequence has a narrow form, so no picture on the framework's nine pages slides |
 | F169.6 | 2026-11-22 | A card for each page, F169's sixth child: every site's head says what its picture shows (`og:image:alt`); the host gives a page its own share card by where its file is (`social-cards/{route}.png` and `.txt`, `PageCards`); the card tool's `framework-cards` draws the framework's site's card and its eight pages' cards in flat from the running site, refusing one whose type didn't load or whose words pass the middle; `SiteCardsTests` holds each card's words to its page |
 | F169.5 | 2026-11-22 | The phone, F169's fifth child: in the docs layout the frame draws the site's pages in the header's sheet as well as in the column, one shown by width; the words 342 of a 390 screen; a long code word breaks; a cards picture can run down from a trunk, and the engine draws a flow or a cards picture for a phone on asking (`PictureFit`), its type under its title; a figure holds both drawings, Bootstrap showing one, and slides a picture with no narrow form, the sequence until F169.7 |

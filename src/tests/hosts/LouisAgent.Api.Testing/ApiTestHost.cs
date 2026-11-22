@@ -1,18 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using LouisAgent.Core.Web;
 using LouisAgent.Api.Endpoints.Admin;
-using LouisAgent.Api.Evals.Endpoints.Runs;
 using LouisAgent.Api.Config;
 using LouisAgent.Api.Endpoints.Routing;
-using LouisAgent.Api.Evals.Calibrations;
-using LouisAgent.Api.Evals.Calibrations.Store;
-using LouisAgent.Api.Evals.Drafts.Store;
-using LouisAgent.Api.Evals.Studio;
-using LouisAgent.Api.Evals.List;
-using LouisAgent.Api.Evals.Reviews.Store;
-using LouisAgent.Api.Evals.Runs;
-using LouisAgent.Api.Evals.Store;
-using LouisAgent.Api.Evals.Store.Recording;
 using LouisAgent.Composition.Packs;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Config;
@@ -29,8 +19,8 @@ namespace LouisAgent.Api.Testing;
 
 /// <summary>
 /// The API as `ApiStartup` builds it, but in memory on a test server with no port: the same key gate, routes and
-/// admin parts. The agent behind it never calls a model, and the admin parts have no store and no admin key unless the
-/// test gives them.
+/// admin parts. The agent behind it never calls a model unless the test gives one, and the admin parts have no admin
+/// key unless the test gives one.
 /// </summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
 internal static class ApiTestHost
@@ -46,18 +36,12 @@ internal static class ApiTestHost
     private static string SkillsFolder { get; } = Directory.CreateTempSubdirectory("api-test-skills-").FullName;
 
     /// <summary>
-    /// Starts the API in memory the way ApiStartup builds it, on a test server with no port. Give it an admin key and a
-    /// store to open the admin portal, and a clock to fix the time notes are stamped with. A test that writes or
-    /// commits gives its own workspace folder, and one that sends a message gives the model that answers it.
+    /// Starts the API in memory the way ApiStartup builds it, on a test server with no port. Give it an admin key to
+    /// open the admin portal. A test that writes or commits gives its own workspace folder, and one that sends a
+    /// message gives the model that answers it.
     /// </summary>
     public static WebApplication Build(string? apiKey = null, string? workspaceRoot = null, string? adminKey = null,
-        IEvalStore? store = null,
-        EvalProcess? runner = null, EvalRecorder? recorder = null, EvalList? catalog = null,
-        IHumanReviewStore? reviews = null,
-        ICalibrationStore? calibrations = null, CalibrationRecorder? calibrationRecorder = null,
-        TimeProvider? time = null, IEvalDraftStore? drafts = null, CheckList? checks = null,
-        DraftChecker? checker = null, PromptfooRunner? promptfoo = null, IChatClient? model = null,
-        IReadOnlyList<IAgentPack>? morePacks = null, bool evals = true,
+        IChatClient? model = null, IReadOnlyList<IAgentPack>? morePacks = null,
         IReadOnlyList<IAgentIdentity>? moreIdentities = null, OpenDoorOptions? openDoor = null,
         IReadOnlyDictionary<string, Uri>? agentPeers = null, bool streamPace = false)
     {
@@ -72,18 +56,6 @@ internal static class ApiTestHost
         if (apiKey is not null) app.UseAgentKey(apiKey, app.Services.GetRequiredService<OpenDoor>());
         var api = app.MapApi(host);
         api.MapAdmin(adminKey);
-        if (!evals) return app;
-
-        // The admin parts, with whatever the test handed in. The runner points at a port nothing listens on, so a
-        // test that forgets to give its own can't reach a real agent.
-        var benchmarks = catalog ?? new EvalList();
-        api.MapAdminGroup(adminKey).MapEvalAdmin(benchmarks,
-            runner ?? new EvalProcess(benchmarks, host.Engine.WorkspaceRoot, "http://127.0.0.1:1/"),
-            store, recorder,
-            _ => new Dictionary<string, string>(), host.Engine.WorkspaceRoot, reviews, calibrations,
-            calibrationRecorder, time, drafts ?? new InMemoryEvalDraftStore(),
-            new StudioRunner(checks ?? StudioRunner.None.Checks, checker ?? StudioRunner.None.Checker,
-                promptfoo ?? StudioRunner.None.Promptfoo));
         return app;
     }
 
@@ -93,7 +65,7 @@ internal static class ApiTestHost
         .ToList();
 
     /// <summary>
-    /// The route's pattern with its group prefix and constraints (<c>/v1/admin/benchmarks/runs/{id}</c>); every route's
+    /// The route's pattern with its group prefix and constraints (<c>/v1/admin/sessions/{id}/mine</c>); every route's
     /// starts with a slash.
     /// </summary>
     public static string ReadPattern(RouteEndpoint endpoint)

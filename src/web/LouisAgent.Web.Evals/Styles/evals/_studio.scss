@@ -1,3 +1,0 @@
-@use "web/tools/surface";
-
-.studio-draft.active { @include surface.edged(var(--bs-primary)); }

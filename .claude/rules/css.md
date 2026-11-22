@@ -66,8 +66,8 @@ A rule has one of two homes: beside the component that draws its element, or a g
 - **Its order is the cascade.** The colours and the plain elements come first, and the rest in the order its
   rules always came, so a later rule still wins where it did. A move between partials that would change which
   rule wins is checked in the browser.
-- **What is on the list, and what is not.** A name under `web/` is the framework's Sass, one under `evals/` the
-  studio's shared rules, and one under `pack-` a pack's. They are found through `IncludePaths` in
+- **What is on the list, and what is not.** A name under `web/` is the framework's Sass, and one under `pack-`
+  a pack's. They are found through `IncludePaths` in
   `sasscompiler.json`. `tools/` writes no CSS, so it isn't on the list. A component's own `X.razor.scss` never is:
   the bundle carries it.
 

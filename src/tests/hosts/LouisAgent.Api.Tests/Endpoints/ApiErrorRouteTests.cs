@@ -5,8 +5,8 @@ namespace LouisAgent.Api.Tests.Endpoints;
 
 /// <summary>
 /// Pins the error JSON, byte for byte, of one real route per kind of error the API sends, so the web apps and the
-/// orchestrator keep reading what they read today. The git failure and the conflict need a process, so they are pinned
-/// in the integration tests.
+/// orchestrator keep reading what they read today. The git failure needs a process, so it is pinned in the integration
+/// tests, and the API sends no 503 of its own since the eval studio went (F126.1); `ApiErrorJsonTests` holds its shape.
 /// </summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public class ApiErrorRouteTests
@@ -41,7 +41,7 @@ public class ApiErrorRouteTests
         yield return new TestCaseData("/v1/workspace/file", false, HttpStatusCode.BadRequest,
                 """{"type":"error","error":{"type":"invalid_request_error","message":"Pass the file's workspace-relative 'path'."}}""")
             .SetName("BadRequest");
-        yield return new TestCaseData("/v1/admin/evals/runs/x", false, HttpStatusCode.Unauthorized,
+        yield return new TestCaseData("/v1/admin/overview", false, HttpStatusCode.Unauthorized,
                 """{"type":"error","error":{"type":"authentication_error","message":"Missing or invalid API key (x-api-key or Authorization: Bearer)."}}""")
             .SetName("Unauthorized");
         yield return new TestCaseData("/v1/workspace/file?path=.env", false, HttpStatusCode.Forbidden,
@@ -56,9 +56,6 @@ public class ApiErrorRouteTests
         yield return new TestCaseData("/v1/workspace/file?path=bin.dat", false, HttpStatusCode.UnsupportedMediaType,
                 """{"type":"error","error":{"type":"invalid_request_error","message":"bin.dat is a binary file."}}""")
             .SetName("UnsupportedMediaType");
-        yield return new TestCaseData("/v1/admin/evals/runs/x", true, HttpStatusCode.ServiceUnavailable,
-                """{"type":"error","error":{"type":"api_error","message":"The eval store isn't set, so a run's results would be lost: set EVALS_MONGO_URL in config/.env.secrets and recreate the container."}}""")
-            .SetName("Unavailable");
     }
 
     /// <summary>Each route answers its status, and its error exactly as the clients read it today.</summary>

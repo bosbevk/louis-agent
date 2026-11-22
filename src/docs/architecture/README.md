@@ -4,7 +4,7 @@
 > diagrams at the [C4 model](https://c4model.com)'s levels. **Elsewhere:** the decisions themselves, one record each, in
 > [architecture decisions](../adr/README.md); a project's files and types in [projects/](../projects/README.md).
 
-![The architecture: twelve short sections, where to start, how it runs, what holds it together, and the evals](diagrams/README.svg)
+![The architecture: twelve short sections, where to start, how it runs, and what holds it together](diagrams/README.svg)
 
 This is the whole system at once, before you look at any one project. It follows arc42, a standard template that
 splits an architecture into twelve sections, and its pictures follow the C4 model's levels: the system and its
@@ -28,7 +28,6 @@ short file of its own, so a reader (or Claude) loads only the one a question nee
 | 11 | [Risks and technical debt](11-risks-and-technical-debt.md) | Known limitations, open fixes and decisions |
 | 12 | [Glossary](12-glossary.md) | The words these docs use in a sense of their own |
 | — | [The sites in Azure](deployment-in-azure.md) | The two sites' part of the deployment view in pictures: what runs where, a release, a secret's path, a chat |
-| — | [The evals](evals.md) | How the evals are built and how a run talks: the harness, the runner, the protocol, the portal |
 
 The template is arc42 by Dr. Gernot Starke and Dr. Peter Hruschka, [arc42.org](https://arc42.org), used under CC BY-SA
 4.0.

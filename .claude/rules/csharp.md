@@ -32,15 +32,15 @@ read waits. It is never a big refactor of its own.
 ## An endpoint
 
 - **`MapGet`, `MapPost` and the rest point at a named method**, as in
-  `evals.MapGet("/{check}/manual", handlers.GetManual)`. Never a lambda that holds the work.
-- **An endpoint file's methods live on one handler class** that holds what they share, as `AdminHandlers` does.
+  `admin.MapGet("/imports", ImportHandlers.GetImports)`. Never a lambda that holds the work.
+- **An endpoint file's methods live on one handler class** that holds what they share, as `ImportHandlers` does.
 - **Inside a method the checks come first, as guard clauses**, each stopping early with its error. The happy path
   comes last. One condition tests one thing. Never `is { } x && … is { } y ? … : …`.
 - **It returns `TypedResults`, with its answers declared**:
-  `Results<JsonHttpResult<TrendReply>, JsonHttpResult<ApiError>>`, named once with a `using` alias. An error is the
+  `Results<JsonHttpResult<OverviewReply>, JsonHttpResult<ApiError>>`, named once with a `using` alias. An error is the
   `ApiError` record.
 - **The records and each wire's options object live in `LouisAgent.Api.Contracts`.** So a client reads
-  `TrendReply`, never a `JsonElement` picked apart by name.
+  `OverviewReply`, never a `JsonElement` picked apart by name.
 
 *Decided in:* ADR 0051, ADR 0045.
 
@@ -63,7 +63,7 @@ input. An existing one is replaced as the code is touched, never in a sweep.
   - `Utf8JsonWriter` is only for when the bytes are the contract.
 - **Never an anonymous object for anything serialized**, such as `Results.Json(new { … })`. A reply, a body or a
   stored document is a named record, and a message's holes are too.
-- **A record built from another type has a static `Of`**, as in `CheckRow.Of(check, hasManual)`. So a reply reads
+- **A record built from another type has a static `Of`**, as in `ToolsetRow.Of(toolset, context)`. So a reply reads
   as a few calls, never rows built inline in a lambda.
 - **MongoDB goes through records.** A collection of a known shape is a typed `IMongoCollection<T>` over a document
   record beside its store. Stored names are `[BsonElement]`, enums are stored by wire name, and dates as UTC BSON
@@ -134,7 +134,7 @@ line: could a type answer this? These shapes say none was asked.
 | An answer to an event | `On` and what happened | `OnPointerCame`, `OnCaptionLeft` |
 | Awaited or streamed (`Task`, `ValueTask`, `IAsyncEnumerable`) | Ends in `Async` | `StreamPromptAsync` |
 | A stream operator | An extension named for what it gives back, no `Async` | `turn.Paced(clock)` |
-| A record from another of our types | `Of` | `CheckRow.Of(check, hasManual)` |
+| A record from another of our types | `Of` | `ToolsetRow.Of(toolset, context)` |
 | From an outside shape (JSON, settings, a file) | `From` | `ReplayStore.From(options)` |
 | Chosen for a key | `For` | `RatesMappers.For(format)` |
 | A class that holds something | `Create`, `Build` | `ChatPipeline.Build(…)` |

@@ -1,6 +1,6 @@
 # 0073. Packs and identities reference no evals
 
-**Status:** Accepted · **Date:** 2026-11-04 (Louis, shown a new reference from the shop-prices pack to the check
+**Status:** Superseded by [0134](0134-an-eval-is-one-file-of-conversations.md) · **Date:** 2026-11-04 (Louis, shown a new reference from the shop-prices pack to the check
 contract: "this is not good for our spilt we intend", then *Change ADR 0060 now*, "always take the engien split into
 account", "if we need to schare contract it needs to be in a shared project or duplicated", "fix this now here", *a
 checks project per pack*, for Puls "do it for identities also now", and then "checks is there to do evals and should be

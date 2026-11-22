@@ -13,8 +13,7 @@ public partial class WordsPaintOnceTests
     /// <summary>The folders whose sheets are read: the framework's web, its libraries and its themes.</summary>
     private static readonly string[] Read =
     [
-        "src/web/LouisAgent.Web", "src/web/LouisAgent.Web.Accounts", "src/web/LouisAgent.Web.Evals",
-        "src/web/LouisAgent.Web.Themes", "packs/web"
+        "src/web/LouisAgent.Web", "src/web/LouisAgent.Web.Accounts", "src/web/LouisAgent.Web.Themes", "packs/web"
     ];
 
     /// <summary>One <c>filter:</c> declaration, up to its semicolon, over as many lines as it runs.</summary>

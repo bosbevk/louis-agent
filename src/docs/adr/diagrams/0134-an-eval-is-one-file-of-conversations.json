@@ -1,0 +1,29 @@
+{
+  "kind": "cards",
+  "title": "ADR 0134 at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "file", "icon": "file", "title": "One file of conversations", "code": "{name}.eval.json",
+          "look": "highlight",
+          "text": "Beside the identity it proves: conversations, turns, each turn its own checks." }
+      ] },
+      { "cards": [
+        { "id": "facts", "icon": "code", "title": "Facts in code",
+          "text": "A closed list, parsed once into an enum." },
+        { "id": "criteria", "icon": "checks", "title": "Criteria a judge marks",
+          "text": "Yes or no with a reason, one call per criterion." },
+        { "id": "flip", "icon": "users", "title": "A person flips a mark",
+          "text": "No label files, no percentage of agreement." },
+        { "id": "api", "icon": "server", "title": "Run over the sessions API",
+          "text": "A library a site's own API maps, asking the agent like any app." }
+      ] }
+    ],
+    "links": [
+      { "from": "file", "to": "facts" },
+      { "from": "file", "to": "criteria" },
+      { "from": "file", "to": "flip" },
+      { "from": "file", "to": "api" }
+    ]
+  }
+}

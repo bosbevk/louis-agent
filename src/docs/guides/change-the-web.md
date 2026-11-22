@@ -3,7 +3,7 @@
 > **How-to.** Change `src/web/LouisAgent.Web`, the Razor class library every site is built on: decide what belongs
 > here, change the chat's frame or the account pages, add a style or a script, add an API call, follow a new event in
 > the stream, add a component, and test it. **Elsewhere:** how it works in
-> [LouisAgent.Web](../projects/LouisAgent.Web.md); the eval pages in [Change the eval pages](change-the-eval-pages.md);
+> [LouisAgent.Web](../projects/LouisAgent.Web.md);
 > the apps in [Change the code-review web app](../../../demos/louis-agent/docs/guides/change-the-web-app.md) and
 > [Change the Puls web app](https://github.com/bosbevk/puls/blob/main/docs/guides/change-the-puls-app.md), in Puls's own repository.
 

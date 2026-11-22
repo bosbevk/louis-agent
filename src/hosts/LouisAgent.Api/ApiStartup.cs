@@ -68,8 +68,7 @@ public static class ApiStartup
         RequireKeyChecked(app);
 
         // Every route of the agent's API is mapped by ApiMap, so the route tests build what runs, and the API's own
-        // admin routes on the gated group. The eval studio is LouisAgent.Api.Evals's, mapped by MapLouisAgentEvals
-        // (CL57).
+        // admin routes on the gated group.
         app.MapApi(host).MapAdmin(AdminOptions.FromEnvironment().AdminKey);
 
         return app;
@@ -87,8 +86,7 @@ public static class ApiStartup
     }
 
     /// <summary>
-    /// Fail closed: a program that forgot the key check must not come up with these routes open; the studio asks too
-    /// (CL57).
+    /// Fail closed: a program that forgot the key check must not come up with these routes open.
     /// </summary>
     internal static void RequireKeyChecked(WebApplication app)
     {

@@ -215,7 +215,7 @@ Skill 4, Tool use: a follow-up proved to reach the same specialist (`continued`)
 
 - **2026-11-22, the delete comes first.** Louis reviewed this plan and picked "1. Delete first": today's evals are
   deleted before anything new is built, in a first child of its own,
-  [F126.1 Delete the old evals](F126.1-delete-the-old-evals.md). The four children above keep their work and move
+  F126.1 Delete the old evals (done, its record in [the write-up](../learning/12-evaluation.md#deleting-the-old-evals-f1261)). The four children above keep their work and move
   down one: F126.2 the file and the grading, F126.3 runs and the run page, F126.4 flips, re-grade and
   better-or-worse, F126.5 new evals. For that first child he picked two more things the same day. "1. Delete
   everything": the session client and the two judge helpers this plan kept go with the rest, and a later child

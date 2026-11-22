@@ -19,15 +19,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\src\hosts\LouisAgent.Api\LouisAgent.Api.csproj" />
-    <!-- CL57: the studio, mapped for the tests that ask for it. -->
-    <ProjectReference Include="..\..\..\..\src\hosts\LouisAgent.Api.Evals\LouisAgent.Api.Evals.csproj" />
     <ProjectReference Include="..\..\..\..\src\tests\shared\LouisAgent.Testing\LouisAgent.Testing.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <!-- ApiTestHost builds on internals of the API, so it stays internal and is shown to the two API test projects. -->
     <InternalsVisibleTo Include="LouisAgent.Api.Tests" />
-    <InternalsVisibleTo Include="LouisAgent.Api.Evals.Tests" />
     <InternalsVisibleTo Include="LouisAgent.Api.IntegrationTests" />
   </ItemGroup>
 

@@ -11,7 +11,7 @@ namespace LouisAgent.Web.Tests.Rules.Styles;
 public class ScopedStylesTests
 {
     private static readonly string[] Libraries =
-        ["src/web/LouisAgent.Web", "src/web/LouisAgent.Web.Accounts", "src/web/LouisAgent.Web.Evals"];
+        ["src/web/LouisAgent.Web", "src/web/LouisAgent.Web.Accounts"];
 
     /// <summary>Every component style file in the libraries and the sites.</summary>
     private static IEnumerable<string> ScopedFiles() =>

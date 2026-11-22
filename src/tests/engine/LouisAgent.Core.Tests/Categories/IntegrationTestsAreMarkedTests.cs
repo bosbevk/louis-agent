@@ -4,17 +4,23 @@ using LouisAgent.Testing;
 
 namespace LouisAgent.Core.Tests.Categories;
 
-// F18 step 7.6 (Louis, 2026-10-27): the tests that need something outside the test process (git, bash, a browser, Mongo, a dotnet child) are integration tests and say so, so they can run
-// apart from the unit tests. A test that can skip itself because the outside is missing is the sign: it is only marked when it checks first, so this ratchet reads the sources for that check
-// (an Assert.Ignore, or an Assume about a tool or an address that isn't there) and fails on any that sits outside a test or class marked [Category("Integration")]. Where the check is in a
-// SetUp or a helper it covers every test of the class, so the class itself is marked.
+// F18 step 7.6 (Louis, 2026-10-27): the tests that need something outside the test process (git, bash, a browser,
+// Mongo, a dotnet child) are integration tests and say so, so they can run apart from the unit tests. A test that can
+// skip itself because the outside is missing is the sign: it is only marked when it checks first, so this ratchet reads
+// the sources for that check (an Assert.Ignore, or an Assume about a tool or an address that isn't there) and fails on
+// any that sits outside a test or class marked [Category("Integration")]. Where the check is in a SetUp or a helper it
+// covers every test of the class, so the class itself is marked.
 public class IntegrationTestsAreMarkedTests
 {
     private const string Marked = "Category(\"Integration\")";
 
-    /// <summary>The old way to ask for the outside: a raw skip. It is banned in the tests now (<see cref="Outside"/> is the one way), but still read as a guard so a stray one is also seen as unmarked.</summary>
+    /// <summary>
+    /// The old way to ask for the outside: a raw skip. It is banned in the tests now (<see cref="Outside"/> is the one
+    /// way), but still read as a guard so a stray one is also seen as unmarked.
+    /// </summary>
     public static readonly Regex RawGuard = new(
-        @"Assert\.Ignore\(|Assume\.That\(.*(isn't set|not installed|isn't installed|isn't here|ResolveInterpreter\(\)|FindBash\(\))",
+        @"Assert\.Ignore\(|Assume\.That\(.*(isn't set|not installed|isn't installed|isn't here|" +
+        @"ResolveInterpreter\(\)|FindBash\(\))",
         RegexOptions.Compiled);
 
     private static readonly Regex Guard = new(@"Outside\.(Tool|Stack)\(|" + RawGuard, RegexOptions.Compiled);
@@ -30,7 +36,10 @@ public class IntegrationTestsAreMarkedTests
 
     public sealed record Unmarked(string File, int Line, string Where);
 
-    /// <summary>The attribute lines right above the header at <paramref name="header"/> (the contiguous run of lines that start with a bracket).</summary>
+    /// <summary>
+    /// The attribute lines right above the header at <paramref name="header"/> (the contiguous run of lines that start
+    /// with a bracket).
+    /// </summary>
     private static List<string> AttributesAbove(string[] lines, int header)
     {
         var attributes = new List<string>();
@@ -50,8 +59,10 @@ public class IntegrationTestsAreMarkedTests
         attributes.Any(a => a.Contains(text, StringComparison.Ordinal));
 
     /// <summary>
-    /// Every guard in the text that is outside a marked test or class; <paramref name="file"/> only names it in the result. A guard in a test is covered by that test's mark (or the class's); one in a
-    /// SetUp covers the whole class, so the class carries the mark; one in a helper covers the tests that call it, so each of them (or the class) does.
+    /// Every guard in the text that is outside a marked test or class; <paramref name="file"/> only names it in the
+    /// result. A guard in a test is covered by that test's mark (or the class's); one in a SetUp covers the whole
+    /// class, so the class carries the mark; one in a helper covers the tests that call it, so each of them (or the
+    /// class) does.
     /// </summary>
     public static IReadOnlyList<Unmarked> Scan(string file, string text)
     {
@@ -82,16 +93,18 @@ public class IntegrationTestsAreMarkedTests
         return found;
     }
 
-    /// <summary>What takes a test out of its process in the code itself: a real process, Mongo, the stand-in build or the runner's built dll.</summary>
+    /// <summary>What takes a test out of its process in the code itself: a real process or Mongo.</summary>
     private const string UseMarkers =
-        @"\bnew\s+ProcessStartInfo\(|\bProcessStartInfo\(|\bProcess\.Start\(|\bMongoClient\b|\bStandInBuild\b|\bRunnerBuild\b";
+        @"\bnew\s+ProcessStartInfo\(|\bProcessStartInfo\(|\bProcess\.Start\(|\bMongoClient\b";
 
     private static readonly Regex TopLevelClass = new(@"^(public|internal)\s+(sealed\s+|abstract\s+|static\s+)*class\s",
         RegexOptions.Compiled);
 
     /// <summary>
-    /// The second signal (Louis, 2026-10-27: "both signals"): a test class that uses a real process, Mongo, the stand-in build or the runner's built dll, or calls a helper type that does
-    /// (<paramref name="helperTypes"/>), leaves the test process whether or not it checks first, so the class itself carries the mark. Comments and string literals are blanked first: a word in one is not a use.
+    /// The second signal (Louis, 2026-10-27: "both signals"): a test class that uses a real process, Mongo, the
+    /// stand-in build or the runner's built dll, or calls a helper type that does (<paramref name="helperTypes"/>),
+    /// leaves the test process whether or not it checks first, so the class itself carries the mark. Comments and
+    /// string literals are blanked first: a word in one is not a use.
     /// </summary>
     public static IReadOnlyList<Unmarked> ScanUses(string file, string text, IReadOnlyCollection<string> helperTypes)
     {
@@ -117,7 +130,10 @@ public class IntegrationTestsAreMarkedTests
         return found;
     }
 
-    /// <summary>The helper types of LouisAgent.Testing that start a process themselves: a class that calls one leaves the test process too.</summary>
+    /// <summary>
+    /// The helper types of LouisAgent.Testing that start a process themselves: a class that calls one leaves the test
+    /// process too.
+    /// </summary>
     public static IReadOnlyCollection<string> HelperTypes(IEnumerable<(string Rel, string Text)> files)
     {
         var uses = new Regex(UseMarkers);
@@ -132,7 +148,9 @@ public class IntegrationTestsAreMarkedTests
         ];
     }
 
-    /// <summary>The tests, in the same file, that call the helper at <paramref name="helper"/> and are not marked.</summary>
+    /// <summary>
+    /// The tests, in the same file, that call the helper at <paramref name="helper"/> and are not marked.
+    /// </summary>
     private static IEnumerable<int> UnmarkedCallers(string file, string[] lines, List<int> headers, int helper)
     {
         if (helper < 0) yield break;
@@ -155,14 +173,16 @@ public class IntegrationTestsAreMarkedTests
         var unmarked = SourceTree.Files()
             .Select(path => (path, rel: SourceTree.Relative(path)))
             .Where(file => TestPaths.InTestProject(file.rel) &&
-                           !file.rel.StartsWith("src/tests/engine/LouisAgent.Core.Tests/Categories/", StringComparison.Ordinal))
+                           !file.rel.StartsWith("src/tests/engine/LouisAgent.Core.Tests/Categories/",
+                               StringComparison.Ordinal))
             .Select(file => file.path)
             .SelectMany(path => Scan(SourceTree.Relative(path), File.ReadAllText(path)))
             .Select(u => $"{u.File}:{u.Line}  {u.Where}")
             .ToList();
 
         Assert.That(unmarked, Is.Empty,
-            "a test that skips itself when git, a browser, a database or an interpreter is missing is an integration test (F18 step 7.6):\n" +
+            "a test that skips itself when git, a browser, a database or an interpreter is missing is an integration " +
+            "test (F18 step 7.6):\n" +
             string.Join("\n", unmarked));
     }
 
@@ -172,7 +192,8 @@ public class IntegrationTestsAreMarkedTests
         var files = SourceTree.Files()
             .Select(path => (Rel: SourceTree.Relative(path), Text: File.ReadAllText(path)))
             .Where(file => TestPaths.InTestProject(file.Rel) &&
-                           !file.Rel.StartsWith("src/tests/engine/LouisAgent.Core.Tests/Categories/", StringComparison.Ordinal))
+                           !file.Rel.StartsWith("src/tests/engine/LouisAgent.Core.Tests/Categories/",
+                               StringComparison.Ordinal))
             .ToList();
         var helpers = HelperTypes(files);
 
@@ -180,7 +201,8 @@ public class IntegrationTestsAreMarkedTests
             .Select(u => $"{u.File}:{u.Line}  {u.Where}").ToList();
 
         Assert.That(unmarked, Is.Empty,
-            "a test class that starts a process, opens Mongo or runs the stand-in or the runner is an integration test (F18 step 7.6):\n" +
+            "a test class that starts a process, opens Mongo or runs the stand-in or the runner is an integration " +
+            "test (F18 step 7.6):\n" +
             string.Join("\n", unmarked));
     }
 
@@ -190,7 +212,8 @@ public class IntegrationTestsAreMarkedTests
         var raw = SourceTree.Files()
             .Select(path => (path, rel: SourceTree.Relative(path)))
             .Where(file => TestPaths.InTestProject(file.rel) &&
-                           !file.rel.StartsWith("src/tests/engine/LouisAgent.Core.Tests/Categories/", StringComparison.Ordinal) &&
+                           !file.rel.StartsWith("src/tests/engine/LouisAgent.Core.Tests/Categories/",
+                               StringComparison.Ordinal) &&
                            !file.rel.EndsWith("/Outside.cs", StringComparison.Ordinal))
             .SelectMany(file => File.ReadAllLines(file.path).Select((line, i) => (file.rel, line, number: i + 1)))
             .Where(l => RawGuard.IsMatch(l.line) && !l.line.TrimStart().StartsWith("//"))
@@ -198,7 +221,8 @@ public class IntegrationTestsAreMarkedTests
             .ToList();
 
         Assert.That(raw, Is.Empty,
-            "a test asks for git, a tool or an address with Outside.Tool or Outside.Stack, so that a missing tool fails where INTEGRATION_REQUIRED is set (F18 step 7.6):\n" +
+            "a test asks for git, a tool or an address with Outside.Tool or Outside.Stack, so that a missing tool " +
+            "fails where INTEGRATION_REQUIRED is set (F18 step 7.6):\n" +
             string.Join("\n", raw));
     }
 }

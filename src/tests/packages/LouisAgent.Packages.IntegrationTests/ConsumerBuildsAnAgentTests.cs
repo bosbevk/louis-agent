@@ -13,7 +13,7 @@ namespace LouisAgent.Packages.IntegrationTests;
 public class ConsumerBuildsAnAgentTests
 {
     /// <summary>How many packages the framework ships (PackagesTests holds which).</summary>
-    private const int PackageCount = 31;
+    private const int PackageCount = 25;
 
     /// <summary>What the outside project's agent answers, through the fake chat client.</summary>
     private const string Answer = "hello from the packages";
@@ -26,7 +26,7 @@ public class ConsumerBuildsAnAgentTests
     private string _feed = null!;
 
     /// <summary>
-    /// The 31 packed once for the class into a folder of its own, at a version no other run has.
+    /// The 25 packed once for the class into a folder of its own, at a version no other run has.
     /// </summary>
     [OneTimeSetUp]
     public void Pack()
@@ -43,7 +43,7 @@ public class ConsumerBuildsAnAgentTests
     public void Tidy() => Directory.Delete(_root, recursive: true);
 
     /// <summary>
-    /// The 31 pack; a package's framework dependency names the version of the project it referenced, as "this one or
+    /// The 25 pack; a package's framework dependency names the version of the project it referenced, as "this one or
     /// higher"; and a project outside restores the packages from the folder and runs an agent that answers.
     /// </summary>
     [Test]
@@ -80,21 +80,6 @@ public class ConsumerBuildsAnAgentTests
     }
 
     /// <summary>
-    /// The runner's package carries its stub eval's transcripts as content a consumer's build copies to where
-    /// EvalFiles looks for them, so a demo's own runner offers the stub as louis-agent's does (F166.3's finding 11).
-    /// </summary>
-    [Test]
-    public void TheRunner_CarriesItsStubsTranscripts_IntoAConsumersOutput()
-    {
-        using var archive = ZipFile.OpenRead(Path.Combine(_feed, $"LouisAgent.Evals.Runner.{_version}.nupkg"));
-
-        Assert.That(
-            archive.GetEntry(
-                "contentFiles/any/any/EvalFiles/src/evals/LouisAgent.Evals.Runner/Evals/Stub/Transcripts/bobotie.reference.txt"),
-            Is.Not.Null);
-    }
-
-    /// <summary>
     /// A site outside compiles the framework's own Sass from the package, as Puls's styles do: the package unpacks it
     /// into the site's <c>obj/framework-sass/</c>, which the site names as its include path (F166.3's finding 6).
     /// </summary>
@@ -121,7 +106,8 @@ public class ConsumerBuildsAnAgentTests
 
         Dotnet(site, "build");
 
-        Assert.That(File.Exists(Path.Combine(site, "wwwroot", "css", "app.css")), Is.True, "the site's styles compiled");
+        Assert.That(File.Exists(Path.Combine(site, "wwwroot", "css", "app.css")), Is.True,
+            "the site's styles compiled");
     }
 
     /// <summary>The version a package's nuspec names for one of its dependencies.</summary>

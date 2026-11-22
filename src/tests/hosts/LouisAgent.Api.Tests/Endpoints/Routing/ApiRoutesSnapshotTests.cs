@@ -27,13 +27,13 @@ public partial class ApiRoutesSnapshotTests
     private static readonly string[] AllowedInProgram =
     [
         "MapStaticAssets", "MapLouisAgentSite", "MapApi", "MapLouisAgentApi", "MapAdmin", "MapLouisAgentAccounts",
-        "MapLouisAgentEvals", "MapHostGroup", "MapLouisAgentHostGroup"
+        "MapHostGroup", "MapLouisAgentHostGroup"
     ];
 
     /// <summary>Every route as "METHOD /pattern (Access)", sorted, as the golden file holds it.</summary>
     private static string Snapshot()
     {
-        using var app = ApiTestHost.Build(evals: false);
+        using var app = ApiTestHost.Build();
         var routes = ApiTestHost.ListRoutes(app)
             .Select(endpoint => $"{ApiTestHost.DescribeRoute(endpoint)} ({ApiTestHost.ReadAccess(endpoint)})")
             .Order(StringComparer.Ordinal).ToList();

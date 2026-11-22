@@ -1,6 +1,6 @@
 # 0059. An identity ships readers, not checks
 
-**Status:** Accepted · **Date:** 2026-10-30 (Louis's pick on the F49.2b plan's finding G) and 2026-10-31 (his picks
+**Status:** Superseded by [0134](0134-an-eval-is-one-file-of-conversations.md) · **Date:** 2026-10-30 (Louis's pick on the F49.2b plan's finding G) and 2026-10-31 (his picks
 during the build) · **Recorded:** 2026-10-31
 
 ## Context

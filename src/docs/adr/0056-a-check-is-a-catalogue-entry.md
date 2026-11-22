@@ -1,6 +1,6 @@
 # 0056. A check is a catalogue entry: the contract in its own project, found by type, built from a typed record
 
-**Status:** Accepted · **Date:** 2026-10-30 (Louis's picks on the F49.1 plan's cards) · **Recorded:** 2026-10-30
+**Status:** Superseded by [0134](0134-an-eval-is-one-file-of-conversations.md) · **Date:** 2026-10-30 (Louis's picks on the F49.1 plan's cards) · **Recorded:** 2026-10-30
 
 ## Context
 

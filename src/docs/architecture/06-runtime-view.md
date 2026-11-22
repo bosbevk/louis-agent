@@ -193,5 +193,4 @@ To see what the model is offered, inspect `engine.Tools` (name, description, JSO
 | Scenario | What happens | In detail |
 |---|---|---|
 | **Puls delegates** | Puls asks its subagent by its address (`AskAgent("puls.cook", …)`), and the subagent's session loads the toolsets its header names; its steps stream into the chat's work panel; Puls answers in its own voice | [Agent to agent: one address for every call](../AGENT_COMMUNICATION.md#agent-to-agent-one-address-for-every-call) |
-| **An eval runs** | The runner, started by the API, opens real sessions on the API, grades each conversation and writes the protocol's lines; the API records them and joins the cost from the ledger | [The evals](evals.md) |
 | **The orchestrator fixes an error** | It reads the service's error, follows the method's runbook, opens a fix session on LouisAgent.Api, verifies the commit and replays the request | [Agent to agent: the orchestrator and louis-agent](../AGENT_COMMUNICATION.md#agent-to-agent-the-orchestrator-and-louis-agent) · [Runbooks](../../../demos/louis-agent/docs/projects/orchestrator-runbooks.md) |

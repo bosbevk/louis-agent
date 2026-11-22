@@ -21,11 +21,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\src\hosts\LouisAgent.Api\LouisAgent.Api.csproj" />
     <ProjectReference Include="..\..\..\..\src\tests\shared\LouisAgent.Testing\LouisAgent.Testing.csproj" />
-    <!-- F18 step 7.6.3: the in-memory API host, the built dlls and the store contracts the unit tests share. -->
+    <!-- F18 step 7.6.3: the in-memory API host the unit tests share. -->
     <ProjectReference Include="..\LouisAgent.Api.Testing\LouisAgent.Api.Testing.csproj" />
-    <!-- The test runner and the stand-in, built with these tests so their dlls are there to start as real child processes (no assembly referenced). -->
-    <ProjectReference Include="..\LouisAgent.Api.TestRunner\LouisAgent.Api.TestRunner.csproj" ReferenceOutputAssembly="false" />
-    <ProjectReference Include="..\LouisAgent.Api.StandIn\LouisAgent.Api.StandIn.csproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
   <ItemGroup>

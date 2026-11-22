@@ -4,7 +4,7 @@
   "Arguments": "--style=expanded --no-error-css --no-source-map",
   "GenerateScopedCss": true,
   "IncludePaths": [
-    "../../../../src/web/LouisAgent.Web/Styles", "../../../../src/web/LouisAgent.Web.Accounts/Styles", "../../../../src/web/LouisAgent.Web.Evals/Styles",
+    "../../../../src/web/LouisAgent.Web/Styles", "../../../../src/web/LouisAgent.Web.Accounts/Styles",
     "../../../../src/web/LouisAgent.Web.Themes/Styles",
     "../../../../packs/web/LouisAgent.Packs.Git.Web/Styles",
     "../../../../packs/web/LouisAgent.Packs.Files.Web/Styles"

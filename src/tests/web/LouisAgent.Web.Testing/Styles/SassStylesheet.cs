@@ -94,25 +94,19 @@ public sealed partial record SassStylesheet(string Project)
     /// <summary>The <c>Styles</c> folder of the library a partial's name says it is from.</summary>
     private static string LibraryStyles(string partial)
     {
-        if (partial.StartsWith(EvalsPrefix, StringComparison.Ordinal)) return "src/web/LouisAgent.Web.Evals/Styles";
         if (partial.StartsWith(ThemesPrefix, StringComparison.Ordinal)) return "src/web/LouisAgent.Web.Themes/Styles";
         return "src/web/LouisAgent.Web/Styles";
     }
-
-    /// <summary>The studio's shared Sass is under <c>evals/</c> (CL57).</summary>
-    private const string EvalsPrefix = "evals/";
 
     /// <summary>A theme's sheets are under <c>theme-{id}/</c> in the themes library (F151.2).</summary>
     private const string ThemesPrefix = "theme-";
 
     /// <summary>
-    /// The framework's Sass is all under <c>web/</c>, the studio's shared Sass under <c>evals/</c> and a theme's
-    /// sheets under <c>theme-</c>, so a name says whose it is; the account library has no partial since CL58, its
-    /// components carry their own styles.
+    /// The framework's Sass is all under <c>web/</c> and a theme's sheets under <c>theme-</c>, so a name says whose it
+    /// is; the account library has no partial since CL58, its components carry their own styles.
     /// </summary>
     private static bool IsFrameworks(string name) =>
         name.StartsWith("web/", StringComparison.Ordinal) ||
-        name.StartsWith(EvalsPrefix, StringComparison.Ordinal) ||
         name.StartsWith(ThemesPrefix, StringComparison.Ordinal);
 
     /// <summary>The partials on disk that write CSS, named the way <c>app.scss</c> names them.</summary>

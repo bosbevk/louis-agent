@@ -25,7 +25,7 @@ public class TwoServersTests
 
     /// <summary>The partner's server: its key, its shop, and a model that says when the shop is open.</summary>
     private static WebApplication Partner() =>
-        ApiTestHost.Build(PartnerKey, moreIdentities: [Shop], evals: false,
+        ApiTestHost.Build(PartnerKey, moreIdentities: [Shop],
             model: new FakeChatClient(_ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "Open until five."))));
 
     /// <summary>Asks the partner as the guide would, with this key for the partner.</summary>

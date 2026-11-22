@@ -1,6 +1,6 @@
 # 0058. An eval is a folder of files, beside the identity or pack it proves
 
-**Status:** Accepted · **Date:** 2026-10-30 (Louis's picks on the F49.2 plan's cards and during its build) ·
+**Status:** Superseded by [0134](0134-an-eval-is-one-file-of-conversations.md) · **Date:** 2026-10-30 (Louis's picks on the F49.2 plan's cards and during its build) ·
 **Recorded:** 2026-10-30
 
 ## Context

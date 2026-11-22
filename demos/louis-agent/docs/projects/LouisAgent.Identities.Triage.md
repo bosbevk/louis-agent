@@ -54,24 +54,15 @@ different: an unknown run starts with its first step instead, since a trial's fr
 
 ## What proves it
 
-`demos/louis-agent/evals/LouisAgent.Identities.Triage.Evals`: one eval per role, folders of files the coding demo's
-runner lists (`triage-sorter`, `triage-investigator`, `triage-reviewer`). Each opens its session as the role itself,
-at a subagent's level as its address, `triage.sorter` and the others (`"depth": 1` in its mode, the harness's way to reach a role, Louis's pick), with the role's
-toolsets, on the order service's `order-total 1003` error for the retired code `SUMMER25`. The checks are the
-harness's general ones: no error, the role's tool called, and called with the choice expected (the sorter `code`,
-the investigator the area `code`, the reviewer `happy` false on a fix that charges a retired code nothing).
-
-The first live run, on 2026-11-09 on Haiku, passed all three, for about R0.15 together; it recorded the answers, so a
-run after replays them for nothing. Run it against a coding API with the triage settings and a replay folder:
-
-```bash
-AGENT_API=http://127.0.0.1:5072 dotnet LouisAgent.CodingEvalRunner.dll run triage-sorter --web record
-```
+Today the team is proved by its tests, below, and by no eval. The framework's evals are being rebuilt (F126): the
+old ones were deleted whole, this team's three among them, and the new evals, one file of conversations beside the
+identity they prove, are written in F126.5. Until then nothing runs the roles against a model to check their
+answers; the tests check their shape and their wiring.
 
 ## Tests
 
 `demos/louis-agent/tests/LouisAgent.Identities.Triage.Tests`: the identity's shape, the voice as the roles catalogue
-reads it, its routing naming its toolsets, and the three evals loaded as the runner loads them.
+reads it, and its routing naming its toolsets.
 
 ---
 [Docs index](../../../../src/docs/README.md) · Related: [Projects](../../../../src/docs/projects/README.md)

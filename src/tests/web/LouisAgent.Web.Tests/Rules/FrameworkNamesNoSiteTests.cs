@@ -15,7 +15,6 @@ public class FrameworkNamesNoSiteTests
     /// </summary>
     [TestCase("LouisAgent.Web")]
     [TestCase("LouisAgent.Web.Accounts")]
-    [TestCase("LouisAgent.Web.Evals")]
     public void TheFramework_NamesNoSite(string library)
     {
         string[] names =

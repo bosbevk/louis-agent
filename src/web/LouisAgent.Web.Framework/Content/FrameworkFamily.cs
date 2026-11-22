@@ -48,7 +48,6 @@ public sealed record FrameworkFamily(
             new("LouisAgent.Acp", "Rider, with its tool discovery."),
             new("LouisAgent.Api", "Sessions and their stream, and a web app served."),
             new("LouisAgent.Api.Contracts", "The API's replies and bodies, as records."),
-            new("LouisAgent.Api.Evals", "The eval studio's API."),
             new("LouisAgent.Mcp", "The tools over MCP, with no model."),
             new("LouisAgent.Accounts", "Sign-in, registration and a profile."),
             new("LouisAgent.Accounts.Contracts", "The accounts' records.")
@@ -62,7 +61,6 @@ public sealed record FrameworkFamily(
             new("LouisAgent.Web", "What every site shares."),
             new("LouisAgent.Web.Themes", "The themes, glass and flat."),
             new("LouisAgent.Web.Accounts", "The account pages."),
-            new("LouisAgent.Web.Evals", "The eval studio's pages."),
             new("LouisAgent.Web.Docs", "The docs' parts, from links to the menu."),
             new("LouisAgent.Web.Places", "Every place on a page, its own address."),
             new("LouisAgent.Web.Framework", "These pages."),
@@ -70,16 +68,13 @@ public sealed record FrameworkFamily(
             new("LouisAgent.Diagrams.Engine", "What draws one, its layouts and drawings.")
         ]);
 
-    /// <summary>The evals, which measure an agent.</summary>
+    /// <summary>
+    /// The evals, which measure an agent. They are being rebuilt from scratch, so the family keeps its place and ships
+    /// no project until the first new one lands.
+    /// </summary>
     public static readonly FrameworkFamily Evals = new("the-evals", "The evals", "src/evals",
-        "Measure an agent, with the harness, its protocol, the checks' contract and the runner.",
-        DiagramIcon.Checks, DiagramTone.Green,
-        [
-            new("LouisAgent.Evals", "The harness."),
-            new("LouisAgent.Evals.Protocol", "Its protocol."),
-            new("LouisAgent.Evals.Checks", "The checks' contract."),
-            new("LouisAgent.Evals.Runner", "The runner.")
-        ]);
+        "Measure an agent. They are being rebuilt from scratch, so no project ships here yet.",
+        DiagramIcon.Checks, DiagramTone.Green, []);
 
     /// <summary>The tools, which draw the docs' pictures and read a provider's usage.</summary>
     public static readonly FrameworkFamily Tools = new("the-tools", "The tools", "src/tools",

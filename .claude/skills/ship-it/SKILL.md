@@ -66,7 +66,8 @@ Run `git fetch origin main` and look at `origin/main`. The local `main` can be h
 
 1. **Merge `main` in.** `git fetch origin`, then merge `origin/main` into the branch. A merge, never a rebase:
    `git ls-remote --heads origin <branch>` says whether the branch is on the remote, and one that is there is
-   never rebased.
+   never rebased. Run the Docs tests at once after it: a merge can bring back a row this branch closed in the TODO or
+   the work log.
 2. **Build the whole solution.** `dotnet build louis-agent-solution.sln`.
 3. **Run the full suite of unit tests**, and it passes:
    `dotnet test louis-agent-solution.sln --filter "Category!=Integration"`.

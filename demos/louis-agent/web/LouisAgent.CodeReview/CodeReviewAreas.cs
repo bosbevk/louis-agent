@@ -3,7 +3,6 @@ using LouisAgent.Packs.Files.Web;
 using LouisAgent.Packs.Git.Web;
 using LouisAgent.Web.Accounts;
 using LouisAgent.Web.Components.Areas;
-using LouisAgent.Web.Evals;
 using LouisAgent.Web.Themes.Flat;
 using LouisAgent.Web.Themes.Glass;
 
@@ -11,7 +10,7 @@ namespace LouisAgent.CodeReview;
 
 /// <summary>
 /// What the code-review app is made of (F127.6): the chat portal, the admin portal with the git and files packs' own
-/// views, the accounts' pages, the eval studio and its three themes, each named once through the framework's builder.
+/// views, the accounts' pages and its three themes, each named once through the framework's builder.
 /// Glass is named first, so it is what a first visit gets; flat follows, then retro, the app's own (F151.5).
 /// </summary>
 /// <remarks>
@@ -29,7 +28,6 @@ public static class CodeReviewAreas
             .Overview()
             .Packs(PackViewsOf)
             .Accounts(typeof(AccountLayout))
-            .Evals()
             .Glass()
             .Flat()
             .Retro();

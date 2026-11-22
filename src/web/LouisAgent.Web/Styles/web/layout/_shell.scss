@@ -77,8 +77,7 @@
 .page-head h1 { font-size: 24px; font-weight: 800; letter-spacing: -.4px; color: var(--bs-emphasis-color); margin: 0; }
 .page-head p { margin: 4px 0 0; color: var(--bs-secondary-color); }
 .page-actions { display: flex; gap: 8px; align-items: center; }
-/* The cards and the table the admin's pages, the studio and a pack's screen are built from (from the admin's
-   shell, CL58): parts many components draw and override, so they stay global. */
+/* The cards and the table the admin's pages and a pack's screen are built from (from the admin's shell, CL58): parts many components draw and override, so they stay global. */
 .cards { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); align-items: start; }
 .card-p { @include surface.panel(); @include surface.lined(); border-radius: var(--bs-border-radius-xl); padding: 18px 20px; display: flex; flex-direction: column; gap: 10px; animation: rise .4s var(--web-ease) both; }
 .card-p > p { margin: 0; }

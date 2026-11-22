@@ -79,8 +79,8 @@ A session's options are fixed when it opens, as its toolsets are, so its prompt 
 `Sessions/Streaming/Claude/ClaudeStreamFormat.cs`, which writes Claude-shaped events: `message_start`;
 `content_block_start`, `_delta` and `_stop` for thinking, text, `tool_use` and `tool_result`; `message_delta` with the
 turn's usage; and `message_stop`. A client picks the format with `"stream"` on `POST /v1/sessions` (`StreamFormat`,
-Claude by default), and the session keeps it. Three kinds of client read the stream: the web (through the
-session-stream reader, `LouisAgent.SessionStream`), the orchestrator, and the evals.
+Claude by default), and the session keeps it. Two kinds of client read the stream: the web (through the
+session-stream reader, `LouisAgent.SessionStream`) and the orchestrator.
 
 To add a new event or field to the Claude format, add it without changing an existing one, test it, and regenerate
 `src/tests/hosts/LouisAgent.Api.Tests/Sessions/StreamGolden.sse` with `LOUIS_UPDATE_GOLDEN=1 dotnet test src/tests/hosts/LouisAgent.Api.Tests --filter
@@ -101,8 +101,8 @@ structured data, canonical link and words. Any other page gets the plain `index.
 ## The whole program
 
 This is the API's `Program.cs`, the one the coding agent's API runs (`demos/louis-agent/hosts/LouisAgent.CodingApi`),
-complete, so a developer can paste it and change the catalogue and the web app for their own (FX96). The accounts and
-the eval studio are the two optional lines; leave them out and the API runs without them.
+complete, so a developer can paste it and change the catalogue and the web app for their own (FX96). The accounts are
+the optional lines; leave them out and the API runs without them.
 
 ```csharp
 using LouisAgent.Core.Web;
@@ -114,7 +114,6 @@ using LouisAgent.Accounts;
 using LouisAgent.Accounts.Config;
 using LouisAgent.Api;
 using LouisAgent.Api.Site;
-using LouisAgent.Api.Evals;
 using LouisAgent.Coding;
 using LouisAgent.Core.Hosting;
 
@@ -145,7 +144,6 @@ app.MapLouisAgentSite(typeof(LouisAgent.CodeReview.App).Assembly, services =>
 
 app.MapLouisAgentAccounts();                                         // optional, with the two above
 app.MapLouisAgentApi(host);
-app.MapLouisAgentEvals(host);                                        // optional: the eval studio
 app.Run();
 ```
 
@@ -169,31 +167,6 @@ the model, so check one by hand, and check a new route on the running stack with
 curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:5082/v1/your-endpoint                     # 401
 curl -s -H "x-api-key: $AGENT_API_KEY" http://127.0.0.1:5082/v1/your-endpoint                        # its answer
 ```
-
-## Add an eval to the portal
-
-The admin's eval pages are served by the eval studio's API, `LouisAgent.Api.Evals`, which a program maps with
-`MapLouisAgentEvals`. They list the evals the runner lists, so a new eval needs no change in the API or the pages. The runner's
-`--list` gives each eval its name, identity, version and `proves` line, and the portal shows the `proves` as the check's
-title. The eval's name is its check's id.
-
-1. Write the eval as a folder of files in its demo's evals project (for the triage team,
-   `demos/louis-agent/evals/LouisAgent.Identities.Triage.Evals/Evals/`), with its scenarios, checks and reference
-   transcripts.
-   [Add an eval](add-an-eval.md) walks through it.
-2. Check the runner lists it: `dotnet src/evals/LouisAgent.Evals.Runner/bin/Debug/net10.0/LouisAgent.Evals.Runner.dll --list`
-   prints one line for it (build the runner first).
-3. Rebuild the image that serves the portal. The runner is in the image, so the new eval comes with the rebuild:
-   `docker compose -f demos/louis-agent/docker/docker-compose.yml --env-file demos/louis-agent/config/.env up -d --build api`.
-4. Open the admin's eval pages: the check is listed with its `proves` as its title. Its manual is the markdown file the
-   eval's `Manual` names, beside the eval, which the runner's listing hands to the API. A manual outside the eval
-   folders is never read.
-
-A run starts with `POST /v1/admin/evals/{check}/runs`. Its body takes `repeat`, and for an eval `web` (`record` or `off`) or
-`replay` (a recorded run's id, with the model's answers: the runner's `--replay`), not both.
-`EvalRunOptions` parses it once, `EvalProcess.StartInfoFor` turns it into the runner's arguments, and the run's settings keep
-`web` or `replay_of`. A portal run is always the dev scenarios, and a replay is no point of the check's trend. [Run the evals](run-the-evals.md)
-says when to record and when to replay.
 
 ## Before you ask for a review
 

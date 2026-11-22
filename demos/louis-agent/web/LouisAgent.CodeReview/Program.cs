@@ -13,7 +13,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.AddScoped<GitState>();
 builder.Services.AddScoped<GitHistory>();
-// The chat, the admin with the packs' views, the accounts and the eval studio (F127.6).
+// The chat, the admin with the packs' views and the accounts (F127.6).
 builder.Services.AddSiteAreas(CodeReviewAreas.Name);
 
 await builder.Build().RunAsync();

@@ -147,14 +147,8 @@ switch ($Verb) {
             --confirm-with-what-if --query 'properties.provisioningState' -o tsv
     }
     'build' {
-        # The commit the eval runner stamps on a run (F18): this checkout's, or "unknown" where git can't say.
-        $ErrorActionPreference = 'Continue'
-        try { $commit = git -C $Repo rev-parse --short HEAD 2>$null } catch { $commit = $null }
-        $ErrorActionPreference = 'Stop'
-        if ($LASTEXITCODE -ne 0 -or -not $commit) { $commit = 'unknown' }
-        Write-Host "Building $($AppInfo.Image):$Tag (commit $commit) from the repo root ($($AppInfo.Dockerfile))..."
-        Invoke-Az acr build -r $Registry -t "$($AppInfo.Image):$Tag" --build-arg "EVAL_COMMIT=$commit" `
-            -f (Join-Path $Repo $AppInfo.Dockerfile) $Repo
+        Write-Host "Building $($AppInfo.Image):$Tag from the repo root ($($AppInfo.Dockerfile))..."
+        Invoke-Az acr build -r $Registry -t "$($AppInfo.Image):$Tag" -f (Join-Path $Repo $AppInfo.Dockerfile) $Repo
     }
     'workspace' {
         # The price tables the app reads from its share (README: the share's layout), copied from its config folder;

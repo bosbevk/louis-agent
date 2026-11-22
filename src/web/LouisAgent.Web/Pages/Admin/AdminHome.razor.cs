@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Components;
 namespace LouisAgent.Web.Pages.Admin;
 
 /// <summary>
-/// The admin's home, the same on every site (F144): a card for each area the site named (the overview, the packs, the
-/// evals), in that order, each the way to its own pages.
+/// The admin's home, the same on every site (F144): a card for each area the site named (the overview and the packs),
+/// in that order, each the way to its own pages.
 /// </summary>
 /// <remarks>
 /// The home names no area: it draws whatever cards the site's areas bring (<see cref="SiteAreas.AdminCards"/>), so a

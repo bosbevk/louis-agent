@@ -21,7 +21,7 @@ their Dockerfiles in `demos/louis-agent/docker/images/`.
 
 | Service | Dockerfile | What it is |
 |---|---|---|
-| `api` | `Dockerfile.api` | The HTTP API with the code-review app, on `127.0.0.1:${API_PORT:-5082}`, with a health check on `/health`. The image also carries the coding agent's eval runner and a copy of the docs the guide reads |
+| `api` | `Dockerfile.api` | The HTTP API with the code-review app, on `127.0.0.1:${API_PORT:-5082}`, with a health check on `/health`. The image also carries a copy of the docs the guide reads |
 | `acp-server` | `Dockerfile.acp-server` | Rider's door, run once per Rider chat with `docker compose run --rm -T acp-server` |
 | `mcp-server` | `Dockerfile.mcp-server` | The tools over MCP. Over stdio it runs once per client with `run --rm -T mcp-server`; with `MCP_TRANSPORT=http` it serves on `127.0.0.1:${MCP_PORT:-5090}` |
 | `local-agent` | `Dockerfile.agent` | The CLI |

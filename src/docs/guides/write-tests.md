@@ -52,7 +52,7 @@ in `demos/{name}/tests/LouisAgent.Identities.{Name}.Tests`. No test project refe
 at most 400 lines, so split a long one by what it tests.
 
 A test that leaves its process is an integration test. That's one that starts a real process (git, bash, an
-interpreter, `dotnet`, the eval runner), opens Mongo, or needs a running stack. It lives in a sibling project named
+interpreter, `dotnet`), opens Mongo, or needs a running stack. It lives in a sibling project named
 `{name}.integration-tests`, such as `src/tests/engine/LouisAgent.Core.IntegrationTests`, the API's in
 `src/tests/hosts/`, the orchestrator's in `demos/louis-agent/tests/`, and the packs' in `packs/tests/`. Its class is
 `[Category("Integration")]`.
@@ -104,7 +104,6 @@ markup, can't happen by accident:
 | `FrameworkSessionSnapshot.json` (framework Orbi) | `FrameworkSessionSnapshotTests` | What the model is sent in a session of the framework's guide |
 | `AcpTranscript.json` (ACP server) | `AcpTranscriptTests` | Everything the server writes to Rider |
 | `ApiRoutesSnapshot.json` (API) | `ApiRoutesSnapshotTests` | Every route of the API, with who may call it |
-| `EvalRoutesSnapshot.json` (eval studio's API) | `EvalRoutesSnapshotTests` | Every route with the studio mapped, with who may call it |
 | `AccountsRoutesSnapshot.json` (accounts) | `AccountsRoutesSnapshotTests` | Every account route, with who may call it |
 | `.html` beside each component test (web) | bUnit tests | A component's or page's markup |
 

@@ -12,7 +12,7 @@
         { "id": "engine", "icon": "chip", "title": "The engine",
           "text": "Core, the contracts, and what runs on core: the web, telemetry and one library per model provider." },
         { "id": "hosts", "icon": "server", "title": "The hosts",
-          "text": "The doors in: the terminal, Rider, the HTTP API, MCP, accounts and the eval studio." },
+          "text": "The doors in: the terminal, Rider, the HTTP API, MCP and the accounts." },
         { "id": "web", "icon": "browser", "title": "The web",
           "text": "What every site shares, the libraries a site opts into, the sites and the diagrams." }
       ] },
@@ -20,7 +20,7 @@
         { "id": "agents", "icon": "users", "title": "Identities and packs",
           "text": "Who an agent is, and what it can do. Their docs live with the demo or in packs/docs." },
         { "id": "evals", "icon": "checks", "title": "Evals and tests",
-          "text": "The harness, its checks, protocol and runner, and how the tests are laid out." },
+          "text": "How the tests are laid out. The evals are being rebuilt from scratch." },
         { "id": "tools", "icon": "terminal", "title": "Developer tools",
           "text": "The usage probe, the film export and the tool that draws every picture in the docs." }
       ] }

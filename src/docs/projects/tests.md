@@ -1,7 +1,7 @@
 # Test projects — design
 
 > **Kind:** test projects (NUnit, with bUnit for components) · **Paths:** the framework's in `src/tests/`, grouped
-> like `src/` (`engine/`, `hosts/`, `evals/`, `web/`, `site/`, `tools/`); each demo's in its own `tests/`
+> like `src/` (`engine/`, `hosts/`, `web/`, `site/`, `tools/`); each demo's in its own `tests/`
 > (`demos/louis-agent/tests/`, `demos/starter/tests/`); each pack's in `packs/tests/`; the
 > shared fakes in `src/tests/shared/LouisAgent.Testing/` and, for the web apps, `src/tests/web/LouisAgent.Web.Testing/`
 > (class libraries) · **Run:** `dotnet test louis-agent-solution.sln` (or each project)
@@ -66,9 +66,9 @@ And it has `Outside`, which is how an integration test asks for the outside worl
 your own machine, but fails it where `INTEGRATION_REQUIRED` is set, which is CI. `Stack` always skips a missing
 stack's address.
 
-`src/tests/hosts/LouisAgent.Api.Testing` is a library too. It holds the in-memory API host, the built runner, the
-stand-in dlls and the store contracts. Each is written once, and runs against memory in the unit tests and against
-Mongo in the integration tests.
+`src/tests/hosts/LouisAgent.Api.Testing` is a library too. It holds the in-memory API host, `ApiTestHost`, and the
+test agent every API test opens its sessions on, `TestAgent`. Both are written once, for the unit and the
+integration tests alike.
 
 *Decided in:* F18 step 7.6.2.
 
@@ -124,19 +124,6 @@ names, the depth and the lookup agent's toolsets, and sessions that share an eng
 host, no network and no model. The sessions are built on an `AgentEngineFactory` with a chat client that throws if
 it's ever called. `AskDepthTests` uses the same agent for who may ask whom: a subagent under itself, or the agent
 under the subagent it asked, is refused.
-
-Some API tests start a real child process where the eval runner would be. Two programs are built for that, each with
-a project reference that brings no assembly. `src/tests/hosts/LouisAgent.Api.StandIn` stands in for the runner. It's
-a small console app, not a test project, and the check's id picks what it does: print its arguments, dump the names
-in its environment, stream lines, fail, sleep, or never read its stdin. `LouisAgent.Api.TestRunner` is the real
-runner with the harness's general checks only. It copies the framework's template eval beside it, so its listing
-gives the built-in `stub` and `template-example`, and the integration tests read a file eval's identity, dataset and
-graders from it.
-
-The eval studio's API has its own project, `LouisAgent.Api.Evals.Tests`. Its scenario and draft tests need an eval
-with more in it than the template has. `SampleEvalWorkspace` writes one into a temporary workspace for each test
-class: a dev scenario with a follow-up, an expected budget and shop, and its categories, a held-out scenario, and the
-name of one that isn't there. It writes the files through the same records the API reads them with.
 
 *Decided in:* F5, F18 step 7.4, F166.1, [ADR 0076](../adr/0076-core-ships-no-agent.md).
 
@@ -205,7 +192,7 @@ The starter has its own (`LouisAgent.Starter.Tests`), and `LouisAgent.Starter.In
 way `dotnet new louis-site` does.
 
 The framework as a product installs it is tested from outside the repository. `LouisAgent.Packages.IntegrationTests`,
-in `src/tests/packages/`, packs the 31 packages into a folder at a version of its own, checks that a package names its
+in `src/tests/packages/`, packs the framework's packages into a folder at a version of its own, checks that a package names its
 framework dependencies at the versions it was packed with, and writes a console project in a temporary folder that
 knows only that folder and nuget.org, then runs an agent from it. `PackagesTests` in `core.tests` holds which projects
 are packages, and `PublishWorkflowTests` and `ConsumeWorkflowTests` hold the two workflows that publish them and
@@ -213,8 +200,7 @@ restore them from GitHub Packages ([Publish the framework](../guides/publish-the
 
 `src/tests/web/LouisAgent.Web.Testing` holds what they share: the fixture replay, the stub API (`FixtureApi`: fixed
 JSON for what the apps read at start-up, one session, the recorded turn streamed, and the workspace and git reads
-empty), `RecordingJSRuntime`, which lists every JS call, the snapshot helper and `SassStylesheet`. The eval pages, the
-account pages, the docs, the framework's pages, the places, the themes and the diagrams each have a test project of
+empty), `RecordingJSRuntime`, which lists every JS call, the snapshot helper and `SassStylesheet`. The account pages, the docs, the framework's pages, the places, the themes and the diagrams each have a test project of
 their own in `src/tests/web/`. The framework's sites have theirs in `src/tests/site/`.
 
 *Decided in:* F18 step 7.2, F59.10.
@@ -234,25 +220,6 @@ The pure parts have their own tests, in folders that match the source. `ToolCard
 preview. `PromptBuilder` checks text, an embedded resource, an attached file read and capped, the open file left out,
 and an unmounted one reported. `ContainerPaths` checks a mapping, a root searched by the last parts of the path, and
 the drive letter. And there are `GitRoots` and `JsonRpcWriter`.
-
-### 12. The eval projects' tests
-
-`LouisAgent.Evals.Tests` tests the harness: the dataset loader (Inspect's Sample shape read strictly, the hash, an
-expected key no grader reads), the common graders, the model grader over Microsoft.Extensions.AI.Evaluation, the
-roll-up, the conformance cases, the label sheet and the calibration, and the protocol writer against its golden.
-`LouisAgent.Evals.Checks.Tests` tests the check contract.
-
-`LouisAgent.Evals.Protocol.Tests` checks that every event round-trips through `EvalProtocolJson`, with `event` first
-and the time written with a `Z`, and that a person's line or an unknown event reads as none.
-
-`LouisAgent.Evals.Runner.Tests` covers the arguments, the catalogue, the stub eval's run against its golden, the
-conformance of every eval folder, the data files copied beside the assembly, and the template folder
-(`src/evals/template/Example/`: it loads with the general checks alone, conforms, and is never listed).
-
-The runner end to end through the API is `StubCheckTests`, in `LouisAgent.Api.IntegrationTests`. A run that costs
-money is never a test: CI grades only recorded transcripts.
-
-*Decided in:* F18.
 
 ## Structure
 
@@ -279,7 +246,7 @@ The folders of `src/tests/engine/LouisAgent.Core.Tests`, to look things up.
 | `Docs/` | The ratchets on the docs: the work log, the roadmap, the write-ups, the guides' listings, one seam for screens, and under `Instructions/` the size of what Claude loads and the skill files |
 | `Projects/` | Core's packages (`CorePackagesTests`) |
 | `Testing/`, `TestHttp/` | The tests of the shared `Outside` and `TestPaths`, and a header-echo handler |
-| The root | `ArchitectureTests`, `FileSizeTests`, `CodeLineCountTests`, `FolderSizeTests`, `SolutionLayoutTests`, `SiteBoundaryTests`, `PackWebBoundaryTests`, `ChoicesProjectTests`, `EvalProtocolProjectTests`, `DiagramsProjectTests`, `EngineAsksItsTypesTests`, `PromptFolderTests`, `SkillsLayoutTests` (part 5), and `TestPrompts`, the `[SetUpFixture]` that registers the tests' own prompts (`agents/` with a subagent and a lookup agent inside: a product, a subagent, a lookup agent and its base) before the first is read |
+| The root | `ArchitectureTests`, `FileSizeTests`, `CodeLineCountTests`, `FolderSizeTests`, `SolutionLayoutTests`, `SiteBoundaryTests`, `PackWebBoundaryTests`, `ChoicesProjectTests`, `DiagramsProjectTests`, `EngineAsksItsTypesTests`, `PromptFolderTests`, `SkillsLayoutTests` (part 5), and `TestPrompts`, the `[SetUpFixture]` that registers the tests' own prompts (`agents/` with a subagent and a lookup agent inside: a product, a subagent, a lookup agent and its base) before the first is read |
 
 ## Extending it
 
@@ -297,4 +264,4 @@ The orchestrator's whole loop, run against a scripted LouisAgent.Api, has no tes
 [Write and run tests](../guides/write-tests.md) · [Architecture § Testing](../architecture/08-crosscutting-concepts.md#testing)
 
 ---
-[Projects](README.md) · Previous: [LouisAgent.Evals.Runner](LouisAgent.Evals.Runner.md)
+[Projects](README.md) · Previous: [LouisAgent.UsageProbe](LouisAgent.UsageProbe.md)
