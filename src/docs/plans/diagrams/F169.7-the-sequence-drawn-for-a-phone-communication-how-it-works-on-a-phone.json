@@ -1,0 +1,30 @@
+{
+  "kind": "sequence",
+  "title": "F169.7 the sequence drawn for a phone: How it works is drawn",
+  "caption": "The page is drawn once, for any screen, so the figure asks for both drawings. The narrow one is laid out 338 wide and its page copy is 342, the width of the words on a 390 screen.",
+  "sequence": {
+    "participants": [
+      { "id": "P", "icon": "browser", "tone": "blue", "label": "HowItWorksPage" },
+      { "id": "F", "icon": "box", "tone": "green", "label": "DiagramFigure" },
+      { "id": "N", "icon": "code", "tone": "teal", "label": "NarrowFit" },
+      { "id": "D", "icon": "chart", "tone": "green", "label": "StepListDrawing" },
+      { "id": "L", "icon": "code", "tone": "violet", "label": "StepListLayout" },
+      { "id": "K", "icon": "code", "tone": "violet", "label": "SequenceKeyLayout" }
+    ],
+    "steps": [
+      { "step": "message", "from": "P", "to": "F", "text": "Source: OneTurn.Source" },
+      { "step": "message", "from": "F", "to": "N", "text": "Has(source)" },
+      { "step": "reply", "from": "N", "to": "F", "text": "true: a sequence has one  (step 6)" },
+      { "step": "message", "from": "F", "to": "N", "text": "RenderForPage(source, narrow)\nthrough DiagramRenderers" },
+      { "step": "message", "from": "N", "to": "D", "text": "Of(source, geometry)  (step 5)" },
+      { "step": "message", "from": "D", "to": "L", "text": "Place(spec, 338, measures)  (step 2)" },
+      { "step": "note", "over": ["L"], "text": "each step under the one before,\na block's steps a level in  (step 3)" },
+      { "step": "reply", "from": "L", "to": "D", "text": "ten steps and three frames, 338 wide" },
+      { "step": "message", "from": "D", "to": "K", "text": "Of(spec, 338)" },
+      { "step": "reply", "from": "K", "to": "D", "text": "the key's items, wrapped at that width" },
+      { "step": "reply", "from": "D", "to": "N", "text": "one SVG, the type under the title" },
+      { "step": "reply", "from": "N", "to": "F", "text": "the page's copy, 342 wide" },
+      { "step": "reply", "from": "F", "to": "P", "text": "both drawings: below 768 the narrow one shows" }
+    ]
+  }
+}

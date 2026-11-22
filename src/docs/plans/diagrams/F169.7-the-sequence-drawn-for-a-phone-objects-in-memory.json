@@ -1,0 +1,68 @@
+{
+  "kind": "flow",
+  "type": "object",
+  "title": "F169.7 the sequence drawn for a phone: objects in memory",
+  "caption": "What the layout hands back for the sequence on How it works, laid out 338 wide: one list that holds its ten steps and its three frames. Four steps and two frames are shown. A dashed line says which frame a part stands inside; the list holds them all itself.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "list",
+        "icon": "box",
+        "tone": "blue",
+        "label": "PlacedStepList\nWidth: 338\nten steps, three frames"
+      },
+      {
+        "id": "first",
+        "icon": "message",
+        "tone": "green",
+        "label": "PlacedStep\na call: POST /v1/sessions/{id}/messages\nBox: the whole width, at the top"
+      },
+      {
+        "id": "ends",
+        "icon": "box",
+        "tone": "teal",
+        "label": "PlacedEnds\nFrom: You\nTo: LouisAgent.Api\nWrapped: no"
+      },
+      {
+        "id": "loop",
+        "icon": "box",
+        "tone": "violet",
+        "label": "PlacedBlock\nloop: up to 10 tool rounds\nDepth: 0, the whole width"
+      },
+      {
+        "id": "opt",
+        "icon": "box",
+        "tone": "violet",
+        "label": "PlacedBlock\nopt: a tool call\nDepth: 1"
+      },
+      {
+        "id": "inner",
+        "icon": "message",
+        "tone": "green",
+        "label": "PlacedStep\na call: run it, through the guards\nEnds: AgentEngine, A pack's tool"
+      },
+      {
+        "id": "answer",
+        "icon": "message",
+        "tone": "green",
+        "label": "PlacedStep\nan answer: text, or a tool call\nEnds: The model, AgentEngine"
+      },
+      {
+        "id": "note",
+        "icon": "file",
+        "tone": "amber",
+        "label": "PlacedStep\na note: every request priced in the ledger\nEnds: none"
+      }
+    ],
+    "edges": [
+      { "from": "list", "to": "first", "word": "holds" },
+      { "from": "list", "to": "loop", "word": "holds" },
+      { "from": "list", "to": "note", "word": "holds" },
+      { "from": "first", "to": "ends", "word": "holds" },
+      { "from": "loop", "to": "answer", "word": "frames", "style": "dashed" },
+      { "from": "loop", "to": "opt", "word": "frames", "style": "dashed" },
+      { "from": "opt", "to": "inner", "word": "frames", "style": "dashed" }
+    ],
+    "direction": "down"
+  }
+}

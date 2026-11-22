@@ -153,6 +153,9 @@ as values for a list of names, which is extensibility, skill 20.
   frame shows the menu a site hands it in the sheet on a phone and in the left column above that.
 - **2026-11-22, F169.5's two drawings in a page.** Louis: "A: both in the page, CSS shows one". The figure holds
   a wide and a narrow drawing, and Bootstrap's display classes show the narrow one below 768 pixels.
+- **2026-11-22, F169.7's step on a phone.** Louis: "A: an arrow between the two". A step of the sequence's phone
+  drawing shows both names with the wide drawing's own line between them, a beam for a call and dashes for an
+  answer.
 
 ---
 [Docs index](../README.md) · Related: [the plans' index](README.md), [F151 Two themes, each light and dark](F151-themes-and-styles.md)

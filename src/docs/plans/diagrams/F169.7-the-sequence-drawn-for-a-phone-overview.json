@@ -1,0 +1,75 @@
+{
+  "kind": "cards",
+  "title": "F169.7 the sequence drawn for a phone: the overview",
+  "caption": "The engine lays a sequence's steps down a phone's width and draws them in the sequence's own look. It says a sequence has a narrow form, so the page shows that drawing on a phone and nothing slides.",
+  "cards": {
+    "rows": [
+      {
+        "cards": [
+          {
+            "id": "f1697",
+            "icon": "settings",
+            "title": "F169.7 The sequence drawn for a phone",
+            "code": "pick 2",
+            "look": "highlight",
+            "text": "On a 390 screen the sequence on How it works reads as steps down the page, at its own size, without sliding."
+          }
+        ]
+      },
+      {
+        "cards": [
+          {
+            "id": "layout",
+            "icon": "code",
+            "title": "Placed down a width",
+            "code": "StepListLayout",
+            "text": "Each call and answer stands under the one before: its two names with a line between, its words under them, wrapped to the room. A block frames its steps. Steps 2 and 3."
+          },
+          {
+            "id": "drawing",
+            "icon": "chart",
+            "title": "Drawn in the sequence's look",
+            "code": "StepListDrawing",
+            "text": "The wide drawing's own beam, dashes, frames and key, and no lifelines. Steps 4 and 5."
+          },
+          {
+            "id": "fit",
+            "icon": "box",
+            "title": "A sequence has a narrow form",
+            "code": "NarrowFit",
+            "text": "The engine says so, and draws the step list for a page that asks for the narrow fit. Step 6."
+          },
+          {
+            "id": "page",
+            "icon": "browser",
+            "title": "On the page",
+            "code": "PicturesOnAPhoneTests",
+            "text": "Every picture the nine pages draw has a narrow form, and none slides. A test says so in step 6, and step 7 looks and measures at 390 and 360."
+          }
+        ]
+      },
+      {
+        "cards": [
+          {
+            "id": "wide",
+            "icon": "file",
+            "title": "The wide drawing stays",
+            "text": "From 768 pixels the sequence is drawn as it is today, and no picture file in the docs changes."
+          },
+          {
+            "id": "others",
+            "icon": "file",
+            "title": "Four kinds still slide",
+            "text": "A class chart, a nested or a composite picture and a ticket have no narrow form. None of them is on the nine pages."
+          }
+        ]
+      }
+    ],
+    "links": [
+      { "from": "f1697", "to": "layout" },
+      { "from": "f1697", "to": "drawing" },
+      { "from": "f1697", "to": "fit" },
+      { "from": "f1697", "to": "page" }
+    ]
+  }
+}

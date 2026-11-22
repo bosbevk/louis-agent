@@ -1,0 +1,77 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F169.7 the sequence drawn for a phone: the architecture",
+  "caption": "Everything new is in the diagram engine. The page, its picture's data and the figure that holds both drawings stay as they are: the figure already asks the engine whether a picture has a narrow form. The number in brackets is the step that builds or changes the part.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "visitor",
+        "icon": "user",
+        "tone": "blue",
+        "label": "A visitor on a phone\n390 wide",
+        "shape": "terminal"
+      },
+      {
+        "id": "page",
+        "icon": "browser",
+        "tone": "blue",
+        "label": "LouisAgent.Web.Framework\nHowItWorksPage, and OneTurn,\nthe sequence as data\nas they are"
+      },
+      {
+        "id": "figure",
+        "icon": "box",
+        "tone": "green",
+        "label": "LouisAgent.Web\nDiagramFigure: asks Has, and holds\nthe narrow and the wide drawing\nas it is"
+      },
+      {
+        "id": "fit",
+        "icon": "code",
+        "tone": "teal",
+        "label": "LouisAgent.Diagrams.Engine, Svg/Fits\nNarrowFit: a sequence has\na narrow form (6)"
+      },
+      {
+        "id": "drawing",
+        "icon": "chart",
+        "tone": "green",
+        "label": "Svg/Renderers/Parts/StepLists\nStepListSteps (4)\nStepListDrawing (5)"
+      },
+      {
+        "id": "layout",
+        "icon": "code",
+        "tone": "violet",
+        "label": "Sequence/Listed\nStepListMeasures, StepListLayout,\nthe placed records (2)\nStepListRows (3)"
+      },
+      {
+        "id": "lifelines",
+        "icon": "chart",
+        "tone": "green",
+        "label": "Svg/Renderers/Parts/Lifelines\nthe beam, the dashes, the frames,\nthe key, as they are"
+      },
+      {
+        "id": "spec",
+        "icon": "file",
+        "tone": "amber",
+        "label": "LouisAgent.Diagrams\nSequenceSpec, as it is read\nfrom a picture's JSON"
+      },
+      {
+        "id": "tests",
+        "icon": "chart",
+        "tone": "violet",
+        "label": "The tests\nLouisAgent.Diagrams.Tests (2 to 6)\nLouisAgent.Web.Framework.Tests (6)"
+      }
+    ],
+    "edges": [
+      { "from": "visitor", "to": "page", "word": "opens How it works" },
+      { "from": "page", "to": "figure", "word": "hands its picture" },
+      { "from": "figure", "to": "fit", "word": "has it a narrow form?" },
+      { "from": "fit", "to": "drawing", "word": "draws" },
+      { "from": "drawing", "to": "layout", "word": "places" },
+      { "from": "drawing", "to": "lifelines", "word": "draws with" },
+      { "from": "layout", "to": "spec", "word": "reads" },
+      { "from": "tests", "to": "fit", "word": "holds", "style": "dashed" },
+      { "from": "tests", "to": "layout", "word": "holds, with numbers", "style": "dashed" }
+    ],
+    "direction": "down"
+  }
+}
