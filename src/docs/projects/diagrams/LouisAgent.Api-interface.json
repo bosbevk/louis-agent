@@ -37,7 +37,25 @@
         "name": "AgentSessions",
         "kind": "singleton",
         "members": [
-          "+Create(toolsets?, tags?, depth, role?, ...) AgentSession"
+          "+Create(SessionRequest) AgentSession"
+        ]
+      },
+      {
+        "id": "opening",
+        "name": "SessionOpening",
+        "kind": "one per request, its steps in order",
+        "members": [
+          "+Open() AgentSession",
+          "-Identity(), CheckDepth(), Level(), CheckTool()",
+          "-Toolsets(), CheckLookupAsksNoOne(), Chain(), Engine()"
+        ]
+      },
+      {
+        "id": "request",
+        "name": "SessionRequest",
+        "kind": "record",
+        "members": [
+          "Toolsets?, Tags?, Depth, Role?, Tool?, Identity?, ..."
         ]
       },
       {
@@ -105,8 +123,12 @@
       { "from": "map", "to": "door", "kind": "creates" },
       { "from": "handlers", "to": "sessions", "kind": "uses" },
       { "from": "handlers", "to": "contracts", "kind": "uses", "word": "reads and answers" },
-      { "from": "sessions", "to": "factory", "kind": "holds" },
-      { "from": "sessions", "to": "session", "kind": "creates" },
+      { "from": "handlers", "to": "request", "kind": "creates" },
+      { "from": "sessions", "to": "opening", "kind": "creates", "word": "opens through" },
+      { "from": "opening", "to": "request", "kind": "uses", "word": "reads" },
+      { "from": "opening", "to": "factory", "kind": "uses", "word": "gets the engine" },
+      { "from": "opening", "to": "session", "kind": "creates" },
+      { "from": "sessions", "to": "session", "kind": "holds" },
       { "from": "handlers", "to": "stream", "kind": "uses", "word": "streams the turn" },
       { "from": "stream", "to": "iformat", "kind": "uses", "word": "writes in" },
       { "from": "claude", "to": "iformat", "kind": "implements" }

@@ -278,14 +278,14 @@ and every `[Description]` for the old word after a rename, not to trust the step
 
 That closes CL68. The prompt tree now reads the way the engine reads it: `agents/{identity}/` holds a voice, its
 skills, its subagents and its lookup agents, each named by an address that is also its path. What's left of the old
-words in code comments and test names is CL69; `AgentSessions.Create`, which Louis found ugly on the way, is CL70.
+words in code comments and test names is CL69. `AgentSessions.Create`, which Louis found ugly on the way, became a
+method object in CL70 (in the [extensibility write-up](20-extensibility.md)).
 
 ## Next
 
 Decide how often Puls should delegate (keep research and long work, answer short read-only questions itself?) and
 measure it the same way; Puls on `AskAgent`, measured when Puls resumes (F135); more evals per role for quality, not
-only cost; parallel subagents for a task with independent parts; CL70, the session's opening as a method object; and
-CL69, the old words left in code.
+only cost; parallel subagents for a task with independent parts; and CL69, the old words left in code.
 
 ---
 [Learning](README.md) · [Goal](../GOAL.md)
