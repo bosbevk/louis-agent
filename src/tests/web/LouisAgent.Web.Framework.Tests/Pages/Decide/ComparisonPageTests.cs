@@ -1,5 +1,6 @@
 using LouisAgent.Web.Docs;
 using LouisAgent.Web.Framework.Content.Comparison;
+using LouisAgent.Web.Framework.Content.Comparison.Parts;
 using LouisAgent.Web.Framework.Pages.Decide;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -51,6 +52,27 @@ public class ComparisonPageTests
         });
     }
 
+    /// <summary>
+    /// The table tells the whole framework, not only its tools: how it is extended, its prompts, where you reach it,
+    /// its guards and its sessions, and the website row says the site is built from parts (Louis, 2026-11-22: "but
+    /// we have an whole blazor plugin arhitecture?").
+    /// </summary>
+    [Test]
+    public void TheTable_TellsTheWholeFramework()
+    {
+        var topics = Comparisons.All.Select(claim => claim.Topic).ToList();
+        var website = Comparisons.Claims[ComparisonTopic.AWebsiteWithTheAgent];
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(topics, Is.SupersetOf(new[]
+            {
+                "How you extend it", "Prompts", "Where you reach it", "Guards", "Sessions and memory"
+            }));
+            Assert.That(website.Ours, Does.Contain("Blazor sites built from parts"));
+        });
+    }
+
     /// <summary>The others' pages are linked, with the date they were read on, shown on the page.</summary>
     [Test]
     public void TheOthersPages_AreLinked_WithTheDayTheyWereRead()
@@ -63,7 +85,7 @@ public class ComparisonPageTests
         Assert.Multiple(() =>
         {
             Assert.That(cut.Find("section#sources").TextContent, Does.Contain(Comparisons.ReadOn));
-            Assert.That(links, Is.SupersetOf(Comparisons.Sources.Select(source => source.Address)));
+            Assert.That(links, Is.SupersetOf(Comparisons.Sources.InOrder.Select(source => source.Address)));
         });
     }
 }
