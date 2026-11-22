@@ -1,0 +1,116 @@
+{
+  "kind": "classes",
+  "title": "F126.1 delete the old evals: the interface design",
+  "caption": "This child adds no type to the evals. It shows the seams a site and a test touched the evals through, and what happens to each. The number in brackets is the step. What stays is what the new evals are built on.",
+  "classes": {
+    "types": [
+      {
+        "id": "areas",
+        "name": "SiteAreasBuilder",
+        "members": [
+          "Chat()",
+          "Admin(layout)",
+          "Overview()",
+          "Packs()",
+          "stays, and knows no eval area"
+        ]
+      },
+      {
+        "id": "evalarea",
+        "name": "EvalArea",
+        "kind": "static",
+        "members": [
+          "Evals(areas, kinds) SiteAreasBuilder",
+          "goes with LouisAgent.Web.Evals  (4)"
+        ]
+      },
+      {
+        "id": "hostctx",
+        "name": "AgentHostContext",
+        "members": [
+          "stays"
+        ]
+      },
+      {
+        "id": "startup",
+        "name": "EvalsStartup",
+        "kind": "static",
+        "members": [
+          "MapLouisAgentEvals(app, host) WebApplication",
+          "goes with LouisAgent.Api.Evals  (7)"
+        ]
+      },
+      {
+        "id": "testhost",
+        "name": "ApiTestHost",
+        "members": [
+          "stays",
+          "loses its eval stores and routes  (6)"
+        ]
+      },
+      {
+        "id": "isession",
+        "name": "ISessionClient",
+        "kind": "interface",
+        "members": [
+          "OpenAsync(request)",
+          "SendAsync(session, message)",
+          "CloseAsync(session)",
+          "goes  (8)"
+        ]
+      },
+      {
+        "id": "http",
+        "name": "HttpSessionClient",
+        "members": [
+          "talks to /v1/sessions over HTTP",
+          "goes  (8); copied back from git when runs are built"
+        ]
+      },
+      {
+        "id": "evalfile",
+        "name": "EvalFile",
+        "kind": "record",
+        "members": [
+          "the old eval.json's record",
+          "goes  (8); the name is free for F126.2"
+        ]
+      },
+      {
+        "id": "replay",
+        "name": "ReplayStore",
+        "members": [
+          "recorded model and web answers",
+          "stays in LouisAgent.Core"
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "from": "evalarea",
+        "to": "areas",
+        "kind": "uses"
+      },
+      {
+        "from": "startup",
+        "to": "hostctx",
+        "kind": "uses"
+      },
+      {
+        "from": "testhost",
+        "to": "startup",
+        "kind": "uses"
+      },
+      {
+        "from": "http",
+        "to": "isession",
+        "kind": "implements"
+      },
+      {
+        "from": "startup",
+        "to": "evalfile",
+        "kind": "uses"
+      }
+    ]
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "kind": "flow",
+  "type": "object",
+  "title": "F126.1 delete the old evals: objects in memory, after",
+  "caption": "The starter's site and its API after this child. The admin's home holds two cards where it held three, the API maps no eval routes and opens no eval store, and the engine still holds the replay a later child plays back.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "areas",
+        "icon": "settings",
+        "tone": "violet",
+        "label": "SiteAreasBuilder\nChat, Admin, Overview, Packs, Accounts"
+      },
+      {
+        "id": "shell",
+        "icon": "chart",
+        "tone": "violet",
+        "label": "AdminShell\nno Evals link in its sidebar"
+      },
+      {
+        "id": "home",
+        "icon": "chart",
+        "tone": "violet",
+        "label": "AdminHome\ncards: Overview, Packs"
+      },
+      {
+        "id": "host",
+        "icon": "server",
+        "tone": "blue",
+        "label": "The API's program\nMapLouisAgentApi, no MapLouisAgentEvals"
+      },
+      {
+        "id": "sessions",
+        "icon": "message",
+        "tone": "violet",
+        "label": "The sessions API\n/v1/sessions"
+      },
+      {
+        "id": "replay",
+        "icon": "folder",
+        "tone": "violet",
+        "label": "ReplayStore\nrecorded answers",
+        "shape": "data"
+      },
+      {
+        "id": "ledger",
+        "icon": "book",
+        "tone": "teal",
+        "label": "The usage ledger",
+        "shape": "data"
+      }
+    ],
+    "edges": [
+      {
+        "from": "areas",
+        "to": "shell"
+      },
+      {
+        "from": "areas",
+        "to": "home"
+      },
+      {
+        "from": "host",
+        "to": "sessions"
+      },
+      {
+        "from": "sessions",
+        "to": "replay",
+        "word": "an eval session",
+        "style": "dashed"
+      },
+      {
+        "from": "sessions",
+        "to": "ledger"
+      }
+    ],
+    "direction": "down"
+  }
+}
