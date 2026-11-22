@@ -41,14 +41,15 @@ On top of that base, each business only says which one it is. `RestaurantIdentit
 Malmesbury. `LawPracticeIdentity` is Koringland Attorneys, also in Malmesbury. `GuesthouseIdentity` is Seemeeu
 Guesthouse, in Yzerfontein.
 
-The three share one project, but each carries only its own prompts, read from its own folder under `prompts/`. A
-prompt's path has one home in a catalogue, so a business that carried the others' voices would clash with them.
+The three share one project, and one provider over it: each business's voice sits at `agents/{name}/voice.md`, named
+once, and all three identities hand the catalogue the same provider. A prompt's path has one home in a catalogue, and
+the catalogue reads a provider it is given twice only once, so the three voices never clash.
 
-*Decided in:* F127.1.
+*Decided in:* F127.1, CL68.1.
 
 ### 2. What each voice knows
 
-Each business's voice lives in `prompts/{name}/agent/{name}/voice.md`. It holds the business's made-up facts: its hours,
+Each business's voice lives in `agents/{name}/voice.md`. It holds the business's made-up facts: its hours,
 services and prices. It says how to answer: three short sentences, in proper English or Afrikaans, with a greeting
 only once.
 
@@ -122,7 +123,7 @@ The place to look a file up. Paths are from `src/site/LouisAgent.Identities.Show
 | `ShowroomIdentity.cs` | The base: the name, the voice, its own prompts, the two packs, and `IsDemonstration` |
 | `Businesses.cs` | `RestaurantIdentity`, `LawPracticeIdentity` and `GuesthouseIdentity`, one line each |
 | `ShowroomNames.cs` | The two enums: `ShowroomIdentityName` (the three businesses) and `ShowroomPack` (leads, site) |
-| `prompts/{name}/agent/{name}/voice.md` | Each business's voice: its facts, how it answers, how it shows its website and passes a booking on |
+| `agents/{name}/voice.md` | Each business's voice: its facts, how it answers, how it shows its website and passes a booking on |
 | `src/site/recordings/` | `record-showroom.sh`, and each business's website in `pages/{name}.json` |
 
 ## Tests

@@ -23,10 +23,10 @@ site's CSS, so it can't drift from what the site plays ([ADR 0077](../../../demo
 
 | | **Tools** | **Skills** |
 |---|---|---|
-| What | Public C# methods on a pack's tool classes in `packs/tools/LouisAgent.Packs.{Name}/` | Markdown in the `prompts/` of core, an identity or a pack, and the function skills the agent wrote |
+| What | Public C# methods on a pack's tool classes in `packs/tools/LouisAgent.Packs.{Name}/` | Markdown in the prompt folders of core, an identity or a pack, and the function skills the agent wrote |
 | The model sees | A function with typed parameters and a description | Text in the system prompt; named procedures it can run |
 | How it's used | The model calls it; the result comes back | The model follows the guidance, or runs a procedure with `ExecuteSkill` |
-| Examples | `ReadWorkspaceFile`, `GetStatus`, `DotNetTest`, `WebSearch`, `LogTimeByTaskName` | `agent/louis-agent/voice.md` (the coding agent's mode: voice, routing), `toolsets/dotnet.md` (the dotnet pack's guide), a function skill in the skills folder's `agent/functions/` |
+| Examples | `ReadWorkspaceFile`, `GetStatus`, `DotNetTest`, `WebSearch`, `LogTimeByTaskName` | `agent/louis-agent/voice.md` (the coding agent's mode: voice, routing), `toolsets/dotnet.md` (the dotnet pack's guide), a function skill in the skills folder's `agents/functions/` |
 
 Tools give the agent abilities; skills tell it how and when to use them. The agent can add both: `CreateSkillFile` writes
 a new skill file and `CreateTool` a script-backed tool, and each waits in a `pending/` folder for your `/approve <Name>`
@@ -77,7 +77,7 @@ guide, because its role says what to do with its one tool. A session with the `a
 the agents it may ask, its identity's `Calls`, the same list `AskAgent` checks. Last, and only with the `skills`
 toolset, comes every function skill the agent wrote.
 
-The combined text is the system prompt. Core's own files are in `src/engine/LouisAgent.Core/prompts/`, and each
+The combined text is the system prompt. Core's own files are in `src/engine/LouisAgent.Core/`'s `shared/` and `toolsets/`, and each
 identity and pack embeds its own. All of them are read only from their assemblies, so changing a word means a rebuild.
 
 *Decided in:* F5, [ADR 0018](../adr/0018-built-in-prompts-embedded.md), [ADR 0019](../adr/0019-modes-one-file-per-product.md),

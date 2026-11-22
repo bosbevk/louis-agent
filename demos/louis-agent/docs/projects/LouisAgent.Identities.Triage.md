@@ -27,7 +27,7 @@ its `Calls`, from `TriageCall`: `triage.sorter`, `triage.investigator` and `tria
 
 ### 2. The manager
 
-The manager's voice is `prompts/agent/triage/voice.md`, and it makes the manager the hub. It says how the manager
+The manager's voice is `agents/triage/voice.md`, and it makes the manager the hub. It says how the manager
 decides: the runbooks come with the case as its brief, the case is expected, for a person, for a fix or for a
 hand-off, and a report is only a claim until the code has checked it. It says how the manager ends a case, with
 `DecideCase` or `RaiseToPerson`. And it gives the routing, the toolsets `triage` and `agents`, so the manager asks

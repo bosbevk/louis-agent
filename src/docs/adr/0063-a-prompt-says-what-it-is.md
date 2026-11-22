@@ -39,7 +39,8 @@ other optional keys allowed and ours strict (keys nothing reads).
   # Puls specialist: Local cook
   ```
 
-  `name` is the file's own name without `.md`; `description` says what it is and when it is loaded, at most 1024
+  `name` is the file's own name without `.md`, and a skill's is its folder's, since a skill is a folder holding its
+  `SKILL.md` (added 2026-11-22, CL68.1); `description` says what it is and when it is loaded, at most 1024
   characters; `metadata.level` is `agent`, `specialist` or `minion` for a mode, a role or a minion, and a guide or the
   principles name none; `metadata.toolsets` is the comma list a role always loads, a `?` loading only where the
   instance has it ([ADR 0025](0025-a-role-declares-its-toolsets.md)). Its values are text, as the spec's map of strings

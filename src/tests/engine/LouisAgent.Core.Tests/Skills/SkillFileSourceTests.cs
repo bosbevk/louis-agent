@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Packs;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Skills;
@@ -6,7 +7,8 @@ using LouisAgent.Core.Skills.Roles;
 namespace LouisAgent.Core.Tests.Skills;
 
 // F5 step 4b: the built-in skill files ship inside LouisAgent.Core, so a host needs no Skills/ folder. CL8 step 4:
-// they live in core's prompts/ and are read only from the assembly, by their real paths; a copy on disk is never read.
+// they live in core's prompt folders and are read only from the assembly, by their real paths; a copy on disk is never
+// read.
 public class SkillFileSourceTests
 {
     private string _dir = null!;
@@ -18,6 +20,19 @@ public class SkillFileSourceTests
     public void TearDown() => Directory.Delete(_dir, recursive: true);
 
     private static string Repo(string path) => File.ReadAllText(Path.Combine(TestPaths.Prompts, path));
+
+    /// <summary>
+    /// A project's prompts are read from its root (CL68.1), where the embedded provider also lists its own manifest;
+    /// only markdown is a prompt (Louis's pick of three), so the manifest is never a prompt path.
+    /// </summary>
+    [Test]
+    public void AProjectsProvider_ListsOnlyItsPrompts()
+    {
+        var files = SkillFileSource.FilesOf(EmbeddedPrompts.Of(typeof(SkillFileSource).Assembly)).ToList();
+
+        Assert.That(files, Is.Not.Empty);
+        Assert.That(files, Has.All.EndsWith(".md"));
+    }
 
     [Test]
     public void EveryBuiltInFile_IsEmbedded_UnderItsOwnPath()
@@ -32,7 +47,7 @@ public class SkillFileSourceTests
     [Test]
     public void AFolder_ListsItsFiles()
     {
-        // CL15: the roles here are the tests' own (prompts/), registered as an identity's are; Puls's live in its
+        // CL15: the roles here are the tests' own (their agents/), registered as an identity's are; Puls's live in its
         // identity.
         Assert.That(SkillFileSource.Files(RoleCatalog.SpecialistsFolder),
             Is.EqualTo(new[] { "testprod-specialist.md" }));
@@ -65,10 +80,10 @@ public class SkillFileSourceTests
     public void AFunctionTheAgentWrote_IsReadFromDisk()
     {
         // What the agent writes (CreateSkillFile) lives in the skills folder, not the assembly.
-        Directory.CreateDirectory(Path.Combine(_dir, "agent", "functions"));
-        File.WriteAllText(Path.Combine(_dir, "agent", "functions", "greeting.md"), "# Greeting Skills");
+        Directory.CreateDirectory(Path.Combine(_dir, RoleCatalog.AgentFolder, "functions"));
+        File.WriteAllText(Path.Combine(_dir, RoleCatalog.AgentFolder, "functions", "greeting.md"), "# Greeting Skills");
 
-        var file = SkillFolder.Read(new AgentOptions { SkillsDirectory = _dir }, "agent/functions/greeting.md");
+        var file = SkillFolder.Read(new AgentOptions { SkillsDirectory = _dir }, "agents/functions/greeting.md");
 
         Assert.That(file!.Value.FromDisk, Is.True);
         Assert.That(file.Value.Text, Does.Contain("# Greeting Skills"));

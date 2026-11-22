@@ -5,7 +5,8 @@ namespace LouisAgent.Testing;
 
 /// <summary>
 /// An identity for the catalogue's tests: a name, in-memory prompts, the packs it names, and the voice a session
-/// that names it opens with (F109.3), none unless the test says.
+/// that names it opens with (F109.3), none unless the test says. A test may hand it a provider another identity also
+/// holds, as the showroom's three businesses share one (CL68.1).
 /// </summary>
 public sealed class FakeIdentity(
     string name = "fakeid",
@@ -14,13 +15,14 @@ public sealed class FakeIdentity(
     string? voice = null,
     bool demonstration = false,
     IReadOnlyList<string>? calls = null,
-    bool relaysAnswersWhole = false) : IAgentIdentity
+    bool relaysAnswersWhole = false,
+    IFileProvider? provider = null) : IAgentIdentity
 {
     public string Name => name;
 
-    public IFileProvider Prompts { get; } = new FakePrompts(prompts ?? new Dictionary<string, string>
+    public IFileProvider Prompts { get; } = provider ?? new FakePrompts(prompts ?? new Dictionary<string, string>
     {
-        [$"agent/{name}/voice.md"] = $"# {name}\n\nA voice.\n"
+        [$"agents/{name}/voice.md"] = $"# {name}\n\nA voice.\n"
     });
 
     public IReadOnlyList<string> Packs => packs ?? [];

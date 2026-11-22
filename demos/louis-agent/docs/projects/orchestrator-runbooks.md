@@ -27,7 +27,7 @@ run. "Skill" names the mechanism; "runbook" names what these skills are for.
 ## Where they live
 
 ```
-demos/louis-agent/identity/LouisAgent.Identities.Coding/prompts/agent/louis-agent/
+demos/louis-agent/identity/LouisAgent.Identities.Coding/agents/louis-agent/
 └── voice-orchestrator.md      the workflow every error goes through (the same for all services; the coding identity's)
 
 demos/louis-agent/hosts/LouisAgent.Orchestrator/Skills/

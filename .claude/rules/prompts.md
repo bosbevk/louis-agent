@@ -1,6 +1,10 @@
 ---
 paths:
-  - "**/prompts/**/*.md"
+  - "**/agents/**/*.md"
+  - "**/toolsets/**/*.md"
+  - "**/shared/**/*.md"
+  - "**/specialists/**/*.md"
+  - "**/minions/**/*.md"
   - "**/*ToolMessage.cs"
 ---
 

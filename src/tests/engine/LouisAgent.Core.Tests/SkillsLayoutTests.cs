@@ -5,14 +5,14 @@ using LouisAgent.Core.Skills.Roles;
 
 namespace LouisAgent.Core.Tests;
 
-// src/docs/CLAUDE.md, "Skill files follow the levels" (CL8, ADR 0017 and 0018): a built-in prompt lives in core's
-// prompts/, in the folder of the level that reads it, or in toolsets/ when every level shares it; the repo's Skills/
-// holds only what the agent writes. Read from the folders, so a misplaced file fails here before a session ever loads
-// it.
+// src/docs/CLAUDE.md, "Skill files follow the levels" (CL8, ADR 0017 and 0018): a built-in prompt lives in one of
+// core's prompt folders, the folder of the level that reads it, or toolsets/ when every level shares it; the repo's
+// Skills/ holds only what the agent writes. Read from the folders, so a misplaced file fails here before a session ever
+// loads it.
 public class SkillsLayoutTests
 {
     /// <summary>
-    /// The folders under prompts/ a built-in file may be in: a level's, its function skills', or the shared guides'.
+    /// The folders a built-in file may be in: a level's, its function skills', or the shared guides'.
     /// </summary>
     private static readonly string[] PromptFolders =
     [
@@ -32,23 +32,25 @@ public class SkillsLayoutTests
     [Test]
     public void EveryPrompt_IsInAKnownFolder()
     {
-        // agent/ holds a folder per product (CL9) beside functions/, and no file of its own.
-        var misplaced = FilesUnder(TestPaths.Prompts)
+        // agents/ holds a folder per product (CL9) beside functions/, and no file of its own.
+        var misplaced = TestPaths.PromptFiles(TestPaths.Prompts)
             .Select(f => (File: f, Folder: Path.GetDirectoryName(f)!.Replace('\\', '/')))
             .Where(f => (!PromptFolders.Contains(f.Folder) &&
-                         !System.Text.RegularExpressions.Regex.IsMatch(f.Folder, "^agent/[a-z0-9-]+$"))
+                         !System.Text.RegularExpressions.Regex.IsMatch(f.Folder,
+                             $"^{RoleCatalog.AgentFolder}/[a-z0-9-]+$"))
                         || f.Folder == RoleCatalog.AgentFolder)
             .Select(f => f.File);
 
         Assert.That(misplaced, Is.Empty,
-            "prompts/ holds agent/{product}/, agent/functions/, specialists/, minions/ and toolsets/ only");
+            "core's prompts are agents/{product}/, agents/functions/, specialists/, minions/, toolsets/ and " +
+            "shared/ only");
     }
 
     [Test]
     public void EveryPrompt_IsEmbedded_AndNothingElseIs()
     {
-        Assert.That(SkillFileSource.CoreFiles, Is.EquivalentTo(FilesUnder(TestPaths.Prompts)),
-            "the csproj embeds prompts/** and only that " +
+        Assert.That(SkillFileSource.CoreFiles, Is.EquivalentTo(TestPaths.PromptFiles(TestPaths.Prompts)),
+            "the csproj embeds its prompt folders and only those " +
             "(CL15: the registered test roles are beside them, not among them)");
     }
 
@@ -100,6 +102,6 @@ public class SkillsLayoutTests
                                                       StringComparison.Ordinal)
                                                   && !f.StartsWith("tools/", StringComparison.Ordinal));
 
-        Assert.That(other, Is.Empty, "a built-in prompt goes in src/engine/LouisAgent.Core/prompts/");
+        Assert.That(other, Is.Empty, "a built-in prompt goes in src/engine/LouisAgent.Core/'s prompt folders");
     }
 }

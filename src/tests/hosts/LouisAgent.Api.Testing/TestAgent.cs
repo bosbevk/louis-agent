@@ -69,9 +69,9 @@ public static class TestAgent
         packs: [.. Packs.Select(pack => pack.Name)],
         prompts: new Dictionary<string, string>
         {
-            [$"agent/{Name}/voice.md"] = Prompt("voice", "agent", RoutingHeading, "How the test agent routes."),
-            [$"agent/{Name}/voice-en.md"] = Prompt("voice-en", "agent", VoiceHeading, "The test agent in English."),
-            [$"agent/{Name}/voice-de.md"] = Prompt("voice-de", "agent", OtherVoiceHeading, "The test agent in German."),
+            [$"agents/{Name}/voice.md"] = Prompt("voice", "agent", RoutingHeading, "How the test agent routes."),
+            [$"agents/{Name}/voice-en.md"] = Prompt("voice-en", "agent", VoiceHeading, "The test agent in English."),
+            [$"agents/{Name}/voice-de.md"] = Prompt("voice-de", "agent", OtherVoiceHeading, "The test agent in German."),
             [$"specialists/{Specialist}.md"] = Prompt(Specialist, "specialist", "# Test agent specialist",
                 "The test agent's specialist.", "web, calculator"),
             [$"specialists/{Reader}.md"] =

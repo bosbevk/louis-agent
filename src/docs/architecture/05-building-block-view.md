@@ -276,10 +276,10 @@ the ones it reads when it needs them.
 After that comes the guide of each of the profile's toolsets, and no other, so the prompt never describes a tool the
 session doesn't have. With the `agents` toolset, the addresses the identity may ask are listed after its guide. And
 only with the `skills` toolset, every function skill the agent wrote itself is added
-(`agent/functions/*.md` in the skills folder).
+(`agents/functions/*.md` in the skills folder).
 
-Core's own files are in `src/engine/LouisAgent.Core/prompts/` (the principles in `shared/`, the `agents` and
-self-extension guides in `toolsets/`). Each identity and pack brings its own, registered with `SkillFileSource.Use`
+Core's own files are in `src/engine/LouisAgent.Core/`'s prompt folders (the principles in `shared/`, the `agents`
+and self-extension guides in `toolsets/`). Each identity and pack brings its own, registered with `SkillFileSource.Use`
 at start-up. All of these are read only from their assemblies, so what the model reads is fixed by the build. Only
 what the agent writes (its function skills and its tools) lives on disk, in the skills folder: `SKILLS_DIRECTORY`, or
 else a `skills/` above the working directory, found by its README.

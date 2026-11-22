@@ -11,7 +11,7 @@ namespace LouisAgent.Composition.Packs;
 public interface IAgentIdentity
 {
     /// <summary>
-    /// The name <c>IDENTITIES</c> loads it by ("acme"); its modes are <c>agent/{name}/…</c>. Lowercase letters, digits
+    /// The name <c>IDENTITIES</c> loads it by ("acme"); its modes are <c>agents/{name}/…</c>. Lowercase letters, digits
     /// and dashes.
     /// </summary>
     string Name { get; }

@@ -2,6 +2,7 @@ using LouisAgent.Testing;
 using LouisAgent.Choices;
 using LouisAgent.Core.Skills.Languages;
 using LouisAgent.Core.Skills;
+using LouisAgent.Core.Skills.Roles;
 using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Config;
@@ -45,8 +46,8 @@ public class SkillAuthoringTests
     /// <summary>A function skill file (CL8: agent/functions/{name}.md), as a user would drop one in.</summary>
     private string FunctionFile(string name)
     {
-        Directory.CreateDirectory(Path.Combine(_skillsDir, "agent", "functions"));
-        return Path.Combine(_skillsDir, "agent", "functions", $"{name}.md");
+        Directory.CreateDirectory(Path.Combine(_skillsDir, RoleCatalog.AgentFolder, "functions"));
+        return Path.Combine(_skillsDir, RoleCatalog.AgentFolder, "functions", $"{name}.md");
     }
 
     private AgentOptions Options() => new() { WorkspaceRoot = _skillsDir, SkillsDirectory = _skillsDir };
@@ -70,9 +71,9 @@ public class SkillAuthoringTests
         Assert.That(SkillLoader.Load(Options()).Skills.Select(s => s.Name), Does.Not.Contain("Farewell"));
     }
 
-    private string PendingFile(string name) => Path.Combine(_skillsDir, "agent", "functions", "pending", $"{name}.md");
+    private string PendingFile(string name) => Path.Combine(_skillsDir, RoleCatalog.AgentFolder, "functions", "pending", $"{name}.md");
 
-    private string ApprovedFile(string name) => Path.Combine(_skillsDir, "agent", "functions", $"{name}.md");
+    private string ApprovedFile(string name) => Path.Combine(_skillsDir, RoleCatalog.AgentFolder, "functions", $"{name}.md");
 
     // ---- FX20: a skill file the agent writes waits in pending/ for the user's /approve, as agent-built tools do ----
 
@@ -86,7 +87,7 @@ public class SkillAuthoringTests
         Assert.That(result, Does.Contain("Greet").And.Contain("/approve greeting"));
         Assert.That(File.Exists(PendingFile("greeting")), Is.True, "written to pending/");
         Assert.That(File.Exists(ApprovedFile("greeting")), Is.False, "not approved yet");
-        Assert.That(result, Does.Contain(Path.Combine("agent", "functions", "pending", "greeting.md")));
+        Assert.That(result, Does.Contain(Path.Combine(RoleCatalog.AgentFolder, "functions", "pending", "greeting.md")));
         Assert.That(engine.SkillDocumentation, Does.Contain("# Greeting Skills"));
         Assert.That(engine.ExecuteSkill("Greet", """{"who":"Louis"}"""), Is.EqualTo("hello Louis"),
             "active in the engine that wrote it");
@@ -225,7 +226,7 @@ public class SkillAuthoringTests
         var result = Engine().CreateSkillFile("broken", missingExecution);
 
         Assert.That(result, Does.Contain("only 0 are valid"));
-        Assert.That(File.Exists(Path.Combine(_skillsDir, "agent", "functions", "broken.md")), Is.False);
+        Assert.That(File.Exists(Path.Combine(_skillsDir, RoleCatalog.AgentFolder, "functions", "broken.md")), Is.False);
     }
 
     [TestCase(TestToolset.DotNet)]

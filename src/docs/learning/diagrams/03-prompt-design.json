@@ -1,0 +1,59 @@
+{
+  "kind": "cards",
+  "title": "3 · Prompt design: a prompt's path is its address",
+  "caption": "Every project's prompts sit at its root, agent/ becomes agents/, the showroom names each business once, and every test stays green.",
+  "cards": {
+    "rows": [
+      {
+        "cards": [
+          {
+            "id": "cl68-1",
+            "icon": "folder",
+            "title": "CL68.1 prompts/ goes",
+            "code": "agents/{name}/voice.md",
+            "look": "highlight",
+            "text": "The path in a project is the path the engine reads."
+          }
+        ]
+      },
+      {
+        "cards": [
+          {
+            "id": "wrapper",
+            "icon": "stack",
+            "title": "The wrapper goes",
+            "code": "step 1",
+            "text": "Seventeen projects embed their prompt folders by name, read from the root."
+          },
+          {
+            "id": "agents",
+            "icon": "users",
+            "title": "agent/ is agents/",
+            "code": "step 2",
+            "text": "The role catalogue, the skill files and the tools' words, golden files regenerated."
+          },
+          {
+            "id": "showroom",
+            "icon": "home",
+            "title": "The showroom flat",
+            "code": "step 3",
+            "text": "One provider for three businesses, read once by the catalogue."
+          },
+          {
+            "id": "rest",
+            "icon": "checks",
+            "title": "The link, the headers, the docs",
+            "code": "steps 4 to 6",
+            "text": "The site's principles, every header's level, and every doc that names the tree."
+          }
+        ]
+      }
+    ],
+    "links": [
+      { "from": "cl68-1", "to": "wrapper" },
+      { "from": "cl68-1", "to": "agents" },
+      { "from": "cl68-1", "to": "showroom" },
+      { "from": "cl68-1", "to": "rest" }
+    ]
+  }
+}

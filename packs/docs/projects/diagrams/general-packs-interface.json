@@ -57,7 +57,7 @@
       },
       {
         "id": "prompts",
-        "name": "prompts/toolsets/{name}.md",
+        "name": "toolsets/{name}.md",
         "kind": "each toolset's guide, embedded",
         "tone": "amber"
       }

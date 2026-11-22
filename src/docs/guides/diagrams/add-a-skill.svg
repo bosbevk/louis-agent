@@ -228,8 +228,8 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M9 17l6 0" />
       </g>
       <text class="crd-headline" x="448" y="92" text-anchor="middle">A function skill</text>
-      <rect class="mrq-pill" x="361.2" y="108" width="173.6" height="24" rx="12" />
-      <text class="mrq-code" x="448" y="124" text-anchor="middle">skills/agent/functions</text>
+      <rect class="mrq-pill" x="357.8" y="108" width="180.4" height="24" rx="12" />
+      <text class="mrq-code" x="448" y="124" text-anchor="middle">skills/agents/functions</text>
       <text class="crd-summary" x="448" y="160" text-anchor="middle">A markdown file the agent runs with ExecuteSkill.</text>
       <rect class="mrq-glass" x="0" y="222" width="284" height="96" rx="14" />
       <rect class="mrq-edge" x="28" y="221.5" width="228" height="1.6" rx="0" />

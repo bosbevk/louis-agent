@@ -49,7 +49,7 @@ Delete the template's `Class1.cs`, and make the csproj look like the packs':
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.13" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="prompts\**\*.md" />
+    <EmbeddedResource Include="toolsets\**\*.md" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\docs\projects\LouisAgent.Packs.Units.md" Link="docs\LouisAgent.Packs.Units.md" />
@@ -118,7 +118,7 @@ A big toolset is several classes, one concern each (the 200-line limit, [ADR 003
 
 ## 3. Write the guide
 
-The guide is a markdown file the model reads whenever a session loads the toolset: `prompts/toolsets/units.md`.
+The guide is a markdown file the model reads whenever a session loads the toolset: `toolsets/units.md`.
 It opens with the header every prompt has ([ADR 0063](../adr/0063-a-prompt-says-what-it-is.md)): its `name` (the
 file's, `units`) and a `description` of the guide, no level, since every level may load it. Then the one line that
 routes work here, because a pack can't add a row to an identity's routing; then the tools, one line each; then how to
@@ -184,7 +184,7 @@ What each part of a `PackToolset` is for:
 |---|---|
 | `Name` | What a session asks for in `toolsets` (`"units"`), lowercase |
 | `Description` | One line, shown by `GET /v1/toolsets` |
-| `GuideFile` | `PackToolset.Guide("units")`, which is `toolsets/units.md` in the pack's `prompts/` |
+| `GuideFile` | `PackToolset.Guide("units")`, which is `toolsets/units.md` at the pack's root |
 | `MissingSettings` | The settings this instance lacks, by name; empty when the toolset can load. The recipes pack returns `RECIPE_SOURCES` until a site is named, and `BROWSER_URL` until there is a browser |
 | `ToolTypes` | The tool classes, so the catalogue knows the tool names without building anything |
 | `CreateTools` | Builds one object per tool class for an engine. The `IPackContext` it receives holds what the engine shares: `WorkspaceRoot`, `Browser`, `WebSearch`, `Renderer`, `CurrencyRates`, and `NewFetcher()` for a fetcher with the guards around it |

@@ -42,4 +42,26 @@ public partial class PromptFolderTests
 
         Assert.That(offenders, Is.Empty, "read prompts through EmbeddedPrompts.Of, its folder named there alone");
     }
+
+    /// <summary>
+    /// No project wraps its prompts in a <c>prompts/</c> folder (CL68.1, Louis: "prompts can go"): a project's prompt
+    /// folders sit at its root and its project file embeds them by name, so a path in the project is the path the
+    /// engine reads.
+    /// </summary>
+    [Test]
+    public void NoProject_WrapsItsPromptsInAFolder()
+    {
+        var projects = new[] { "src", "demos", "packs" }
+            .SelectMany(root => Directory.EnumerateFiles(Path.Combine(TestPaths.RepoRoot, root), "*.csproj",
+                SearchOption.AllDirectories))
+            .ToList();
+        var wrapped = projects
+            .Where(project => Directory.Exists(Path.Combine(Path.GetDirectoryName(project)!, "prompts"))
+                              || File.ReadAllText(project).Contains("Include=\"prompts\\", StringComparison.Ordinal))
+            .Select(project => Path.GetRelativePath(TestPaths.RepoRoot, project).Replace('\\', '/'))
+            .ToList();
+
+        Assert.That(projects, Is.Not.Empty);
+        Assert.That(wrapped, Is.Empty, "a project's agents/, toolsets/ and shared/ sit at its root");
+    }
 }

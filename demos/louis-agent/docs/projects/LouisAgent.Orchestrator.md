@@ -77,7 +77,7 @@ The pieces:
 | `Comms/CommsLog.cs` | The Markdown conversation log: per error, messages, replies, checks, summary; a run summary table |
 | `OrchestratorOptions.cs` | Settings |
 | `Messages/` | `OrchestratorToolMessage` (what its tools return and send louis-agent), `OrchestratorLogMessage` (its log lines: stderr, tagged `[orchestrator]`, and the run file with `LOG_DIRECTORY`), `OrchestratorErrorMessage` |
-| `demos/louis-agent/identity/LouisAgent.Identities.Coding/prompts/agent/louis-agent/voice-orchestrator.md` | The workflow every error goes through: its mode, one of the coding identity's prompts |
+| `demos/louis-agent/identity/LouisAgent.Identities.Coding/agents/louis-agent/voice-orchestrator.md` | The workflow every error goes through: its mode, one of the coding identity's prompts |
 | `Skills/<service>/` | `service.md` (owners, policies) and one runbook per API method — see [Runbooks](orchestrator-runbooks.md) |
 
 ## Configuration

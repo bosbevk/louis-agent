@@ -44,7 +44,7 @@ as Claude, or a commit or a pull request with a line that names Claude.
 | `rules/tests.md` | `src/tests/**`, `packs/tests/**`, `demos/*/tests/**` | What every test is, which tests run when, the golden files |
 | `rules/razor.md` | `**/*.razor`, `**/*.razor.cs` | Markup only, split by a hundred lines, the live results |
 | `rules/css.md` | `**/*.css`, `**/*.scss` | 200 lines of rules a file, `app.css` the import list in cascade order, the byte-checked move |
-| `rules/prompts.md` | `**/prompts/**/*.md`, `**/*ToolMessage.cs` | No name or date in a text the model reads, a prompt's header, the golden files |
+| `rules/prompts.md` | the prompt folders' markdown (`**/agents/**/*.md`, `toolsets/`, `shared/`, `specialists/`, `minions/`), `**/*ToolMessage.cs` | No name or date in a text the model reads, a prompt's header, the golden files |
 | `rules/docs.md` | `**/*.md` | One type per doc, the plan and fix-doc lifecycle, write-ups, English, plain words, the 200-line rule |
 | `rules/hosts-and-web.md` | `src/hosts/**`, `src/web/**`, `src/site/**`, `packs/web/**`, `demos/*/hosts/**`, `demos/*/web/**` | A host's own texts, a web app's folders, a page and its components, running a host from Rider |
 

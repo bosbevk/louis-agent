@@ -1,5 +1,4 @@
 using LouisAgent.Core.Web;
-using LouisAgent.Composition.Packs;
 using LouisAgent.Composition.Web.Search;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Config;
@@ -78,9 +77,45 @@ public static class TestPaths
     public static string Skills { get; } =
         Path.Combine(RepoRoot, "src/tests/shared/LouisAgent.Testing/Fixtures/skills");
 
-    /// <summary>The built-in prompts in core (CL8 step 4), embedded and read only from the assembly.</summary>
-    public static string Prompts { get; } =
-        Path.Combine(RepoRoot, "src", "engine", "LouisAgent.Core", EmbeddedPrompts.Folder);
+    /// <summary>
+    /// Core's project folder, where its built-in prompts' folders sit (CL8 step 4, CL68.1), embedded and read only
+    /// from the assembly.
+    /// </summary>
+    public static string Prompts { get; } = Path.Combine(RepoRoot, "src", "engine", "LouisAgent.Core");
+
+    /// <summary>The start of the line a project embeds its prompt folders with (CL68.1).</summary>
+    private const string EmbeddedLine = "<EmbeddedResource Include=\"";
+
+    /// <summary>The end of each folder's pattern on that line: <c>agents\**\*.md</c>.</summary>
+    private const string FolderPattern = "\\**\\*.md";
+
+    /// <summary>
+    /// A project's prompt folders, as its project file embeds them (CL68.1: the project file names them, so they are
+    /// read from there, never listed twice): <c>agents</c>, <c>toolsets</c>, <c>shared</c> and the like. None for a
+    /// project that embeds no prompts.
+    /// </summary>
+    public static IReadOnlyList<string> PromptFolders(string project)
+    {
+        var line = Directory.EnumerateFiles(project, "*.csproj").SelectMany(File.ReadLines)
+            .Select(text => text.Trim())
+            .FirstOrDefault(text => text.StartsWith(EmbeddedLine, StringComparison.Ordinal)
+                                    && text.Contains(FolderPattern, StringComparison.Ordinal));
+        if (line is null) return [];
+
+        string include = line[EmbeddedLine.Length..line.IndexOf('"', EmbeddedLine.Length)];
+        return [.. include.Split(';').Select(pattern => pattern.Replace(FolderPattern, ""))];
+    }
+
+    /// <summary>A project's prompts, each by its path in the project with forward slashes, in order.</summary>
+    public static IReadOnlyList<string> PromptFiles(string project) =>
+    [
+        .. PromptFolders(project)
+            .Select(folder => Path.Combine(project, folder))
+            .Where(Directory.Exists)
+            .SelectMany(folder => Directory.EnumerateFiles(folder, "*.md", SearchOption.AllDirectories))
+            .Select(file => Path.GetRelativePath(project, file).Replace('\\', '/'))
+            .Order(StringComparer.Ordinal)
+    ];
 
     public static AgentOptions Agent() => new()
     {

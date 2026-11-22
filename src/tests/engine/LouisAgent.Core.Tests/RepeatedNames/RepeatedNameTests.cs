@@ -51,7 +51,10 @@ public class RepeatedNameTests
     /// line, and why. Few on purpose (Louis, 2026-10-27: a dozen is too many).
     /// </summary>
     private static readonly (string File, string Line, string Reason)[] Exemptions =
-    [];
+    [
+        ("src/engine/LouisAgent.Core/Skills/Roles/RoleCatalog.cs", "AgentFolder = \"agents\"",
+            "the folder an agent's voice sits in (CL68.1), named once here; not the agents toolset"),
+    ];
 
     /// <summary>Every source file the scan looks at.</summary>
     private static IEnumerable<string> SourceFiles() => SourceTree.Files();

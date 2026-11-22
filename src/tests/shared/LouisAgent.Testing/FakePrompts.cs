@@ -4,7 +4,7 @@ using Microsoft.Extensions.Primitives;
 namespace LouisAgent.Testing;
 
 /// <summary>
-/// Prompts in memory, as a pack or identity would embed them: paths with forward slashes under their <c>prompts/</c>,
+/// Prompts in memory, as a pack or identity would embed them: paths with forward slashes as in their project,
 /// directories implied by the paths. Enough of <see cref="IFileProvider"/> for the catalogue and the prompt reader.
 /// </summary>
 public sealed class FakePrompts(IReadOnlyDictionary<string, string> files) : IFileProvider

@@ -519,9 +519,8 @@ public partial class ArchitectureTests
     {
         string core = Path.Combine(TestPaths.RepoRoot, "src", "engine", "LouisAgent.Core");
         var pieces = new SortedSet<string>(StringComparer.Ordinal);
-        foreach (string file in Directory.EnumerateFiles(Path.Combine(core, EmbeddedPrompts.Folder), "*.md",
-                     SearchOption.AllDirectories))
-            Add(Path.GetRelativePath(core, file), File.ReadAllText(file));
+        foreach (string file in TestPaths.PromptFiles(core))
+            Add(file, File.ReadAllText(Path.Combine(core, file)));
         foreach (string file in Directory.EnumerateFiles(core, "*.cs", SearchOption.AllDirectories))
         {
             if (file.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}") ||

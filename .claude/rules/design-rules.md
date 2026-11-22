@@ -112,6 +112,9 @@ The design decisions every change keeps, one line each: the *why* is its ADR in 
 - **A site is configured framework components**: its pages hold no HTML, only `LouisAgent.Web`'s controls given its
   words and data; a shape any site repeats is one control built in the framework first; a site's one-off look is a
   component of its own. [ADR 0125](../../src/docs/adr/0125-a-site-is-configured-framework-components.md).
+- **Words come from a dictionary factory**: a page's words are never a list of string literals in C#, but
+  `PartWords<TPart, TValue>` (`LouisAgent.Composition`), keyed by an enum of its parts, a test holding that every key
+  has its words; a page converts when touched. [ADR 0132](../../src/docs/adr/0132-words-come-from-a-dictionary-factory.md).
 - **A `.razor` holds markup only**, a page over about a hundred lines splits, **the web shows the live results**.
   [ADR 0034](../../src/docs/adr/0034-code-a-person-can-maintain.md), [ADR 0042](../../src/docs/adr/0042-the-web-shows-the-live-results.md).
 - **A doc is true, and it teaches**: every statement is checked against the code and nothing is invented (unsure while

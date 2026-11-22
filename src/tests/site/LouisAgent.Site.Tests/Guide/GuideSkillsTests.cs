@@ -1,4 +1,5 @@
 using System.Reflection;
+using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Headers;
 using LouisAgent.Identities.Guide;
 using LouisAgent.Packs.Site;
@@ -13,24 +14,30 @@ namespace LouisAgent.Site.Tests.Guide;
 /// </summary>
 public class GuideSkillsTests
 {
-    private const string Folder = "agent/louis-agent-guide/";
+    private const string Folder = "agents/louis-agent-guide/";
 
     /// <summary>Where the guide's skills are, beside its voice.</summary>
-    private const string SkillsFolder = "agent/louis-agent-guide/skills";
+    private const string SkillsFolder = "agents/louis-agent-guide/skills";
 
-    /// <summary>A prompt file of the guide's, split into its header and the body the model reads.</summary>
+    /// <summary>
+    /// A prompt file of the guide's, split into its header and the body the model reads, its line breaks made one
+    /// kind, so a checkout on any machine reads the same.
+    /// </summary>
     private static PromptFile Read(string path)
     {
         using var reader = new StreamReader(new GuideIdentity().Prompts.GetFileInfo(Folder + path).CreateReadStream());
-        return PromptHeaders.Split(Folder + path, reader.ReadToEnd());
+        return PromptHeaders.Split(Folder + path, reader.ReadToEnd().ReplaceLineEndings("\n"));
     }
+
+    /// <summary>One of the guide's skills, by its name: the <c>SKILL.md</c> in its folder (CL68.1).</summary>
+    private static PromptFile Skill(string name) => Read($"skills/{name}/{SkillFiles.SkillFile}");
 
     /// <summary>Each map is a skill read on demand, under its own heading.</summary>
     [TestCase("docs-map", "# Where things are")]
     [TestCase("site-map", "# The site you sit on")]
     public void AMap_IsASkillReadOnDemand(string skill, string heading)
     {
-        var file = Read($"skills/{skill}.md");
+        var file = Skill(skill);
 
         Assert.That((file.Header?.Load, file.Body.StartsWith(heading, StringComparison.Ordinal)),
             Is.EqualTo(((SkillLoad?)SkillLoad.OnDemand, true)));
@@ -43,7 +50,7 @@ public class GuideSkillsTests
     [Test]
     public void EveryPage_IsInTheIndexHeAlwaysHas()
     {
-        var index = Read("skills/site-pages.md");
+        var index = Skill("site-pages");
         var addresses = typeof(HomePage).Assembly.GetTypes()
             .Where(type => type.Namespace?.StartsWith(typeof(HomePage).Namespace!) == true)
             .SelectMany(type => type.GetCustomAttributes<RouteAttribute>())
@@ -62,7 +69,7 @@ public class GuideSkillsTests
     [Test]
     public void TheLiveDemo_IsASkillHeAlwaysHas_ForEveryBusinessHeMayAsk()
     {
-        var skill = Read("skills/live-demo.md");
+        var skill = Skill("live-demo");
         string body = string.Join(' ', skill.Body.Split((char[])[' ', '\r', '\n'],
             StringSplitOptions.RemoveEmptyEntries));
 
@@ -83,8 +90,8 @@ public class GuideSkillsTests
     [Test]
     public void AtWhatToWatch_TheWalkthroughOffersTheDemoLive_AndHeCoachesAfterTheAnswer()
     {
-        string walk = Flat(Read("skills/walk-a-page.md").Body);
-        string skill = Flat(Read("skills/live-demo.md").Body);
+        string walk = Flat(Skill("walk-a-page").Body);
+        string skill = Flat(Skill("live-demo").Body);
 
         Assert.Multiple(() =>
         {
@@ -115,7 +122,7 @@ public class GuideSkillsTests
     {
         using var reader = new StreamReader(new SitePack().Prompts.GetFileInfo("toolsets/site.md").CreateReadStream());
         string siteGuide = reader.ReadToEnd();
-        string walk = Read("skills/walk-a-page.md").Body;
+        string walk = Skill("walk-a-page").Body;
 
         Assert.Multiple(() =>
         {
@@ -132,7 +139,7 @@ public class GuideSkillsTests
     [Test]
     public void OnAskItLive_TheGuideOffersQuestionsForTheBusiness()
     {
-        string skill = Flat(Read("skills/live-demo.md").Body);
+        string skill = Flat(Skill("live-demo").Body);
 
         Assert.Multiple(() =>
         {
@@ -150,7 +157,7 @@ public class GuideSkillsTests
     /// </summary>
     [Test]
     public void AfterALiveAsk_HeReadsTheWorkBeforeAnswering() =>
-        Assert.That(Flat(Read("skills/live-demo.md").Body), Does.Contain(
+        Assert.That(Flat(Skill("live-demo").Body), Does.Contain(
             "Whenever they write to you again after you asked a business live, call `ReadAgentWork` with its address " +
             "first"));
 
@@ -163,9 +170,9 @@ public class GuideSkillsTests
     [Test]
     public void OnTheStart_TheGuideOpensADemo_AndAsksABusinessOnlyOnItsOwnPage()
     {
-        string walk = Flat(Read("skills/walk-a-page.md").Body);
-        string live = Flat(Read("skills/live-demo.md").Body);
-        string showroom = Flat(Read("skills/focus-demos.md").Body);
+        string walk = Flat(Skill("walk-a-page").Body);
+        string live = Flat(Skill("live-demo").Body);
+        string showroom = Flat(Skill("focus-demos").Body);
 
         Assert.Multiple(() =>
         {
@@ -185,7 +192,7 @@ public class GuideSkillsTests
     [Test]
     public void ArrivingInADemo_TheGuideOffersQuestionsToAskTheBusiness()
     {
-        string showroom = Flat(Read("skills/focus-demos.md").Body);
+        string showroom = Flat(Skill("focus-demos").Body);
 
         Assert.Multiple(() =>
         {
@@ -202,7 +209,7 @@ public class GuideSkillsTests
     /// </summary>
     [Test]
     public void AskingLive_TheGuideKeepsTheBusinesssWindowOnScreen() =>
-        Assert.That(Flat(Read("skills/live-demo.md").Body), Does.Contain(
+        Assert.That(Flat(Skill("live-demo").Body), Does.Contain(
             "In an answer where you call `AskAgent`, the only place you may show is the demo itself"));
 
     /// <summary>
@@ -214,9 +221,9 @@ public class GuideSkillsTests
     [Test]
     public void OnADemoPage_TheGuidePlaysTheConversationATurnAtATime_ThenOffersToTryIt()
     {
-        string walk = Flat(Read("skills/walk-a-page.md").Body);
-        string skill = Flat(Read("skills/live-demo.md").Body);
-        string showroom = Flat(Read("skills/focus-demos.md").Body);
+        string walk = Flat(Skill("walk-a-page").Body);
+        string skill = Flat(Skill("live-demo").Body);
+        string showroom = Flat(Skill("focus-demos").Body);
 
         Assert.Multiple(() =>
         {
@@ -237,7 +244,7 @@ public class GuideSkillsTests
     {
         var skills = new GuideIdentity().Prompts.GetDirectoryContents(SkillsFolder).Select(file => file.Name);
 
-        Assert.That(skills.Where(name => !Read($"skills/{name}").Body.Contains("\n## An example\n")), Is.Empty);
+        Assert.That(skills.Where(name => !Skill(name).Body.Contains("\n## An example\n")), Is.Empty);
     }
 
     /// <summary>
@@ -253,7 +260,7 @@ public class GuideSkillsTests
 
         var wrong = skills.Where(name =>
         {
-            string body = Read($"skills/{name}").Body;
+            string body = Skill(name).Body;
             int never = body.IndexOf("\n## Never\n", StringComparison.Ordinal);
             int example = body.IndexOf("\n## An example\n", StringComparison.Ordinal);
             int references = body.IndexOf("\n## References\n", StringComparison.Ordinal);
@@ -279,7 +286,7 @@ public class GuideSkillsTests
     [Test]
     public void Writing_IsASkillHeAlwaysHas_ApartFromTheVoice()
     {
-        var skill = Read("skills/writing.md");
+        var skill = Skill("writing");
         string body = string.Join(' ', skill.Body.Split((char[])[' ', '\r', '\n'],
             StringSplitOptions.RemoveEmptyEntries));
 

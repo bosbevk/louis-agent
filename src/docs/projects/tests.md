@@ -175,8 +175,8 @@ that references every pack in `packs/tools`. Its `EveryPack` lists one of each, 
 projects in the folder, so a new pack is held as soon as it exists. Every pack stays convertible to an MCP server
 (`PackConvertibilityTests`, through the MCP SDK's own `McpServerTool.Create`, which `LouisAgent.Testing` carries),
 against every identity's name in the repository, read from the identities' folders, with no pack excused. And every
-built-in prompt of every pack and
-identity, read from its project's `prompts/` on the disk, opens with its header, whose level is its folder's
+built-in prompt of every pack and identity, read from the prompt folders its project file names on the disk, opens
+with its header, whose level is its folder's, and every skill of an identity is a folder holding its `SKILL.md`
 (`EveryPromptHasAHeaderTests`).
 
 Puls's own tests, its identity's, its packs' and its catalogue's, live with it in
@@ -277,7 +277,7 @@ The folders of `src/tests/engine/LouisAgent.Core.Tests`, to look things up.
 | `Docs/` | The ratchets on the docs: the work log, the roadmap, the write-ups, the guides' listings, one seam for screens, and under `Instructions/` the size of what Claude loads and the skill files |
 | `Projects/` | Core's packages (`CorePackagesTests`) |
 | `Testing/`, `TestHttp/` | The tests of the shared `Outside` and `TestPaths`, and a header-echo handler |
-| The root | `ArchitectureTests`, `FileSizeTests`, `CodeLineCountTests`, `FolderSizeTests`, `SolutionLayoutTests`, `SiteBoundaryTests`, `PackWebBoundaryTests`, `ChoicesProjectTests`, `EvalProtocolProjectTests`, `DiagramsProjectTests`, `EngineAsksItsTypesTests`, `PromptFolderTests`, `SkillsLayoutTests` (part 5), and `TestPrompts`, the `[SetUpFixture]` that registers the tests' own prompts (`prompts/`: a product, a specialist, a minion) before the first is read |
+| The root | `ArchitectureTests`, `FileSizeTests`, `CodeLineCountTests`, `FolderSizeTests`, `SolutionLayoutTests`, `SiteBoundaryTests`, `PackWebBoundaryTests`, `ChoicesProjectTests`, `EvalProtocolProjectTests`, `DiagramsProjectTests`, `EngineAsksItsTypesTests`, `PromptFolderTests`, `SkillsLayoutTests` (part 5), and `TestPrompts`, the `[SetUpFixture]` that registers the tests' own prompts (`agents/`, `specialists/`, `minions/`: a product, a specialist, a minion) before the first is read |
 
 ## Extending it
 

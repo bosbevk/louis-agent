@@ -1,0 +1,29 @@
+{
+  "kind": "cards",
+  "title": "ADR 0132 at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "factory", "icon": "code", "title": "Words from a dictionary factory", "code": "PartWords<TPart, TValue>",
+          "look": "highlight",
+          "text": "A page's words keyed by an enum of its parts, never a list of string literals." }
+      ] },
+      { "cards": [
+        { "id": "enum", "icon": "stack", "title": "An enum of the parts",
+          "text": "One enum per list, in a Parts/ folder beside the content, its order the page's." },
+        { "id": "switch", "icon": "checks", "title": "Every key has its words",
+          "text": "A switch arm per part; a part without words stops the class loading." },
+        { "id": "framework", "icon": "box", "title": "A framework function",
+          "text": "In LouisAgent.Composition, so any page, pack or host can use it." },
+        { "id": "touched", "icon": "file", "title": "Converted when touched",
+          "text": "A step that changes a page's content leaves it on a factory." }
+      ] }
+    ],
+    "links": [
+      { "from": "factory", "to": "enum" },
+      { "from": "factory", "to": "switch" },
+      { "from": "factory", "to": "framework" },
+      { "from": "factory", "to": "touched" }
+    ]
+  }
+}

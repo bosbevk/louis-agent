@@ -261,8 +261,8 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M9 17l6 0" />
       </g>
       <text class="crd-name" x="293.5" y="263" text-anchor="start">Built-in prompts</text>
-      <rect class="mrq-pill" x="247.5" y="280" width="74.4" height="22" rx="11" />
-      <text class="mrq-code" x="257.5" y="295" text-anchor="start">prompts/</text>
+      <rect class="mrq-pill" x="247.5" y="280" width="142.4" height="22" rx="11" />
+      <text class="mrq-code" x="257.5" y="295" text-anchor="start">shared/, toolsets/</text>
       <text class="pic-text" x="247.5" y="326" text-anchor="start">Principles and core's two</text>
       <text class="pic-text" x="247.5" y="344" text-anchor="start">guides.</text>
       <rect class="mrq-glass" x="459" y="222" width="207.5" height="142" rx="14" />
