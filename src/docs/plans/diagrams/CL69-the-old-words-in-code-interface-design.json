@@ -60,7 +60,7 @@
         "id": "evals",
         "name": "ModelLevel, SpecialistCalls",
         "kind": "the eval protocol, unchanged",
-        "tone": "amber"
+        "tone": "plain"
       }
     ],
     "relations": [

@@ -11,7 +11,7 @@
       { "id": "api", "label": "API, SessionStream\nand their tests (6)", "icon": "server", "tone": "teal", "group": "renamed" },
       { "id": "web", "label": "LouisAgent.Web\nand its tests (7)", "icon": "world", "tone": "blue", "group": "renamed" },
       { "id": "rest", "label": "Tools, packs, demos\n(2, 8)", "icon": "stack", "tone": "blue", "group": "renamed" },
-      { "id": "evals", "label": "The eval code\nleft for its rework", "icon": "box", "tone": "amber" }
+      { "id": "evals", "label": "The eval code\nleft for its rework", "icon": "box", "tone": "plain" }
     ],
     "edges": [
       { "from": "test", "to": "core", "word": "reads" },

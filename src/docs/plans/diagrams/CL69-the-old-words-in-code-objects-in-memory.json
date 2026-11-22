@@ -6,7 +6,7 @@
   "flow": {
     "nodes": [
       { "id": "test", "label": "OldWordsTests", "icon": "shield", "tone": "violet" },
-      { "id": "kept", "label": "Kept places\nthe evals, the CV, the persona", "icon": "box", "tone": "amber" },
+      { "id": "kept", "label": "Kept places\nthe evals, the CV, the persona", "icon": "box", "tone": "plain" },
       { "id": "list", "label": "Still to rename\ntoday's files, empty at step 8", "icon": "tag", "tone": "teal" },
       { "id": "files", "label": "Source files\n.cs, .razor, .scss, .js, .json, .md prompts", "icon": "file", "tone": "green" }
     ],
