@@ -15,12 +15,17 @@ namespace LouisAgent.Packs.Rules.Tests;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0063-a-prompt-says-what-it-is.md">ADR 0063: a prompt says what it is</seealso>
 public class EveryPromptHasAHeaderTests
 {
-    /// <summary>The folders whose projects carry prompts of their own: the packs, and the identities.</summary>
+    /// <summary>
+    /// The projects that carry prompts of their own: the engine and its tests, the packs, and the identities.
+    /// </summary>
     private static IEnumerable<string> ProjectFolders() =>
-        new[] { Path.Combine(TestPaths.RepoRoot, "packs/tools"), Path.Combine(TestPaths.RepoRoot, "src/site") }
-            .Concat(TestPaths.Demos().Select(demo => Path.Combine(demo, "identity")))
-            .Where(Directory.Exists)
-            .SelectMany(Directory.EnumerateDirectories);
+        new[] { "src/engine/LouisAgent.Core", "src/tests/engine/LouisAgent.Core.Tests" }
+            .Select(project => Path.Combine(TestPaths.RepoRoot, project))
+            .Concat(new[] { "packs/tools", "src/site" }
+                .Select(folder => Path.Combine(TestPaths.RepoRoot, folder))
+                .Concat(TestPaths.Demos().Select(demo => Path.Combine(demo, "identity")))
+                .Where(Directory.Exists)
+                .SelectMany(Directory.EnumerateDirectories));
 
     /// <summary>
     /// Every prompt, by its path in its project, from the prompt folders its project file embeds (CL68.1), the
@@ -33,6 +38,19 @@ public class EveryPromptHasAHeaderTests
                 .Select(file => (Path: file, Text: File.ReadAllText(Path.Combine(project, file)))))
             .Where(prompt => !prompt.Path.EndsWith("README.md", StringComparison.Ordinal))
     ];
+
+    /// <summary>
+    /// The engine's own prompts and its tests' are read too (CL68.2, ADR 0133), so a subagent placed wrong anywhere in
+    /// the repository is caught, not only in an identity.
+    /// </summary>
+    [Test]
+    public void ThePromptsRead_IncludeTheEnginesAndItsTests()
+    {
+        var paths = Prompts().Select(p => p.Path).ToList();
+
+        Assert.That(paths, Does.Contain($"{PromptFolder.Shared.Wire()}/principles.md"));
+        Assert.That(paths, Does.Contain(RoleCatalog.FileName("testprod.specialist", RoleLevel.Subagent)));
+    }
 
     /// <summary>
     /// Each prompt has a header, which the reader takes: its name is its file's, with its description.
