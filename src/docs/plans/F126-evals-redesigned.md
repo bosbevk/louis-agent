@@ -213,7 +213,15 @@ Skill 4, Tool use: a follow-up proved to reach the same specialist (`continued`)
 
 ## Approved during the build
 
-Nothing yet.
+**2026-11-22, the delete comes first.** Louis reviewed this plan and picked "1. Delete first": today's evals are
+deleted before anything new is built, in a first child of its own,
+[F126.1 Delete the old evals](F126.1-delete-the-old-evals.md). The four children above keep their work and move
+down one: F126.2 the file and the grading, F126.3 runs and the run page, F126.4 flips, re-grade and
+better-or-worse, F126.5 new evals. For that first child he picked two more things the same day. "1. Delete
+everything": the session client and the two judge helpers this plan kept go with the rest, and a later child
+copies back from git what it needs, with its test first. "1. In F126.1, from your picks": the ADR that supersedes
+the old eval ADRs is written in F126.1, not in the last child. His other picks of that day are not in this entry.
+They wait for the change that brings this plan along.
 
 ---
 [Plans](README.md) · Related: [ADR 0029](../adr/0029-simulations-in-csharp.md) · [ADR 0058](../adr/0058-an-eval-is-a-folder-of-files.md) · [ADR 0104](../adr/0104-a-message-may-carry-the-page.md)
