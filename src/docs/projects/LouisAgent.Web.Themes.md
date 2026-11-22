@@ -170,7 +170,23 @@ and code review's retro and the framework's own default say the same. The framew
 drops from its size, so it stands on the line at any size.
 
 In both themes your own message sits under the same ink as a press, since the framework writes both with one name,
-`--web-on-primary`. Their ink is white, so your message is a dark grey in the dark and black in the light.
+`--web-on-primary`. Their ink is white, so your message is a dark grey in the dark and black in the light. The
+bubble runs from the theme's `--bs-success` into its `--web-success-deep`. Glass sets the second a shade deeper, so
+the bubble fades a little. Flat sets it to the first, so the bubble is one solid colour.
+
+The chat's windows and its talk take their depth from the theme too. The search window floats by the theme's
+floating shadow, and the page behind it is blurred by the veil's blur. The row a chat is typed in floats the same
+way and is blurred by the pane's blur. The send throws the press's shadow. A visitor's message and a code block
+take the small shadow, `--bs-box-shadow-sm`. So in flat, which sets each of those to none or to its hairline, the
+search window and the typing row are set apart by their line, and nothing in a talk throws a shadow. In glass a
+message and a code block throw glass's small shadow, a soft violet-dark one in the light and a close black one in
+the dark. Code review's retro says none for every one of these names, as flat does, so its chat draws no shadow and
+its top bar on a phone has no blur.
+
+While the agent works, a line of words says so, and a band of light runs along it. The band's colour is the
+theme's `--web-working-light`. Glass and retro set it to the strongest ink, so the band shows. Flat sets it to the
+words' own grey, so the band has nothing to show and the words stand still, while the small ring beside them keeps
+turning to say the agent is at work.
 
 ### 4. Drawings, handed over as values
 
@@ -234,7 +250,8 @@ framework's names their theme leaves unset, in each style; the answer must be no
 values: each of glass's drawing names is its drawing's address, and the file is there, and each of flat's is none
 but its mark's three, which are there too. `FlatFollowsItsDesignTests` holds flat to its design: the mark, no lights
 and no glow, the solid headline, the smaller o, the pane's line that only changes colour under the pointer, the
-presses' hovers, the icon's plate, and in the dark every line the firmer grey. `FlatInksTests` measures flat's
+presses' hovers, the icon's plate, in the dark every line the firmer grey, your message one solid colour, and the
+working line plain words. `FlatInksTests` measures flat's
 three inks against the page, a pane and a dialog, the two firmer inks on the menu too, and a listing's comment against its grey, at 4.5 to 1
 or more, and the theme's purple on the page in every theme and style; the sum is the W3C's, in the web tests'
 shared `Contrast`. `GlassValuesTests` holds glass to its design page in the same way: a pane and a

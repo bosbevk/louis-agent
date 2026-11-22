@@ -728,7 +728,18 @@ over the style alone. `PageScheme` names the theme's attribute and its two words
 rules are only in a page's copy, so a picture as a file, in the docs, stays byte for byte as it was. The web's
 `DiagramFigure` is what draws such a copy on a page ([LouisAgent.Web](LouisAgent.Web.md)).
 
-*Decided in:* F127.4.1, F164.1.
+**On a flat page a picture has no shading at all**, since flat draws one solid colour for each surface and nothing
+else. The page's copy gives a flat page a few rules of its own, the same in light and dark, each naming the theme
+alone and its parts inside one `:is()` so every part stays under flat (`PageScheme.PartRule`). The glow behind a
+rail and behind a sequence's beam, the light behind the picture's top, a panel's edge of light and a ticket's light
+are hidden. A rail, a beam going or coming back, and a badge with no tone of its own are filled with the picture's
+violet line in place of their fades. A lifeline and the rule under a title take the picture's hairline at full
+strength, and a key's swatch is filled as a card is. A badge that has a tone keeps it: the six tones say what each
+box is, so they stay. A test reads the page's copy of every kind of picture, finds each part its own style fills
+with a fade or passes through a filter, and fails if flat's rules or the cards' rule say nothing of it, so a fade
+added later has to say what it becomes on a flat page.
+
+*Decided in:* F127.4.1, F164.1, F169.4.
 
 ### 5. The types, in two pictures
 
@@ -821,7 +832,8 @@ chart's boxes, arrows and refusals in `Classes/`.
 
 It also covers the tones and the frame, the reader's refusals, a card's looks, and every icon drawn. `Tickets/` covers
 a ticket's refusals, its layout, and how it's made from a call. `Sources/Types/` checks a picture's type is filled in,
-kept or refused, and `Types/` what it's called. `Svg/PageSvgTests` checks a page's copy is scoped, rooted and trimmed.
+kept or refused, and `Types/` what it's called. `Svg/PageSvgTests` checks a page's copy is scoped, rooted and trimmed,
+and that on a flat page it has no glow, no light and no fade, every shaded part of every kind named for flat.
 `Geometry/` runs each sum a box and a point have over both families, and our own in `float` against Microsoft's.
 `Words/` checks a face's widths, `Svg/Paths/` a path's text, and `Svg/DiagramRenderersTests` that a picture is drawn
 with the geometry it's told.

@@ -79,7 +79,8 @@ disc and the main button. Both themes set the five as the framework's violet nam
 
 Everything else is the page's own: black or near black with white words in the dark, a pale page with black
 words in the light. There is no rainbow. A gradient stays within the one purple, white into it or the purple into a
-lighter step of itself.
+lighter step of itself. In a diagram a colour says what a box is: six tones mark six kinds of part, so they stay on
+every page, flat ones too, where the fades and the glows go and only the tones' solid colours are left.
 
 ## Type
 
