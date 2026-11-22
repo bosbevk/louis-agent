@@ -2,6 +2,7 @@ using LouisAgent.Diagrams.Cards;
 using LouisAgent.Diagrams.Engine.Cards;
 using LouisAgent.Diagrams.Engine.Cards.Placed;
 using LouisAgent.Diagrams.Engine.Geometry;
+using LouisAgent.Diagrams.Engine.Svg.Fits;
 using LouisAgent.Diagrams.Engine.Svg.Paths;
 using LouisAgent.Diagrams.Engine.Types;
 using LouisAgent.Diagrams.Engine.Svg.Theme;
@@ -34,8 +35,11 @@ internal static class OverviewDrawing
     /// </summary>
     private const double LightDrop = 88, LightAcross = 470, LightDown = 210;
 
-    /// <summary>The cards picture a source holds, as one SVG file's text, drawn with a geometry.</summary>
-    public static string Of(DiagramSource source, IGeometry geometry)
+    /// <summary>
+    /// The cards picture a source holds, as one SVG file's text, drawn with a geometry for a screen, wide unless it
+    /// says a phone's (F169.5).
+    /// </summary>
+    public static string Of(DiagramSource source, IGeometry geometry, PictureFit fit = PictureFit.Wide)
     {
         // A picture that runs down is laid out for a phone, so a page's copy of it is as wide as a phone's words.
         var cards = source.Cards!;
@@ -47,6 +51,7 @@ internal static class OverviewDrawing
         // key. Four fades are its own to ask for: the rail, the badge, a card's top edge, and the glass.
         return PictureBuilder.Titled(source.Title, geometry, Measures)
             .Type(TypeNames.Of(source))
+            .Fit(fit)
             .Paint(CardsStyle.RailFade)
             .Paint(CardsStyle.BadgeFade)
             .Paint(MarqueeLook.EdgeFade)

@@ -107,7 +107,6 @@ public class NarrowFitTests
     /// <summary>
     /// Drawn for a page in the narrow fit, the cost flow's boxes and lines are laid out no wider than a phone's
     /// words and the picture is taller than wide; in the wide fit, or with none said, it is drawn as it is today.
-    /// The picture's head, its title and its type on one line, may still ask a little more (a finding put to Louis).
     /// </summary>
     [Test]
     public void ThePagesCopy_IsDrawnInTheFitAskedFor()
@@ -126,5 +125,46 @@ public class NarrowFitTests
             Assert.That(DiagramRenderers.RenderForPage(CostPath),
                 Is.EqualTo(PageSvg.Of(DiagramRenderers.Render(CostPath))));
         });
+    }
+
+    /// <summary>
+    /// Louis's pick "C: the type under the title" (2026-11-22): on a phone a picture's type stands on its own line
+    /// under its title, both at the inset, so a long title and its type never make the picture wider than a phone's
+    /// words; the cost flow and a cards picture with a long title are no wider than 342.
+    /// </summary>
+    [Test]
+    public void OnAPhone_TheTypeStandsUnderTheTitle()
+    {
+        var longTitle = Cards() with { Title = "Agents it already runs, at a glance" };
+        var flow = XElement.Parse(DiagramRenderers.RenderForPage(CostPath, PictureFit.Narrow));
+        var cards = XElement.Parse(DiagramRenderers.RenderForPage(longTitle, PictureFit.Narrow));
+        double Number(XElement shape, string name) =>
+            double.Parse((string)shape.Attribute(name)!, CultureInfo.InvariantCulture);
+        XElement Text(XElement svg, string cls) =>
+            svg.Descendants().First(shape => (string?)shape.Attribute("class") == cls);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(Number(flow, "width"), Is.LessThanOrEqualTo(PageSvg.PhoneWords));
+            Assert.That(Number(cards, "width"), Is.LessThanOrEqualTo(PageSvg.PhoneWords));
+            foreach (var svg in new[] { flow, cards })
+            {
+                var title = Text(svg, "mrq-title");
+                var type = Text(svg, "pic-group");
+                Assert.That(Number(type, "x"), Is.EqualTo(Number(title, "x")));
+                Assert.That(Number(type, "y"), Is.GreaterThan(Number(title, "y")));
+                Assert.That((string?)type.Attribute("text-anchor"), Is.EqualTo("start"));
+            }
+        });
+    }
+
+    /// <summary>The wide drawing keeps its type at the right of the title's line.</summary>
+    [Test]
+    public void WideTheTypeStaysBesideTheTitle()
+    {
+        var wide = XElement.Parse(DiagramRenderers.RenderForPage(CostPath));
+        var type = wide.Descendants().First(shape => (string?)shape.Attribute("class") == "pic-group");
+
+        Assert.That((string?)type.Attribute("text-anchor"), Is.EqualTo("end"));
     }
 }

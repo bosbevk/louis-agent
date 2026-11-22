@@ -4,6 +4,7 @@ using LouisAgent.Diagrams.Engine.Flow.Keys;
 using LouisAgent.Diagrams.Engine.Flow.Placed;
 using LouisAgent.Diagrams.Engine.Flow.Shapes;
 using LouisAgent.Diagrams.Engine.Geometry;
+using LouisAgent.Diagrams.Engine.Svg.Fits;
 using LouisAgent.Diagrams.Engine.Svg.Theme;
 using LouisAgent.Diagrams.Engine.Svg.Theme.Looks;
 using LouisAgent.Diagrams.Engine.Svg.Theme.Looks.Kinds;
@@ -49,8 +50,11 @@ internal static class FlowDrawing
     /// <summary>The corner of a word's pill, and the ring where a box's line leaves.</summary>
     private const double ChipCorner = 9, Ring = 4;
 
-    /// <summary>The flow a source holds, as one SVG file's text, drawn with a geometry.</summary>
-    public static string Of(DiagramSource source, IGeometry geometry)
+    /// <summary>
+    /// The flow a source holds, as one SVG file's text, drawn with a geometry for a screen, wide unless it says a
+    /// phone's (F169.5).
+    /// </summary>
+    public static string Of(DiagramSource source, IGeometry geometry, PictureFit fit = PictureFit.Wide)
     {
         var placed = GraphLayout.Place(source.Flow!, bend: GraphLayout.SoftBend,
             geometry: geometry);
@@ -58,6 +62,7 @@ internal static class FlowDrawing
         // The flow is the body. Its key goes across the picture's width, under a rule the accent's edge fills.
         return PictureBuilder.Titled(source.Title, geometry)
             .Type(TypeNames.Of(source))
+            .Fit(fit)
             .Paint(MarqueeLook.EdgeFade)
             .Body("flow", Flow(placed, geometry), placed.Width, placed.Height)
             .Key(width =>

@@ -50,8 +50,8 @@ public static class DiagramRenderers
     /// </summary>
     public static string RenderForPage(DiagramSource source, PictureFit fit = PictureFit.Wide)
     {
-        var drawn = fit == PictureFit.Narrow ? NarrowFit.Of(source) ?? source : source;
-        return PageSvg.Of(Render(drawn));
+        string? narrow = fit == PictureFit.Narrow ? NarrowFit.Draw(source, Geometries.InUse) : null;
+        return PageSvg.Of(narrow ?? Render(source));
     }
 
     /// <summary>

@@ -1,4 +1,7 @@
 using LouisAgent.Diagrams.Engine.Cards;
+using LouisAgent.Diagrams.Engine.Geometry;
+using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Flows;
+using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Overview;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Sources;
 
@@ -12,7 +15,8 @@ namespace LouisAgent.Diagrams.Engine.Svg.Fits;
 /// <remarks>
 /// Louis's pick "A: both drawn for a phone", over a picture that slides sideways and one that opens large: a picture
 /// is data, so its phone drawing is the same data told one more thing, and nobody redraws it. Whether a picture has
-/// a narrow form is asked here, of the engine, and never worked out by the page that holds it (ADR 0123).
+/// a narrow form is asked here, of the engine, and never worked out by the page that holds it (ADR 0123). The two
+/// kinds that have one are drawn here too, told they are for a phone, so their head puts the type under the title.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0118-a-diagram-is-data-our-renderer-draws.md">ADR 0118: a diagram is data our renderer draws</seealso>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0123-ask-the-type.md">ADR 0123: ask the type</seealso>
@@ -29,6 +33,14 @@ public static class NarrowFit
 
     /// <summary>Whether the picture has a narrow form.</summary>
     public static bool Has(DiagramSource source) => Of(source) is not null;
+
+    /// <summary>The picture's narrow form drawn for a phone, as one SVG file's text, or nothing if it has none.</summary>
+    internal static string? Draw(DiagramSource source, IGeometry geometry) => Of(source) switch
+    {
+        { Kind: DiagramKind.Flow } narrow => FlowDrawing.Of(narrow, geometry, PictureFit.Narrow),
+        { Kind: DiagramKind.Cards } narrow => OverviewDrawing.Of(narrow, geometry, PictureFit.Narrow),
+        _ => null
+    };
 
     /// <summary>
     /// A flow running down, every box in the rank its arrows give it, since the columns and the row gap were set
