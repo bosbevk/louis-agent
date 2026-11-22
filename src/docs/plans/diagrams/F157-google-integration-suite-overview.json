@@ -1,0 +1,62 @@
+{
+  "kind": "cards",
+  "title": "F157 the Google integration suite: the overview",
+  "caption": "Four children are built in order, each on the one before; Drive, Gmail and visitors' own Google wait for a buyer to ask.",
+  "cards": {
+    "rows": [
+      {
+        "cards": [
+          {
+            "id": "f157",
+            "icon": "cloud",
+            "title": "F157 The Google integration suite",
+            "code": "LouisAgent.Packs.Google",
+            "look": "highlight",
+            "text": "A business connects its Google once, and its agent reads its sheets and its calendar."
+          }
+        ]
+      },
+      {
+        "cards": [
+          {
+            "id": "c1",
+            "icon": "shield",
+            "title": "F157.1 Connect Google",
+            "text": "The owner signs in at Google once; the token is kept encrypted, and a pack only ever asks for a short-lived one."
+          },
+          {
+            "id": "c2",
+            "icon": "file",
+            "title": "F157.2 Read a sheet",
+            "text": "The agent reads the rates, the menu or the stock from the sheets the business chose."
+          },
+          {
+            "id": "c3",
+            "icon": "calendar",
+            "title": "F157.3 Free times and a booking request",
+            "text": "The agent finds a free time in the business's calendar and, on the visitor's yes, adds a request the owner confirms."
+          },
+          {
+            "id": "c4",
+            "icon": "browser",
+            "title": "F157.4 The Integrations section",
+            "text": "A card per integration on louis-agent.dev, and the showroom's guesthouse showing Google's at work."
+          }
+        ]
+      },
+      {
+        "cards": [
+          { "id": "c5", "icon": "folder", "title": "Later: Drive (F173)", "text": "Only the files the business picked." },
+          { "id": "c6", "icon": "mail", "title": "Later: Gmail (F174)", "text": "A reply drafted for the owner to send." },
+          { "id": "c7", "icon": "users", "title": "Later: visitors' own Google (F175)", "text": "After Google has verified the app." }
+        ]
+      }
+    ],
+    "links": [
+      { "from": "f157", "to": "c1" },
+      { "from": "f157", "to": "c2" },
+      { "from": "f157", "to": "c3" },
+      { "from": "f157", "to": "c4" }
+    ]
+  }
+}
