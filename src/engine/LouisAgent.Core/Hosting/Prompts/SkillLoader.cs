@@ -85,7 +85,7 @@ public static class SkillLoader
         foreach (string fileName in ToolsetCatalog.GuideFiles(profile))
             AddBuiltIn(agent, composite, fileName);
         // Whom it may ask (F127.3.1): the identity's Calls, the same list AskAgent checks, so the two never differ;
-        // its minions are no agents to ask, and the roles that hand them work name them (F127.5).
+        // its lookup agents are no agents to ask, and the roles that hand them work name them (F127.5).
         calls = calls
             ?.Where(call => !(AgentAddress.TryParse(call, out var address) && AgentAddresses.IsLookup(address)))
             .ToList();

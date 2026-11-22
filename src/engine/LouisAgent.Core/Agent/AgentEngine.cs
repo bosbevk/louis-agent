@@ -43,7 +43,9 @@ public class AgentEngine
     /// <summary>One turn on the pipeline.</summary>
     private readonly TurnRunner _turns;
 
-    /// <summary>Whether a turn's text is paced on its way out (STREAM_PACE, F155), and the clock that paces it.</summary>
+    /// <summary>
+    /// Whether a turn's text is paced on its way out (STREAM_PACE, F155), and the clock that paces it.
+    /// </summary>
     private readonly bool _paced;
 
     private readonly TimeProvider _clock;
@@ -184,7 +186,7 @@ public class AgentEngine
     }
 
     /// <summary>
-    /// Keeps the one tool named and drops every other, for a minion's one task (F30; see
+    /// Keeps the one tool named and drops every other, for a lookup agent's one task (F30; see
     /// <see cref="ToolRegistry.KeepOnly"/>).
     /// </summary>
     public void KeepOnlyTool(string name) => _registry.KeepOnly(name);

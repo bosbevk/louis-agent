@@ -118,7 +118,7 @@ internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryC
     /// A sub-session's prompt budget (FX14). Every tool result stays in the prompt, and every later request pays for it
     /// again; past Haiku 5.5's long-prompt threshold every request costs five times as much. When the next request of
     /// a sub-session's turn is expected to pass the budget (the last prompt plus its last growth), it keeps its tools
-    /// with <see cref="ChatToolMode.None"/>, as the loop's final request does: the specialist answers from what it has.
+    /// with <see cref="ChatToolMode.None"/>, as the loop's final request does: the subagent answers from what it has.
     /// </summary>
     /// <remarks>
     /// Only a sub-session's turns (their usage tags name a parent turn): the user's own sessions may need a big
@@ -130,7 +130,7 @@ internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryC
         if (subSessionPromptBudget <= 0 || scope?.Tags.Parent is null) return options;
         if (options?.Tools is not { Count: > 0 } || options.ToolMode == ChatToolMode.None) return options;
 
-        // Summaries run outside the loop; a sub-session's roll-up carries the specialist's tokens, not this prompt's
+        // Summaries run outside the loop; a sub-session's roll-up carries the subagent's tokens, not this prompt's
         // size.
         var prompts = scope.Records
             .Where(r => r.Purpose is not (UsagePurpose.Summary or UsagePurpose.SubSession))

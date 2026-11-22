@@ -16,7 +16,7 @@ public sealed class AgentOptions
 
     public string WorkspaceRoot { get; set; } = Environment.CurrentDirectory;
 
-    /// <summary>The skills folder (agent/, specialists/, toolsets/); null means the working dir, then /app.</summary>
+    /// <summary>The skills folder (agent/, subagents/, toolsets/); null means the working dir, then /app.</summary>
     public string? SkillsDirectory { get; set; }
 
     /// <summary>
@@ -216,8 +216,8 @@ public sealed class AgentOptions
     public int SubSessionPromptBudget { get; set; } = DefaultSubSessionPromptBudget;
 
     /// <summary>
-    /// The default of <see cref="AgentMaxDepth"/>: room for a voice, three agents asked below it, and a minion under
-    /// the last.
+    /// The default of <see cref="AgentMaxDepth"/>: room for a voice, three agents asked below it, and a lookup agent
+    /// under the last.
     /// </summary>
     public const int DefaultAgentMaxDepth = 4;
 
