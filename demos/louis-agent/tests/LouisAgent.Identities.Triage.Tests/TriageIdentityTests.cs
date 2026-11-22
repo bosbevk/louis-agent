@@ -56,23 +56,26 @@ public class TriageIdentityTests
     }
 
     /// <summary>
-    /// The manager asks its three roles by their addresses (F127.3.1), each the address of a role file this identity
-    /// holds; that each reaches its role is held where the catalogue is, in the coding catalogue's tests.
+    /// The manager asks its three subagents by their addresses (F127.3.1), the one name each has (ADR 0133); that each
+    /// reaches its subagent is held where the catalogue is, in the coding catalogue's tests.
     /// </summary>
     [Test]
-    public void TheManager_CallsItsThreeRoles()
+    public void TheManager_CallsItsThreeSubagents()
     {
         IAgentIdentity identity = new TriageIdentity();
 
-        Assert.That(identity.Calls, Is.EqualTo(Enum.GetValues<TriageRole>()
-            .Select(role => role.Wire().Replace($"{identity.Name}-", $"{identity.Name}."))));
+        Assert.That(identity.Calls, Is.EqualTo(new[] { "triage.sorter", "triage.investigator", "triage.reviewer" }));
     }
 
-    /// <summary>The three roles are named by the files they will be, under the specialists' folder.</summary>
+    /// <summary>Each subagent the manager calls is a folder inside the triage agent, its voice there.</summary>
     [Test]
-    public void TheRoles_AreNamedByTheirFiles()
+    public void EachCall_IsASubagentOfTheIdentity()
     {
-        Assert.That(Enum.GetValues<TriageRole>().Select(role => role.Wire()),
-            Is.EqualTo(new[] { "triage-sorter", "triage-investigator", "triage-reviewer" }));
+        IAgentIdentity identity = new TriageIdentity();
+
+        Assert.That(Enum.GetValues<TriageCall>()
+                .Where(call => !identity.Prompts.GetFileInfo(RoleCatalog.FileName(call.Wire(), RoleLevel.Subagent))
+                    .Exists),
+            Is.Empty);
     }
 }

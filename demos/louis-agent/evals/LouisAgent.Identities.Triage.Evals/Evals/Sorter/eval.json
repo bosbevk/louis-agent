@@ -6,7 +6,7 @@
   "proves": "The triage team's sorter reads an error and ends with SortCase, naming the department whose code threw.",
   "manual": "manual.md",
   "modes": [
-    { "name": "sorter", "role": "triage-sorter", "toolsets": ["triage"], "depth": 1 }
+    { "name": "sorter", "role": "triage.sorter", "toolsets": ["triage"], "depth": 1 }
   ],
   "checks": [
     { "type": "no-error", "name": "sorter-no-error" },
