@@ -38,7 +38,6 @@ you need otherwise.
 | [Spawn a site](guides/spawn-a-site.md) | How-to | Make a new site with a chat and an admin from the starter, then make it yours |
 | [Build a pack](guides/build-a-pack.md) | How-to | Give an agent a new capability: a pack's project, tools, guide, settings, registration and tests, step by step |
 | [Build an identity](guides/build-an-identity.md) | How-to | Make a new agent: an identity's project, its voice and routing, its subagents, the packs it names, its tests, and running it |
-| [Add an eval](guides/add-an-eval.md) | How-to | Give an identity an eval: copy the template folder, write its `eval.json`, dataset, manual and transcripts, and pick its checks from the catalogue |
 | [Write and run tests](guides/write-tests.md) | How-to | Run the tests, regenerate the golden files (bash or PowerShell), write tests that run on Linux too |
 | [Hosts and web apps](../../.claude/rules/hosts-and-web.md) | How-to | A host's own message enums, a web app's folders, running a host from Rider |
 | [Deploy the sites](guides/deploy-the-sites.md) | How-to | Build, deploy and watch louis-agent.dev and framework.louis-agent.dev on Azure Container Apps, set their secrets, and deploy from GitHub |

@@ -385,11 +385,6 @@ as. Outside Docker,
 The admin routes use `ADMIN_API_KEY`, or `AGENT_API_KEY` when that's not set. [SETUP](../SETUP.md) has the full
 list.
 
-The image carries the eval runner. The Dockerfile (`demos/louis-agent/docker/images/Dockerfile.api`) publishes it in
-the build stage and copies it to `/app/evals`, its own folder beside the API's. The image sets `EVAL_RUNNER` to its
-runner there, `/app/evals/LouisAgent.CodingEvalRunner.dll`, and compose sets none of its own.
-
-*Decided in:* FX18, F18 step 4.3b.
 
 ## Extending it
 

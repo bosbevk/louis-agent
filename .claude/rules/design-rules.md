@@ -17,7 +17,7 @@ The design decisions every change keeps, one line each: the *why* is its ADR in 
   config, docker, skills, deploy and tests; the solution tree is the disk; core ships no agent and every tool the model asks for is a pack. [ADR 0074](../../src/docs/adr/0074-the-folders-say-what-ships.md), [0076](../../src/docs/adr/0076-core-ships-no-agent.md).
 - **Engine, identities and packs** — core names no product or country; an identity is who, a pack what it can do; a pack
   references no other pack, identity or eval; only a program's catalogue (`LouisAgent.Coding.Catalog`) knows them all. Weigh every reference against
-  the engine split; a shared contract is a shared project or a tested duplicate. [ADR 0027](../../src/docs/adr/0027-engine-identities-and-packs.md), [0073](../../src/docs/adr/0073-packs-reference-no-evals.md).
+  the engine split; a shared contract is a shared project or a tested duplicate. [ADR 0027](../../src/docs/adr/0027-engine-identities-and-packs.md), [0134](../../src/docs/adr/0134-an-eval-is-one-file-of-conversations.md).
 - **Packs stay convertible to MCP** (`PackConvertibilityTests` holds the shapes) and **MCP exposes tools, not a
   model**: `LouisAgent.Mcp` hands an external client the raw tools; to have the agent do a whole task, call
   the API's sessions. [ADR 0028](../../src/docs/adr/0028-packs-stay-convertible-to-mcp.md), [AGENT_COMMUNICATION.md](../../src/docs/AGENT_COMMUNICATION.md).
@@ -48,9 +48,9 @@ The design decisions every change keeps, one line each: the *why* is its ADR in 
 - **The sites' Azure is one Bicep file a person deploys** — `src/site/deploy/azure/main.bicep` on Microsoft's
   verified modules, pinned, every name a parameter, the infrastructure and its rights but never the apps; proved by
   `what-if` against what runs, deployed with `deploy.ps1 infra` on a yes, never by CI. [ADR 0131](../../src/docs/adr/0131-the-sites-azure-is-one-bicep-file-a-person-deploys.md).
-- **Evals in C#** — every check is a C# eval on one harness, under `evals/`, apart from what it proves; one event
-  contract; a live run waits for Louis's go. [ADR 0029](../../src/docs/adr/0029-simulations-in-csharp.md),
-  [ADR 0047](../../src/docs/adr/0047-protocol-v2-one-event-contract.md).
+- **An eval is one file of conversations** — `{name}.eval.json` beside the identity it proves, facts in code,
+  criteria a judge marks, a person's flip; being rebuilt, none runs today; a pack or an identity references no eval
+  project, and a live run waits for Louis's go. [ADR 0134](../../src/docs/adr/0134-an-eval-is-one-file-of-conversations.md).
 - **Nothing is backward compatible until something is sold** — no migration, alias, lenient reader or second parser
   for what we store or send between our own parts. [ADR 0049](../../src/docs/adr/0049-nothing-is-compatible-before-a-sale.md).
 

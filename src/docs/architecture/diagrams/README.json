@@ -36,16 +36,6 @@
             "text": "Sections 8 to 12: crosscutting concepts, decisions, quality, risks and words."
           }
         ]
-      },
-      {
-        "cards": [
-          {
-            "id": "evals",
-            "icon": "checks",
-            "title": "The evals",
-            "text": "How the harness, the runner, the protocol and the portal fit together."
-          }
-        ]
       }
     ],
     "links": [

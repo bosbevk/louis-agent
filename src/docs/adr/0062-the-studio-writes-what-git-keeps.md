@@ -1,6 +1,6 @@
 # 0062. The studio writes what git keeps
 
-**Status:** Accepted · **Date:** 2026-10-31 (the F49.5 plan's findings R, S and T; Louis picked R and S on
+**Status:** Superseded by [0134](0134-an-eval-is-one-file-of-conversations.md) · **Date:** 2026-10-31 (the F49.5 plan's findings R, S and T; Louis picked R and S on
 2026-11-01) ·
 **Recorded:** 2026-11-03
 

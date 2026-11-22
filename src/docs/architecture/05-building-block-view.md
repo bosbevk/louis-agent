@@ -28,8 +28,7 @@ Every pack stays convertible to an MCP server, so someone could take its tools w
 
 ## Hosts
 
-Each project also has its own design doc in [projects/](../projects/README.md). The evals (the harness, the runner,
-the protocol and an identity's eval folders) are drawn on their own page, [The evals](evals.md).
+Each project also has its own design doc in [projects/](../projects/README.md).
 
 | Host | Project | Bootstrap | Transport |
 |---|---|---|---|

@@ -401,6 +401,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "adr", "adr", "{7B2E4C10-9D3
 		src\docs\adr\0131-the-sites-azure-is-one-bicep-file-a-person-deploys.md = src\docs\adr\0131-the-sites-azure-is-one-bicep-file-a-person-deploys.md
 		src\docs\adr\0132-words-come-from-a-dictionary-factory.md = src\docs\adr\0132-words-come-from-a-dictionary-factory.md
 		src\docs\adr\0133-subagents-live-inside-their-agent.md = src\docs\adr\0133-subagents-live-inside-their-agent.md
+		src\docs\adr\0134-an-eval-is-one-file-of-conversations.md = src\docs\adr\0134-an-eval-is-one-file-of-conversations.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "architecture", "architecture", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0102}"
@@ -446,7 +447,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "guides", "guides", "{7B2E4C
 	ProjectSection(SolutionItems) = preProject
 		src\docs\guides\README.md = src\docs\guides\README.md
 		src\docs\guides\add-a-skill.md = src\docs\guides\add-a-skill.md
-		src\docs\guides\add-an-eval.md = src\docs\guides\add-an-eval.md
 		src\docs\guides\build-a-pack.md = src\docs\guides\build-a-pack.md
 		src\docs\guides\build-an-identity.md = src\docs\guides\build-an-identity.md
 		src\docs\guides\change-the-acp-server.md = src\docs\guides\change-the-acp-server.md
@@ -461,7 +461,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "guides", "guides", "{7B2E4C
 		src\docs\guides\deploy-the-sites.md = src\docs\guides\deploy-the-sites.md
 		src\docs\guides\publish-the-framework.md = src\docs\guides\publish-the-framework.md
 		src\docs\guides\get-started.md = src\docs\guides\get-started.md
-		src\docs\guides\run-the-evals.md = src\docs\guides\run-the-evals.md
 		src\docs\guides\write-tests.md = src\docs\guides\write-tests.md
 	EndProjectSection
 EndProject

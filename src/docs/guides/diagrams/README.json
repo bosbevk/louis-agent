@@ -9,7 +9,7 @@
           "text": "How-tos for a developer changing the code." }
       ] },
       { "cards": [
-        { "id": "build", "icon": "box", "title": "Build something new", "text": "A pack, an identity, a site, an eval, a diagram." },
+        { "id": "build", "icon": "box", "title": "Build something new", "text": "A pack, an identity, a site, a diagram." },
         { "id": "start", "icon": "terminal", "title": "Every day", "text": "Get started, the tests, debugging, common errors." },
         { "id": "change", "icon": "folder", "title": "Change a project", "text": "One guide per project, from the CLI to the engine." }
       ] },

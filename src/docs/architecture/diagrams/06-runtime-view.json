@@ -14,7 +14,7 @@
         { "id": "turn", "icon": "message", "title": "One chat turn",
           "text": "The model thinks, calls tools through the guards, and streams its answer; the whole turn is kept." },
         { "id": "agents", "icon": "users", "title": "Across agents",
-          "text": "An agent asks another by its address, an eval runs real sessions, the orchestrator fixes an error." }
+          "text": "An agent asks another by its address, and the orchestrator fixes an error." }
       ] }
     ],
     "links": [

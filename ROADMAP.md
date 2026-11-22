@@ -32,7 +32,7 @@ measured, their data on their own model, their systems plugged in without code, 
 | **A website with an agent** | A small business in South Africa | Its website, hosted, with an agent in the corner that knows the business and takes bookings and questions; a custom agent quoted on a call | Two monthly plans: R500 and R1,000 | Now: louis-agent.dev sells it (Louis, 2026-11-09) |
 | **Puls** | The public in South Africa; local businesses listed beside its answers | A local guide on cloud models, with sources and dates | Credits per question (F23), to be decided | After hosting; a hobby and the showpiece (Louis, 2026-10-30) |
 | **A configured agent, hosted** | A business with no developers | Its own identity and packs, hosted and measured; every request priced by the usage ledger | A monthly fee per agent plus usage | First sale after Phase 9 |
-| **The engine** | A team building its own agents on .NET | The application framework for AI agents in .NET: the package, the two contracts, the control layer, the eval harness | A licence per instance per year | First: the framework before the agents (Louis, 2026-11-07) |
+| **The engine** | A team building its own agents on .NET | The application framework for AI agents in .NET: the package, the two contracts, the control layer, the evals (being rebuilt, F126) | A licence per instance per year | First: the framework before the agents (Louis, 2026-11-07) |
 
 **The site sells first** (Louis, 2026-11-09: "Our goal is to sell websites with agents, and custom agents, for now.
 The framework takes second place to that."; [ADR 0112](src/docs/adr/0112-the-site-sells-first.md)). louis-agent.dev
@@ -50,11 +50,10 @@ agent still does its task, is.
 
 ## What exists
 
-Phases 0 to 3 are done: the docs, three security doors closed, the engine cut apart from Puls into identities and
-packs, every check a C# eval on one harness. Since then (2026-10-30 to 2026-11-13):
+Phases 0 to 3 are done: the docs, three security doors closed, and the engine cut apart from Puls into identities
+and packs. Their evals, and 3b's after them, are deleted, to be rebuilt from scratch (F126.1,
+[ADR 0134](src/docs/adr/0134-an-eval-is-one-file-of-conversations.md)). Since then (2026-10-30 to 2026-11-13):
 
-- **Evals as content** (F49): an eval is files beside its identity, a pack ships its checks, the admin portal has a
-  studio, one Evals page, a review queue and the run page (F53), and a paid judge that can tell (FX45).
 - **The cook** (F35, F48.1 to F48.3): 45 South African recipe sites read as data under every site's robots.txt and
   no-AI signals, a search over many sites at once, a find-recipe minion, a recipe library of its own with a counter,
   and the maths (`ScaleRecipe`, yields, a recipe or a meal). The hand-built shop reader was removed on 2026-11-04 when
@@ -63,7 +62,7 @@ packs, every check a C# eval on one harness. Since then (2026-10-30 to 2026-11-1
 - **The engine, measured and shown**: every request traced through OpenTelemetry (F52); the engine's own website with
   two films (F54, F57); the hosts are libraries and core ships no agent (ADR 0076); the packs are one area (CL32).
 - **Every site on the framework's web** (F59): the admin and chat frames, described screens, the pack web projects, a
-  starter template (`dotnet new louis-site`), the eval pages; the coding agent's landing page.
+  starter template (`dotnet new louis-site`); the coding agent's landing page.
 - **Accounts** (F61.1 to F61.5): ASP.NET Core Identity on SQL Server, a tenant from the host name, social logins,
   passkeys and a second factor, as a library a site opts into (CL30).
 - **The framework's website, louis-agent.dev** (F109, F115 to F124, F128): its own project and host in `src/site`
@@ -92,7 +91,7 @@ The [work log](src/docs/work-log.md) has the counts and every row.
 | Recipes read as a page's own data, not its text | 45 of 74 South African recipe sites allow a reader; 14 publish Recipe data, 31 are read from their text | Checked 2026-11-04 (F35.1) |
 | Prompt caching | A demo run from $0.66 to $0.13, all 10 fixes still correct | Engine benchmark |
 | Tool sets per conversation | The fixed part of each request from about 48,500 to 24,400 tokens | Engine benchmark |
-| Every agent tested by evals in C# | The cook 23 of 24, the routing 72 of 72, $0.37 together; a replay costs $0 | 2026-10-29 |
+| Puls's agents tested by the old evals in C# | The cook 23 of 24, the routing 72 of 72, $0.37 together; a replay costs $0 | 2026-10-29 |
 
 Puls is not yet open to the public: the shops refuse automated readers, so the cook gives estimates from Stats SA's
 averages and says where to buy until a retailer says yes (F85). Puls ran from Azure on mypuls.co.za from 2026-11-07
@@ -108,7 +107,7 @@ done when Claude has written its learning write-up and Louis has read it.
 | Phase | What | The selling point | Status | Ids |
 |---|---|---|---|---|
 | 0 to 3 | Docs and ADRs; three doors closed; the cut into engine, identities and packs; evals in C# | Measured | Done | — |
-| 3b | Evals as content: an eval is files beside its identity, a pack ships its checks, a studio in the admin portal | Measured | Done | F49 |
+| 3b | Evals as content: an eval is files beside its identity, a pack ships its checks, a studio in the admin portal | Measured | Done, then deleted to be rebuilt (F126.1) | F49 |
 | 3c | The cook: recipe sources read as data, then the cook as a home cook and teacher | Measured | Next, after the framework's first children; F48.1 to F48.3 done | [Puls's TODO](https://github.com/bosbevk/puls/blob/main/TODO.md) |
 | 3d | Localisation: every text from a resource file beside its enum | Configured, not coded | Next, after the framework | F46 |
 | 3e | Puls's local specialists: the where-to-buy, shop-prices and weather packs, then one specialist at a time | Measured | Next, after the framework; F50.2 done | [Puls's TODO](https://github.com/bosbevk/puls/blob/main/TODO.md) |
@@ -140,7 +139,8 @@ restart ([Microsoft](https://learn.microsoft.com/en-us/azure/durable-task/sdks/d
 injection, excessive agency and unbounded consumption on
 [OWASP's 2025 list](https://genai.owasp.org/llm-top-10/).
 
-**3b to 3e.** 3b is built (F49.1 to F49.5: the checks catalogue, evals as files, checks in packs, the studio). 3c: F35's
+**3b to 3e.** 3b was built (F49.1 to F49.5: the checks catalogue, evals as files, checks in packs, the studio), and
+is deleted with the old evals (F126.1). 3c: F35's
 recipe sources, library and minion are built and F48's maths too (`ScaleRecipe`, yields, a recipe or a meal); the rest
 of `WriteRecipe` (the list and its prices, F48.4), the pantry and the teaching answers (F48.5) and the cook's first wave
 (F48.6) remain, in that order ([plan](https://github.com/bosbevk/louis-agent/blob/puls-moved-out/demos/puls/docs/plans/F48-cook-and-teacher.md)). 3d is one feature, F46. 3e is

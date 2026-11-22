@@ -10,9 +10,9 @@
       ] },
       { "cards": [
         { "id": "cost", "icon": "chart", "title": "Measured cost",
-          "text": "Eval runs priced from the ledger, free replays, the cost on every answer, a subagent's prompt budget." },
+          "text": "The cost on every answer, from the ledger, and a subagent's prompt budget." },
         { "id": "right", "icon": "checks", "title": "Correctness",
-          "text": "The evals' checks, a person's verdict beside a model's, the orchestrator verifying its own fixes." },
+          "text": "The orchestrator verifying its own fixes; the evals are being rebuilt." },
         { "id": "safe", "icon": "shield", "title": "Safety and portability",
           "text": "The file tools refuse, hosts fail closed, and the same tools work on another model." }
       ] }

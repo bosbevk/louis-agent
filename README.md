@@ -36,7 +36,7 @@ own agents.
 | A recipes pack: 45 South African sites that allow readers, every fetch obeying `robots.txt`; its own recipe library, and the maths to scale a recipe in code | Evals redesigned around whole conversations |
 | **One address for every agent call:** `AskAgent("puls.cook", …)` asks a subagent, a cheap one-task lookup agent, or an agent on another server, and an identity lists in code whom it may ask | The chat on any website, from one script tag |
 | A triage team: a manager with a sorter, an investigator and a reviewer, each ending its work with a typed tool | Budgets that warn, ask or stop; drafts a person approves; an audit log |
-| **Evals as files:** an eval is a folder of JSON beside its identity, graded by a catalogue of C# checks, written in the portal's studio, replayed for $0 | Then Puls again: a recipe's shopping list with prices, every text from localisation files, twelve local specialists |
+| **Evals, rebuilt:** one file of conversations beside the identity it proves, facts in code and criteria a judge marks ([ADR 0134](src/docs/adr/0134-an-eval-is-one-file-of-conversations.md)) | Then Puls again: a recipe's shopping list with prices, every text from localisation files, twelve local specialists |
 | An admin that is a frame its areas plug into: an overview of the talks and what they cost, and the packs' pages | |
 | Cost on every answer, from a usage ledger priced by date; every turn and tool call traced with OpenTelemetry | |
 | **louis-agent.dev**, the framework's own website (`src/site`), on the framework's web: a guide in the corner that knows the page you are on, takes you to a section and draws cards and forms in the chat; a showroom of three made-up businesses whose agents you can try live; every page served as HTML so a search engine can read it | |
@@ -105,7 +105,7 @@ and what it cost.
 It's local. Costs show in rand, it knows your time zone, and it uses your location (to about 1 km) only if you share
 it.
 
-It's checked. The cook and the routing are evals, so a prompt change shows up as a score.
+It's checked by its tests, and by evals again once they are rebuilt.
 
 Puls is the first product built on this framework from outside. It lives in a repository of its own,
 [bosbevk/puls](https://github.com/bosbevk/puls), and takes the framework only as the packages published from here, so
@@ -133,26 +133,14 @@ with you.
 
 ## Evals
 
-An eval runs a real task and scores the outcome. Every eval runs on one C# harness (`src/evals/`), and each one sits with
-the project it proves, apart from what ships ([ADR 0029](src/docs/adr/0029-simulations-in-csharp.md)).
+The evals are being rebuilt from scratch, so none runs today. The old harness, its studio and its pages are deleted,
+and nothing of them was ported.
 
-An eval is files, and a check is code. A new eval is a folder: `eval.json`, its samples and its rubric, with no C#.
-The checks it names come from a catalogue of C# graders, and a pack can bring its own. The portal's studio writes
-those files for you: it takes samples from real chats and human review, and then you compose, try and publish.
-
-Code graders come first. Fixed rules are free and give the same score every time. A model judge comes in only where
-code can't decide, and only after it agrees with human labels.
-
-Two numbers say how reliable an agent is, pass@k and pass^k. Run a task k times: did it pass at least once, and did it
-pass every time? An agent you sell needs the second.
-
-Re-runs cost $0. A run records the web pages it read, so it can be replayed and re-scored for nothing. Cost always
-comes from the ledger, never from a grader. And everything shows in the admin portal: each run opens on its answer,
-and a review queue hands a person the answers still waiting for their grade.
-
-The first baseline: Puls's cook passed 23 of 24, its routing 72 of 72, for $0.37 together. How to:
-[run the evals](src/docs/guides/run-the-evals.md) · [add an eval](src/docs/guides/add-an-eval.md); design:
-[the evals design doc](src/docs/projects/LouisAgent.Evals.md).
+The new shape is decided ([ADR 0134](src/docs/adr/0134-an-eval-is-one-file-of-conversations.md)). An eval is one
+`{name}.eval.json` beside the identity it proves: conversations with turns, each turn with its own facts and
+criteria. A fact is told in code, and one model judge marks each criterion yes or no with a reason. A conversation
+passes only when everything is met in every repeat, and a person corrects the judge by flipping a mark. The plan is
+[F126, Evals redesigned](src/docs/plans/F126-evals-redesigned.md).
 
 ## Quick start
 

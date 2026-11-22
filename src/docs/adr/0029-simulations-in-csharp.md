@@ -1,6 +1,6 @@
 # 0029. Simulations in C#: one harness for checks, regressions and demos
 
-**Status:** Accepted · **Date:** 2026-10-19 (decided in the [platform plan](../../../ROADMAP.md), Phase 3 F18) ·
+**Status:** Superseded by [0134](0134-an-eval-is-one-file-of-conversations.md) · **Date:** 2026-10-19 (decided in the [platform plan](../../../ROADMAP.md), Phase 3 F18) ·
 **Recorded:** 2026-10-19 · Amends [0022](0022-benchmarks-recorded-from-the-protocol.md)
 
 ## Context

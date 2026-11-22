@@ -9,8 +9,8 @@
 
 ![Publish the framework: tag a release, push more than three tags, the guard, and checking a release from outside](diagrams/publish-the-framework.svg)
 
-The framework ships as 31 NuGet packages on GitHub Packages, at `https://nuget.pkg.github.com/bosbevk/index.json`.
-They are the projects a product built on the framework needs: the engine, the evals, the API and accounts, the web,
+The framework ships as 25 NuGet packages on GitHub Packages, at `https://nuget.pkg.github.com/bosbevk/index.json`.
+They are the projects a product built on the framework needs: the engine, the API and accounts, the web,
 the diagrams, the general packs, and the two test helpers. Each package has a version of its own, so releasing
 `LouisAgent.Core` doesn't move `LouisAgent.Web`. A product such as Puls takes them like any other NuGet package.
 
@@ -58,7 +58,7 @@ The first release of all 31 at `0.1.0` went out exactly this way.
 
 ## What stops a release
 
-**A tag that names no package.** The name before the first dash must be one of the 31 packable projects. A tag such
+**A tag that names no package.** The name before the first dash must be one of the 25 packable projects. A tag such
 as `LouisAgent.Site-1.0.0` names a project that isn't a package, and the run stops, naming it.
 
 **A dependency that isn't published.** A project reference becomes a package dependency on "this version or higher"
@@ -82,7 +82,7 @@ it.
 GitHub Packages asks for a token even for a public package. In a workflow, the run's `GITHUB_TOKEN` with
 `packages: read` is enough. On a PC, a personal access token with `read:packages` goes in the project's `nuget.config`.
 
-The repository's own tests make the same check without the feed: `LouisAgent.Packages.IntegrationTests` packs the 31
+The repository's own tests make the same check without the feed: `LouisAgent.Packages.IntegrationTests` packs the 25
 into a folder at a version of its own and runs an agent from them, on every pull request. The same tests check that
 the packages carry what a product needs besides their code, which the next part is about.
 
@@ -102,8 +102,7 @@ Sass gets it by having the folder.
 Files a project's code reads at run time travel as content that NuGet copies into the consumer's output, at the path
 the code already reads: an item with `Pack="true"`, a `PackagePath` under `contentFiles/any/any/` that ends at the
 folder (NuGet adds the item's own folders itself, so naming `%(RecursiveDir)` there doubles them) and
-`PackageCopyToOutput="true"`. The runner's stub eval carries its transcripts this way, and the web test helpers the
-recorded turns they replay.
+`PackageCopyToOutput="true"`. The web test helpers carry the recorded turns they replay this way.
 
 The test helpers ask what is there instead of knowing louis-agent's folders. A site's project is found anywhere in its
 repository, leaving out build output, and a site's styles are read from what its own build made: the partials its

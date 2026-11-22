@@ -39,7 +39,7 @@ Each is open work, or the design of work that another feature took in. *In the T
 now. The milestone table, and the demo-run benchmark that measured M1 and M2, are in
 [this page as it was](https://github.com/bosbevk/louis-agent/blob/pre-roadmap/src/docs/features/README.md) and in
 [BENCHMARKS.md at `pre-cl10`](https://github.com/bosbevk/louis-agent/blob/pre-cl10/docs/BENCHMARKS.md). Today a
-feature is measured with an eval ([Run the evals](../guides/run-the-evals.md)).
+feature is measured with an eval ([ADR 0134](../adr/0134-an-eval-is-one-file-of-conversations.md)).
 
 ## Conventions
 

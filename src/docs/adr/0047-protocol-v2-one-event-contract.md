@@ -1,6 +1,6 @@
 # 0047. Protocol v2: one event contract both sides share
 
-**Status:** Accepted · **Date:** 2026-10-28 (Louis, the 7c design cards, picks A to F; built in 7c steps 1 to 5) ·
+**Status:** Superseded by [0134](0134-an-eval-is-one-file-of-conversations.md) · **Date:** 2026-10-28 (Louis, the 7c design cards, picks A to F; built in 7c steps 1 to 5) ·
 **Recorded:** 2026-10-29 · Amends [0022](0022-benchmarks-recorded-from-the-protocol.md)
 
 ## Context

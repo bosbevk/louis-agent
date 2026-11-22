@@ -79,8 +79,8 @@ A session's options are fixed when it opens, as its toolsets are, so its prompt 
 `Sessions/Streaming/Claude/ClaudeStreamFormat.cs`, which writes Claude-shaped events: `message_start`;
 `content_block_start`, `_delta` and `_stop` for thinking, text, `tool_use` and `tool_result`; `message_delta` with the
 turn's usage; and `message_stop`. A client picks the format with `"stream"` on `POST /v1/sessions` (`StreamFormat`,
-Claude by default), and the session keeps it. Three kinds of client read the stream: the web (through the
-session-stream reader, `LouisAgent.SessionStream`), the orchestrator, and the evals.
+Claude by default), and the session keeps it. Two kinds of client read the stream: the web (through the
+session-stream reader, `LouisAgent.SessionStream`) and the orchestrator.
 
 To add a new event or field to the Claude format, add it without changing an existing one, test it, and regenerate
 `src/tests/hosts/LouisAgent.Api.Tests/Sessions/StreamGolden.sse` with `LOUIS_UPDATE_GOLDEN=1 dotnet test src/tests/hosts/LouisAgent.Api.Tests --filter

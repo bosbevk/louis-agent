@@ -1,6 +1,6 @@
 # 0061. Evals grow from use
 
-**Status:** Accepted · **Date:** 2026-10-31 (the F49.4 plan's findings O and P, and Louis's picks during its build on
+**Status:** Superseded by [0134](0134-an-eval-is-one-file-of-conversations.md) · **Date:** 2026-10-31 (the F49.4 plan's findings O and P, and Louis's picks during its build on
 2026-11-01) ·
 **Recorded:** 2026-11-03
 

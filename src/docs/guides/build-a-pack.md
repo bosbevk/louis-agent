@@ -58,7 +58,7 @@ Delete the template's `Class1.cs`, and make the csproj look like the packs':
 ```
 
 The only project reference is `LouisAgent.Composition`
-([step 9](#9-its-checks-when-it-proves-its-tools) says why not the evals). A reference to another pack, an identity or
+([step 9](#9-its-evals) says why not the evals). A reference to another pack, an identity or
 anything under `src/evals/` fails `ArchitectureTests`.
 
 The last group shows the pack's design doc under `docs/` in the IDE's solution explorer, as every project does.
@@ -328,41 +328,18 @@ curl -s -H "x-api-key: $AGENT_API_KEY" -H "Content-Type: application/json" \
 and its guide, and keeps them for its whole life. The images build every project (`COPY . .`), so a compose stack only
 needs the pack's settings in its environment.
 
-## 9. Its checks (when it proves its tools)
+## 9. Its evals
 
-A pack references nothing under `src/evals/` ([ADR 0073](../adr/0073-packs-reference-no-evals.md)): every host loads the
-pack, so a pack stays on the composition contracts.
+A pack references nothing under `src/evals/`. Every host loads the pack, so a pack stays on the composition
+contracts, and someone can take your tools without the evals. `ArchitectureTests` holds it, and
+[ADR 0134](../adr/0134-an-eval-is-one-file-of-conversations.md) carries the rule over from ADR 0073.
 
-To prove what your tools do, first try a general check in your eval file, naming your tool in its settings
-([Add an eval](add-an-eval.md#4-choose-the-checks)). `tool-rows-marked` is the model: the harness knows a table and a
-mark, and the eval file says `{"tool": "EstimatePrices", "mark": "?"}`.
-
-A rule no general check can say goes in its own project, `packs/evals/LouisAgent.Packs.{Name}.Checks`,
-which only the runner references, so someone can use your tools without the evals:
-
-1. **Its csproj** references the check contract, `..\..\..\src\evals\LouisAgent.Evals.Checks\LouisAgent.Evals.Checks.csproj`,
-   and your pack only if it uses the pack's code. Its root namespace is the pack's.
-2. **Write the check** in `Checks/`: a class that implements `ICheck`, with a nested `Entry` (a `CheckType<Settings>`)
-   that builds it from a typed `Settings` record. It reads the turn from the engine's events (`EngineEvents`), and its
-   reasons are a message enum of its own (`ShopCheckMessage`).
-3. **What only an identity knows is a reader** the file names beside the check: `estimates-at-shop` takes an
-   `IPriceReader` (`{"reader": "rand-prices"}`) and never names Puls.
-4. **List it** in the project's registry (an `All` list), and add that list to the catalogues the demo's eval program
-   hands to the runner (a `RunnerCatalogs`).
-5. **Test it** in `packs/tests/LouisAgent.Packs.{Name}.Checks.Tests`, on trials built from canned events, test first.
-
-No pack here has checks of its own today. Puls's where-to-buy pack is the model, in its own repository:
-[`Puls.Packs.WhereToBuy.Checks`](https://github.com/bosbevk/puls/tree/main/src/Puls.Packs.WhereToBuy.Checks), whose
-registry is `WhereToBuyChecks.All`, whose reasons are `ShopCheckMessage`, and whose tests build their trials with
-`ShopTrials`.
-
-A contract your pack and the eval share lives in a shared project, or is duplicated. A duplicate is held equal by a test
-in a project that sees both, as Puls's catalogue's tests do (`UnpricedMarkTests`, `ShopTableTests`).
+The evals are being rebuilt from scratch, so there is no check to write for a pack today. When they come back, an
+eval is one file of conversations beside the identity it proves: facts told in code, and criteria a judge marks.
 
 ## Before you ask for a review
 
 - [ ] References `LouisAgent.Composition`; no other pack, no identity, nothing under `src/evals/`.
-- [ ] What it shares with an eval is in a shared project, or duplicated with a test that holds the copies equal.
 - [ ] Tools take plain data and return text; a failure is text with its reason; a waiting tool takes a `CancellationToken`.
 - [ ] Session input (the user's place) also arrives as a parameter.
 - [ ] Outside data is framed as data; output is bounded.
