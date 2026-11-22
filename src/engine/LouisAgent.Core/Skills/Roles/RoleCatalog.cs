@@ -8,8 +8,10 @@ namespace LouisAgent.Core.Skills.Roles;
 /// <c>minions/{name}.md</c> (level 2, F30), at their project's root and read only from the assembly (CL8
 /// step 4). At level 0 a role is a mode (CL9, ADR 0019): one file, its voice then its routing, in a folder per
 /// product (<c>agents/acme/voice-en.md</c>), named <c>{product}/{mode}</c>; an identity's default is the mode of a
-/// session that names none. A name is lowercase letters, digits and dashes, with one <c>/</c> between a product and its
-/// mode, so it never reaches outside its folder.
+/// session that names none. At level 1 a subagent is named by its address, <c>{identity}.{name}</c> (ADR 0133), and
+/// only this catalogue knows which file holds it. A name is lowercase letters, digits and dashes, with one <c>/</c>
+/// between a product and its mode or one <c>.</c> between an identity and its subagent, so it never reaches outside its
+/// folder.
 /// </summary>
 public static partial class RoleCatalog
 {
@@ -50,19 +52,25 @@ public static partial class RoleCatalog
     public static bool IsValidName(string? name) =>
         name is { Length: > 0 and <= MaxNameLength } && NamePattern().IsMatch(name);
 
-    /// <summary>The skill file of a named role at <paramref name="level"/>, relative to the skills folder.</summary>
-    public static string FileName(string name, RoleLevel level) => $"{FolderOf(level)}/{name}.md";
+    /// <summary>
+    /// The skill file of a named role at <paramref name="level"/>, relative to the skills folder: a subagent's
+    /// address, <c>acme.cook</c>, is the file <c>specialists/acme-cook.md</c>.
+    /// </summary>
+    public static string FileName(string name, RoleLevel level) =>
+        $"{FolderOf(level)}/{(level == RoleLevel.Subagent ? name.Replace('.', '-') : name)}.md";
 
     /// <summary>
     /// The named roles at <paramref name="level"/>, all built in (CL8 step 4), sorted: at level 0 the modes,
-    /// <c>agents/{product}/{mode}.md</c> (every product folder but the function skills'); at level 1 the roles; at
-    /// level 2 the minion roles, never a base (F30: <c>acme-minion</c> frames every minion, it is no role itself).
+    /// <c>agents/{product}/{mode}.md</c> (every product folder but the function skills'); at level 1 the subagents by
+    /// their addresses; at level 2 the minion roles, never a base (F30: <c>acme-minion</c> frames every minion, it is
+    /// no role itself).
     /// </summary>
     public static IReadOnlyList<string> Available(RoleLevel level) =>
         (level == RoleLevel.Agent
             ? Modes()
             : SkillFileSource.Files(FolderOf(level)).Where(f => f.EndsWith(".md", StringComparison.Ordinal))
                 .Select(f => f[..^".md".Length]))
+        .Select(name => level == RoleLevel.Subagent ? AddressOf(name) : name)
         .Where(IsValidName)
         .Where(n => level != RoleLevel.Minion || !IsMinionBase(n))
         .Order(StringComparer.Ordinal)
@@ -123,6 +131,13 @@ public static partial class RoleCatalog
         return files.Where(f => !shared.Contains(f));
     }
 
+    /// <summary>
+    /// A subagent's address from its file's name: the identity before the first dash, <c>acme-cook</c> is
+    /// <c>acme.cook</c>.
+    /// </summary>
+    private static string AddressOf(string file) =>
+        file.IndexOf('-') is var dash and > 0 ? $"{file[..dash]}.{file[(dash + 1)..]}" : file;
+
     /// <summary>A language mode: matches <c>acme/voice-af</c> (code <c>af</c>), not <c>acme/voice</c>.</summary>
     [GeneratedRegex("^[a-z0-9-]+/voice-(?<code>[a-z]{2})$")]
     private static partial Regex LanguageMode();
@@ -142,7 +157,10 @@ public static partial class RoleCatalog
     [GeneratedRegex(@"(?<=\n)# ", RegexOptions.None)]
     private static partial Regex SecondHeading();
 
-    /// <summary>A role's name: matches <c>acme-cook</c> and <c>acme/voice-en</c>, not <c>../acme</c>.</summary>
-    [GeneratedRegex("^[a-z0-9]+(-[a-z0-9]+)*(/[a-z0-9]+(-[a-z0-9]+)*)?$")]
+    /// <summary>
+    /// A role's name: matches <c>acme.cook</c>, <c>acme-minion-lookup</c> and <c>acme/voice-en</c>, not
+    /// <c>../acme</c> or <c>a.b.c</c>.
+    /// </summary>
+    [GeneratedRegex("^[a-z0-9]+(-[a-z0-9]+)*([/.][a-z0-9]+(-[a-z0-9]+)*)?$")]
     private static partial Regex NamePattern();
 }

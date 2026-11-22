@@ -366,7 +366,7 @@ public class AgentCatalogTests
         {
             WorkspaceRoot = TestPaths.RepoRoot,
             SkillsDirectory = TestPaths.Skills,
-            RolesEnabled = ["testprod-specialist", "nope"]
+            RolesEnabled = ["testprod.specialist", "nope"]
         };
 
         var error = Assert.Throws<RoleException>(() => RoleFiles.Check(options, "testprod/voice-af"))!;
@@ -378,7 +378,7 @@ public class AgentCatalogTests
                 new AgentOptions
                 {
                     WorkspaceRoot = TestPaths.RepoRoot,
-                    RolesEnabled = ["testprod-specialist", "testprod/voice-af"]
+                    RolesEnabled = ["testprod.specialist", "testprod/voice-af"]
                 },
                 "testprod/voice-af"));
     }

@@ -1,4 +1,6 @@
 using System.ComponentModel;
+using LouisAgent.Composition.Messages;
+using LouisAgent.Core.Delegation.Messages.Holes;
 
 namespace LouisAgent.Core.Delegation.Messages;
 
@@ -97,9 +99,11 @@ public enum SubSessionToolMessage
     // An address (F127.3.1): who it reaches, or why it reaches no one.
 
     [Description("Error: no agent here is called '{Identity}'. The agents here: {Identities}.")]
+    [Holes(typeof(AddressUnknownIdentityHoles))]
     AddressUnknownIdentity,
 
     [Description("Error: {Identity} has no voice of its own to answer in. Ask one of its roles: {Roles}.")]
+    [Holes(typeof(AddressNoVoiceHoles))]
     AddressNoVoice,
 
     [Description(
@@ -116,9 +120,11 @@ public enum SubSessionToolMessage
     PeerUnreachable,
 
     [Description("Error: {Identity} has no role '{Role}'. Its roles: {Roles}.")]
+    [Holes(typeof(AddressUnknownRoleHoles))]
     AddressUnknownRole,
 
     [Description("Error: {Identity} has no minion '{Role}'. Its minions: {Minions}.")]
+    [Holes(typeof(AddressUnknownMinionHoles))]
     AddressUnknownMinion,
 
     [Description(

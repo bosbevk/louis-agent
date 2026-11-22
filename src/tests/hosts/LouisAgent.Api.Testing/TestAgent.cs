@@ -37,11 +37,11 @@ public static class TestAgent
     /// <summary>The heading of the second voice.</summary>
     public const string OtherVoiceHeading = "# Test agent: in German";
 
-    /// <summary>Its specialist, whose role adds the web and the calculator.</summary>
-    public const string Specialist = Name + "-specialist";
+    /// <summary>Its subagent, named by its address, whose role adds the web and the calculator.</summary>
+    public const string Specialist = Name + ".specialist";
 
-    /// <summary>A second specialist that adds no toolset of its own, working with what it is handed.</summary>
-    public const string Reader = Name + "-reader";
+    /// <summary>A second subagent that adds no toolset of its own, working with what it is handed.</summary>
+    public const string Reader = Name + ".reader";
 
     /// <summary>
     /// What every minion of the test agent is, loaded before its role: the engine finds it as
@@ -73,10 +73,10 @@ public static class TestAgent
             [$"agents/{Name}/voice-en.md"] = Prompt("voice-en", "agent", VoiceHeading, "The test agent in English."),
             [$"agents/{Name}/voice-de.md"] =
                 Prompt("voice-de", "agent", OtherVoiceHeading, "The test agent in German."),
-            [$"specialists/{Specialist}.md"] = Prompt(Specialist, "subagent", "# Test agent specialist",
-                "The test agent's specialist.", "web, calculator"),
-            [$"specialists/{Reader}.md"] =
-                Prompt(Reader, "subagent", "# Test agent reader", "Works with the toolsets it is handed."),
+            [$"specialists/{Name}-specialist.md"] = Prompt($"{Name}-specialist", "subagent",
+                "# Test agent specialist", "The test agent's specialist.", "web, calculator"),
+            [$"specialists/{Name}-reader.md"] = Prompt($"{Name}-reader", "subagent", "# Test agent reader",
+                "Works with the toolsets it is handed."),
             [$"minions/{MinionBase}.md"] =
                 Prompt(MinionBase, "minion", "# Test agent minion", "One task, one tool, one answer."),
             [$"minions/{Minion}.md"] = Prompt(Minion, "minion", MinionHeading, "Looks one thing up."),

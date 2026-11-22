@@ -50,21 +50,21 @@ public class AgentEngineFactoryTests
     {
         // F29: Louis switched every specialist but the cook off until it has passed a check like the cook's. The gate
         // is a setting the API enforces, so a prompt slip that names the researcher fails at the peer, not quietly.
-        var factory = FactoryEnabling(["testprod/voice-af", "testprod-specialist"]);
+        var factory = FactoryEnabling(["testprod/voice-af", "testprod.specialist"]);
 
         Assert.That(factory.AvailableRoles(RoleLevel.Agent), Is.EqualTo(new[] { "testprod/voice-af" }),
             "the other language is built in but off");
-        Assert.That(factory.AvailableRoles(RoleLevel.Subagent), Is.EqualTo(new[] { "testprod-specialist" }),
+        Assert.That(factory.AvailableRoles(RoleLevel.Subagent), Is.EqualTo(new[] { "testprod.specialist" }),
             "another role is refused");
 
         var refused = Assert.Throws<RoleException>(() =>
             factory.GetOrCreate([TestToolset.Web.Wire()], "testprod-other", RoleLevel.Subagent))!;
-        Assert.That(refused.Message, Does.Contain("testprod-other").And.EndWith("Available: testprod-specialist."),
+        Assert.That(refused.Message, Does.Contain("testprod-other").And.EndWith("Available: testprod.specialist."),
             "named as unknown, with what's on");
         Assert.That(factory.Profiles, Is.Empty, "refused before anything is built");
 
         Assert.That(
-            factory.GetOrCreate([TestToolset.Web.Wire()], "testprod-specialist", RoleLevel.Subagent)
+            factory.GetOrCreate([TestToolset.Web.Wire()], "testprod.specialist", RoleLevel.Subagent)
                 .SkillDocumentation, Does.Contain("Never invent a fact"));
     }
 
@@ -75,12 +75,12 @@ public class AgentEngineFactoryTests
     [Test]
     public void AnEngine_IsNamedForItsRole_OrTheDefaultMode()
     {
-        var factory = FactoryEnabling(["testprod-specialist"]);
+        var factory = FactoryEnabling(["testprod.specialist"]);
 
-        var specialist = factory.GetOrCreate([TestToolset.Web.Wire()], "testprod-specialist", RoleLevel.Subagent);
+        var specialist = factory.GetOrCreate([TestToolset.Web.Wire()], "testprod.specialist", RoleLevel.Subagent);
         var mode = factory.GetOrCreate([TestToolset.Web.Wire()]);
 
-        Assert.That((specialist.Name, mode.Name), Is.EqualTo(("testprod-specialist", factory.DefaultVoice)));
+        Assert.That((specialist.Name, mode.Name), Is.EqualTo(("testprod.specialist", factory.DefaultVoice)));
     }
 
 
@@ -242,7 +242,7 @@ public class AgentEngineFactoryTests
         Assert.That(factory.AvailableRoles(RoleLevel.Agent),
             Is.EqualTo(new[] { "testprod/voice-af", "testprod/voice-en" }));
         Assert.That(factory.DefaultVoice, Is.EqualTo("testprod/voice-en"), "GET /v1/roles' default");
-        Assert.That(factory.AvailableRoles(RoleLevel.Subagent), Does.Contain("testprod-specialist"));
+        Assert.That(factory.AvailableRoles(RoleLevel.Subagent), Does.Contain("testprod.specialist"));
     }
 
     /// <summary>The enabled roles are read from the environment, trimmed and lowercased.</summary>

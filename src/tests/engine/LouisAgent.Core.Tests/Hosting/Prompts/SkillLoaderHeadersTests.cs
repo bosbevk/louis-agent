@@ -17,7 +17,7 @@ public class SkillLoaderHeadersTests
     /// <summary>A role always loads the toolsets its header's metadata names, where this instance has them.</summary>
     [Test]
     public void ARole_AlwaysLoadsItsHeadersToolsets() =>
-        Assert.That(SkillLoader.ToolsetsOf("testprod-specialist", RoleLevel.Subagent), Is.EqualTo(new[] { "web?" }));
+        Assert.That(SkillLoader.ToolsetsOf("testprod.specialist", RoleLevel.Subagent), Is.EqualTo(new[] { "web?" }));
 
     /// <summary>A role whose header names none, or a name that isn't a role, loads none of its own.</summary>
     [TestCase("testprod/voice-af", RoleLevel.Agent)]
@@ -44,7 +44,7 @@ public class SkillLoaderHeadersTests
     public void TheModel_NeverSeesAHeader()
     {
         var options = new AgentOptions { WorkspaceRoot = TestPaths.RepoRoot, RatesUrl = null };
-        string specialist = SkillLoader.Load(options, ToolsetCatalog.All, "testprod-specialist", RoleLevel.Subagent)
+        string specialist = SkillLoader.Load(options, ToolsetCatalog.All, "testprod.specialist", RoleLevel.Subagent)
             .Documentation;
         string mode = SkillLoader.Load(options, ToolsetCatalog.All, "testprod/voice-af").Documentation;
 

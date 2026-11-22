@@ -34,8 +34,8 @@ public class CodingCatalogTests
     }
 
     /// <summary>
-    /// The manager's calls (F127.3.1) each reach one of the team's roles here, one level down, in the order of its
-    /// roles.
+    /// The manager's calls (F127.3.1) each reach one of the team's subagents here, one level down, named by the call
+    /// itself (ADR 0133).
     /// </summary>
     [Test]
     public void TheTriageManagersCalls_EachReachOneOfItsRoles()
@@ -52,8 +52,7 @@ public class CodingCatalogTests
         Assert.Multiple(() =>
         {
             Assert.That(reached.Select(agent => agent?.Kind), Has.All.EqualTo(AddressKind.Specialist));
-            Assert.That(reached.Select(agent => agent?.Role),
-                Is.EqualTo(Enum.GetValues<TriageRole>().Select(role => role.Wire())));
+            Assert.That(reached.Select(agent => agent?.Role), Is.EqualTo(triage.Calls));
         });
     }
 

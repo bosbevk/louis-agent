@@ -87,7 +87,7 @@ public class SkillLoaderTests
     /// </summary>
     [TestCase(null, RoleLevel.Agent)]
     [TestCase("testprod/voice-af", RoleLevel.Agent)]
-    [TestCase("testprod-specialist", RoleLevel.Subagent)]
+    [TestCase("testprod.specialist", RoleLevel.Subagent)]
     [TestCase(null, RoleLevel.Subagent)]
     [TestCase("testprod-minion-lookup", RoleLevel.Minion)] // F30: a minion always has a role
     public void EveryPrompt_StartsWithThePrinciples(string? role, RoleLevel level)
