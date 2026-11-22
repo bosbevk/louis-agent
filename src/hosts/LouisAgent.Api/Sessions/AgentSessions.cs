@@ -1,4 +1,6 @@
 using LouisAgent.Composition.Packs;
+using LouisAgent.Api.Messages.Holes.Lookups;
+using LouisAgent.Api.Messages.Holes.Opening;
 using LouisAgent.Composition.Sessions;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Choices;
@@ -65,20 +67,26 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
         if (who is not null && string.IsNullOrWhiteSpace(role)) role = who.DefaultVoice;
         int maxDepth = engines.Context.Options.AgentMaxDepth;
         if (depth < 0 || depth > maxDepth)
-            throw new ToolsetException(MessageText.Format(ApiErrorMessage.SessionDepthInvalid, new { Max = maxDepth }));
+        {
+            var tooDeep = new SessionDepthInvalidHoles(maxDepth);
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.SessionDepthInvalid, tooDeep));
+        }
         if (string.IsNullOrWhiteSpace(tool)) tool = null;
         // The prompt's level: a voice at the top, below it the role's own folder.
         var level = LevelOf(role, depth, tool);
         if (level == RoleLevel.Lookup) CheckLookup(tags, tool, role);
         else if (tool is not null)
-            throw new ToolsetException(MessageText.Format(ApiErrorMessage.ToolOnlyForLookups,
-                new { Role = role ?? "the default voice" }));
+        {
+            var notALookup = new ToolOnlyForLookupsHoles(role ?? "the default voice");
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.ToolOnlyForLookups, notALookup));
+        }
         // A minion names its tool; the toolset that builds it is implied (AskAgent sends none for a minion).
         var names = ToolsetCatalog.Normalise(level == RoleLevel.Lookup && toolsets is null
             ?
             [
                 engines.Catalog.ToolsetOf(tool!)
-                ?? throw new ToolsetException(MessageText.Format(ApiErrorMessage.NoToolsetForTool, new { Tool = tool }))
+                ?? throw new ToolsetException(MessageText.Format(ApiErrorMessage.NoToolsetForTool,
+                    new NoToolsetForToolHoles(tool!)))
             ]
             : toolsets ?? Unchosen(who, level, depth));
         // A role's own toolsets (F33: the cook's `shops?`, from its header's metadata, CL27) come with it, beside what
@@ -86,8 +94,10 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
         names = ToolsetCatalog.Normalise(names.Concat(SkillLoader.ToolsetsOf(role, level)));
         var plain = names.Select(ToolsetCatalog.NameOf).ToList();
         if (level == RoleLevel.Lookup && plain.Contains(AgentsToolset))
-            throw new ToolsetException(MessageText.Format(ApiErrorMessage.LookupCannotAsk,
-                new { Toolset = AgentsToolset }));
+        {
+            var asks = new LookupCannotAskHoles(AgentsToolset);
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.LookupCannotAsk, asks));
+        }
         if (string.IsNullOrEmpty(role)) role = null;
         // A sub-session's role is named by its parent (CL10); with none it gets the default mode's voice, no routing.
         if (string.IsNullOrWhiteSpace(llm)) llm = null;
@@ -131,12 +141,10 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
         IReadOnlyList<string> above = parentId is null ? [] : Get(parentId)?.Chain ?? [];
         if (agent is null) return above;
         if (above.Contains(agent))
-            throw new RoleException(MessageText.Format(ApiErrorMessage.AgentAlreadyInChain,
-                new
-                {
-                    Agent = agent,
-                    Chain = string.Join(" > ", above)
-                }));
+        {
+            var inChain = new AgentAlreadyInChainHoles(agent, string.Join(" > ", above));
+            throw new RoleException(MessageText.Format(ApiErrorMessage.AgentAlreadyInChain, inChain));
+        }
         return [.. above, agent];
     }
 
@@ -157,14 +165,11 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     {
         if (string.IsNullOrWhiteSpace(identity)) return null;
         if (engines.Catalog.Identity(identity) is { } who) return who;
-        throw new RoleException(MessageText.Format(ApiErrorMessage.UnknownIdentity,
-            new
-            {
-                Name = identity,
-                Available = engines.Catalog.Identities.Count == 0
-                    ? "none"
-                    : string.Join(", ", engines.Catalog.Identities.Select(i => i.Name))
-            }));
+        string available = engines.Catalog.Identities.Count == 0
+            ? "none"
+            : string.Join(", ", engines.Catalog.Identities.Select(i => i.Name));
+        var unknown = new UnknownIdentityHoles(identity, available);
+        throw new RoleException(MessageText.Format(ApiErrorMessage.UnknownIdentity, unknown));
     }
 
     /// <summary>
@@ -176,19 +181,31 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     private void CheckLookup(UsageTags? tags, string? tool, string? role)
     {
         if (tool is null)
-            throw new ToolsetException(MessageText.Format(ApiErrorMessage.LookupNeedsTool,
-                new { Role = role ?? "(none)" }));
+        {
+            var noTool = new LookupNeedsToolHoles(role ?? "(none)");
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.LookupNeedsTool, noTool));
+        }
         if (string.IsNullOrWhiteSpace(tags?.Parent))
-            throw new ToolsetException(MessageText.Format(ApiErrorMessage.LookupNeedsParent,
-                new { Example = "sess_…#3" }));
+        {
+            var noParent = new LookupNeedsParentHoles("sess_…#3");
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.LookupNeedsParent, noParent));
+        }
         string parentId = tags.Parent.Split('#')[0];
         if (Get(parentId) is not { } parent)
-            throw new ToolsetException(MessageText.Format(ApiErrorMessage.LookupParentUnknown,
-                new { Session = parentId }));
+        {
+            var unknownParent = new LookupParentUnknownHoles(parentId);
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.LookupParentUnknown, unknownParent));
+        }
         if (LookupAsk.NeverHandedDown.Contains(tool))
-            throw new ToolsetException(MessageText.Format(ApiErrorMessage.ToolNeverHandedDown, new { Tool = tool }));
+        {
+            var neverHanded = new ToolNeverHandedDownHoles(tool);
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.ToolNeverHandedDown, neverHanded));
+        }
         if (!parent.Engine.Tools.Any(t => string.Equals(t.Name, tool, StringComparison.Ordinal)))
-            throw new ToolsetException(MessageText.Format(ApiErrorMessage.ParentLacksTool, new { Tool = tool }));
+        {
+            var lacks = new ParentLacksToolHoles(tool);
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.ParentLacksTool, lacks));
+        }
     }
 
     /// <summary>The session by its id, if this instance has it.</summary>
