@@ -220,8 +220,10 @@ switch ($Verb) {
         }
         $template = Join-Path $Repo $AppInfo.Yaml
         $resolved = Join-Path ([System.IO.Path]::GetTempPath()) "$App.$Revision.yaml"
-        (Get-Content $template -Raw).Replace(':TAG', ":$Tag").Replace("'REVISION'", "'$Revision'").Replace('ENVIRONMENT_ID', $environmentId).Replace('APP_IDENTITY_ID', $identityId).Replace('    # SECRETS', ($secrets -join "`n")).Replace('          # PROVIDERS', ($providerLines -join "`n")).Replace('          # WHEN SET', ($whenSetLines -join "`n")) |
-            Set-Content $resolved -Encoding utf8 -NoNewline
+        $filled = (Get-Content $template -Raw).Replace(':TAG', ":$Tag").Replace("'REVISION'", "'$Revision'").Replace('ENVIRONMENT_ID', $environmentId).Replace('APP_IDENTITY_ID', $identityId).Replace('    # SECRETS', ($secrets -join "`n")).Replace('          # PROVIDERS', ($providerLines -join "`n")).Replace('          # WHEN SET', ($whenSetLines -join "`n"))
+        # UTF-8 with no byte-order mark (FX224): Windows PowerShell's Set-Content -Encoding utf8 writes one, and az's
+        # yaml reader then takes the first comment for a key and refuses the file.
+        [System.IO.File]::WriteAllText($resolved, $filled, [System.Text.UTF8Encoding]::new($false))
         if ($inPlace) {
             Write-Host "Updating $App to revision $Revision (tag $Tag) from $template..."
             Invoke-Az containerapp update -n $App -g $ResourceGroup --yaml $resolved --query '{revision:properties.latestRevisionName, ready:properties.latestReadyRevisionName, state:properties.provisioningState}' -o json
