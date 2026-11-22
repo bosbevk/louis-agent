@@ -98,17 +98,15 @@ environment by the tools themselves:
 | `PYTHON_VENV` | Where `PythonRun` keeps the virtual environment for packages it installs. Default: a per-user folder (`%LOCALAPPDATA%/louis-agent/python-venv`, `~/.local/share/louis-agent/python-venv` on Linux) |
 | `AGENT_WORKING_DIRECTORY` | The working directory for bash, PowerShell and Python scripts. Default: the workspace root |
 
-**The eval studio and the eval runner**, read by `LouisAgent.Api.Evals` and by the runner; the store's
-`EVALS_MONGO_URL` and `EVALS_MONGO_DATABASE` are in [Puls's Setup](https://github.com/bosbevk/louis-agent/blob/puls-moved-out/demos/puls/docs/SETUP.md#pulss-own-settings):
+**The eval runner**, read by the runner on the command line; the eval studio that started runs from the admin was
+deleted with the old evals (F126.1):
 
 | Setting | Meaning |
 |---|---|
-| `EVAL_RUNNER` | The eval runner's dll: the API lists the evals with `dotnet {EVAL_RUNNER} --list` and starts one with `run`. No image sets it any more, since the demo's runner was deleted (F126.1); set it yourself only outside a container, where a relative path is resolved from the API's working directory |
-| `BENCHMARK_API_URL` | Where a run started from the admin portal reaches this API back. Default: the container's own port, `http://127.0.0.1:8080/` |
 | `EVALS` | Which identities' evals the runner lists and runs, comma separated (`EVALS=puls`). Unset: every eval; a name no eval proves is refused |
 | `EVAL_JUDGE_PROVIDER`, `EVAL_JUDGE_MODEL`, `EVAL_JUDGE_ENDPOINT` | The judge of the evals' model graders. No model: no judge, a model grader's grade is unknown and the run goes on. No provider: a `claude*` model is Anthropic's (paid, so only on purpose), any other is Ollama's; the endpoint is a local server's URL ([Run the evals](guides/run-the-evals.md)) |
 | `EVAL_JUDGE_API_KEY` | A secret, in `.env.secrets`: the judge's key. An Anthropic judge without it uses `ANTHROPIC_API_KEY` |
-| `AGENT_API`, `BENCHMARK_RUN` | The API sets both for a run it starts; by hand only for a command-line run. The agent API the run talks to (default `http://127.0.0.1:5070/`; `PULS_API`, its old name, is still read), and the run's name, which is its tag in the ledger |
+| `AGENT_API`, `BENCHMARK_RUN` | Set by hand for a command-line run. The agent API the run talks to (default `http://127.0.0.1:5070/`; `PULS_API`, its old name, is still read), and the run's name, which is its tag in the ledger |
 
 **The packs' own settings**; each pack's doc has the detail:
 

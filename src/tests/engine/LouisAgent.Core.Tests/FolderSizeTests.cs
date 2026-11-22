@@ -32,7 +32,6 @@ public class FolderSizeTests
         "src/engine/LouisAgent.Core/Pricing/Prices",
         "src/engine/LouisAgent.Core/Delegation/SubSessions",
         "src/engine/LouisAgent.Core/Usage/Records",
-        "src/hosts/LouisAgent.Api.Evals/Replies",
         "src/web/LouisAgent.Web/Chats",
         "src/tests/hosts/LouisAgent.Api.Tests",
         "src/tests/hosts/LouisAgent.Api.Tests/Endpoints",

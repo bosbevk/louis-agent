@@ -89,7 +89,6 @@ public class ApiNamesNoProductTests
     private static IReadOnlyList<string> Products() =>
         Directory.GetDirectories(Path.Combine(ApiTestHost.RepoRoot, "demos"), $"{ProjectNames.IdentityPrefix}*",
                 SearchOption.AllDirectories)
-            .Where(dir => !dir.EndsWith(".Evals", StringComparison.Ordinal))
             .Where(dir => !dir.EndsWith(".Judges", StringComparison.Ordinal))
             .Where(dir => !dir.EndsWith(".Tests", StringComparison.Ordinal))
             .Select(dir => ProjectNames.ShortName(Path.GetFileName(dir), ProjectNames.IdentityPrefix))

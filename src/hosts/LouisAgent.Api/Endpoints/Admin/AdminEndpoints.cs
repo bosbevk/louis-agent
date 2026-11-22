@@ -8,9 +8,8 @@ namespace LouisAgent.Api.Endpoints.Admin;
 
 /// <summary>
 /// The API's own admin routes, behind the key: every built-in prompt as its header says it (CL27), the data a person
-/// uploads into the packs (F55), the screens the packs describe (ADR 0086),
-/// and the admin's mark on their own sessions (FX207). The eval studio's routes are
-/// LouisAgent.Api.Evals's, mapped on the same kind of group (CL57).
+/// uploads into the packs (F55), the screens the packs describe (ADR 0086), and the admin's mark on their own
+/// sessions (FX207).
 /// </summary>
 internal static class AdminEndpoints
 {

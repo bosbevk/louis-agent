@@ -104,7 +104,6 @@ markup, can't happen by accident:
 | `FrameworkSessionSnapshot.json` (framework Orbi) | `FrameworkSessionSnapshotTests` | What the model is sent in a session of the framework's guide |
 | `AcpTranscript.json` (ACP server) | `AcpTranscriptTests` | Everything the server writes to Rider |
 | `ApiRoutesSnapshot.json` (API) | `ApiRoutesSnapshotTests` | Every route of the API, with who may call it |
-| `EvalRoutesSnapshot.json` (eval studio's API) | `EvalRoutesSnapshotTests` | Every route with the studio mapped, with who may call it |
 | `AccountsRoutesSnapshot.json` (accounts) | `AccountsRoutesSnapshotTests` | Every account route, with who may call it |
 | `.html` beside each component test (web) | bUnit tests | A component's or page's markup |
 

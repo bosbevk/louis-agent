@@ -4,7 +4,7 @@ namespace LouisAgent.Api.Endpoints.Admin;
 
 /// <summary>
 /// The <c>/admin</c> group behind the admin key, for the API's own admin routes and for whatever a library maps on
-/// it (the eval studio, CL57): each caller gets its own group with the same gate, so the key check runs before any
+/// it (CL57): each caller gets its own group with the same gate, so the key check runs before any
 /// route's own work and the route table says which calls take the admin key.
 /// </summary>
 public static class AdminGroup

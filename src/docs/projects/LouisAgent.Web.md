@@ -66,8 +66,7 @@ sends it themselves.
 
 `Showroom(demos)` adds the demos, the demos' windows and the kept guide. Part 4 explains them.
 
-A library adds an area of its own through `Add`. The eval studio's `Evals()` and the accounts' `Accounts(layout)`
-do that. An area may also bring a theme, a look the site can wear, in its `Theme` slot. Part 7 explains themes.
+A library adds an area of its own through `Add`. The accounts' `Accounts(layout)` does that. An area may also bring a theme, a look the site can wear, in its `Theme` slot. Part 7 explains themes.
 
 An area named twice counts once.
 
@@ -786,7 +785,7 @@ When the site also hands it the words of a way to try the agent live, the ending
 button, and the site hears when it is pressed.
 
 It reads the file with the session-stream reader and waits by each event's kind: thinking fast, the answer at
-reading speed, a beat per tool. It folds the events with the same loop the eval studio's replay uses. Its window
+reading speed, a beat per tool. It folds the events with `TurnReplay`'s loop. Its window
 keeps one height: the list gives up room for the ending. The window's look is a Sass mixin of the framework's,
 which a site's own animated panels use too. A site can make the ending's guide button plain.
 
@@ -853,8 +852,6 @@ admin's, and a refused key only loses the mark, never the chat.
 
 **The packs**, `Packs(views => …)`, are the packs' screens and uploads, with their menu and the packs page at
 `/admin/packs`.
-
-**The eval studio**, `Evals()`, is at `/admin/evals`.
 
 An admin area named without the frame is refused at start-up.
 
@@ -972,7 +969,7 @@ screen; one that fits is drawn as it was.
 `LinesAndInksTests` holds the four.
 
 A test holds every sheet to this. `SurfacesAreDrawnByTheToolsTests` reads each sheet of this library, and of the
-libraries built on it, the account pages, the eval studio and the packs' views, a line at a time, and a line that sets a background, a border, a shadow, a blur or an outline from a colour, a name or a
+libraries built on it, the account pages, the docs', the framework's and the packs' views, a line at a time, and a line that sets a background, a border, a shadow, a blur or an outline from a colour, a name or a
 gradient counts as drawn by hand. No sheet may, and one that does fails the test. The tools themselves and the
 settings are not read, since that is where the drawing lives.
 

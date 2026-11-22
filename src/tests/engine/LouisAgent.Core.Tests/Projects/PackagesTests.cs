@@ -13,7 +13,7 @@ public class PackagesTests
         "LouisAgent.Core.Ollama", "LouisAgent.Core.OpenAi", "LouisAgent.Core.Telemetry", "LouisAgent.Core.Web",
         "LouisAgent.SessionStream", "LouisAgent.Evals", "LouisAgent.Evals.Checks", "LouisAgent.Evals.Protocol",
         "LouisAgent.Evals.Runner", "LouisAgent.Accounts", "LouisAgent.Accounts.Contracts", "LouisAgent.Api",
-        "LouisAgent.Api.Contracts", "LouisAgent.Api.Evals", "LouisAgent.Web", "LouisAgent.Web.Accounts",
+        "LouisAgent.Api.Contracts", "LouisAgent.Web", "LouisAgent.Web.Accounts",
         "LouisAgent.Diagrams", "LouisAgent.Diagrams.Engine", "LouisAgent.Packs.Calculator",
         "LouisAgent.Packs.DotNet", "LouisAgent.Packs.Files", "LouisAgent.Packs.Git", "LouisAgent.Packs.Shell",
         "LouisAgent.Packs.Web", "LouisAgent.Testing", "LouisAgent.Web.Testing"
@@ -86,8 +86,9 @@ public class PackagesTests
     }
 
     /// <summary>
-    /// A package that holds Sass carries it, under <c>sass/</c>, with the shared build file a site's build runs, so a site
-    /// outside this repository compiles the framework's Sass as one inside does (Louis's pick A of F166.3's finding 6).
+    /// A package that holds Sass carries it, under <c>sass/</c>, with the shared build file a site's build runs, so a
+    /// site outside this repository compiles the framework's Sass as one inside does (Louis's pick A of F166.3's
+    /// finding 6).
     /// </summary>
     [Test]
     public void APackageWithSass_CarriesIt_AndTheFileThatUnpacksIt()
@@ -114,7 +115,8 @@ public class PackagesTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(unpack, Does.Contain("<FrameworkSass Include=\"$(MSBuildThisFileDirectory)../sass/**/*.scss\""));
+            Assert.That(unpack,
+                Does.Contain("<FrameworkSass Include=\"$(MSBuildThisFileDirectory)../sass/**/*.scss\""));
             Assert.That(unpack, Does.Contain("BeforeTargets=\"Compile Sass\""));
             Assert.That(unpack, Does.Contain("$(BaseIntermediateOutputPath)framework-sass/%(RecursiveDir)"));
         });

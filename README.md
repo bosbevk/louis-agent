@@ -37,7 +37,7 @@ own agents.
 | **One address for every agent call:** `AskAgent("puls.cook", …)` asks a subagent, a cheap one-task lookup agent, or an agent on another server, and an identity lists in code whom it may ask | The chat on any website, from one script tag |
 | A triage team: a manager with a sorter, an investigator and a reviewer, each ending its work with a typed tool | Budgets that warn, ask or stop; drafts a person approves; an audit log |
 | **Evals as files:** an eval is a folder of JSON beside its identity, graded by a catalogue of C# checks, written in the portal's studio, replayed for $0 | Then Puls again: a recipe's shopping list with prices, every text from localisation files, twelve local specialists |
-| An admin that is a frame its areas plug into: an overview of the talks and what they cost, the packs' pages, the eval studio with its queue of answers waiting for a person's grade | |
+| An admin that is a frame its areas plug into: an overview of the talks and what they cost, and the packs' pages | |
 | Cost on every answer, from a usage ledger priced by date; every turn and tool call traced with OpenTelemetry | |
 | **louis-agent.dev**, the framework's own website (`src/site`), on the framework's web: a guide in the corner that knows the page you are on, takes you to a section and draws cards and forms in the chat; a showroom of three made-up businesses whose agents you can try live; every page served as HTML so a search engine can read it | |
 | **A showroom the agent runs:** the guide sits in an agent bar under the page, lights the part it explains, and opens each made-up business's own website in a window with that business's chat beside it | |

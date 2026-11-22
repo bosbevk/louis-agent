@@ -4,7 +4,7 @@ namespace LouisAgent.Api.Config;
 
 /// <summary>
 /// The admin portal's one setting: its key, ADMIN_API_KEY, else AGENT_API_KEY; neither, and the admin routes are
-/// closed. The studio's settings are its own (<c>EvalOptions</c> in LouisAgent.Api.Evals, CL57).
+/// closed.
 /// </summary>
 /// <param name="AdminKey">The key the admin routes take; none closes them.</param>
 public sealed record AdminOptions(string? AdminKey)

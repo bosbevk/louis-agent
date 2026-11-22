@@ -18,7 +18,7 @@ public class SolutionLayoutTests
         "LouisAgent.Composition", "LouisAgent.Core.Web", "LouisAgent.Core.Telemetry", "LouisAgent.Core.Anthropic",
         "LouisAgent.Core.Ollama", "LouisAgent.Core.OpenAi")]
     [TestCase("src/hosts", "LouisAgent.Acp", "LouisAgent.Api", "LouisAgent.Api.Contracts", "LouisAgent.Cli",
-        "LouisAgent.Mcp", "LouisAgent.Accounts", "LouisAgent.Accounts.Contracts", "LouisAgent.Api.Evals")]
+        "LouisAgent.Mcp", "LouisAgent.Accounts", "LouisAgent.Accounts.Contracts")]
     [TestCase("src/web", "LouisAgent.Web", "LouisAgent.Web.Accounts", "LouisAgent.Web.Themes",
         "LouisAgent.Web.Framework", "LouisAgent.Web.Docs", "LouisAgent.Web.Places",
         "LouisAgent.Diagrams", "LouisAgent.Diagrams.Engine")]

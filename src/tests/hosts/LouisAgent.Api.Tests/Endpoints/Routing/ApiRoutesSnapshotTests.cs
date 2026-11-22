@@ -27,7 +27,7 @@ public partial class ApiRoutesSnapshotTests
     private static readonly string[] AllowedInProgram =
     [
         "MapStaticAssets", "MapLouisAgentSite", "MapApi", "MapLouisAgentApi", "MapAdmin", "MapLouisAgentAccounts",
-        "MapLouisAgentEvals", "MapHostGroup", "MapLouisAgentHostGroup"
+        "MapHostGroup", "MapLouisAgentHostGroup"
     ];
 
     /// <summary>Every route as "METHOD /pattern (Access)", sorted, as the golden file holds it.</summary>

@@ -48,7 +48,6 @@ public sealed record FrameworkFamily(
             new("LouisAgent.Acp", "Rider, with its tool discovery."),
             new("LouisAgent.Api", "Sessions and their stream, and a web app served."),
             new("LouisAgent.Api.Contracts", "The API's replies and bodies, as records."),
-            new("LouisAgent.Api.Evals", "The eval studio's API."),
             new("LouisAgent.Mcp", "The tools over MCP, with no model."),
             new("LouisAgent.Accounts", "Sign-in, registration and a profile."),
             new("LouisAgent.Accounts.Contracts", "The accounts' records.")

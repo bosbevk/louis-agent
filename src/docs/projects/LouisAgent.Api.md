@@ -13,8 +13,7 @@ This is the agent over HTTP. You open a session, send it a message, and the answ
 Events, shaped like Claude's. Beside that, it lets you browse the workspace read-only, has a git interface, serves the
 packs' screens and uploads, and holds the admin key. It also serves the web app.
 
-Other programs and agents, such as the orchestrator, use it to hand louis-agent a whole task. The eval studio is a
-library on top of it that a program opts into: [LouisAgent.Api.Evals](LouisAgent.Api.Evals.md).
+Other programs and agents, such as the orchestrator, use it to hand louis-agent a whole task.
 
 *Decided in:* CL57.
 
@@ -363,8 +362,8 @@ These are the types involved:
 | `Endpoints/Admin/Screens/` | The packs' described screens (ADR 0086), behind the admin key, naming no pack: `ScreenHandlers` the list and a page of rows, `ScreenRowHandlers` a row's form, `ScreenActionHandlers` an action |
 | `Endpoints/Admin/Prompts/PromptsHandlers.cs` | `GET /v1/admin/prompts` (CL27, ADR 0063), behind the admin key: every built-in prompt from core's `PromptCatalog` as its header says it, a `PromptRow` each (path, name, description, level by its wire name or null, the toolsets it always loads) in the contract's `Admin/Prompts/PromptRows.cs` |
 | `Config/SiteAddressOptions.cs` | Where a site lives, `SITE_ADDRESS` (FX216): every canonical link's host, and where a page on another host is sent; only a whole https address counts |
-| `Config/AdminOptions.cs` | The admin key, `ADMIN_API_KEY` else `AGENT_API_KEY`; neither closes the admin routes. The studio's settings are `EvalOptions` in LouisAgent.Api.Evals (CL57) |
-| `Endpoints/Admin/AdminGroup.cs`, `AdminGateFilter.cs`, `AdminEndpoints.cs` | The gated `/admin` group the API hands out (CL57): one filter that refuses without the key, a group per library that maps on it; the API's own admin routes are the overview, the prompts, the imports and the screens, and the eval routes are `LouisAgent.Api.Evals`'s ([its doc](LouisAgent.Api.Evals.md)) |
+| `Config/AdminOptions.cs` | The admin key, `ADMIN_API_KEY` else `AGENT_API_KEY`; neither closes the admin routes |
+| `Endpoints/Admin/AdminGroup.cs`, `AdminGateFilter.cs`, `AdminEndpoints.cs` | The gated `/admin` group the API hands out (CL57): one filter that refuses without the key, a group per library that maps on it; the API's own admin routes are the overview, the prompts, the imports and the screens |
 
 ## Configuration
 
@@ -383,8 +382,8 @@ as. Outside Docker,
 `ASPNETCORE_URLS` and `ASPNETCORE_ENVIRONMENT` matter too: an unpublished `dotnet run` only serves the web app in
 `Development`.
 
-The admin routes use `ADMIN_API_KEY`, or `AGENT_API_KEY` when that's not set. The eval studio's settings are in
-[LouisAgent.Api.Evals](LouisAgent.Api.Evals.md). [SETUP](../SETUP.md) has the full list.
+The admin routes use `ADMIN_API_KEY`, or `AGENT_API_KEY` when that's not set. [SETUP](../SETUP.md) has the full
+list.
 
 The image carries the eval runner. The Dockerfile (`demos/louis-agent/docker/images/Dockerfile.api`) publishes it in
 the build stage and copies it to `/app/evals`, its own folder beside the API's. The image sets `EVAL_RUNNER` to its

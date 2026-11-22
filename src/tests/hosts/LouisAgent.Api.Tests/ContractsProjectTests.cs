@@ -39,10 +39,9 @@ public class ContractsProjectTests
     }
 
     /// <summary>The admin replies and their options object are the contract's, not the API's.</summary>
-    [TestCase("LouisAgent.Api.Contracts.Admin.Trends.TrendReply")]
-    [TestCase("LouisAgent.Api.Contracts.Admin.Checks.BenchmarkListReply")]
-    [TestCase("LouisAgent.Api.Contracts.Admin.Checks.ManualReply")]
-    [TestCase("LouisAgent.Api.Contracts.Admin.Trends.CategoryTrendRow")]
+    [TestCase("LouisAgent.Api.Contracts.Admin.Overview.OverviewReply")]
+    [TestCase("LouisAgent.Api.Contracts.Admin.Imports.ImportsReply")]
+    [TestCase("LouisAgent.Api.Contracts.Admin.Screens.ScreenActionReply")]
     [TestCase("LouisAgent.Api.Contracts.Admin.AdminJson")]
     public void AnAdminReply_LivesInTheContracts(string type)
     {

@@ -34,8 +34,6 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="LouisAgent.Api.Tests" />
-    <InternalsVisibleTo Include="LouisAgent.Api.Evals" />
-    <InternalsVisibleTo Include="LouisAgent.Api.Evals.Tests" />
     <InternalsVisibleTo Include="LouisAgent.Api.IntegrationTests" />
     <InternalsVisibleTo Include="LouisAgent.Api.Testing" />
   </ItemGroup>
