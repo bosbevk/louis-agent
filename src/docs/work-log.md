@@ -12,13 +12,13 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 152 | 73 |
+| Features (`F`) | 152 | 76 |
 | Fixes (`FX`) | 213 | 4 |
 | Cleanups (`CL`) | 42 | 27 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (104 in the TODO)
+## Open (107 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
@@ -62,7 +62,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F137 | The site's card content as JSON: the demo cards, the pricing, what it does and the custom-agent steps read from JSON beside their pages and drawn by one card component, so an agent that edits the site changes data, not markup; groundwork for F133, after CL60 | Next |
 | F133 | A website with an agent, set up by talking to it (Louis, 2026-11-11: "How about I build a wix with my platform"): not a Wix, but one record per business that draws both its site and its agent, three templates (guesthouse, restaurant, practice), a setup pack that writes the record as the owner talks, preview then checkout then live on its own host name; builds on F131, F43, F130.1 and F7; seven proposed children, four open choices (the record's shape before F131.1 starts) | Next |
 | F152 | The showroom's demos, fuller, each part Louis's pick: a business's chat draws a card for the place its agent opened, as the start's window shows it (Louis, 2026-11-15: "like the inner agent do not do this?"), and the three websites gain sections, which means recording their conversations again (ADR 0115) | Next |
-| F157 | The Google integration suite: connect Google per tenant, read a sheet, book a time, an Integrations section; seven children | Next |
+| F157 | The Google integration suite: connect Google per tenant, read a sheet, a booking request, an Integrations section; four children | Next |
 | F143 | The guide drives Louis's CV: a resume pack with `GetResume` over the same `cv.json`, `/cv` in the place index, a hiring focus skill, an eval of eight conversations; after F142 | Next, after F142 |
 | F46 | Localisation | Next |
 | F40 | The sales playground | Next |
@@ -102,6 +102,9 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL23 | Explore a Roslyn analyzer for the names rule | Later |
 | F30 | F30's minions tested | Later |
 | F104 | Build mode, a side note | Later |
+| F173 | Google Drive for a business's agent, was F157.5 | Later |
+| F174 | Gmail for a business's agent, a reply drafted for the owner, was F157.6 | Later |
+| F175 | Visitors connect their own Google, was F157.7 | Later |
 | CL34 | The work email out of git history | Cleanups |
 | CL35 | `Web/Browsing/RedirectBodies` goes when a PuppeteerSharp release awaits its own redirect body ta… | Cleanups |
 | CL36 | Design docs for the four projects that have none | Cleanups |

@@ -12,10 +12,10 @@
       { "id": "integrations", "label": "/integrations\na card per integration\n(F157.4)", "icon": "book", "tone": "violet", "group": "site" },
       { "id": "api", "label": "LouisAgent.Api\nthe session, its tenant\nfrom the host (F157.1)", "icon": "server", "tone": "teal", "group": "host" },
       { "id": "engine", "label": "LouisAgent.Core\nthe turn's tenant\nin the pack context (F157.1)", "icon": "chip", "tone": "teal", "group": "host" },
-      { "id": "pack", "label": "louis-agent.pack.google\nsheets (F157.2) · calendar (F157.3)", "icon": "box", "tone": "green", "group": "host" },
+      { "id": "pack", "label": "LouisAgent.Packs.Google\nsheets (F157.2) · calendar (F157.3)", "icon": "box", "tone": "green", "group": "host" },
       { "id": "accounts", "label": "LouisAgent.Accounts\nAccountConnections,\nConnectHandlers (F157.1)", "icon": "shield", "tone": "teal", "group": "host" },
       { "id": "db", "label": "Accounts database\nAspNetUserTokens,\nthe token protected", "icon": "database", "tone": "amber", "shape": "data", "group": "host" },
-      { "id": "keys", "label": "Data-protection keys\non the app's share (FX66)", "icon": "folder", "tone": "amber", "shape": "data", "group": "host" },
+      { "id": "keys", "label": "Data-protection keys\non the app's share (the keys fix)", "icon": "folder", "tone": "amber", "shape": "data", "group": "host" },
       { "id": "oauth", "label": "Google's OAuth\nconsent and token endpoint", "icon": "cloud", "tone": "red", "group": "google" },
       { "id": "apis", "label": "Sheets API · Calendar API", "icon": "cloud", "tone": "red", "group": "google" }
     ],
@@ -32,7 +32,7 @@
       { "from": "engine", "to": "pack" },
       { "from": "pack", "to": "accounts", "word": "asks a token" },
       { "from": "accounts", "to": "oauth", "word": "refreshes" },
-      { "from": "pack", "to": "apis", "word": "reads, books" }
+      { "from": "pack", "to": "apis", "word": "reads, requests" }
     ],
     "groups": [
       { "id": "site", "label": "louis-agent.dev in the browser" },

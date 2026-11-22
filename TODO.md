@@ -21,7 +21,7 @@ first step ([src/docs/CLAUDE.md](src/docs/CLAUDE.md), rule 3), never here; the n
 tag `pre-work-log` (2026-11-07). When an item is finished its row moves to the [work log](src/docs/work-log.md). The
 known limitations below are facts about today, not tasks.
 
-## Open (104)
+## Open (107)
 
 | Id | What | Phase | Detail |
 |---|---|---|---|
@@ -65,7 +65,7 @@ known limitations below are facts about today, not tasks.
 | F137 | The site's card content as JSON (Louis, 2026-11-11, during CL60.1: "render our website cards with the info this way? that way our pages is built by json which the ai can then easily read"; his yes to cards and lists only, prose pages stay Razor): the demo cards, the pricing, what it does and the custom-agent steps read from JSON beside their pages and drawn by one card component, so an agent that edits the site changes data, not markup; reuses CL60's card records; groundwork for F133; after CL60, its own plan | Next | — |
 | F133 | A website with an agent, set up by talking to it (Louis, 2026-11-11: "How about I build a wix with my platform"): not a Wix, but one record per business that draws both its site and its agent, three templates (guesthouse, restaurant, practice), a setup pack that writes the record as the owner talks, preview then checkout then live on its own host name; builds on F131, F43, F130.1 and F7; seven proposed children, four open choices (the record's shape before F131.1 starts) | Next | [draft](src/docs/plans/F133-self-serve-sites.md) |
 | F152 | The showroom's demos, fuller, each part Louis's pick: a business's chat draws a card for the place its agent opened, as the start's window shows it (Louis, 2026-11-15: "like the inner agent do not do this?"), and the three websites gain sections, which means recording their conversations again (ADR 0115) | Next | — |
-| F157 | The Google integration suite (Louis, 2026-11-17: "let's go for full google integration suite"): a business connects its Google once (OAuth, offline token in Identity's table, per tenant), then its agent reads its sheets (F157.2) and books into its calendar (F157.3); an Integrations section on louis-agent.dev with the showroom's guesthouse (F157.4); Drive, Gmail and visitors' own Google later; after FX66; seven children | Next, after FX66 | [plan](src/docs/plans/F157-google-integration-suite.md) |
+| F157 | The Google integration suite (Louis, 2026-11-17: "let's go for full google integration suite"): a business connects its Google once (OAuth, offline token in Identity's table, per tenant), then its agent reads the sheets the owner picked (F157.2) and puts booking requests in its calendar for the owner to confirm (F157.3); an Integrations section on louis-agent.dev with the showroom's guesthouse (F157.4); after the host keeps its data-protection keys (a fix row to come); four children, with Drive, Gmail and visitors' own Google as F173 to F175 | Next | [plan](src/docs/plans/F157-google-integration-suite.md) |
 | F143 | The guide drives Louis's CV (Louis, 2026-11-13: "the agent should also drive my CV", "split it in 2 features"): a generic resume pack with `GetResume` over the same `cv.json`, `/cv` in the place index, a hiring focus skill (facts only from the tool, the honest no, an interview through the leads pack, no salary or puffery), an eval of eight conversations; two open choices asked when it starts; after F142 | Next, after F142 | [plan](src/docs/plans/F143-the-guide-drives-the-cv.md) |
 | F46 | Localisation | Next | — |
 | F40 | The sales playground | Next | — |
@@ -105,6 +105,9 @@ known limitations below are facts about today, not tasks.
 | CL23 | Explore a Roslyn analyzer for the names rule | Later | [doc](src/docs/adr/0043-repeated-names-are-enums.md) |
 | F30 | F30's minions tested | Later | [feature doc](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F30-local-web-peer.md) |
 | F104 | Build mode, a side note | Later | — |
+| F173 | Google Drive for a business's agent: a `google-drive` toolset in `LouisAgent.Packs.Google` on `drive.file` only, the files the owner picked or the app made; was F157.5, planned when a buyer asks | Later | — |
+| F174 | Gmail for a business's agent: a `google-gmail` toolset, a reply drafted for the owner to send, never sent by the agent; restricted scopes, so Google's security assessment comes first; was F157.6, planned when a buyer asks | Later | — |
+| F175 | Visitors connect their own Google: a try-it on the Integrations section with a visitor's own sheet, once Google has verified the app, with a privacy notice (POPIA, F145); was F157.7, after F157.4 | Later | — |
 | CL34 | The work email out of git history | Cleanups | — |
 | CL35 | `Web/Browsing/RedirectBodies` goes when a PuppeteerSharp release awaits its own redirect body ta… | Cleanups | — |
 | CL36 | Design docs for the four projects that have none | Cleanups | [doc](src/docs/projects/README.md) |

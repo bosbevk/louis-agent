@@ -57,7 +57,7 @@
         "name": "AccountConnections",
         "kind": "F157.1, in LouisAgent.Accounts",
         "members": [
-          "reads the tenant's refresh token from AspNetUserTokens",
+          "reads the owner's refresh token from AspNetUserTokens",
           "unprotects it with Data Protection",
           "refreshes at Google, keeps the access token until it expires"
         ]
@@ -95,7 +95,7 @@
         "kind": "F157.3",
         "members": [
           "FindFreeTimes(DateOnly from, DateOnly to, int minutes)",
-          "BookTime(DateTime startUtc, int minutes, string name, string contact)"
+          "RequestBooking(DateTime startUtc, int minutes, string name, string contact)"
         ]
       },
       {
