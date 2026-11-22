@@ -161,8 +161,8 @@ $page: color.mix(#9282ff, #ffffff, 54%);
     // lines of its own.
     --web-page-lines: none;
     --web-page-lights: url("/_content/LouisAgent.Web.Themes/glass/light/silk.webp?v=1") center / cover no-repeat;
-    // The mark as a letter of the name: a full disc a little above the small letters.
-    --web-wordmark-o: .76em;
+    // The mark as a letter of the name: the header's share of the letters, wherever the name stands (F169.3).
+    --web-wordmark-o: .62em;
     // Under the pointer the drawings show the hover, over the presses' own colours; a tile's icon stands on the
     // panel's white glass with a soft shadow.
     --web-press-hover-fill: var(--web-press-fill);
