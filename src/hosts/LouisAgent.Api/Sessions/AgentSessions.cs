@@ -51,7 +51,7 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     /// profile this instance doesn't offer (<paramref name="llm"/>, F30; null: its own model), all before anything is
     /// created. A minion names its one <paramref name="tool"/>, which must be its parent session's
     /// (<paramref name="tags"/>' parent, found here: minions run on their asker's own instance) and never one of
-    /// <see cref="MinionAsk.NeverHandedDown"/>; its toolsets, when none are sent, are the one that builds the tool.
+    /// <see cref="LookupAsk.NeverHandedDown"/>; its toolsets, when none are sent, are the one that builds the tool.
     /// Every other role refuses a tool.
     /// </summary>
     public AgentSession Create(IEnumerable<string>? toolsets = null, UsageTags? tags = null, int depth = 0,
@@ -69,7 +69,7 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
         if (string.IsNullOrWhiteSpace(tool)) tool = null;
         // The prompt's level: a voice at the top, below it the role's own folder.
         var level = LevelOf(role, depth, tool);
-        if (level == RoleLevel.Lookup) CheckMinion(tags, tool, role);
+        if (level == RoleLevel.Lookup) CheckLookup(tags, tool, role);
         else if (tool is not null)
             throw new ToolsetException(MessageText.Format(ApiErrorMessage.ToolOnlyForMinions,
                 new { Role = role ?? "the default voice" }));
@@ -173,7 +173,7 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     /// specialist's toolbox is the only one). The role itself (a minion role, not a specialist's or the base) is the
     /// factory's check, as for every role.
     /// </summary>
-    private void CheckMinion(UsageTags? tags, string? tool, string? role)
+    private void CheckLookup(UsageTags? tags, string? tool, string? role)
     {
         if (tool is null)
             throw new ToolsetException(MessageText.Format(ApiErrorMessage.MinionNeedsTool,
@@ -185,7 +185,7 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
         if (Get(parentId) is not { } parent)
             throw new ToolsetException(MessageText.Format(ApiErrorMessage.MinionParentUnknown,
                 new { Session = parentId }));
-        if (MinionAsk.NeverHandedDown.Contains(tool))
+        if (LookupAsk.NeverHandedDown.Contains(tool))
             throw new ToolsetException(MessageText.Format(ApiErrorMessage.ToolNeverHandedDown, new { Tool = tool }));
         if (!parent.Engine.Tools.Any(t => string.Equals(t.Name, tool, StringComparison.Ordinal)))
             throw new ToolsetException(MessageText.Format(ApiErrorMessage.ParentLacksTool, new { Tool = tool }));

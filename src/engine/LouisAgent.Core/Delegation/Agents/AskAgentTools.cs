@@ -27,7 +27,7 @@ namespace LouisAgent.Core.Delegation.Agents;
 /// must name it in its <c>Calls</c> (<see cref="AgentCalls"/>), and it must reach an agent here
 /// (<see cref="AgentAddresses"/>). The child opens one level down, on the same path as a specialist
 /// (<see cref="PeerSession"/>): the key from AGENT_API_KEY, the limit of three a turn, the timeout, the roll-up and the
-/// live events. A minion's address takes one of the asker's tools and goes to <see cref="MinionAsk"/>, on its own
+/// live events. A minion's address takes one of the asker's tools and goes to <see cref="LookupAsk"/>, on its own
 /// limits (F127.5: one tool for every call an agent makes).
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0117-one-address-for-every-agent-call.md">ADR 0117: one address for every agent call</seealso>
@@ -57,7 +57,7 @@ public sealed class AskAgentTools(
     private readonly PeerSession _session = SessionOf(http, apiKey, usageSink, time, peers, peerKeys);
 
     /// <summary>A minion's address goes here (F127.5), on a path built the same way, with the minion models.</summary>
-    private readonly MinionAsk _minions = new(SessionOf(http, apiKey, usageSink, time, peers, peerKeys),
+    private readonly LookupAsk _minions = new(SessionOf(http, apiKey, usageSink, time, peers, peerKeys),
         minionLlms ?? new Dictionary<string, IReadOnlyList<string>>(), minionTimeout);
 
     /// <summary>The name this instance goes by among its peers, when the host names more than one (F127.3.1).</summary>
@@ -74,7 +74,7 @@ public sealed class AskAgentTools(
     /// </summary>
     public AskAgentTools(AgentOptions options, IReadOnlyList<IAgentIdentity> identities, IUsageSink? usageSink = null)
         : this(options.AgentPeers, identities, options.AgentApiKey, usageSink: usageSink,
-            peerKeys: options.AgentPeerKeys, minionLlms: options.MinionLlms, maxDepth: options.AgentMaxDepth)
+            peerKeys: options.AgentPeerKeys, minionLlms: options.LookupLlms, maxDepth: options.AgentMaxDepth)
     {
     }
 
@@ -122,7 +122,7 @@ public sealed class AskAgentTools(
             await _identities.RefusalAsync(name, peer, agent.Address.Identity, cancellationToken) is { } notThere)
             return notThere;
         // A minion answers once, on its own limits: it never takes one of the turn's three asks, nor is it kept.
-        if (agent.Kind == AddressKind.Minion)
+        if (agent.Kind == AddressKind.Lookup)
             return await _minions.AskAsync(agent, tool, new SendMessageRequest(message, forwarded), stronger, peer,
                 name, cancellationToken);
 
@@ -203,7 +203,7 @@ public sealed class AskAgentTools(
         if (!AgentCalls.Allows(asker, parsed, out refusal)) return null;
         // An address on another server is that server's to answer for: its identities are read before it is asked.
         if (parsed.Peer is not null) return AgentAddresses.OnAnotherServer(parsed);
-        if (AgentAddresses.IsMinion(parsed)) return AgentAddresses.ResolveMinion(parsed, identities, out refusal);
+        if (AgentAddresses.IsLookup(parsed)) return AgentAddresses.ResolveLookup(parsed, identities, out refusal);
         if (withTool) return Refuse(SubSessionToolMessage.ToolOnlyForMinion, address, out refusal);
         return AgentAddresses.Resolve(parsed, identities, out refusal);
     }

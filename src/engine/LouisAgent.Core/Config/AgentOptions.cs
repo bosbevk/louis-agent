@@ -99,8 +99,8 @@ public sealed class AgentOptions
 
     /// <summary>
     /// STREAM_PACE: on paces a turn's text on its way out of the engine, at a steady pace in whole words, so a host's
-    /// reader gets it evenly, not in the model's bursts (F155); off by default, the stream as the model sends it. A host
-    /// turns it on, and a page that already paces its own words leaves it off, so the words are paced once.
+    /// reader gets it evenly, not in the model's bursts (F155); off by default, the stream as the model sends it. A
+    /// host turns it on, and a page that already paces its own words leaves it off, so the words are paced once.
     /// </summary>
     public bool StreamPace { get; set; }
 
@@ -179,18 +179,19 @@ public sealed class AgentOptions
     public IReadOnlyList<string> SessionLlmProfiles { get; set; } = [];
 
     /// <summary>
-    /// MINION_LLMS (F30): the model a minion role runs on, as <c>role=profile</c> entries separated by commas, with
-    /// <c>*</c> for every role not named and <c>instance</c> for this instance's own model; a <c>&gt;</c> lists a
-    /// cascade, cheapest first, e.g. <c>*=ollama-local&gt;instance,acme-minion-web-summary=instance</c>. Every profile
-    /// must be in <see cref="SessionLlmProfiles"/> (checked at start-up). Empty: no <c>minions</c> toolset.
+    /// LOOKUP_LLMS (F30, CL68.3): the model a lookup agent runs on, as <c>role=profile</c> entries separated by
+    /// commas, each role its address, with <c>*</c> for every one not named and <c>instance</c> for this instance's own
+    /// model; a <c>&gt;</c> lists a cascade, cheapest first, e.g.
+    /// <c>*=ollama-local&gt;instance,acme.summary=instance</c>. Every profile must be in
+    /// <see cref="SessionLlmProfiles"/> (checked at start-up). Empty: no lookup agent runs.
     /// </summary>
-    public IReadOnlyDictionary<string, IReadOnlyList<string>> MinionLlms { get; set; } =
+    public IReadOnlyDictionary<string, IReadOnlyList<string>> LookupLlms { get; set; } =
         new Dictionary<string, IReadOnlyList<string>>();
 
     /// <summary>
-    /// Parses <c>MINION_LLMS</c>; an entry without a role or without a model is dropped, names are lowercased.
+    /// Parses <c>LOOKUP_LLMS</c>; an entry without a role or without a model is dropped, names are lowercased.
     /// </summary>
-    internal static IReadOnlyDictionary<string, IReadOnlyList<string>> ParseMinionLlms(string? value) =>
+    internal static IReadOnlyDictionary<string, IReadOnlyList<string>> ParseLookupLlms(string? value) =>
         (value ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
         .Select(entry => entry.Split('=', 2, StringSplitOptions.TrimEntries))
         .Where(pair => pair.Length == 2 && pair[0].Length > 0)
@@ -330,7 +331,7 @@ public sealed class AgentOptions
             AgentPeers = ParsePeers(Get("AGENT_PEERS")),
             RolesEnabled = ParseNames(ReadRolesSetting(getVariable)),
             SessionLlmProfiles = ParseNames(Get("LLM_SESSION_PROFILES")),
-            MinionLlms = ParseMinionLlms(Get("MINION_LLMS")),
+            LookupLlms = ParseLookupLlms(Get("LOOKUP_LLMS")),
             AgentApiKey = Get("AGENT_API_KEY"),
             AgentPeerKeys = ParsePeerKeys(Get("AGENT_PEER_KEYS")),
             HostTimeZone = CheckTimeZone(Get("HOST_TIME_ZONE")),

@@ -9,7 +9,7 @@ namespace LouisAgent.Core.Tests.Skills.Roles;
 // F30 step 4: a minion (level 2) is a function on the minion base; the specialist hands it one of its own tools (Louis:
 // no list of tools per role, the specialist's toolbox is the only one). CL68.3: on the tests' own lookup agent,
 // agents/testprod/lookups/lookup/.
-public class MinionRolesTests
+public class LookupRolesTests
 {
     [Test]
     public void TheMinionRoles_AreListed_TheBaseIsNot()

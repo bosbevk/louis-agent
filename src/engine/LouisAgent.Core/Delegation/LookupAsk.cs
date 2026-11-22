@@ -23,13 +23,13 @@ namespace LouisAgent.Core.Delegation;
 /// the tool must be one the asker holds (<see cref="AgentTools"/>) and never one of <see cref="NeverHandedDown"/>; at
 /// most <see cref="MaxPerTurn"/> minions across the whole tree of one user turn (one GPU answers one request at a
 /// time); each stopped after <see cref="DefaultTimeout"/>, inside the asker's own. The model is configuration: the
-/// role's list in <c>MINION_LLMS</c>, cheapest first; <c>stronger</c> asks for the next one (a cascade, FrugalGPT) and
+/// role's list in <c>LOOKUP_LLMS</c>, cheapest first; <c>stronger</c> asks for the next one (a cascade, FrugalGPT) and
 /// can never name a model. It shares <c>AskAgent</c>'s path to the child (<see cref="PeerSession"/>); the address was
 /// read and checked against the asker's <c>Calls</c> there.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0117-one-address-for-every-agent-call.md">ADR 0117: one address for every agent call</seealso>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
-public sealed class MinionAsk
+public sealed class LookupAsk
 {
     /// <summary>Minions one user turn may open, counted across every agent of that turn.</summary>
     public const int MaxPerTurn = 16;
@@ -38,14 +38,14 @@ public sealed class MinionAsk
     public static readonly TimeSpan DefaultTimeout = TimeSpan.FromMinutes(2);
 
     /// <summary>A minion's kind on the registry (F26), beside <see cref="AskAgentTools.Kind"/>.</summary>
-    public const string Kind = OpenSubSession.MinionKind;
+    public const string Kind = OpenSubSession.LookupKind;
 
     /// <summary>
-    /// The model name in <c>MINION_LLMS</c> that means this instance's own (Haiku, when a role needs a stronger model).
+    /// The model name in <c>LOOKUP_LLMS</c> that means this instance's own (Haiku, when a role needs a stronger model).
     /// </summary>
     public const string InstanceLlm = "instance";
 
-    /// <summary>The default role in <c>MINION_LLMS</c>.</summary>
+    /// <summary>The default role in <c>LOOKUP_LLMS</c>.</summary>
     public const string AnyRole = "*";
 
     /// <summary>
@@ -69,7 +69,7 @@ public sealed class MinionAsk
     private readonly ConcurrentDictionary<string, int> _perTree = new(StringComparer.Ordinal);
 
     /// <summary>The minions <c>AskAgent</c> asks on its own path, with this instance's minion models.</summary>
-    internal MinionAsk(PeerSession session, IReadOnlyDictionary<string, IReadOnlyList<string>> llms, TimeSpan? timeout)
+    internal LookupAsk(PeerSession session, IReadOnlyDictionary<string, IReadOnlyList<string>> llms, TimeSpan? timeout)
     {
         _session = session;
         _llms = llms;
@@ -132,7 +132,7 @@ public sealed class MinionAsk
     }
 
     /// <summary>
-    /// Picks the minion's model from <c>MINION_LLMS</c>: the role's own list, else the default one, cheapest first, and
+    /// Picks the minion's model from <c>LOOKUP_LLMS</c>: the role's own list, else the default one, cheapest first, and
     /// the next one when the asker wants a stronger model. No model means the instance's own.
     /// </summary>
     private string? ModelFor(string role, bool stronger, out string? llm)

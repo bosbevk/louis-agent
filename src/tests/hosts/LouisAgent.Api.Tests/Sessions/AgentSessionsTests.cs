@@ -78,9 +78,9 @@ public class AgentSessionsTests
             SkillsDirectory = SkillsFolder,
             RatesUrl = null,
             AgentPeers = new Dictionary<string, Uri> { [TestAgent.Name] = new("http://testagent:8080/") },
-            MinionLlms = new Dictionary<string, IReadOnlyList<string>>
+            LookupLlms = new Dictionary<string, IReadOnlyList<string>>
             {
-                [TestAgent.OtherMinion] = [MinionAsk.InstanceLlm]
+                [TestAgent.OtherMinion] = [LookupAsk.InstanceLlm]
             }
         };
 

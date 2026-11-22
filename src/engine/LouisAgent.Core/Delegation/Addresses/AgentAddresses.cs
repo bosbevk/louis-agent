@@ -61,16 +61,16 @@ public static class AgentAddresses
     /// The minion tool says the address is a minion's, so the same words never reach a specialist and a minion both
     /// (Claude's pick Q1, of three: the file's name as the role, which leaks its prefix; a grammar of its own).
     /// </remarks>
-    public static AddressedAgent? ResolveMinion(AgentAddress address, IReadOnlyList<IAgentIdentity> identities,
+    public static AddressedAgent? ResolveLookup(AgentAddress address, IReadOnlyList<IAgentIdentity> identities,
         out string? why)
     {
         var identity = identities.FirstOrDefault(i =>
             string.Equals(i.Name, address.Identity, StringComparison.OrdinalIgnoreCase));
         if (identity is null)
             return Refuse(SubSessionToolMessage.AddressUnknownIdentity, UnknownIdentity(address, identities), out why);
-        if (IsMinion(address))
-            return Found(new AddressedAgent(address, AddressKind.Minion, MinionFile(address)), out why);
-        var unknownMinion = new AddressUnknownMinionHoles(address.Identity, address.Role ?? "", MinionsOf(identity));
+        if (IsLookup(address))
+            return Found(new AddressedAgent(address, AddressKind.Lookup, LookupName(address)), out why);
+        var unknownMinion = new AddressUnknownMinionHoles(address.Identity, address.Role ?? "", LookupsOf(identity));
         return Refuse(SubSessionToolMessage.AddressUnknownMinion, unknownMinion, out why);
     }
 
@@ -91,12 +91,12 @@ public static class AgentAddresses
         agent.Kind == AddressKind.Identity ? agent.Address.Identity : agent.Role ?? agent.Address.Identity;
 
     /// <summary>Whether the address names one of this instance's minions.</summary>
-    public static bool IsMinion(AgentAddress address) =>
+    public static bool IsLookup(AgentAddress address) =>
         address is { Role: not null, Peer: null } &&
-        RoleCatalog.Available(RoleLevel.Lookup).Contains(MinionFile(address));
+        RoleCatalog.Available(RoleLevel.Lookup).Contains(LookupName(address));
 
     /// <summary>A lookup agent's name: its address, its identity then its function (CL68.3, ADR 0133).</summary>
-    private static string MinionFile(AgentAddress address) => $"{address.Identity}.{address.Role}";
+    private static string LookupName(AgentAddress address) => $"{address.Identity}.{address.Role}";
 
     /// <summary>One of this instance's subagents, by its address; a minion's is no role to ask (F127.5).</summary>
     private static AddressKind? KindOf(string subagent) =>
@@ -107,7 +107,7 @@ public static class AgentAddresses
         Addresses(RoleLevel.Subagent, $"{identity.Name}.", identity.Name);
 
     /// <summary>The identity's minions as the model writes them, <c>acme.lookup</c>, or "(none)".</summary>
-    private static string MinionsOf(IAgentIdentity identity) =>
+    private static string LookupsOf(IAgentIdentity identity) =>
         Addresses(RoleLevel.Lookup, $"{identity.Name}.", identity.Name);
 
     /// <summary>The files of a level that start with a prefix, as addresses on the identity, or "(none)".</summary>

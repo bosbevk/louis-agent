@@ -57,10 +57,10 @@ public class AgentAddressesTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(AgentAddresses.ResolveMinion(address, Identities, out _),
-                Is.EqualTo(new AddressedAgent(address, AddressKind.Minion, "testprod.lookup")));
-            Assert.That(AgentAddresses.IsMinion(address), Is.True);
-            Assert.That(AgentAddresses.IsMinion(new AgentAddress("testprod", "specialist")), Is.False);
+            Assert.That(AgentAddresses.ResolveLookup(address, Identities, out _),
+                Is.EqualTo(new AddressedAgent(address, AddressKind.Lookup, "testprod.lookup")));
+            Assert.That(AgentAddresses.IsLookup(address), Is.True);
+            Assert.That(AgentAddresses.IsLookup(new AgentAddress("testprod", "specialist")), Is.False);
         });
     }
 
@@ -70,7 +70,7 @@ public class AgentAddressesTests
     [Test]
     public void AnUnknownMinion_IsRefused_NamingTheIdentitysMinions()
     {
-        var agent = AgentAddresses.ResolveMinion(new AgentAddress("testprod", "cook"), Identities, out string? why);
+        var agent = AgentAddresses.ResolveLookup(new AgentAddress("testprod", "cook"), Identities, out string? why);
 
         Assert.Multiple(() =>
         {

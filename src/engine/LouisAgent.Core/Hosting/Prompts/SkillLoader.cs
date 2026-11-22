@@ -87,7 +87,7 @@ public static class SkillLoader
         // Whom it may ask (F127.3.1): the identity's Calls, the same list AskAgent checks, so the two never differ;
         // its minions are no agents to ask, and the roles that hand them work name them (F127.5).
         calls = calls
-            ?.Where(call => !(AgentAddress.TryParse(call, out var address) && AgentAddresses.IsMinion(address)))
+            ?.Where(call => !(AgentAddress.TryParse(call, out var address) && AgentAddresses.IsLookup(address)))
             .ToList();
         if (calls is { Count: > 0 } && profile.Any(t => t.Name == CoreToolset.Agents.Wire()))
             composite.AddProvider(MarkdownSkillProvider.FromText(string.Join("\n",
