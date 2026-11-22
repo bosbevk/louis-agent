@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 153 | 75 |
-| Fixes (`FX`) | 213 | 4 |
+| Fixes (`FX`) | 214 | 4 |
 | Cleanups (`CL`) | 47 | 24 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -284,10 +284,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (213 done)
+## Fixes (214 done)
 
 | Id | When | What |
 |---|---|---|
+| FX225 | 2026-11-22 | The pack-install test turns MSBuild's node reuse off, so CI's integration step no longer waits 15 minutes for a leftover worker |
 | FX224 | 2026-11-22 | deploy.ps1 update writes its yaml with no byte-order mark, so it runs from Windows too |
 | FX223 | 2026-11-22 | Two of the vault's rights out, given to Puls's apps that are gone |
 | FX222 | 2026-11-22 | The band test's id is no longer the core toolset's wire name, so main's repeated-names rule passes again |
