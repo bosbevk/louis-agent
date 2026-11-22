@@ -268,7 +268,7 @@ agent at every level.
 Then comes the role, so who the agent is frames everything after it. At level 0 that's a mode: its voice, and then
 its routing, which says which toolset a task needs and how asking another agent works. The coding agent's default is
 `louis-agent/voice`; the triage team's manager has `triage/voice`; the orchestrator has
-`louis-agent/voice-orchestrator`. At level 1 it's a specialist's role, such as `triage-sorter`, which
+`louis-agent/voice-orchestrator`. At level 1 it's a subagent's voice, such as `triage.sorter`'s, which
 says what it does and how it reports. A minion's role comes after its product's minion base. Below level 0 there's
 no routing. At level 0 the identity's own skills follow its voice: the ones it always loads in full, then a list of
 the ones it reads when it needs them.

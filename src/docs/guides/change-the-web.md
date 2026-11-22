@@ -98,7 +98,7 @@ the reader before the web can see it.
    `SessionEvent`s, so the event exists there first.
 2. **Write the test first** in `src/tests/web/LouisAgent.Web.Tests/Chats/TurnStreamTests.cs`, with the event as the
    API sends it ([the event stream](../AGENT_COMMUNICATION.md#the-event-stream)).
-3. **Fold it** in `Chats/TurnStream.cs`, which builds the `Turn` and its `Block`s. A specialist's events arrive wrapped
+3. **Fold it** in `Chats/TurnStream.cs`, which builds the `Turn` and its `Block`s. A subagent's events arrive wrapped
    in `sub_session` and go to that call's `Delegation`. Keep an unknown event harmless: it's ignored, never an error.
 4. **Show it**, if a view must: add it to the `Turn` or `Block` record and to the view (`TurnView`, `BlocksView` or
    `DelegationCard`).
@@ -162,7 +162,7 @@ LOUIS_UPDATE_GOLDEN=1 dotnet test src/tests/web/LouisAgent.Web.Tests   # after a
 dotnet test demos/louis-agent/tests/LouisAgent.CodeReview.Tests  # the app renders through it
 ```
 
-The tests mirror the folders. `Chats/` holds the stream, the runner, delegations and a specialist's status and answer.
+The tests mirror the folders. `Chats/` holds the stream, the runner, delegations and a subagent's status and answer.
 `Components/` holds the bUnit tests, each pinned to an `.html` golden beside it, drawn from the recorded Puls turn in
 `src/tests/engine/LouisAgent.SessionStream.Tests/Fixtures/session-stream.sse`. Then there are `Text/` and `Usage/`.
 What the web test projects share is in `src/tests/web/LouisAgent.Web.Testing`: `FixtureApi`, `SessionStreamFixture`,

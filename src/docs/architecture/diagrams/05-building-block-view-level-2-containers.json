@@ -66,7 +66,7 @@
         "id": "peer",
         "icon": "server",
         "tone": "green",
-        "label": "Specialist API\n[the HTTP API, as a peer]"
+        "label": "Subagent API\n[the HTTP API, as a peer]"
       },
       {
         "id": "comp",

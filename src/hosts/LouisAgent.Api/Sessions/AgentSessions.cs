@@ -43,8 +43,8 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     /// <summary>
     /// Opens a session with <paramref name="toolsets"/> (null: <see cref="DefaultToolsets"/>; empty: none) and
     /// <paramref name="role"/> (null: the default voice). At the top a session is a voice; below it, its level is the
-    /// folder its role is in (F127.5): an identity's voice asked by another agent opens as a voice, with its own packs
-    /// when none are sent, a specialist as a specialist, a minion as a minion. Throws <see cref="ToolsetException"/>
+    /// one its role is found at (F127.5): an identity's voice asked by another agent opens as a voice, with its own
+    /// packs when none are sent, a subagent as a subagent, a minion as a minion. Throws <see cref="ToolsetException"/>
     /// for an unknown or unavailable toolset, a depth past AGENT_MAX_DEPTH, or a minion asking for
     /// <see cref="AgentsToolset"/>; <see cref="Core.Skills.Roles.RoleException"/> for an unknown role or an agent
     /// already in its chain of asks; and <see cref="Core.Hosting.SessionLlms.SessionLlmException"/> for an LLM

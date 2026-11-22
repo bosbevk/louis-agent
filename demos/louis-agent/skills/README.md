@@ -11,7 +11,7 @@ mounted at `/skills`). It holds only what the agent writes, kept on disk so it s
 | `agents/functions/{name}.md` | A function skill: procedures `ExecuteSkill` runs | `CreateSkillFile` |
 | `tools/` | Agent-built tools, pending and approved | `CreateTool`, `/approve` |
 
-**The built-in prompts are not here.** The principles, the modes, the specialists' roles and the toolset guides
+**The built-in prompts are not here.** The principles, the modes, the subagents' voices and the toolset guides
 live in [`src/engine/LouisAgent.Core/`](../../../src/engine/LouisAgent.Core)'s prompt folders and in each identity's, one folder per level, and are
 read only from the assembly: change one there and rebuild. A copy of a built-in file here is ignored, with a warning.
 

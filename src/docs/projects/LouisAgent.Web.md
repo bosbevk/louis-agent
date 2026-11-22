@@ -15,7 +15,7 @@
 This library is the framework's web: what every site built on the framework shares. That is the chat's frame, the
 admin's frame, the screens a pack brings, the frame of a site's public pages and its showroom of demos. Under them
 it is everything a chat needs to work the same on each site: the chat as data, the client that calls the API, a
-turn's life from the first message to the saved answer, the views of a turn and of a specialist's work, markdown,
+turn's life from the first message to the saved answer, the views of a turn and of a subagent's work, markdown,
 usage and currency.
 
 A site holds what makes it itself. For now that is its colours and its brand, with its own words and pages. The
@@ -131,11 +131,11 @@ the toolsets, the rates and the other GETs. Components never touch `HttpClient`.
 
 **The stream becomes a turn.** `TurnStream` folds the API's events (thinking, text, tool calls, usage) into the
 `Turn` and its `Block`s, which is what the page shows. A sub-session's events go to its `Delegation`, so a
-specialist's work appears inside the turn that called it. `WorkStatus` and `RolePhases` say what the specialist
+subagent's work appears inside the turn that called it. `WorkStatus` and `RolePhases` say what the subagent
 is doing, and `SpecialistAnswer` splits its turn into its work and its answer.
 
 **The views draw the turn.** `TurnView` and `BlocksView` show one turn: the message, thinking that folds away,
-text and tool cards. `DelegationCard` shows a specialist's work, live, with its cost. `MessageList`, `Composer`,
+text and tool cards. `DelegationCard` shows a subagent's work, live, with its cost. `MessageList`, `Composer`,
 `ComposerButtons`, `ChatUsageBar` and `Notice` are the chat pieces both apps lay out, with slots for an app's
 own parts.
 

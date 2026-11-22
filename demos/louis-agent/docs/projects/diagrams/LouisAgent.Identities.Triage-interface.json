@@ -38,7 +38,7 @@
       },
       {
         "id": "roles",
-        "name": "specialists/triage-*.md",
+        "name": "agents/triage/subagents/*/voice.md",
         "kind": "the roles",
         "tone": "amber",
         "members": [

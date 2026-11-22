@@ -240,15 +240,15 @@ step by step, without its thinking, the latest 12,000 characters. Each reply's u
 
 ### 10. Minions
 
-A minion is a small helper on a cheap model. A specialist hands a minion one task and one of its own tools, so the
-page the minion reads never enters the specialist's context. Only the minion's short answer comes back.
+A minion is a small helper on a cheap model. A subagent hands a minion one task and one of its own tools, so the
+page the minion reads never enters the subagent's context. Only the minion's short answer comes back.
 
 A minion is asked with `AskAgent` too, by its address, which the identity lists in its `Calls`. It runs on this instance only, one level down, on the model `MINION_LLMS` names, at most 16 a user turn,
 and is never kept. No prompt tells an agent to ask one yet. Measuring the cook with them and without them is the TODO's
 *F30's minions tested*.
 
 A minion's engine is small on purpose: the principles, its product's base, its role, and that one tool. If the
-specialist hands it a tool it doesn't hold itself, the request is refused before any HTTP call is made.
+subagent hands it a tool it doesn't hold itself, the request is refused before any HTTP call is made.
 
 An LLM profile takes nothing from the instance except its API key. So a local model never picks up Claude's
 `LLM_THINKING` by accident. The profile goes to the peer as data, and the peer refuses one it doesn't offer
@@ -384,8 +384,9 @@ This part is for looking things up: every folder and file of core, and what's in
 | `Skills/MarkdownSkillLoader.cs` | Parses `## Skill:` procedures (description, parameters, a bash / PowerShell / Python fence) from Markdown |
 | `Skills/Providers/MarkdownSkillProvider.cs`, `CompositeSkillProvider.cs` | Every skill file we control is plain markdown read by `MarkdownSkillProvider`; `CompositeSkillProvider` joins them into the system prompt (CL13: the seam's implementations in `Providers/`) |
 | `Skills/Languages/ScriptLanguage.cs` | The script languages a fence can name (bash, PowerShell, Python; F18 step 7.5.3), parsed once in `MarkdownSkillLoader.NormalizeLanguage`; a leaf folder that uses nothing of core, so the top of `Skills/` and every other folder may use it |
-| `Skills/Roles/RoleCatalog.cs`, `RoleException.cs`, `RoleFiles.cs` | A session's role (F21; "personality" before CL13 and CL14): its file in its level's folder (CL8), valid names, the ones available; `RoleFiles` finds a role's file (the default mode's when none is named) and refuses a name from another level |
-| `Skills/RoleLevel.cs` | The level a session runs at (agent, specialist, minion; CL8, ADR 0017), at the top of `Skills/` since CL27, since a prompt's header names it too and the skills' folders use only the top |
+| `Skills/Roles/RoleCatalog.cs`, `RoleException.cs`, `RoleFiles.cs` | A session's role (F21; "personality" before CL13 and CL14): its file, a subagent's inside its agent by its address (ADR 0133), valid names, the ones available; `RoleFiles` finds a role's file (the default mode's when none is named) and refuses a name from another level |
+| `Skills/RoleLevel.cs` | The level a session runs at (agent, subagent, minion; CL8, ADR 0133), at the top of `Skills/` since CL27, since a prompt's header names it too and the skills' folders use only the top |
+| `LouisAgent.Composition`'s `Prompts/PromptFolder.cs`, `PromptFileName.cs` | The folders and files a prompt sits in, one set of names the engine, the identities and the packs share (ADR 0043, CL68.2): `agents`, `subagents`, `skills`, `functions`, `minions`, `toolsets`, `shared`, and `voice.md`, `SKILL.md`; `RoleCatalog` and `SkillFiles` build every path from them |
 | `Skills/Headers/` | Every built-in prompt's front matter (CL27, ADR 0063): `PromptHeader` (name, description, level, toolsets), `PromptFile` (path, header, body), `PromptHeaders.Split` (the one strict reader, YamlDotNet's node model: an unknown key, a name not the file's, a bad level, a missing description or an unclosed fence refuses the file with `PromptHeaderException`, naming it; a file without the fence is read whole), `PromptCatalog` (every embedded prompt read once, lazily, after the host registered its prompts; the loader takes bodies from it, `SkillLoader.ToolsetsOf` a role's toolsets, F33, and the API's admin list). The refusals are `Messages/PromptHeaderMessage` |
 | `Agent/Toolsets/CoreToolset.cs` | Core's two toolsets, `skills` and `agents`, as an enum (ADR 0043), shared by core, the hosts and their tests; the lower-case name is the wire name, written with `.Wire()` (F18 step 7.5.3). The catalogue stays open: a pack adds names core does not list |
 | `Skills/SkillFileSource.cs`, `SkillFiles.cs`, `SkillFolder.cs` | The built-in prompts in `shared/` and `toolsets/`, embedded with a manifest and read only from the assembly (`ManifestEmbeddedFileProvider`), the markdown alone, since read from the root the provider also lists its manifest; their paths, the files `AgentHost` loads by name; which names the agent may not take; `SkillFolder`, where a skill file comes from (a built-in one from the assembly only, the agent's own function files from the skills folder) |

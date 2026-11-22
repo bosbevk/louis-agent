@@ -77,7 +77,7 @@ after 4 hours idle. One message is answered at a time per session.
 | `GET /v1/sessions/{id}` | — | `{ "session_id", "created_at", "last_activity", "busy", "toolsets", "depth", "role", "llm", "tools", "task", "run", "service", "sub_sessions", "usage" }`: `tools` is how many tools the session's engine has; `usage` totals the session's finished turns (the object below), `null` when the API records no usage |
 | `DELETE /v1/sessions/{id}` | — | `{ "deleted": true }` |
 | `GET /v1/toolsets` | — | `{ "default", "toolsets": [{ "name", "description", "available", "missing_settings" }] }`: what a session can load here, never the tool definitions |
-| `GET /v1/roles` | — | `{ "default", "agent": [...], "specialists": [...], "minions": [...] }`: the roles a session can choose, by level |
+| `GET /v1/roles` | — | `{ "default", "agent": [...], "subagents": [...], "minions": [...] }`: the roles a session can choose, by level |
 | `GET /v1/llm-profiles` | — | `{ "default": null, "profiles": [...] }`: the profiles a session may name besides the instance's model (F30) |
 | `GET /v1/model` | — | `{ "provider", "model" }` |
 
@@ -124,7 +124,7 @@ data: {"type":"message_stop"}
 
 | Event | Meaning |
 |---|---|
-| `message_start` | The reply has started: the session's id, the toolsets it loaded (F34) and its role, `session_role` (FX17; `role` is Claude's speaker, always `assistant`). A specialist's start tells its parent's card who is working, even on a follow-up |
+| `message_start` | The reply has started: the session's id, the toolsets it loaded (F34) and its role, `session_role` (FX17; `role` is Claude's speaker, always `assistant`). A subagent's start tells its parent's card who is working, even on a follow-up |
 | `content_block_start` | A new block: `thinking`, `text`, `tool_use` (name and input) or `tool_result` (content, `is_error`) |
 | `content_block_delta` | More `thinking_delta` or `text_delta` for the open block |
 | `content_block_stop` | The block is complete |

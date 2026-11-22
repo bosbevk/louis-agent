@@ -16,7 +16,7 @@ between them.
 | Neighbour | What crosses the boundary |
 |---|---|
 | **Developer** (web app, CLI, Rider) | Messages and attachments in; streamed thinking, text, tool calls and usage out |
-| **Puls user** | Chat in Afrikaans, a time zone, a location only if shared; answers with the specialists' work shown |
+| **Puls user** | Chat in Afrikaans, a time zone, a location only if shared; answers with the subagents' work shown |
 | **Site visitor** | A chat with the guide or a showroom's business, with no sign-in, within a daily cap |
 | **Model provider** | Every request: system prompt, tools, history; replies with usage. The only place a prompt leaves the machine |
 | **Repositories** | The workspace the tools read and write, inside the workspace boundary, never secret files |

@@ -2,14 +2,14 @@
   "kind": "flow",
   "type": "activity",
   "title": "Build an identity: from a project to a running mode",
-  "caption": "A specialist comes only when the work needs one; the rest is the same for every identity.",
+  "caption": "A subagent comes only when the work needs one; the rest is the same for every identity.",
   "flow": {
     "nodes": [
       { "id": "you", "label": "You", "icon": "user", "tone": "blue", "shape": "terminal" },
       { "id": "project", "label": "The project\nand its class", "icon": "code", "tone": "green" },
       { "id": "mode", "label": "Its mode:\nvoice, routing", "icon": "message", "tone": "green" },
       { "id": "need", "label": "Work to\nhand over?", "tone": "green", "shape": "decision" },
-      { "id": "specialist", "label": "A specialist\nand its Calls", "icon": "users", "tone": "green" },
+      { "id": "subagent", "label": "A subagent\nand its Calls", "icon": "users", "tone": "green" },
       { "id": "register", "label": "Registered in\nhost-packs", "icon": "stack", "tone": "violet" },
       { "id": "test", "label": "Its tests and\nsession golden", "icon": "checks", "tone": "green" }
     ],
@@ -17,9 +17,9 @@
       { "from": "you", "to": "project" },
       { "from": "project", "to": "mode" },
       { "from": "mode", "to": "need" },
-      { "from": "need", "to": "specialist", "word": "yes" },
+      { "from": "need", "to": "subagent", "word": "yes" },
       { "from": "need", "to": "register", "word": "no" },
-      { "from": "specialist", "to": "register" },
+      { "from": "subagent", "to": "register" },
       { "from": "register", "to": "test" }
     ],
     "direction": "right"

@@ -34,7 +34,7 @@ own agents.
 | The coding agent in Rider, the web app, the CLI, the HTTP API and over MCP | Orchestration: one agent delegating to another, with typed results checked in code |
 | Puls with five specialists: a researcher, a reader, a historian, an analyst and a cook | Conversations that survive a restart, and a tenant on every ledger row |
 | A recipes pack: 45 South African sites that allow readers, every fetch obeying `robots.txt`; its own recipe library, and the maths to scale a recipe in code | Evals redesigned around whole conversations |
-| **One address for every agent call:** `AskAgent("puls.cook", …)` asks a specialist, a cheap one-task minion, or an agent on another server, and an identity lists in code whom it may ask | The chat on any website, from one script tag |
+| **One address for every agent call:** `AskAgent("puls.cook", …)` asks a subagent, a cheap one-task minion, or an agent on another server, and an identity lists in code whom it may ask | The chat on any website, from one script tag |
 | A triage team: a manager with a sorter, an investigator and a reviewer, each ending its work with a typed tool | Budgets that warn, ask or stop; drafts a person approves; an audit log |
 | **Evals as files:** an eval is a folder of JSON beside its identity, graded by a catalogue of C# checks, written in the portal's studio, replayed for $0 | Then Puls again: a recipe's shopping list with prices, every text from localisation files, twelve local specialists |
 | An admin that is a frame its areas plug into: an overview of the talks and what they cost, the packs' pages, the eval studio with its queue of answers waiting for a person's grade | |
@@ -95,11 +95,11 @@ More detail is in [the architecture](src/docs/architecture/README.md) and in [th
 ## Puls
 
 **Puls** (*Elke vraag op pad na 'n antwoord*) is a general assistant that speaks everyday South African Afrikaans
-(English too). It doesn't answer with tools itself. It hands each task to a **specialist**: a second agent session
+(English too). It doesn't answer with tools itself. It hands each task to a **subagent**: a second agent session
 that has only the tools that task needs, and a role that says how to work and report back. Then Puls writes the answer
 in its own voice.
 
-You see the work. The Werk panel shows each hand-over live: the specialist, its task, each step, the sources it read
+You see the work. The Werk panel shows each hand-over live: the subagent, its task, each step, the sources it read
 and what it cost.
 
 It's local. Costs show in rand, it knows your time zone, and it uses your location (to about 1 km) only if you share

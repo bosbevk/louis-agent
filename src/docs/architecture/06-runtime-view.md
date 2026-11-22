@@ -65,8 +65,8 @@ The system prompt is put together from skill files, in a fixed order, by the eng
 
 It opens with the principles (`shared/principles.md`), which are the same for every agent. Then comes the role. At
 level 0 that's the session's mode, its voice and then its routing: the default `louis-agent/voice`, or Puls's language
-file (`puls/voice-af`) followed by Puls's shared `puls/voice.md`. At level 1 it's a specialist's role from
-`specialists/`, with no routing, because its toolsets were chosen for it. At level 2 it's a minion's function from
+file (`puls/voice-af`) followed by Puls's shared `puls/voice.md`. At level 1 it's a subagent's voice from inside its
+agent, `agents/{identity}/subagents/{name}/voice.md`, with no routing, because its toolsets were chosen for it. At level 2 it's a minion's function from
 `minions/`, after its product's minion base, the file that says what every minion is.
 
 At level 0 the identity's own skills follow the voice. The ones it always needs are there whole, and the ones it reads
@@ -107,7 +107,7 @@ failure.
 
 A sub-session has a prompt budget too. Once its next request is expected to pass `SUB_SESSION_PROMPT_BUDGET`
 (80,000 tokens by default, under Haiku 5.5's long-prompt price step), it keeps its tools but with tool mode None. The
-specialist then answers from what it has, instead of growing its context further.
+subagent then answers from what it has, instead of growing its context further.
 
 *Decided in:* FX14, [ADR 0005](../adr/0005-guard-the-context.md).
 
@@ -192,6 +192,6 @@ To see what the model is offered, inspect `engine.Tools` (name, description, JSO
 
 | Scenario | What happens | In detail |
 |---|---|---|
-| **Puls delegates** | Puls asks its specialist by its address (`AskAgent("puls.cook", …)`), and the specialist's session loads the toolsets its role names; its steps stream into the chat's work panel; Puls answers in its own voice | [Agent to agent: one address for every call](../AGENT_COMMUNICATION.md#agent-to-agent-one-address-for-every-call) |
+| **Puls delegates** | Puls asks its subagent by its address (`AskAgent("puls.cook", …)`), and the subagent's session loads the toolsets its header names; its steps stream into the chat's work panel; Puls answers in its own voice | [Agent to agent: one address for every call](../AGENT_COMMUNICATION.md#agent-to-agent-one-address-for-every-call) |
 | **An eval runs** | The runner, started by the API, opens real sessions on the API, grades each conversation and writes the protocol's lines; the API records them and joins the cost from the ledger | [The evals](evals.md) |
 | **The orchestrator fixes an error** | It reads the service's error, follows the method's runbook, opens a fix session on LouisAgent.Api, verifies the commit and replays the request | [Agent to agent: the orchestrator and louis-agent](../AGENT_COMMUNICATION.md#agent-to-agent-the-orchestrator-and-louis-agent) · [Runbooks](../../../demos/louis-agent/docs/projects/orchestrator-runbooks.md) |
