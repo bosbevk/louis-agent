@@ -201,4 +201,6 @@ checked to be paths only.
 - **2026-11-22, CL68.1 done**, its plan folded. It also made each identity's skill a folder holding its `SKILL.md`
   (Louis: "each skill in it's folder, and SKILL.md"; the voice stays at the agent's root), with ADR 0063 amended so a
   skill's name is its folder's, and the source lists only markdown, since read from the root the embedded provider
-  also lists its own manifest. The write-up is `learning/03-prompt-design.md`.
+  also lists its own manifest. A page's words come from a dictionary factory, `PartWords` in Composition (Louis:
+  "put this in a dictionary factory and make it a rule", ADR 0132), converted when touched. The write-up is
+  `learning/03-prompt-design.md`.

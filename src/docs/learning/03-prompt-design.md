@@ -54,6 +54,16 @@ One gift came out of it. Two of the guide's skill tests had failed on this PC on
 they looked for `"\n## An example\n"` in a file Windows had checked out with `\r\n`. The guide's test now evens the
 line breaks, as the framework's twin already did.
 
+## Words with names
+
+Updating the framework site for the new tree turned up one more thing. *Build your own* held its steps as a list of
+string literals, and Louis, reading it: "put this in a dictionary factory and make it a rule", and then as a
+framework function. So a page's words are now `PartWords<TPart, TValue>`, in `LouisAgent.Composition`: a dictionary
+keyed by an enum of the page's parts, built by a factory that asks a switch for each part when the class loads and
+refuses one with no words. It is the same idea as the prompts' tree, from the other side. A step that has a name can
+be pointed at, and a gap fails at start-up instead of showing on the page. ADR 0132 holds it, and a page converts when
+a step touches it.
+
 ## What it taught
 
 A prompt's design includes where it lives. When the address the engine reads is the path a person sees, a new

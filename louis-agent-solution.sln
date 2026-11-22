@@ -399,6 +399,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "adr", "adr", "{7B2E4C10-9D3
 		src\docs\adr\0129-a-project-is-named-for-its-namespace.md = src\docs\adr\0129-a-project-is-named-for-its-namespace.md
 		src\docs\adr\0130-the-framework-is-published-as-packages-one-tag-each.md = src\docs\adr\0130-the-framework-is-published-as-packages-one-tag-each.md
 		src\docs\adr\0131-the-sites-azure-is-one-bicep-file-a-person-deploys.md = src\docs\adr\0131-the-sites-azure-is-one-bicep-file-a-person-deploys.md
+		src\docs\adr\0132-words-come-from-a-dictionary-factory.md = src\docs\adr\0132-words-come-from-a-dictionary-factory.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "architecture", "architecture", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0102}"

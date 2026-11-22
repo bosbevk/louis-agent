@@ -78,6 +78,9 @@ input. An existing one is replaced as the code is touched, never in a sweep.
 
 ## Choices, texts and named types
 
+- **A page's words are a dictionary factory** (ADR 0132), never a list of string literals: `PartWords<TPart,
+  TValue>.Of(part => part switch { … })`, keyed by an enum of the parts in a `Parts/` folder beside the content, each
+  switch ending `_ => throw new ArgumentOutOfRangeException(…)`. A touched page converts.
 - **A choice is an enum.** A value from a fixed set is an enum. It is parsed once, where it enters, with
   `SettingChoice.TryParse` (`LouisAgent.Choices`: case ignored, aliases, never a number). It is written with
   `.Wire()`, the text on `[WireName]`, never `ToString()`. Code switches on the enum, and the "supported" list
