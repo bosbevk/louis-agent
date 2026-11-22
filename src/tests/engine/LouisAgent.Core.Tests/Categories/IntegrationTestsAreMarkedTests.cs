@@ -23,7 +23,7 @@ public class IntegrationTestsAreMarkedTests
         @"ResolveInterpreter\(\)|FindBash\(\))",
         RegexOptions.Compiled);
 
-    private static readonly Regex Guard = new(@"Outside\.(Tool|Stack)\(|" + RawGuard, RegexOptions.Compiled);
+    private static readonly Regex Guard = new(@"Outside\.(Tool|Stack|Key)\(|" + RawGuard, RegexOptions.Compiled);
 
     private static readonly Regex MethodHeader = new(@"^\s*(public|private|protected|internal)\b[^=;]*\)\s*(=>.*)?$",
         RegexOptions.Compiled);
@@ -167,6 +167,10 @@ public class IntegrationTestsAreMarkedTests
         }
     }
 
+    /// <summary>
+    /// A test that checks first that the outside is there is marked an integration test. The tests of this rule and
+    /// of <see cref="Outside"/> itself are left out: they call it to prove what it does, and never leave the process.
+    /// </summary>
     [Test]
     public void ATestThatChecksTheOutsideIsThere_IsMarkedIntegration()
     {
@@ -174,7 +178,8 @@ public class IntegrationTestsAreMarkedTests
             .Select(path => (path, rel: SourceTree.Relative(path)))
             .Where(file => TestPaths.InTestProject(file.rel) &&
                            !file.rel.StartsWith("src/tests/engine/LouisAgent.Core.Tests/Categories/",
-                               StringComparison.Ordinal))
+                               StringComparison.Ordinal) &&
+                           !file.rel.EndsWith("/Testing/OutsideTests.cs", StringComparison.Ordinal))
             .Select(file => file.path)
             .SelectMany(path => Scan(SourceTree.Relative(path), File.ReadAllText(path)))
             .Select(u => $"{u.File}:{u.Line}  {u.Where}")
@@ -221,7 +226,8 @@ public class IntegrationTestsAreMarkedTests
             .ToList();
 
         Assert.That(raw, Is.Empty,
-            "a test asks for git, a tool or an address with Outside.Tool or Outside.Stack, so that a missing tool " +
+            "a test asks for git, a tool, an address or a key with Outside.Tool, Outside.Stack or Outside.Key, " +
+            "so that a missing tool " +
             "fails where INTEGRATION_REQUIRED is set (F18 step 7.6):\n" +
             string.Join("\n", raw));
     }
