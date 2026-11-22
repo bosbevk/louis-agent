@@ -48,23 +48,23 @@ public class AgentEngineFactoryTests
     [Test]
     public void OnlyTheEnabledRoles_AreOffered_AndAnotherIsRefused()
     {
-        // F29: Louis switched every specialist but the cook off until it has passed a check like the cook's. The gate
+        // F29: Louis switched every subagent but the cook off until it has passed a check like the cook's. The gate
         // is a setting the API enforces, so a prompt slip that names the researcher fails at the peer, not quietly.
-        var factory = FactoryEnabling(["testprod/voice-af", "testprod.specialist"]);
+        var factory = FactoryEnabling(["testprod/voice-af", "testprod.researcher"]);
 
         Assert.That(factory.AvailableRoles(RoleLevel.Agent), Is.EqualTo(new[] { "testprod/voice-af" }),
             "the other language is built in but off");
-        Assert.That(factory.AvailableRoles(RoleLevel.Subagent), Is.EqualTo(new[] { "testprod.specialist" }),
+        Assert.That(factory.AvailableRoles(RoleLevel.Subagent), Is.EqualTo(new[] { "testprod.researcher" }),
             "another role is refused");
 
         var refused = Assert.Throws<RoleException>(() =>
             factory.GetOrCreate([TestToolset.Web.Wire()], "testprod-other", RoleLevel.Subagent))!;
-        Assert.That(refused.Message, Does.Contain("testprod-other").And.EndWith("Available: testprod.specialist."),
+        Assert.That(refused.Message, Does.Contain("testprod-other").And.EndWith("Available: testprod.researcher."),
             "named as unknown, with what's on");
         Assert.That(factory.Profiles, Is.Empty, "refused before anything is built");
 
         Assert.That(
-            factory.GetOrCreate([TestToolset.Web.Wire()], "testprod.specialist", RoleLevel.Subagent)
+            factory.GetOrCreate([TestToolset.Web.Wire()], "testprod.researcher", RoleLevel.Subagent)
                 .SkillDocumentation, Does.Contain("Never invent a fact"));
     }
 
@@ -75,12 +75,12 @@ public class AgentEngineFactoryTests
     [Test]
     public void AnEngine_IsNamedForItsRole_OrTheDefaultMode()
     {
-        var factory = FactoryEnabling(["testprod.specialist"]);
+        var factory = FactoryEnabling(["testprod.researcher"]);
 
-        var specialist = factory.GetOrCreate([TestToolset.Web.Wire()], "testprod.specialist", RoleLevel.Subagent);
+        var subagent = factory.GetOrCreate([TestToolset.Web.Wire()], "testprod.researcher", RoleLevel.Subagent);
         var mode = factory.GetOrCreate([TestToolset.Web.Wire()]);
 
-        Assert.That((specialist.Name, mode.Name), Is.EqualTo(("testprod.specialist", factory.DefaultVoice)));
+        Assert.That((subagent.Name, mode.Name), Is.EqualTo(("testprod.researcher", factory.DefaultVoice)));
     }
 
 
@@ -242,7 +242,7 @@ public class AgentEngineFactoryTests
         Assert.That(factory.AvailableRoles(RoleLevel.Agent),
             Is.EqualTo(new[] { "testprod/voice-af", "testprod/voice-en" }));
         Assert.That(factory.DefaultVoice, Is.EqualTo("testprod/voice-en"), "GET /v1/roles' default");
-        Assert.That(factory.AvailableRoles(RoleLevel.Subagent), Does.Contain("testprod.specialist"));
+        Assert.That(factory.AvailableRoles(RoleLevel.Subagent), Does.Contain("testprod.researcher"));
     }
 
     /// <summary>The enabled roles are read from the environment, trimmed and lowercased.</summary>
@@ -354,7 +354,7 @@ public class AgentEngineFactoryTests
     [Test]
     public void AFullCache_DropsTheLeastRecentlyUsed_NotTheNewList()
     {
-        // PR #27 review: on a specialist the model chooses the lists; refusing the 17th would stop it until a restart.
+        // PR #27 review: on a subagent the model chooses the lists; refusing the 17th would stop it until a restart.
         var factory = Factory(capacity: 2);
         var files = factory.GetOrCreate([TestToolset.Files.Wire()]);
         factory.GetOrCreate([TestToolset.Git.Wire()]);
@@ -392,36 +392,36 @@ public class AgentEngineFactoryTests
     }
 
     /// <summary>
-    /// A minion's engine has its one tool and its role on the minion base, no guide and no router, under a key of
-    /// its own.
+    /// A lookup agent's engine has its one tool and its role on the lookup agent base, no guide and no router, under a
+    /// key of its own.
     /// </summary>
     [Test]
-    public void AMinionsEngine_HasOneTool_TheRoleOnTheBase_NoGuides_AndItsOwnKey()
+    public void ALookupAgentsEngine_HasOneTool_TheRoleOnTheBase_NoGuides_AndItsOwnKey()
     {
-        // F30 step 4 (Louis: a specialist hands a minion one task and one of its own tools): the engine is the role
-        // on the minion base with that one tool, no toolset guide and no router, so a 4B model reads a prompt it can
-        // follow.
+        // F30 step 4 (Louis: a subagent hands a lookup agent one task and one of its own tools): the engine is the role
+        // on the lookup agent base with that one tool, no toolset guide and no router, so a 4B model reads a prompt it
+        // can follow.
         var factory = Factory();
 
-        var minion = factory.GetOrCreate([TestToolset.Web.Wire()], "testprod.lookup", RoleLevel.Lookup,
+        var lookup = factory.GetOrCreate([TestToolset.Web.Wire()], "testprod.lookup", RoleLevel.Lookup,
             tool: "FetchUrl");
 
-        Assert.That(ListToolNames(minion), Is.EqualTo(new[] { "FetchUrl" }),
+        Assert.That(ListToolNames(lookup), Is.EqualTo(new[] { "FetchUrl" }),
             "one tool: no clock, no ExecuteSkill, no WebSearch");
-        Assert.That(minion.SkillDocumentation, Does.Contain("# Testprod lookup agent: Lookup").And
+        Assert.That(lookup.SkillDocumentation, Does.Contain("# Testprod lookup agent: Lookup").And
             .Contain("You are a **lookup agent**")
             .And.Not.Contain("# Web Skills").And.Not.Contain("# Testprod - Routing"));
         Assert.That(factory.Profiles, Is.EqualTo(new[] { "web|testprod.lookup|lookup|tool:FetchUrl" }));
         Assert.That(
             factory.GetOrCreate([TestToolset.Web.Wire()], "testprod.lookup", RoleLevel.Lookup, tool: "FetchUrl"),
-            Is.SameAs(minion));
+            Is.SameAs(lookup));
         Assert.That(
             factory.GetOrCreate([TestToolset.Web.Wire()], "testprod.lookup", RoleLevel.Lookup,
-                tool: "ReadRenderedPage"), Is.Not.SameAs(minion),
+                tool: "ReadRenderedPage"), Is.Not.SameAs(lookup),
             "the tool is part of the key");
     }
 
-    /// <summary>A minion's tool that its toolsets don't have is refused before anything is built.</summary>
+    /// <summary>A lookup agent's tool that its toolsets don't have is refused before anything is built.</summary>
     [Test]
     public void AToolTheToolsetsDontHave_IsRefused_BeforeAnythingIsBuilt()
     {

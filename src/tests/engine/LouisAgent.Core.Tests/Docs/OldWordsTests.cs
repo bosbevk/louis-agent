@@ -24,7 +24,9 @@ public class OldWordsTests
     /// <summary>
     /// The places that keep the words on purpose: the eval code, left for its rework (Louis, 2026-11-22: "we are
     /// going to scrap all about evals and redo it total rework"), with the run rows it shares with the API; Louis's
-    /// own CV, which says what the Puls specialists are; and the coding agent's persona, whose name is his.
+    /// own CV, which says what the Puls specialists are; the coding agent's persona, whose name is his; and the tests
+    /// whose job is the words: this one, the framework pages' check, and the headers' check that the old levels are
+    /// refused.
     /// </summary>
     private static readonly string[] Kept =
     [
@@ -34,6 +36,9 @@ public class OldWordsTests
         "src/tests/hosts/LouisAgent.Api.Testing/Contracts/Records/",
         "src/site/LouisAgent.Site/Content/cv.json",
         "demos/louis-agent/identity/LouisAgent.Identities.Coding/agents/louis-agent/voice.md",
+        "src/tests/engine/LouisAgent.Core.Tests/Docs/OldWordsTests.cs",
+        "src/tests/web/LouisAgent.Web.Framework.Tests/SubagentWordTests.cs",
+        "src/tests/engine/LouisAgent.Core.Tests/Skills/Headers/PromptHeadersTests.cs",
     ];
 
     /// <summary>The files that still said the words when CL69 began; each step of CL69 takes its own off.</summary>
@@ -42,7 +47,6 @@ public class OldWordsTests
         "demos/louis-agent/tests/LouisAgent.Coding.Catalog.Tests/CodingRouterTests.cs",
         "demos/louis-agent/tests/LouisAgent.Coding.Catalog.Tests/Golden/ModelRequestSnapshot.json",
         "demos/louis-agent/tests/LouisAgent.Coding.Catalog.Tests/Golden/ModelRequestSnapshotTests.cs",
-        "packs/tests/LouisAgent.Packs.Rules.Tests/EveryPromptHasAHeaderTests.cs",
         "packs/tests/LouisAgent.Packs.Web.Tests/Quotes/VerifyQuoteTests.cs",
         "src/engine/LouisAgent.Composition/Packs/IAgentIdentity.cs",
         "src/engine/LouisAgent.Core.Web/Browsing/ChromeWebBrowser.cs",
@@ -66,7 +70,6 @@ public class OldWordsTests
         "src/engine/LouisAgent.Core/Sessions/SubSessions/OpenSubSession.cs",
         "src/engine/LouisAgent.Core/Sessions/SubSessions/SubSessionRegistry.cs",
         "src/engine/LouisAgent.Core/Skills/RoleLevel.cs",
-        "src/engine/LouisAgent.Core/Skills/Roles/RoleCatalog.cs",
         "src/engine/LouisAgent.Core/Usage/Records/UsagePurpose.cs",
         "src/engine/LouisAgent.SessionStream/SessionEventMapper.cs",
         "src/engine/LouisAgent.SessionStream/SessionEvents.cs",
@@ -82,58 +85,30 @@ public class OldWordsTests
         "src/hosts/LouisAgent.Api/Sessions/SessionReplyFactories.cs",
         "src/hosts/LouisAgent.Api/Sessions/Streaming/Claude/ClaudeEvents.cs",
         "src/hosts/LouisAgent.Api/Sessions/TurnStream.cs",
-        "src/tests/engine/LouisAgent.Core.Tests/Agent/Catalog/AgentCatalogTests.cs",
         "src/tests/engine/LouisAgent.Core.Tests/Agent/SubSessionPromptBudgetTests.cs",
         "src/tests/engine/LouisAgent.Core.Tests/Agent/ToolRegistryKeepOnlyTests.cs",
         "src/tests/engine/LouisAgent.Core.Tests/Agent/Toolsets/ToolsetCatalogTests.cs",
         "src/tests/engine/LouisAgent.Core.Tests/Agent/Turns/ShowTheAskedAnswerTests.cs",
         "src/tests/engine/LouisAgent.Core.Tests/ArchitectureTests.cs",
-        "src/tests/engine/LouisAgent.Core.Tests/Composition/Agents/AgentAddressTests.cs",
-        "src/tests/engine/LouisAgent.Core.Tests/Delegation/Addresses/AgentAddressesTests.cs",
-        "src/tests/engine/LouisAgent.Core.Tests/Delegation/Agents/AgentWorkToolsTests.cs",
-        "src/tests/engine/LouisAgent.Core.Tests/Delegation/Agents/AskAgentFollowUpTests.cs",
-        "src/tests/engine/LouisAgent.Core.Tests/Delegation/Agents/AskAgentLimitsTests.cs",
         "src/tests/engine/LouisAgent.Core.Tests/Delegation/Agents/AskAgentPeerTests.cs",
-        "src/tests/engine/LouisAgent.Core.Tests/Delegation/Agents/AskAgentToolsTests.cs",
         "src/tests/engine/LouisAgent.Core.Tests/Delegation/LookupAskTests.cs",
-        "src/tests/engine/LouisAgent.Core.Tests/Docs/OldWordsTests.cs",
-        "src/tests/engine/LouisAgent.Core.Tests/Hosting/AgentEngineFactorySkillsTests.cs",
-        "src/tests/engine/LouisAgent.Core.Tests/Hosting/AgentEngineFactoryTests.cs",
-        "src/tests/engine/LouisAgent.Core.Tests/Hosting/Engines/ProfileKeyTests.cs",
-        "src/tests/engine/LouisAgent.Core.Tests/Hosting/Prompts/SkillLoaderHeadersTests.cs",
-        "src/tests/engine/LouisAgent.Core.Tests/Hosting/Prompts/SkillLoaderSkillsTests.cs",
-        "src/tests/engine/LouisAgent.Core.Tests/Hosting/Prompts/SkillLoaderTests.cs",
-        "src/tests/engine/LouisAgent.Core.Tests/LouisAgent.Core.Tests.csproj",
         "src/tests/engine/LouisAgent.Core.Tests/RepeatedNames/Scanning/NotAToolset.cs",
         "src/tests/engine/LouisAgent.Core.Tests/RepeatedNames/Scanning/RazorNameScan.cs",
-        "src/tests/engine/LouisAgent.Core.Tests/Skills/Headers/PromptCatalogTests.cs",
-        "src/tests/engine/LouisAgent.Core.Tests/Skills/Headers/PromptHeadersTests.cs",
-        "src/tests/engine/LouisAgent.Core.Tests/Skills/Roles/LookupRolesTests.cs",
-        "src/tests/engine/LouisAgent.Core.Tests/Skills/Roles/RoleCatalogTests.cs",
-        "src/tests/engine/LouisAgent.Core.Tests/Skills/Roles/RoleLevelOfTests.cs",
         "src/tests/engine/LouisAgent.Core.Tests/Skills/Roles/RoleNamingTests.cs",
-        "src/tests/engine/LouisAgent.Core.Tests/Skills/SkillFileSourceTests.cs",
         "src/tests/engine/LouisAgent.Core.Tests/TestPrompts.cs",
         "src/tests/engine/LouisAgent.Core.Tests/Usage/Records/UsageSessionTests.cs",
         "src/tests/engine/LouisAgent.Core.Tests/Usage/Reports/CacheGapsTests.cs",
         "src/tests/engine/LouisAgent.Core.Tests/Usage/Reports/UsageReportTests.cs",
-        "src/tests/engine/LouisAgent.Core.Tests/agents/testprod/subagents/specialist/voice.md",
-        "src/tests/engine/LouisAgent.Core.Tests/agents/testprod/voice.md",
         "src/tests/engine/LouisAgent.SessionStream.Tests/Fixtures/session-stream.expected.json",
         "src/tests/engine/LouisAgent.SessionStream.Tests/SessionStreamReaderTests.cs",
         "src/tests/hosts/LouisAgent.Acp.Tests/AcpTranscriptTests.cs",
-        "src/tests/hosts/LouisAgent.Api.Testing/TestAgent.cs",
-        "src/tests/hosts/LouisAgent.Api.Tests/Sessions/AgentSessionsTests.cs",
-        "src/tests/hosts/LouisAgent.Api.Tests/Sessions/AskDepthTests.cs",
         "src/tests/hosts/LouisAgent.Api.Tests/Sessions/ContinuedSpecialistRoleTests.cs",
         "src/tests/hosts/LouisAgent.Api.Tests/Sessions/PeerTraceTests.cs",
         "src/tests/hosts/LouisAgent.Api.Tests/Sessions/Requests/ReplayResolutionTests.cs",
         "src/tests/hosts/LouisAgent.Api.Tests/Sessions/StreamGoldenTests.cs",
         "src/tests/hosts/LouisAgent.Api.Tests/WorkStatusTests.cs",
-        "src/tests/shared/LouisAgent.Testing/SampleRole.cs",
         "src/tests/shared/LouisAgent.Testing/TestTools.cs",
         "src/tests/web/LouisAgent.Diagrams.Tests/Flow/GraphLayoutTests.cs",
-        "src/tests/web/LouisAgent.Web.Framework.Tests/SubagentWordTests.cs",
         "src/tests/web/LouisAgent.Web.Testing/FixtureApi.cs",
         "src/tests/web/LouisAgent.Web.Tests/Chats/ChatRunnerTests.cs",
         "src/tests/web/LouisAgent.Web.Tests/Chats/DelegationTests.cs",
@@ -213,6 +188,13 @@ public class OldWordsTests
     [TestCase("src/web/LouisAgent.Web/Chats/Delegation.cs", false)]
     public void AKeptPlace_IsSkipped(string file, bool kept) => Assert.That(IsKept(file), Is.EqualTo(kept));
 
+    /// <summary>Louis's own words keep what he said; the same word outside his quote is still found.</summary>
+    [TestCase("(Louis: \"the specialist must give him its tools\")", false)]
+    [TestCase("Louis, 2026-11-22: \"a minion\", and a minion", true)]
+    [TestCase("Louis's pick; the specialist loads", true)]
+    public void AQuoteOfLouiss_KeepsHisWords(string text, bool says) =>
+        Assert.That(SaysAnOldWord(text), Is.EqualTo(says));
+
     /// <summary>A description is read whole, even when its text is split across lines with <c>+</c>.</summary>
     [Test]
     public void ADescription_IsReadAcrossItsLines()
@@ -247,9 +229,43 @@ public class OldWordsTests
     /// <summary>Whether a file is in a place that keeps the old words on purpose.</summary>
     private static bool IsKept(string file) => Kept.Any(place => file.Contains(place, StringComparison.Ordinal));
 
-    /// <summary>Whether a text says either old word, in any case or form ("Minions", "specialist's").</summary>
-    private static bool SaysAnOldWord(string text) =>
-        OldWords.Any(word => text.Contains(word, StringComparison.OrdinalIgnoreCase));
+    /// <summary>
+    /// Whether a text says either old word, in any case or form ("Minions", "specialist's"), outside Louis's own
+    /// words: a quote of his keeps what he said.
+    /// </summary>
+    private static bool SaysAnOldWord(string text)
+    {
+        string ours = WithoutLouissQuotes(text);
+        return OldWords.Any(word => ours.Contains(word, StringComparison.OrdinalIgnoreCase));
+    }
+
+    /// <summary>
+    /// The text with each quote of Louis's taken out: from <c>Louis</c> to the next opening quote within a few words
+    /// (<c>Louis, 2026-11-22: "</c>), then to its closing quote.
+    /// </summary>
+    private static string WithoutLouissQuotes(string text)
+    {
+        const int reach = 30;
+        var kept = new System.Text.StringBuilder();
+        int from = 0;
+        int at = text.IndexOf("Louis", StringComparison.Ordinal);
+        while (at >= 0)
+        {
+            int open = text.IndexOf('"', at);
+            int close = open < 0 || open - at > reach ? -1 : text.IndexOf('"', open + 1);
+            if (close < 0)
+            {
+                at = text.IndexOf("Louis", at + 1, StringComparison.Ordinal);
+                continue;
+            }
+
+            kept.Append(text, from, open - from);
+            from = close + 1;
+            at = text.IndexOf("Louis", from, StringComparison.Ordinal);
+        }
+
+        return kept.Append(text, from, text.Length - from).ToString();
+    }
 
     /// <summary>The file's text, from its path from the repository's root.</summary>
     private static string Read(string file) => File.ReadAllText(Path.Combine(TestPaths.RepoRoot, file));

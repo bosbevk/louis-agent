@@ -12,14 +12,14 @@ public class RoleLevelOfTests
 {
     /// <summary>Each role is at the level of its folder.</summary>
     [TestCase("testprod/voice-en", RoleLevel.Agent)]
-    [TestCase("testprod.specialist", RoleLevel.Subagent)]
+    [TestCase("testprod.researcher", RoleLevel.Subagent)]
     [TestCase("testprod.lookup", RoleLevel.Lookup)]
     public void ARole_IsAtItsFoldersLevel(string role, RoleLevel level) =>
         Assert.That(RoleCatalog.LevelOf(role), Is.EqualTo(level));
 
-    /// <summary>A name no folder holds, the minions' base and nothing at all have no level.</summary>
+    /// <summary>A name no folder holds, the lookup agents' base and nothing at all have no level.</summary>
     [TestCase("nobody")]
-    [TestCase("testprod-minion")]
+    [TestCase("testprod-helper")]
     [TestCase(null)]
     public void ANameNoFolderHolds_HasNoLevel(string? role) =>
         Assert.That(RoleCatalog.LevelOf(role), Is.Null);

@@ -70,7 +70,7 @@ public class SkillLoaderTests
 
     /// <summary>
     /// Work is handed on by asking an agent by its address (F127.3.1): the <c>agents</c> toolset has its own guide,
-    /// and <c>specialists</c>, the toolset it replaced, is gone with its guide.
+    /// and <c>subagents</c>, the toolset it replaced, is gone with its guide.
     /// </summary>
     [Test]
     public void TheToolsetThatHandsWorkOn_IsAgents()
@@ -88,9 +88,9 @@ public class SkillLoaderTests
     /// </summary>
     [TestCase(null, RoleLevel.Agent)]
     [TestCase("testprod/voice-af", RoleLevel.Agent)]
-    [TestCase("testprod.specialist", RoleLevel.Subagent)]
+    [TestCase("testprod.researcher", RoleLevel.Subagent)]
     [TestCase(null, RoleLevel.Subagent)]
-    [TestCase("testprod.lookup", RoleLevel.Lookup)] // F30: a minion always has a role
+    [TestCase("testprod.lookup", RoleLevel.Lookup)] // F30: a lookup agent always has a role
     public void EveryPrompt_StartsWithThePrinciples(string? role, RoleLevel level)
     {
         string docs = SkillLoader.Load(Options(), [], role, level).Documentation;
@@ -176,11 +176,11 @@ public class SkillLoaderTests
     }
 
     /// <summary>
-    /// A minion among the addresses (F127.5, Claude's pick Q3) is no agent to ask: the list for <c>AskAgent</c> leaves
-    /// it out, and the roles that hand work to minions name them.
+    /// A lookup agent among the addresses (F127.5, Claude's pick Q3) is no agent to ask: the list for <c>AskAgent</c>
+    /// leaves it out, and the roles that hand work to lookup agents name them.
     /// </summary>
     [Test]
-    public void AMinionAmongTheAddresses_IsNotListedToAsk()
+    public void ALookupAgentAmongTheAddresses_IsNotListedToAsk()
     {
         string asks = SkillLoader.Load(Options(), Toolsets(CoreToolset.Agents.Wire()),
             calls: ["testprod", "testprod.lookup"]).Documentation;

@@ -6,13 +6,13 @@ using LouisAgent.Core.Skills.Roles;
 
 namespace LouisAgent.Core.Tests.Skills.Roles;
 
-// F30 step 4: a minion (level 2) is a function on the minion base; the specialist hands it one of its own tools (Louis:
-// no list of tools per role, the specialist's toolbox is the only one). CL68.3: on the tests' own lookup agent,
-// agents/testprod/lookups/lookup/.
+// F30 step 4: a lookup agent (level 2) is a function on the lookup agent base; the subagent hands it one of its own
+// tools (Louis: no list of tools per role, the subagent's toolbox is the only one). CL68.3: on the tests' own lookup
+// agent, agents/testprod/lookups/lookup/.
 public class LookupRolesTests
 {
     [Test]
-    public void TheMinionRoles_AreListed_TheBaseIsNot()
+    public void TheLookupAgentRoles_AreListed_TheBaseIsNot()
     {
         // CL68.3: a lookup agent is listed by its address; the base frames every one of its identity's and is no role.
         Assert.That(RoleCatalog.Available(RoleLevel.Lookup), Is.EqualTo(new[] { "testprod.lookup" }));
@@ -24,7 +24,7 @@ public class LookupRolesTests
     }
 
     [Test]
-    public void AMinionsPrompt_IsThePrinciples_TheBase_ThenItsRole_AndNoRouter()
+    public void ALookupAgentsPrompt_IsThePrinciples_TheBase_ThenItsRole_AndNoRouter()
     {
         string docs = SkillLoader.Load(new AgentOptions(), [], "testprod.lookup", RoleLevel.Lookup)
             .Documentation;
@@ -35,16 +35,16 @@ public class LookupRolesTests
         Assert.That(principles, Is.GreaterThanOrEqualTo(0), "the principles open every prompt (ADR 0020)");
         Assert.That(@base, Is.GreaterThan(principles), "the base after the principles");
         Assert.That(role, Is.GreaterThan(@base), "the role after the base");
-        Assert.That(docs, Does.Not.Contain("# Testprod - Routing"), "no router: a minion never delegates");
+        Assert.That(docs, Does.Not.Contain("# Testprod - Routing"), "no router: a lookup agent never delegates");
     }
 
     [Test]
-    public void AMinion_AlwaysHasARole_AndTheBaseOrAnUnlistedFile_IsNoRole()
+    public void ALookupAgent_AlwaysHasARole_AndTheBaseOrAnUnlistedFile_IsNoRole()
     {
-        // A minion with no role would get the default voice: a coding agent's, with one tool. Refused instead.
+        // A lookup agent with no role would get the default voice: a coding agent's, with one tool. Refused instead.
         Assert.Throws<RoleException>(() => SkillLoader.Load(new AgentOptions(), [], null, RoleLevel.Lookup));
         var ex = Assert.Throws<RoleException>(() =>
-            SkillLoader.Load(new AgentOptions(), [], "testprod-minion", RoleLevel.Lookup))!;
-        Assert.That(ex.Message, Does.Contain("testprod-minion'").And.EndWith("Available: testprod.lookup."));
+            SkillLoader.Load(new AgentOptions(), [], "testprod-helper", RoleLevel.Lookup))!;
+        Assert.That(ex.Message, Does.Contain("testprod-helper'").And.EndWith("Available: testprod.lookup."));
     }
 }

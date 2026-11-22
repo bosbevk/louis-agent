@@ -11,7 +11,7 @@ public class AgentAddressTests
     /// <summary>An identity alone, and an identity with one of its roles.</summary>
     [TestCase("alpha", "alpha", null)]
     [TestCase("alpha.beta", "alpha", "beta")]
-    [TestCase("alpha-guide.minion-lookup", "alpha-guide", "minion-lookup")]
+    [TestCase("alpha-guide.page-lookup", "alpha-guide", "page-lookup")]
     [TestCase("alpha2.beta3", "alpha2", "beta3")]
     public void AnAddress_ReadsAsItsIdentityAndRole(string text, string identity, string? role)
     {

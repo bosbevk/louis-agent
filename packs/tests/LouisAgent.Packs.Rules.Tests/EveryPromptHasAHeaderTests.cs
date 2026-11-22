@@ -49,7 +49,7 @@ public class EveryPromptHasAHeaderTests
         var paths = Prompts().Select(p => p.Path).ToList();
 
         Assert.That(paths, Does.Contain($"{PromptFolder.Shared.Wire()}/principles.md"));
-        Assert.That(paths, Does.Contain(RoleCatalog.FileName("testprod.specialist", RoleLevel.Subagent)));
+        Assert.That(paths, Does.Contain(RoleCatalog.FileName("testprod.researcher", RoleLevel.Subagent)));
     }
 
     /// <summary>
