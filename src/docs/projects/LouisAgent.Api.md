@@ -164,9 +164,26 @@ The first is `shop-prices`, which takes Stats SA's two spreadsheets.
 
 ### 8. Sessions
 
-Sessions (`AgentSessions`) live in memory. A session runs one turn at a time, so a second message while one is running
-gets a `409`. A turn is cancelled by `POST /v1/sessions/{id}/cancel`, or by the client disconnecting. Idle sessions
-are dropped after 4 hours.
+Sessions live in memory, in the session store (`AgentSessions`). A session runs one turn at a time, so a second
+message while one is running gets a `409`. A turn is cancelled by `POST /v1/sessions/{id}/cancel`, or by the client
+disconnecting. Idle sessions are dropped after 4 hours, each time a new one opens.
+
+When `POST /v1/sessions` comes in, its handler reads the body into one record of what is asked for
+(`SessionRequest`): the toolsets, the usage tags with the parent, the depth, the role or identity, the user's place,
+the model, a lookup agent's one tool, the stream's format, a replay and who opened it. Anything left out keeps its
+default, so a caller names only what it sets. The store hands that record to an opening (`SessionOpening`), made
+for this one request, which does the work in steps you can read top to bottom.
+
+First it finds the identity, if one is named, and opens in its voice unless a role is named too. Then it checks the
+depth is between 0 and `AGENT_MAX_DEPTH`, and works out the level: a voice at the top, and below it the level the
+role is found at. A lookup agent is checked next: it must name its tool and its parent, the parent must run on this
+instance, the tool must be one that may be handed down, and the parent must have it. Those five checks are their own
+small class (`LookupChecks`). Any other session that names a tool is refused. Then come the toolsets, with the role's
+own added, and a lookup agent may never load the `agents` toolset. Last, the chain of asks is found, so an agent
+already in it is refused, and the engine is got from the factory.
+
+Every refusal happens before anything is made, and each is a `400` with its reason. Only when all the steps pass is
+the session made, and the store keeps it.
 
 ### 9. Toolsets per session
 
@@ -333,7 +350,8 @@ These are the types involved:
 | `Messages/` | The API's own texts as enums (ADR 0009): errors, log lines, what the model reads (`ApiModelText`), what the user reads, and their holes |
 | `Sessions/SessionOpener.cs` | Who opened a session when a signed-in person did: their id and tenant, read from the cookie's claims; a session a key opened has none (ADR 0088) |
 | `Sessions/Prompts/` | `TurnPrompt`, the message a turn sends the model, and `PageBlock`, the page the visitor is reading, cut at 6,000 characters |
-| `Sessions/AgentSession.cs`, `AgentSessions.cs` | One conversation (id, engine, toolsets, depth, role, place, attachments, history, turn lock, cancellation) and the in-memory session store, which picks each session's engine |
+| `Sessions/AgentSession.cs`, `AgentSessions.cs` | One conversation (id, engine, toolsets, depth, role, place, attachments, history, turn lock, cancellation) and the in-memory session store |
+| `Sessions/Opening/` | How a session opens (part 8): `SessionRequest`, what is asked for, as one record; `SessionOpening`, its steps in order, from the identity to the engine; `LookupChecks`, a lookup agent's five checks |
 | `Sessions/Streaming/` | The stream formats (F18 step 1f): `ITurnStreamFormat`, the writer's seam; `StreamFormat`, the enum `"stream"` names; `StreamFormats`, which makes a turn's format; `TurnUsage`, a turn's usage computed once from the ledger; `Claude/ClaudeStreamFormat.cs`, the Claude-style events |
 | `Sessions/TurnStream.cs` | A turn as the API streams it: the prompt from the message, its attachments and the page the visitor is reading (F115, ADR 0104, one block cut at 6,000 characters), the engine's updates as Claude-style events, a sub-session's events live among them, the usage at the end, and (F127.8) the turn's line in the turn log |
 | `Sessions/Log/` | The turn log (F127.8): `TurnLogRecord`, one finished turn (when, the session and turn, who answered, the page and the part of the site, the tools it called, whether the admin's own browser had it, never what was said), and `TurnLog`, which appends it to `turns-{yyyy-MM}.jsonl` beside the ledger and reads a month back; nothing without a log folder or with the ledger off |
