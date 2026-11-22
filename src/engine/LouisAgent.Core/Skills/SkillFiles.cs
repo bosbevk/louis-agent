@@ -49,7 +49,13 @@ public static class SkillFiles
     /// The folder of an identity's skills, beside its voice (F129, ADR 0114): <c>agents/{identity}/skills/</c>. Written
     /// out, as <see cref="FunctionsFolder"/> is.
     /// </summary>
-    internal static string SkillsOf(string identity) => $"agents/{identity}/skills/";
+    public static string SkillsOf(string identity) => $"agents/{identity}/skills/";
+
+    /// <summary>
+    /// The file a skill's folder holds, <c>skills/{name}/SKILL.md</c> (CL68.1): the skill's name is its folder's, the
+    /// shape Claude Code's skills have.
+    /// </summary>
+    public const string SkillFile = "SKILL.md";
 
     /// <summary>A pending function skill's file: <c>agents/functions/pending/{name}.md</c>.</summary>
     internal static string PendingFunction(string name) => $"{PendingFunctionsFolder}/{name}.md";

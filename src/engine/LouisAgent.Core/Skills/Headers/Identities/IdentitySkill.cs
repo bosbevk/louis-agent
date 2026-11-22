@@ -1,6 +1,7 @@
 using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Skills.Messages;
+using LouisAgent.Core.Skills.Messages.Holes.Fields;
 
 namespace LouisAgent.Core.Skills.Headers.Identities;
 
@@ -15,9 +16,12 @@ public sealed record IdentitySkill(string Name, string Description, SkillLoad Lo
     /// The skill in a file of an identity's skills folder. A file there that doesn't say how it loads refuses, since
     /// it would otherwise be neither in the prompt nor listed.
     /// </summary>
-    public static IdentitySkill Of(string identity, PromptFile file) =>
-        file.Header is { Load: { } load } header
-            ? new IdentitySkill($"{identity}/{header.Name}", header.Description, load, file.Body)
-            : throw new PromptHeaderException(
-                MessageText.Format(PromptHeaderMessage.LoadMissing, new { Path = file.Path }));
+    public static IdentitySkill Of(string identity, PromptFile file)
+    {
+        if (file.Header is { Load: { } load } header)
+            return new IdentitySkill($"{identity}/{header.Name}", header.Description, load, file.Body);
+
+        var unsaid = new LoadMissingHoles(file.Path);
+        throw new PromptHeaderException(MessageText.Format(PromptHeaderMessage.LoadMissing, unsaid));
+    }
 }

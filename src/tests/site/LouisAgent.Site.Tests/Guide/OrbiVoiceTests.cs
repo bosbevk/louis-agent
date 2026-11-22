@@ -1,3 +1,4 @@
+using LouisAgent.Core.Skills;
 using LouisAgent.Identities.Guide;
 
 namespace LouisAgent.Site.Tests.Guide;
@@ -16,7 +17,7 @@ public class OrbiVoiceTests
     private static string Voice() => Flat("voice.md");
 
     /// <summary>One of Orbi's skills, read the same way as the voice.</summary>
-    private static string Skill(string name) => Flat($"skills/{name}.md");
+    private static string Skill(string name) => Flat($"skills/{name}/{SkillFiles.SkillFile}");
 
     /// <summary>A prompt file of Orbi's, its lines joined, so a rule is found whatever its line breaks.</summary>
     private static string Flat(string path)
@@ -216,7 +217,7 @@ public class OrbiVoiceTests
     {
         var identity = new GuideIdentity();
         var onDemand = identity.Prompts.GetDirectoryContents("agents/louis-agent-guide/skills")
-            .Select(file => Path.GetFileNameWithoutExtension(file.Name))
+            .Select(folder => folder.Name)
             .Where(name => Skill(name).Contains("load: on-demand"));
 
         Assert.That(onDemand.Where(name => !Voice().Contains($"`louis-agent-guide/{name}`")), Is.Empty);

@@ -1,4 +1,5 @@
 using LouisAgent.Choices;
+using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Headers;
 using LouisAgent.Identities.Guide;
 
@@ -28,7 +29,7 @@ public class GuideFocusesTests
     [TestCaseSource(nameof(Focuses))]
     public void EveryFocus_HasASkillReadOnDemand(GuideFocus focus)
     {
-        var file = Read($"skills/focus-{focus.Wire()}.md");
+        var file = Read($"skills/focus-{focus.Wire()}/{SkillFiles.SkillFile}");
 
         Assert.Multiple(() =>
         {
@@ -68,7 +69,7 @@ public class GuideFocusesTests
     public void TheBusinessReader_IsTheSellingPartsDefault()
     {
         string voice = Flat(Read("voice.md").Body);
-        string selling = Flat(Read("skills/focus-selling.md").Body);
+        string selling = Flat(Read($"skills/focus-selling/{SkillFiles.SkillFile}").Body);
 
         Assert.Multiple(() =>
         {

@@ -2,6 +2,8 @@ using LouisAgent.Composition.Messages;
 using LouisAgent.Choices;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Skills.Messages;
+using LouisAgent.Core.Skills.Messages.Holes.Fields;
+using LouisAgent.Core.Skills.Messages.Holes.Reading;
 using YamlDotNet.Core;
 using YamlDotNet.RepresentationModel;
 
@@ -47,7 +49,12 @@ public static class PromptHeaders
         if (!text.StartsWith(open, StringComparison.Ordinal)) return new PromptFile(path, null, text);
 
         int end = text.IndexOf(close, open.Length - newline.Length, StringComparison.Ordinal);
-        if (end < 0) throw Refuse(PromptHeaderMessage.NotClosed, new { Path = path });
+        if (end < 0)
+        {
+            var unclosed = new NotClosedHoles(path);
+            throw Refuse(PromptHeaderMessage.NotClosed, unclosed);
+        }
+
         string yaml = end < open.Length ? "" : text[open.Length..end];
         return new PromptFile(path, Read(path, yaml), text[(end + close.Length)..]);
     }
@@ -57,23 +64,34 @@ public static class PromptHeaders
     {
         var root = RootOf(path, yaml);
         Known(path, root, Keys);
-        string expected = Path.GetFileNameWithoutExtension(path);
+        string expected = NameFor(path);
         string? name = Text(path, root, "name");
         if (name != expected)
-            throw Refuse(PromptHeaderMessage.NameNotTheFiles, new
-            {
-                Path = path,
-                Name = name ?? "",
-                Expected = expected
-            });
+        {
+            var misnamed = new NameNotTheFilesHoles(path, name ?? "", expected);
+            throw Refuse(PromptHeaderMessage.NameNotTheFiles, misnamed);
+        }
+
         if (Text(path, root, "description") is not { Length: > 0 and <= MaxDescription } description)
-            throw Refuse(PromptHeaderMessage.DescriptionMissing, new { Path = path, Limit = MaxDescription });
+        {
+            var undescribed = new DescriptionMissingHoles(path, MaxDescription);
+            throw Refuse(PromptHeaderMessage.DescriptionMissing, undescribed);
+        }
 
         var metadata = Child(root, "metadata") as YamlMappingNode;
         if (metadata is not null) Known(path, metadata, MetadataKeys);
         return new PromptHeader(name, description, LevelOf(path, metadata), ToolsetsOf(path, metadata),
             LoadOf(path, metadata));
     }
+
+    /// <summary>
+    /// The name a prompt's header must give: a skill's folder's for its <c>SKILL.md</c> (CL68.1, the shape Claude
+    /// Code's skills have), every other prompt's own file's.
+    /// </summary>
+    private static string NameFor(string path) =>
+        Path.GetFileName(path) == SkillFiles.SkillFile
+            ? Path.GetFileName(Path.GetDirectoryName(path))!
+            : Path.GetFileNameWithoutExtension(path);
 
     /// <summary>The YAML's top mapping; an empty header is an empty one.</summary>
     private static YamlMappingNode RootOf(string path, string yaml)
@@ -85,7 +103,8 @@ public static class PromptHeaders
         }
         catch (YamlException ex)
         {
-            throw Refuse(PromptHeaderMessage.NotYaml, new { Path = path, Reason = ex.Message });
+            var unread = new NotYamlHoles(path, ex.Message);
+            throw Refuse(PromptHeaderMessage.NotYaml, unread);
         }
 
         return stream.Documents.FirstOrDefault()?.RootNode as YamlMappingNode ?? new YamlMappingNode();
@@ -94,8 +113,11 @@ public static class PromptHeaders
     /// <summary>Refuses a key the mapping may not have.</summary>
     private static void Known(string path, YamlMappingNode mapping, string[] keys)
     {
-        if (mapping.Children.Keys.OfType<YamlScalarNode>().FirstOrDefault(k => !keys.Contains(k.Value)) is { } key)
-            throw Refuse(PromptHeaderMessage.KeyUnknown, new { Path = path, Key = key.Value });
+        var key = mapping.Children.Keys.OfType<YamlScalarNode>().FirstOrDefault(k => !keys.Contains(k.Value));
+        if (key is null) return;
+
+        var unknown = new KeyUnknownHoles(path, key.Value ?? "");
+        throw Refuse(PromptHeaderMessage.KeyUnknown, unknown);
     }
 
     /// <summary>The level a role or mode runs at, by its wire name; none for a guide.</summary>
@@ -103,12 +125,9 @@ public static class PromptHeaders
     {
         if (metadata is null || Text(path, metadata, "level") is not { } level) return null;
         if (SettingChoice.TryParse(level, out RoleLevel? parsed)) return parsed;
-        throw Refuse(PromptHeaderMessage.LevelUnknown, new
-        {
-            Path = path,
-            Level = level,
-            Supported = string.Join(", ", SettingChoice.Names<RoleLevel>())
-        });
+
+        var unknown = new LevelUnknownHoles(path, level, string.Join(", ", SettingChoice.Names<RoleLevel>()));
+        throw Refuse(PromptHeaderMessage.LevelUnknown, unknown);
     }
 
     /// <summary>How a skill loads (F129), by its wire name; none for a prompt that isn't a skill.</summary>
@@ -116,12 +135,9 @@ public static class PromptHeaders
     {
         if (metadata is null || Text(path, metadata, "load") is not { } load) return null;
         if (SettingChoice.TryParse(load, out SkillLoad? parsed)) return parsed;
-        throw Refuse(PromptHeaderMessage.LoadUnknown, new
-        {
-            Path = path,
-            Load = load,
-            Supported = string.Join(", ", SettingChoice.Names<SkillLoad>())
-        });
+
+        var unknown = new LoadUnknownHoles(path, load, string.Join(", ", SettingChoice.Names<SkillLoad>()));
+        throw Refuse(PromptHeaderMessage.LoadUnknown, unknown);
     }
 
     /// <summary>The toolsets the prompt always loads, a comma list; none when it names none.</summary>
@@ -131,13 +147,15 @@ public static class PromptHeaders
             : [];
 
     /// <summary>A key's text, or none when the mapping lacks it; a list or a mapping there refuses.</summary>
-    private static string? Text(string path, YamlMappingNode mapping, string key) =>
-        Child(mapping, key) switch
-        {
-            null => null,
-            YamlScalarNode scalar => scalar.Value,
-            _ => throw Refuse(PromptHeaderMessage.ValueNotText, new { Path = path, Key = key })
-        };
+    private static string? Text(string path, YamlMappingNode mapping, string key)
+    {
+        var node = Child(mapping, key);
+        if (node is null) return null;
+        if (node is YamlScalarNode scalar) return scalar.Value;
+
+        var notText = new ValueNotTextHoles(path, key);
+        throw Refuse(PromptHeaderMessage.ValueNotText, notText);
+    }
 
     /// <summary>A key's node, or none.</summary>
     private static YamlNode? Child(YamlMappingNode mapping, string key) =>

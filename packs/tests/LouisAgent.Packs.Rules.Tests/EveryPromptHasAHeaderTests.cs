@@ -45,6 +45,25 @@ public class EveryPromptHasAHeaderTests
             Is.Empty, "these prompts have no header");
     }
 
+    /// <summary>
+    /// An identity's skill is a folder holding its <c>SKILL.md</c>, at <c>agents/{identity}/skills/{name}/</c>
+    /// (CL68.1, Louis: "each skill in it's folder, and SKILL.md"), never a loose file in <c>skills/</c>.
+    /// </summary>
+    [Test]
+    public void EverySkill_IsAFolderWithItsSkillFile()
+    {
+        var skills = Prompts().Select(p => p.Path.Split('/'))
+            .Where(parts => parts.Length > 3 && parts[0] == RoleCatalog.AgentFolder
+                                             && string.Join('/', parts).StartsWith(SkillFiles.SkillsOf(parts[1]),
+                                                 StringComparison.Ordinal))
+            .ToList();
+        var loose = skills.Where(parts => parts.Length != 5 || parts[4] != SkillFiles.SkillFile)
+            .Select(parts => string.Join('/', parts));
+
+        Assert.That(skills, Is.Not.Empty, "the identities' skills were found");
+        Assert.That(loose, Is.Empty);
+    }
+
     /// <summary>A role's or mode's header names the level of its folder; a guide's none.</summary>
     [Test]
     public void EachHeader_NamesTheLevelOfItsFolder()

@@ -1,3 +1,5 @@
+using LouisAgent.Core.Skills;
+
 namespace LouisAgent.Identities.Framework.Tests;
 
 /// <summary>
@@ -21,9 +23,12 @@ public class FrameworkSkillsTests
         return new StreamReader(stream).ReadToEnd().ReplaceLineEndings("\n");
     }
 
-    /// <summary>The skills' file names.</summary>
+    /// <summary>The skills' names: a folder each, holding its <c>SKILL.md</c> (CL68.1).</summary>
     private static IEnumerable<string> Skills() =>
-        new FrameworkIdentity().Prompts.GetDirectoryContents(SkillsFolder).Select(file => file.Name);
+        new FrameworkIdentity().Prompts.GetDirectoryContents(SkillsFolder).Select(folder => folder.Name);
+
+    /// <summary>One skill's text, from the <c>SKILL.md</c> in its folder.</summary>
+    private static string Skill(string name) => Read($"skills/{name}/{SkillFiles.SkillFile}");
 
     /// <summary>How many numbered rules stand under a section, up to the next one.</summary>
     private static int Rules(string text, int section)
@@ -39,7 +44,7 @@ public class FrameworkSkillsTests
     {
         var wrong = Skills().Where(name =>
         {
-            string text = Read($"skills/{name}");
+            string text = Skill(name);
             int never = text.IndexOf("\n## Never\n", StringComparison.Ordinal);
             int example = text.IndexOf("\n## An example\n", StringComparison.Ordinal);
             int references = text.IndexOf("\n## References\n", StringComparison.Ordinal);
@@ -60,8 +65,8 @@ public class FrameworkSkillsTests
         string voice = Read("voice.md");
         int never = voice.IndexOf("\n## Never\n", StringComparison.Ordinal);
         int table = voice.IndexOf("\n## Your skills\n", StringComparison.Ordinal);
-        var onDemand = Skills().Where(name => Read($"skills/{name}").Contains("load: on-demand"))
-            .Select(name => $"`louis-agent-framework/{Path.GetFileNameWithoutExtension(name)}`");
+        var onDemand = Skills().Where(name => Skill(name).Contains("load: on-demand"))
+            .Select(name => $"`louis-agent-framework/{name}`");
 
         Assert.Multiple(() =>
         {

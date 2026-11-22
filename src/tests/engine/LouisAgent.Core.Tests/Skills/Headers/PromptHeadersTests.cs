@@ -95,10 +95,25 @@ public class PromptHeadersTests
     [TestCase("on-demand", SkillLoad.OnDemand)]
     public void ASkillsHeader_SaysHowItLoads(string load, SkillLoad expected)
     {
-        var file = PromptHeaders.Split("agents/acme/skills/menu.md",
+        var file = PromptHeaders.Split("agents/acme/skills/menu/SKILL.md",
             $"---\nname: menu\ndescription: The menu.\nmetadata:\n  level: agent\n  load: {load}\n---\n# Menu\n");
 
         Assert.That(file.Header!.Load, Is.EqualTo(expected));
+    }
+
+    /// <summary>
+    /// A skill is a folder holding its <c>SKILL.md</c> (CL68.1, Louis: "each skill in it's folder, and SKILL.md"), and
+    /// its name is its folder's, as Claude Code's skills are (ADR 0063); naming it after the file is refused.
+    /// </summary>
+    [Test]
+    public void ASkillsName_IsItsFolders()
+    {
+        const string skill = "agents/acme/skills/menu/SKILL.md";
+        const string body = "description: The menu.\nmetadata:\n  load: always\n---\n# Menu\n";
+
+        Assert.That(PromptHeaders.Split(skill, "---\nname: menu\n" + body).Header!.Name, Is.EqualTo("menu"));
+        Assert.That(Assert.Throws<PromptHeaderException>(() => PromptHeaders.Split(skill, "---\nname: SKILL\n" + body))!
+            .Message, Does.Contain("'menu'"));
     }
 
     /// <summary>A prompt that names no load is no skill, so it has none.</summary>
