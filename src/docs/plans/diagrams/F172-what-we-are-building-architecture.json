@@ -1,0 +1,100 @@
+{
+  "kind": "flow",
+  "type": "deployment",
+  "title": "F172 what we are building: what runs where",
+  "caption": "Each site's host is the only caller of GitHub; the page in the visitor's browser asks its own host. The step that builds or changes each part is in brackets.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "raw",
+        "icon": "folder",
+        "tone": "amber",
+        "shape": "data",
+        "label": "raw files on main\nTODO.md, src/docs/work-log.md",
+        "group": "github"
+      },
+      {
+        "id": "api",
+        "icon": "server",
+        "tone": "amber",
+        "label": "REST API\n/repos/bosbevk/louis-agent/commits?since=",
+        "group": "github"
+      },
+      {
+        "id": "fwhost",
+        "icon": "server",
+        "tone": "violet",
+        "label": "LouisAgent.SiteFrameworkApi\nGET /v1/now (7)\nLouisAgent.SiteNow (4, 5, 6)",
+        "group": "azure"
+      },
+      {
+        "id": "pubhost",
+        "icon": "server",
+        "tone": "violet",
+        "label": "LouisAgent.SiteApi\nGET /v1/now (7)\nLouisAgent.SiteNow (4, 5, 6)",
+        "group": "azure"
+      },
+      {
+        "id": "fwpage",
+        "icon": "browser",
+        "tone": "green",
+        "label": "framework.louis-agent.dev\n/now, the Overview's band (8)\nNowBoard (1, 2, 3)",
+        "group": "browser"
+      },
+      {
+        "id": "pubpage",
+        "icon": "browser",
+        "tone": "green",
+        "label": "louis-agent.dev\n/now (9)\nNowBoard (1, 2, 3)",
+        "group": "browser"
+      }
+    ],
+    "edges": [
+      {
+        "from": "fwhost",
+        "to": "raw",
+        "word": "reads"
+      },
+      {
+        "from": "fwhost",
+        "to": "api",
+        "word": "reads"
+      },
+      {
+        "from": "pubhost",
+        "to": "raw",
+        "word": "reads"
+      },
+      {
+        "from": "pubhost",
+        "to": "api",
+        "word": "reads"
+      },
+      {
+        "from": "fwpage",
+        "to": "fwhost",
+        "word": "/v1/now"
+      },
+      {
+        "from": "pubpage",
+        "to": "pubhost",
+        "word": "/v1/now"
+      }
+    ],
+    "groups": [
+      {
+        "id": "github",
+        "label": "GitHub"
+      },
+      {
+        "id": "azure",
+        "label": "Azure, South Africa North"
+      },
+      {
+        "id": "browser",
+        "label": "the visitor's browser"
+      }
+    ],
+    "direction": "down"
+  }
+}
