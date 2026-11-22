@@ -513,6 +513,16 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX226 · Two waits side by side look like one
+
+FX225 took the Git tests from 16 minutes to 26 seconds, and the integration step still took 17 minutes. A second
+test, the one that packs the whole framework and builds a project outside it, had the same trap. Both had waited
+for a leftover MSBuild worker at the same time, so the step's time only showed the longer of the two, and fixing
+one changed nothing you could see. Its own line gave it away: "Duration: 5 s", printed 15 minutes after its run
+began, so the time it reported did not count the wait. The lesson
+is to look for every place a cause applies, not only the one the numbers point at first, and to read a test's
+start and end times in the log, not only the duration it reports. Skill 18 (testing and shipping).
+
 ## FX225 · A finished process can still hold your pipe
 
 The test that proves a pack installs from a package ran `dotnet pack` three times, and CI spent about 16 minutes on
