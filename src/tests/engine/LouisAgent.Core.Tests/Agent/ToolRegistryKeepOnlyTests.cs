@@ -3,7 +3,7 @@ using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Core.Tests.Agent;
 
-/// <summary>Trims a tool list down to the one tool a minion may call (F30).</summary>
+/// <summary>Trims a tool list down to the one tool a lookup agent may call (F30).</summary>
 public class ToolRegistryKeepOnlyTests
 {
     /// <summary>A tool with this name that does nothing.</summary>

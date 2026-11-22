@@ -12,7 +12,7 @@ using Microsoft.Extensions.AI;
 namespace LouisAgent.Core.Tests.Agent;
 
 /// <summary>
-/// A specialist working for another session has to answer before its prompt gets too big: once the next request would
+/// A subagent working for another session has to answer before its prompt gets too big: once the next request would
 /// pass the budget, it keeps its tools but may not call them, so it answers with what it found.
 /// </summary>
 public class SubSessionPromptBudgetTests
@@ -22,7 +22,7 @@ public class SubSessionPromptBudgetTests
     /// </summary>
     private static AgentEngine Engine(IChatClient client, IUsageSink sink, int budget)
     {
-        // FX14: a sub-session's specialist read 74 files and its prompt grew to 298k tokens, past the long-prompt
+        // FX14: a sub-session's subagent read 74 files and its prompt grew to 298k tokens, past the long-prompt
         // price.
         AgentOptions options = TestPaths.Agent();
         options.SubSessionPromptBudget = budget;
@@ -72,12 +72,12 @@ public class SubSessionPromptBudgetTests
     }
 
     /// <summary>
-    /// What a finished specialist spent doesn't count against this prompt's size; only the real prompts do.
+    /// What a finished subagent spent doesn't count against this prompt's size; only the real prompts do.
     /// </summary>
     [Test]
     public async Task ARollUpInTheScope_DoesNotCountTowardTheBudget()
     {
-        // F5 follow-up: a sub-session's roll-up record carries the specialist's tokens, not this prompt's size.
+        // F5 follow-up: a sub-session's roll-up record carries the subagent's tokens, not this prompt's size.
         // Counted, its 5,000 input tokens would already be over the budget before the first request.
         var client = await RunAsync(budget: 1_000, parent: "sess_puls#1", before: scope => scope.Add(new UsageRecord(
             DateTimeOffset.UtcNow, 0, UsagePurpose.SubSession, "api", "sess_child", 1, null, null, null,
@@ -91,7 +91,7 @@ public class SubSessionPromptBudgetTests
     }
 
     /// <summary>
-    /// Once the next prompt would go over the budget, the specialist has to answer, with its tool list left as it was.
+    /// Once the next prompt would go over the budget, the subagent has to answer, with its tool list left as it was.
     /// </summary>
     [Test]
     public async Task ASubSession_AnswersWithoutTools_OnceTheNextPromptWouldPassTheBudget()
@@ -117,7 +117,7 @@ public class SubSessionPromptBudgetTests
     }
 
     /// <summary>
-    /// A budget of zero turns the limit off, even for a specialist.
+    /// A budget of zero turns the limit off, even for a subagent.
     /// </summary>
     [Test]
     public async Task ABudgetOfZero_IsOff()

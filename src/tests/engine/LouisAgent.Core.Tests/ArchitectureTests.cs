@@ -478,8 +478,8 @@ public partial class ArchitectureTests
     private static readonly HashSet<string> PendingProductText =
     [
         // CL15 step 3 moved Puls's files to its identity, split its protocol out of the shared guides, and took the
-        // Puls names out of ToolMessage and MinionTools and South Africa out of GetToday (20 pieces); step 4 moved the
-        // shops, whose area text named Puls, to its pack. Empty since: the cut held.
+        // Puls names out of ToolMessage and the lookup agents' tools and South Africa out of GetToday (20 pieces); step
+        // 4 moved the shops, whose area text named Puls, to its pack. Empty since: the cut held.
     ];
 
     /// <summary>

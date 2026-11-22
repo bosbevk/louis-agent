@@ -14,16 +14,25 @@ public class CacheGapsTests
 
     private static readonly PriceTable Prices = new()
     {
-        AsOf = "2026-10-10", Currency = "USD",
+        AsOf = "2026-10-10",
+        Currency = "USD",
         Models = new Dictionary<string, ModelPrice>
         {
-            ["claude-haiku-5-5"] = new() { Input = 0.10m, Output = 0.50m, CacheRead = 0.01m, CacheWrite5m = 0.125m, CacheWrite1h = 0.20m },
+            ["claude-haiku-5-5"] = new()
+            {
+                Input = 0.10m,
+                Output = 0.50m,
+                CacheRead = 0.01m,
+                CacheWrite5m = 0.125m,
+                CacheWrite1h = 0.20m
+            },
         },
     };
 
     private static UsageRecord Request(TimeSpan start, string host = "api", string purpose = UsagePurpose.Turn,
         string model = "claude-haiku-5-5", long prompt = 1_000_000, long durationMs = 0) => new(
-        At: T0 + start + TimeSpan.FromMilliseconds(durationMs), Round: 1, Purpose: purpose, Host: host, Session: "s", Turn: 1,
+        At: T0 + start + TimeSpan.FromMilliseconds(durationMs), Round: 1, Purpose: purpose, Host: host, Session: "s",
+        Turn: 1,
         Task: null, Run: null, Service: null, Model: model, Tokens: new UsageTokens(prompt, 0, 0, 10, null),
         DurationMs: durationMs, Stop: "stop");
 
@@ -47,7 +56,8 @@ public class CacheGapsTests
     public void AFixsRounds_SecondsApart_RecommendFiveMinutes()
     {
         // Both lifetimes read the same; 5 minutes wrote at 1.25× instead of 2×.
-        CacheGapGroup g = One(Request(TimeSpan.Zero), Request(TimeSpan.FromSeconds(10)), Request(TimeSpan.FromSeconds(20)), Request(Min(2)));
+        CacheGapGroup g = One(Request(TimeSpan.Zero), Request(TimeSpan.FromSeconds(10)),
+            Request(TimeSpan.FromSeconds(20)), Request(Min(2)));
 
         Assert.That((g.Under5m, g.From5To60m, g.Over60m), Is.EqualTo((3, 0, 0)));
         Assert.That(g.FiveMinutes, Is.EqualTo(new LifetimeCost(1, 3, 0.155m)));
@@ -93,7 +103,8 @@ public class CacheGapsTests
         IReadOnlyList<CacheGapGroup> groups = CacheGaps.Analyse(
         [
             Request(Min(0)), Request(Min(20)),
-            Request(Min(1), host: "orchestrator", purpose: UsagePurpose.Triage), Request(Min(2), host: "orchestrator", purpose: UsagePurpose.Triage),
+            Request(Min(1), host: "orchestrator", purpose: UsagePurpose.Triage),
+            Request(Min(2), host: "orchestrator", purpose: UsagePurpose.Triage),
         ], Prices);
 
         Assert.That(groups.Select(g => (g.Host, g.Requests, g.Under5m, g.From5To60m)),
@@ -113,7 +124,7 @@ public class CacheGapsTests
     [Test]
     public void SubSessionRollUps_AreLeftOut()
     {
-        // F5 follow-up: a roll-up stands for the specialist's requests on another prefix (its own rows are analysed where
+        // F5 follow-up: a roll-up stands for the subagent's requests on another prefix (its own rows are analysed where
         // they were written); counted here it would look like a 1M-token request of this host's prefix.
         CacheGapGroup g = One(Request(Min(0)), Request(Min(3), purpose: UsagePurpose.SubSession), Request(Min(20)));
 
@@ -123,7 +134,8 @@ public class CacheGapsTests
     [Test]
     public void ThePrefix_IsTheSmallestPrompt()
     {
-        CacheGapGroup g = One(Request(Min(0), prompt: 48_000), Request(Min(1), prompt: 61_500), Request(Min(2), prompt: 52_000));
+        CacheGapGroup g = One(Request(Min(0), prompt: 48_000), Request(Min(1), prompt: 61_500),
+            Request(Min(2), prompt: 52_000));
 
         Assert.That(g.PrefixTokens, Is.EqualTo(48_000));
     }
@@ -133,7 +145,8 @@ public class CacheGapsTests
     {
         CacheGapGroup g = One(Request(Min(0), model: "gpt-5"), Request(Min(20), model: "gpt-5"));
 
-        Assert.That((g.FiveMinutes.Cost, g.OneHour.Cost, g.Recommended), Is.EqualTo(((decimal?)null, (decimal?)null, (CacheLifetime?)null)));
+        Assert.That((g.FiveMinutes.Cost, g.OneHour.Cost, g.Recommended),
+            Is.EqualTo(((decimal?)null, (decimal?)null, (CacheLifetime?)null)));
         Assert.That(g.OneHour.Reads, Is.EqualTo(1), "the counts are still there");
     }
 }

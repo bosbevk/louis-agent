@@ -28,7 +28,7 @@ public static class NotAToolset
 
     /// <summary>The names a string is the value of when it is a program or a role level's folder.</summary>
     private static readonly string[] TargetsOfAProgramOrFolder =
-        ["evalHost", "DotNetHost", "SubagentsFolder", "MinionsFolder"];
+        ["evalHost", "DotNetHost", "SubagentsFolder"];
 
     /// <summary>The names that, when they come first in a statement, make the strings after them programs.</summary>
     private static readonly string[] NamesOfProgramLists =

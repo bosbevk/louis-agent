@@ -64,20 +64,6 @@ public class OldWordsTests
         "src/hosts/LouisAgent.Api/Sessions/SessionReplyFactories.cs",
         "src/hosts/LouisAgent.Api/Sessions/Streaming/Claude/ClaudeEvents.cs",
         "src/hosts/LouisAgent.Api/Sessions/TurnStream.cs",
-        "src/tests/engine/LouisAgent.Core.Tests/Agent/SubSessionPromptBudgetTests.cs",
-        "src/tests/engine/LouisAgent.Core.Tests/Agent/ToolRegistryKeepOnlyTests.cs",
-        "src/tests/engine/LouisAgent.Core.Tests/Agent/Toolsets/ToolsetCatalogTests.cs",
-        "src/tests/engine/LouisAgent.Core.Tests/Agent/Turns/ShowTheAskedAnswerTests.cs",
-        "src/tests/engine/LouisAgent.Core.Tests/ArchitectureTests.cs",
-        "src/tests/engine/LouisAgent.Core.Tests/Delegation/Agents/AskAgentPeerTests.cs",
-        "src/tests/engine/LouisAgent.Core.Tests/Delegation/LookupAskTests.cs",
-        "src/tests/engine/LouisAgent.Core.Tests/RepeatedNames/Scanning/NotAToolset.cs",
-        "src/tests/engine/LouisAgent.Core.Tests/RepeatedNames/Scanning/RazorNameScan.cs",
-        "src/tests/engine/LouisAgent.Core.Tests/Skills/Roles/RoleNamingTests.cs",
-        "src/tests/engine/LouisAgent.Core.Tests/TestPrompts.cs",
-        "src/tests/engine/LouisAgent.Core.Tests/Usage/Records/UsageSessionTests.cs",
-        "src/tests/engine/LouisAgent.Core.Tests/Usage/Reports/CacheGapsTests.cs",
-        "src/tests/engine/LouisAgent.Core.Tests/Usage/Reports/UsageReportTests.cs",
         "src/tests/engine/LouisAgent.SessionStream.Tests/Fixtures/session-stream.expected.json",
         "src/tests/engine/LouisAgent.SessionStream.Tests/SessionStreamReaderTests.cs",
         "src/tests/hosts/LouisAgent.Acp.Tests/AcpTranscriptTests.cs",
@@ -214,9 +200,15 @@ public class OldWordsTests
     /// </summary>
     private static bool SaysAnOldWord(string text)
     {
-        string ours = WithoutLouissQuotes(text);
+        string ours = GoneNames.Aggregate(WithoutLouissQuotes(text),
+            (rest, gone) => rest.Replace(gone, "", StringComparison.Ordinal));
         return OldWords.Any(word => ours.Contains(word, StringComparison.OrdinalIgnoreCase));
     }
+
+    /// <summary>
+    /// Old names a test writes to prove they are gone: <c>MINION_LLMS</c>, which sets nothing since CL68.3 (ADR 0049).
+    /// </summary>
+    private static readonly string[] GoneNames = ["MINION_LLMS"];
 
     /// <summary>
     /// The text with each quote of Louis's taken out: from <c>Louis</c> to the next opening quote within a few words

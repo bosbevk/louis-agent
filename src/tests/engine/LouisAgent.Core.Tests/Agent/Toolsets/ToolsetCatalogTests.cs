@@ -56,7 +56,7 @@ public class ToolsetCatalogTests
     [Test]
     public void EveryToolset_BuildsExactlyTheClassesItAdvertises()
     {
-        // The options every toolset needs to build (as the model-request golden builds them): keys, peers, minion
+        // The options every toolset needs to build (as the model-request golden builds them): keys, peers, lookup agent
         // models, a browser.
         var options = new AgentOptions
         {
@@ -89,7 +89,7 @@ public class ToolsetCatalogTests
             Task.FromResult<IReadOnlyList<WebSearchResult>>([]);
     }
 
-    // CL15: the shops are a pack, so core's own optional toolset here is specialists, which needs a peer the same way.
+    // CL15: the shops are a pack, so core's own optional toolset here is agents, which needs a peer the same way.
     private static readonly ToolsetContext WithoutPeers = new(new AgentOptions(), new WebParts(new NoSearch()));
 
     private static readonly ToolsetContext WithPeers =

@@ -23,7 +23,9 @@ public static class RazorNameScan
     /// The code before the string, when it makes the string a program or a role level's folder, or a markup comment.
     /// </summary>
     private static readonly Regex NotAToolsetCode = new(
-        @"\.FileName\b|candidates\.|CommonCommands|ResolveShell|_venvDirectory|\b(evalHost|DotNetHost)\s*=\s*$|\b(Specialists|Minions)Folder\s*=\s*$|Enum\.GetValues<\w+>\(\)\.Select\(\w+ => \w+\.Wire\(\)\)|@\*|\[""EVALS""\]\s*=\s*$|Has\.None\.(StartsWith|Contains)\($|Does\.Not\.Contain\($",
+        @"\.FileName\b|candidates\.|CommonCommands|ResolveShell|_venvDirectory|\b(evalHost|DotNetHost)\s*=\s*$|" +
+        @"\bSubagentsFolder\s*=\s*$|Enum\.GetValues<\w+>\(\)\.Select\(\w+ => \w+\.Wire\(\)\)|@\*|" +
+        @"\[""EVALS""\]\s*=\s*$|Has\.None\.(StartsWith|Contains)\($|Does\.Not\.Contain\($",
         RegexOptions.Compiled);
 
     /// <summary>
