@@ -40,8 +40,9 @@ public static class BuildYourOwn
                 "An identity class with its name and the packs it uses, then its mode as markdown in " +
                 "`agents/{name}/voice.md`. The voice says how it talks, and the routing says which work goes where. " +
                 "Each skill it reads is a folder beside it, `skills/{skill}/SKILL.md`."),
-            IdentityStep.AddASpecialist => new Step("Add a specialist, if the work needs one.",
-                "A role of its own that the agent can ask by its address, with the packs that role uses."),
+            IdentityStep.AddASubagent => new Step("Add a subagent, if the work needs one.",
+                "A helper of its own, kept inside the agent at `agents/{name}/subagents/{helper}/voice.md`, that " +
+                "the agent asks by its address, `{name}.{helper}`, with the packs it uses."),
             IdentityStep.RegisterIt => new Step("Register it, test it and run it.",
                 "Name it in your program's catalogue, as `demos/louis-agent/hosts/LouisAgent.Coding.Catalog` names " +
                 "the coding agent's. `demos/louis-agent/identity/LouisAgent.Identities.Coding` is a real one to read " +

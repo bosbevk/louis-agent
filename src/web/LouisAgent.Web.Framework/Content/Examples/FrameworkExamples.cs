@@ -25,7 +25,7 @@ public static class FrameworkExamples
         new(["Puls.Packs.Recipes"], "Finds a recipe, read from a page's own schema.org data."),
         new(["Puls.Packs.ShopPrices"], "Works out what a shopping list costs, from Stats SA's average prices."),
         new(["Puls.Packs.WhereToBuy"], "Finds a shop's branches near your town, from OpenStreetMap."),
-        new(["specialists"], "Five specialists, each with an address of its own that Puls can ask.")
+        new(["subagents"], "Five subagents, each with an address of its own that Puls can ask.")
     ]);
 
     /// <summary>The coding agent, in Rider and the terminal.</summary>
@@ -34,7 +34,8 @@ public static class FrameworkExamples
         DiagramTone.Violet,
         "Works on code with you, in Rider and the terminal.",
     [
-        new(["LouisAgent.Acp", "LouisAgent.Cli"], "Works in Rider's AI chat and in the terminal, from the same catalogue."),
+        new(["LouisAgent.Acp", "LouisAgent.Cli"],
+            "Works in Rider's AI chat and in the terminal, from the same catalogue."),
         new(["LouisAgent.Packs.Files", "LouisAgent.Packs.Git", "LouisAgent.Packs.DotNet", "LouisAgent.Packs.Shell"],
             "Reads and writes the workspace, commits, builds and tests it, runs scripts."),
         new(["LouisAgent.Packs.Web", "LouisAgent.Packs.Docs"],

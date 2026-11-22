@@ -5,6 +5,6 @@ public enum IdentityStep
 {
     MakeTheProject,
     WriteWhoItIs,
-    AddASpecialist,
+    AddASubagent,
     RegisterIt
 }

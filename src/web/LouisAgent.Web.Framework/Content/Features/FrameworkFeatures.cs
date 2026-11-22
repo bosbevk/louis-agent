@@ -54,18 +54,18 @@ public static class FrameworkFeatures
             "The system prompt is put together from markdown files, the principles first, so you change an agent by " +
             "editing text.", Adr + "0011-prompts-are-content.md"),
         new(Engine, "Agents that ask agents", "AskAgentTools",
-            "An agent asks another by its address, a whole identity such as `acme` or one of its roles such as " +
+            "An agent asks another by its address, a whole identity such as `acme` or one of its subagents such as " +
             "`acme.cook`, up to three asks a turn, and the answer comes back under a line that names who gave it. A " +
-            "team of specialists is a few addresses, not a workflow to draw.",
+            "team of subagents is a few addresses, not a workflow to draw.",
             Adr + "0031-orchestration-is-an-engine-function.md"),
         new(Engine, "Follow-ups that remember", "SubSessionRegistry",
-            "In a chat on the API, a specialist's own chat stays open after it answers, so the next question to it " +
+            "In a chat on the API, a subagent's own chat stays open after it answers, so the next question to it " +
             "carries on where it left off, with the files you attached passed to it by name.", CoreDoc),
         new(Engine, "Small jobs on a cheap model", "MINION_LLMS",
             "A minion role runs on the model you set for it, cheapest first, a local one if you like.", CoreDoc),
         new(Engine, "An agent that grows its tools", "CreateTool",
-            "The agent can write a new skill or a script-backed tool, and it waits for your /approve before any later " +
-            "session loads it.", "src/docs/architecture/06-runtime-view.md"),
+            "The agent can write a new skill or a script-backed tool, and it waits for your /approve before any " +
+            "later session loads it.", "src/docs/architecture/06-runtime-view.md"),
         new(Engine, "Files passed by name", "SessionAttachments",
             "A file you attach is handed to another agent by name, so a large file isn't copied through the model.",
             CoreDoc),
@@ -97,7 +97,8 @@ public static class FrameworkFeatures
             AccountsDoc),
 
         new(Web, "A site in a few lines", "AddSiteAreas",
-            "A site names the areas it wants, and the framework wires them, so a site holds only its own words and data.",
+            "A site names the areas it wants, and the framework wires them, so a site holds only its own words and " +
+            "data.",
             Adr + "0120-nothing-is-hand-wired-from-the-framework.md"),
         new(Web, "A chat in one tag", "ChatWidget",
             "A chat any page drops in, folded in a corner, opened as the agent the page names.", WebDoc),
@@ -155,7 +156,8 @@ public static class FrameworkFeatures
             "A setting that names one of a few choices is an enum, read once where it comes in.",
             Adr + "0024-choices-are-enums.md"),
         new(Code, "A name says what it is", "turn.Paced(clock)",
-            "A method is a verb, a stream operator is named for what it gives back, a type is a noun with no empty word.",
+            "A method is a verb, a stream operator is named for what it gives back, a type is a noun with no empty " +
+            "word.",
             Adr + "0126-a-name-says-what-it-is-by-its-kind.md")
     ];
 
