@@ -1,0 +1,28 @@
+{
+  "kind": "cards",
+  "title": "F171 the bill checker: the overview",
+  "caption": "Eight children, in order: photos reach a tool, the bills pack reads and checks, the letter, the identity and its evals, the account and subscription, the phone app, the stores, and the monthly report.",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "f171", "icon": "search", "title": "F171 The bill checker", "code": "Cape Town, Swartland, Overstrand", "look": "highlight",
+          "text": "A phone app that reads a municipal account, checks every line against the right tariff, and drafts the dispute." }
+      ] },
+      { "cards": [
+        { "id": "c1", "icon": "chip", "title": "F171.1 Photos reach a tool", "code": "ISessionFiles, IDocumentReader", "text": "The engine keeps an upload and lets a tool have the model read it into a record." },
+        { "id": "c2", "icon": "book", "title": "F171.2 Read and check", "code": "ReadBill, CheckBill", "text": "The bills pack: the bill record, dated tariffs as data, the sums in C#." },
+        { "id": "c3", "icon": "message", "title": "F171.3 The letter", "code": "DraftDispute", "text": "A s102(2) dispute from the facts found, for the resident to send." },
+        { "id": "c4", "icon": "user", "title": "F171.4 Identity and evals", "code": "real bills, known answers", "text": "The bill checker's voice and guard rails, measured on real bills." }
+      ] },
+      { "cards": [
+        { "id": "c5", "icon": "server", "title": "F171.5 Account and subscription", "code": "bills, consent, receipts", "text": "Bills kept per account, deletion, the free cap and store receipts checked." },
+        { "id": "c6", "icon": "folder", "title": "F171.6 The phone app", "code": "MAUI 11 Blazor Hybrid", "text": "Camera, PDF, chat and paywall; Android, then iPhone." },
+        { "id": "c7", "icon": "settings", "title": "F171.7 To the stores", "code": "Play and App Store", "text": "Listings, privacy, testing and approval for South Africa." },
+        { "id": "c8", "icon": "book", "title": "F171.8 The monthly report", "code": "one report a month", "text": "A household report each month from the readings the account keeps." }
+      ] }
+    ],
+    "links": [
+      { "from": "f171", "to": "c1" }, { "from": "f171", "to": "c2" }, { "from": "f171", "to": "c3" }, { "from": "f171", "to": "c4" }
+    ]
+  }
+}
