@@ -163,6 +163,9 @@ as values for a list of names, which is extensibility, skill 20.
 - **2026-11-22, F169.7's step on a phone.** Louis: "A: an arrow between the two". A step of the sequence's phone
   drawing shows both names with the wide drawing's own line between them, a beam for a call and dashes for an
   answer.
+- **2026-11-22, F169.7's style for the phone drawing.** Louis: "C: inside the sequence's own style". Its six rules
+  are a second member of `SequenceStyle`, so the kinds' styles keep one file per kind (Fowler's *Inline Class*),
+  over a subfolder for a sequence's two styles and over a style beside its drawing.
 
 ---
 [Docs index](../README.md) · Related: [the plans' index](README.md), [F151 Two themes, each light and dark](F151-themes-and-styles.md)

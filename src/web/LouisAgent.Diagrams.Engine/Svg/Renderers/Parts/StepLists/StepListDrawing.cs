@@ -20,8 +20,8 @@ namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.StepLists;
 /// A second drawing for the data a sequence already is, beside <see cref="SequenceDrawing"/>: it draws what
 /// <see cref="StepListLayout"/> placed and decides no place itself. The frames are the wide drawing's
 /// (<see cref="SequenceFrames"/>), the key is the wide drawing's laid out for this width
-/// (<see cref="SequenceKeyLayout"/>), and the styles are the sequence's with what <see cref="StepListStyle"/> adds,
-/// so a reader who knows one drawing reads the other.
+/// (<see cref="SequenceKeyLayout"/>), and the styles are the sequence's with what
+/// <see cref="SequenceStyle.StepList"/> adds, so a reader who knows one drawing reads the other.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0118-a-diagram-is-data-our-renderer-draws.md">ADR 0118: a diagram is data our renderer draws</seealso>
 internal static class StepListDrawing
@@ -56,7 +56,7 @@ internal static class StepListDrawing
             })
             .Caption(source.Caption)
             .Style(PictureLook.Of(SvgTheme.Site), MarqueeLook.Rules, SequenceStyle.Of(SvgTheme.Site),
-                StepListStyle.Of(SvgTheme.Site))
+                SequenceStyle.StepList(SvgTheme.Site))
             .Build();
     }
 
