@@ -1,8 +1,10 @@
 // What louis-agent.dev and framework.louis-agent.dev stand on in Azure, so it can be made again from code (F170).
-// Every resource is one of Microsoft's Azure Verified Modules, pinned to a version, and every name is a parameter:
-// our own instance's values are in main.bicepparam beside this file. The two apps and their domains are released by
-// deploy.ps1, which reads this deployment's outputs. Each module is told what stands wherever its default differs, so
-// a deploy over the running sites changes nothing; what-if shows it (deploy.ps1 infra).
+// Every resource is one of Microsoft's Azure Verified Modules, pinned to a version, but two: the network and the
+// environment are plain resources, since the environment's module can't set its telemetry agent and the network's
+// renames the subnet's delegation (Louis's pick, 2026-11-22). Every name is a parameter: our own instance's values
+// are in main.bicepparam beside this file. The two apps and their domains are released by deploy.ps1, which reads
+// this deployment's outputs. Each part is told what stands wherever a default differs, so a deploy over the running
+// sites changes nothing; what-if shows it (deploy.ps1 infra).
 //
 //   az deployment group what-if -g <group> -f main.bicep -p main.bicepparam
 
@@ -21,8 +23,26 @@ param insightsName string
 @description('How many days Application Insights keeps its data.')
 param insightsRetentionDays int
 
+@description('The network the environment sits on.')
+param networkName string
+
+@description('The network\'s address range.')
+param networkAddressPrefix string
+
+@description('The subnet the environment has to itself, delegated to Container Apps.')
+param appsSubnetName string
+
+@description('The apps subnet\'s range: an environment on a network wants a /23 of its own.')
+param appsSubnetPrefix string
+
 @description('The Container Apps environment the two apps run in.')
 param environmentName string
+
+@description('The resource group Azure keeps the environment\'s own machinery in, named when the environment is made.')
+param environmentInfrastructureGroupName string
+
+@description('The name the environment knows the apps\' share by, which each app\'s yaml mounts.')
+param shareLinkName string
 
 @description('The registry the apps\' images are built in and pulled from.')
 param registryName string
@@ -70,10 +90,6 @@ var vaultAdministratorRole = '00482a5a-887f-4fb3-b363-3b7fe8e74483'
 var vaultReaderRole = '21090545-7ca7-4776-b22c-e363652d74d2'
 var contributorRole = 'b24988ac-6180-42a0-ab88-20f7382dd24c'
 
-// The environment pulls the apps' images as itself (the apps' yaml: identity: system-environment).
-resource environment 'Microsoft.App/managedEnvironments@2025-07-01' existing = {
-  name: environmentName
-}
 
 // The log workspace. Key-based sign-in stays on: the environment sends its logs with the workspace's shared key.
 module workspace 'br/public:avm/res/operational-insights/workspace:0.16.2' = {
@@ -104,6 +120,96 @@ module insights 'br/public:avm/res/insights/component:0.8.0' = {
     retentionInDays: insightsRetentionDays
     disableIpMasking: false
     enableTelemetry: false
+  }
+}
+
+// The network, with the one subnet the environment has to itself. A plain resource: the network's module names the
+// delegation after its service, which would rename the live one on a subnet the environment uses.
+resource network 'Microsoft.Network/virtualNetworks@2025-05-01' = {
+  name: networkName
+  location: location
+  properties: {
+    addressSpace: {
+      addressPrefixes: [networkAddressPrefix]
+    }
+    privateEndpointVNetPolicies: 'Disabled'
+    subnets: [
+      {
+        name: appsSubnetName
+        properties: {
+          addressPrefix: appsSubnetPrefix
+          delegations: [
+            {
+              name: 'containerapps'
+              properties: {
+                serviceName: 'Microsoft.App/environments'
+              }
+            }
+          ]
+          privateEndpointNetworkPolicies: 'Disabled'
+          privateLinkServiceNetworkPolicies: 'Enabled'
+        }
+      }
+    ]
+  }
+}
+
+// The environment, on the apps subnet, open to the internet, on the Consumption profile alone. A plain resource: its
+// module has no setting for the telemetry agent, which sends the apps' logs and traces to Application Insights, so a
+// deploy through it would switch the agent off. It pulls the apps' images as itself (their yaml: system-environment).
+resource environment 'Microsoft.App/managedEnvironments@2026-01-01' = {
+  name: environmentName
+  location: location
+  identity: {
+    type: 'SystemAssigned'
+  }
+  properties: {
+    vnetConfiguration: {
+      infrastructureSubnetId: resourceId('Microsoft.Network/virtualNetworks/subnets', network.name, appsSubnetName)
+      internal: false
+    }
+    infrastructureResourceGroup: environmentInfrastructureGroupName
+    publicNetworkAccess: 'Enabled'
+    zoneRedundant: false
+    workloadProfiles: [
+      {
+        name: 'Consumption'
+        workloadProfileType: 'Consumption'
+      }
+    ]
+    peerAuthentication: {
+      mtls: {
+        enabled: false
+      }
+    }
+    peerTrafficConfiguration: {
+      encryption: {
+        enabled: false
+      }
+    }
+    appLogsConfiguration: {
+      destination: 'log-analytics'
+      logAnalyticsConfiguration: {
+        customerId: workspace.outputs.logAnalyticsWorkspaceId
+        sharedKey: workspace.outputs.primarySharedKey
+      }
+    }
+    // Bicep's bundled types for this version leave out the two settings below, but the API has them: a read of the
+    // environment at 2025-07-01, 2026-01-01 and 2026-07-01 returns both. The connection string is never read back.
+    #disable-next-line BCP037
+    appInsightsConfiguration: {
+      connectionString: insights.outputs.connectionString
+    }
+    #disable-next-line BCP037
+    openTelemetryConfiguration: {
+      tracesConfiguration: {
+        destinations: ['appInsights']
+        includeDapr: false
+      }
+      logsConfiguration: {
+        destinations: ['appInsights']
+      }
+    }
   }
 }
 
@@ -262,6 +368,27 @@ module storage 'br/public:avm/res/storage/storage-account:0.33.2' = {
       ]
     }
     enableTelemetry: false
+  }
+}
+
+// The storage account as Azure holds it once its module has run, so the share's link can read its key.
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing = {
+  name: storageName
+}
+
+// The environment's link to the apps' share, by the name each app's yaml mounts, read and write, with the account's
+// key. A plain resource beside the environment, since it is the environment's own.
+resource shareLink 'Microsoft.App/managedEnvironments/storages@2026-01-01' = {
+  parent: environment
+  name: shareLinkName
+  dependsOn: [storage]
+  properties: {
+    azureFile: {
+      accountName: storageName
+      accountKey: storageAccount.listKeys().keys[0].value
+      shareName: shareName
+      accessMode: 'ReadWrite'
+    }
   }
 }
 

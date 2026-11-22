@@ -116,6 +116,28 @@ public class BicepFileTests
         Assert.That(Bicep.Select(line => line.Trim()), Does.Contain("allowSharedKeyAccess: true"));
 
     /// <summary>
+    /// The environment keeps its telemetry agent sending the apps' logs and traces to Application Insights: the
+    /// reason it is a plain resource and not its module, which has no setting for it.
+    /// </summary>
+    [Test]
+    public void TheEnvironment_KeepsItsTelemetryAgent()
+    {
+        var lines = Bicep.Select(line => line.Trim()).ToList();
+
+        Assert.That(lines, Does.Contain("openTelemetryConfiguration: {"));
+        Assert.That(lines, Does.Contain("appInsightsConfiguration: {"));
+        Assert.That(lines.Count(line => line == "destinations: ['appInsights']"), Is.EqualTo(2), "traces and logs");
+    }
+
+    /// <summary>
+    /// The apps subnet's delegation keeps its live name: the network's module would rename it, on a subnet the
+    /// environment uses.
+    /// </summary>
+    [Test]
+    public void TheNetwork_KeepsItsDelegationsName() =>
+        Assert.That(Bicep.Select(line => line.Trim()), Does.Contain("name: 'containerapps'"));
+
+    /// <summary>
     /// Every output the deploy script reads is one the file declares, so a release finds the environment, the
     /// identity and the vault it was deployed with.
     /// </summary>

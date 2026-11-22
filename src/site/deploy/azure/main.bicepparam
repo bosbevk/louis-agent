@@ -11,7 +11,14 @@ param workspaceRetentionDays = 30
 param insightsName = 'puls-insights'
 param insightsRetentionDays = 90
 
+param networkName = 'puls-vnet'
+param networkAddressPrefix = '10.0.0.0/16'
+param appsSubnetName = 'apps'
+param appsSubnetPrefix = '10.0.0.0/23'
+
 param environmentName = 'puls-env'
+param environmentInfrastructureGroupName = 'ME_puls-env_rg-puls-za_southafricanorth'
+param shareLinkName = 'louis-agent-vol'
 
 param registryName = 'acrpulsza'
 param registryPullAssignmentName = '3b785df2-c303-5865-adb0-94ee624325e1'
