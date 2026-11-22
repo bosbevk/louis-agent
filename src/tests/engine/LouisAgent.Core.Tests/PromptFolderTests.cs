@@ -56,7 +56,9 @@ public partial class PromptFolderTests
                 SearchOption.AllDirectories))
             .ToList();
         var wrapped = projects
-            .Where(project => Directory.Exists(Path.Combine(Path.GetDirectoryName(project)!, "prompts"))
+            // The name compared exactly: Windows finds a C# folder Prompts/ by "prompts", Linux doesn't.
+            .Where(project => Directory.EnumerateDirectories(Path.GetDirectoryName(project)!)
+                                  .Any(folder => Path.GetFileName(folder) == "prompts")
                               || File.ReadAllText(project).Contains("Include=\"prompts\\", StringComparison.Ordinal))
             .Select(project => Path.GetRelativePath(TestPaths.RepoRoot, project).Replace('\\', '/'))
             .ToList();

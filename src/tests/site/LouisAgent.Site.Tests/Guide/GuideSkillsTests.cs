@@ -1,3 +1,5 @@
+using LouisAgent.Choices;
+using LouisAgent.Composition.Prompts;
 using System.Reflection;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Headers;
@@ -30,7 +32,7 @@ public class GuideSkillsTests
     }
 
     /// <summary>One of the guide's skills, by its name: the <c>SKILL.md</c> in its folder (CL68.1).</summary>
-    private static PromptFile Skill(string name) => Read($"skills/{name}/{SkillFiles.SkillFile}");
+    private static PromptFile Skill(string name) => Read($"skills/{name}/{PromptFileName.Skill.Wire()}");
 
     /// <summary>Each map is a skill read on demand, under its own heading.</summary>
     [TestCase("docs-map", "# Where things are")]

@@ -1,3 +1,5 @@
+using LouisAgent.Choices;
+using LouisAgent.Composition.Prompts;
 using LouisAgent.Composition.Packs;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Headers;
@@ -53,11 +55,11 @@ public class EveryPromptHasAHeaderTests
     public void EverySkill_IsAFolderWithItsSkillFile()
     {
         var skills = Prompts().Select(p => p.Path.Split('/'))
-            .Where(parts => parts.Length > 3 && parts[0] == RoleCatalog.AgentFolder
+            .Where(parts => parts.Length > 3 && parts[0] == PromptFolder.Agents.Wire()
                                              && string.Join('/', parts).StartsWith(SkillFiles.SkillsOf(parts[1]),
                                                  StringComparison.Ordinal))
             .ToList();
-        var loose = skills.Where(parts => parts.Length != 5 || parts[4] != SkillFiles.SkillFile)
+        var loose = skills.Where(parts => parts.Length != 5 || parts[4] != PromptFileName.Skill.Wire())
             .Select(parts => string.Join('/', parts));
 
         Assert.That(skills, Is.Not.Empty, "the identities' skills were found");
@@ -81,13 +83,17 @@ public class EveryPromptHasAHeaderTests
     private static RoleLevel? LevelOf(string path) =>
         path.Split('/').SkipLast(1).Select(LevelOfFolder).LastOrDefault(level => level is not null);
 
-    /// <summary>The level one folder stands for, or none.</summary>
-    /// <remarks>A switch on the folder, one arm per level, read like a table (ADR 0051).</remarks>
-    private static RoleLevel? LevelOfFolder(string folder) => folder switch
+    /// <summary>The level one folder stands for, or none: a folder's name is parsed once, then switched on.</summary>
+    /// <remarks>A switch on the folder, one arm per level, read like a table (ADR 0051, ADR 0043).</remarks>
+    private static RoleLevel? LevelOfFolder(string folder) =>
+        SettingChoice.TryParse<PromptFolder>(folder, out var known) ? LevelOf(known!.Value) : null;
+
+    /// <summary>The level a known folder stands for, or none.</summary>
+    private static RoleLevel? LevelOf(PromptFolder folder) => folder switch
     {
-        RoleCatalog.AgentFolder => RoleLevel.Agent,
-        RoleCatalog.SubagentsFolder => RoleLevel.Subagent,
-        RoleCatalog.MinionsFolder => RoleLevel.Minion,
+        PromptFolder.Agents => RoleLevel.Agent,
+        PromptFolder.Subagents => RoleLevel.Subagent,
+        PromptFolder.Minions => RoleLevel.Minion,
         _ => null
     };
 }

@@ -1,3 +1,5 @@
+using LouisAgent.Choices;
+using LouisAgent.Composition.Prompts;
 using LouisAgent.Composition.Packs;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Config;
@@ -50,7 +52,7 @@ public class SkillFileSourceTests
         // CL15: the roles here are the tests' own (their agents/), registered as an identity's are; Puls's live in its
         // identity.
         Assert.That(SkillFileSource.Files("agents/testprod/subagents/specialist"), Is.EqualTo(new[] { "voice.md" }));
-        Assert.That(SkillFileSource.Files(RoleCatalog.MinionsFolder),
+        Assert.That(SkillFileSource.Files(PromptFolder.Minions.Wire()),
             Is.EqualTo(new[] { "testprod-minion-lookup.md", "testprod-minion.md" }), "F30 step 4: a role and the base");
     }
 
@@ -79,8 +81,9 @@ public class SkillFileSourceTests
     public void AFunctionTheAgentWrote_IsReadFromDisk()
     {
         // What the agent writes (CreateSkillFile) lives in the skills folder, not the assembly.
-        Directory.CreateDirectory(Path.Combine(_dir, RoleCatalog.AgentFolder, "functions"));
-        File.WriteAllText(Path.Combine(_dir, RoleCatalog.AgentFolder, "functions", "greeting.md"), "# Greeting Skills");
+        Directory.CreateDirectory(Path.Combine(_dir, PromptFolder.Agents.Wire(), PromptFolder.Functions.Wire()));
+        File.WriteAllText(Path.Combine(_dir, PromptFolder.Agents.Wire(), PromptFolder.Functions.Wire(), "greeting.md"),
+            "# Greeting Skills");
 
         var file = SkillFolder.Read(new AgentOptions { SkillsDirectory = _dir }, "agents/functions/greeting.md");
 

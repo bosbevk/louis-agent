@@ -1,4 +1,6 @@
 using System.Text.RegularExpressions;
+using LouisAgent.Choices;
+using LouisAgent.Composition.Prompts;
 
 namespace LouisAgent.Core.Skills.Roles;
 
@@ -14,20 +16,14 @@ namespace LouisAgent.Core.Skills.Roles;
 /// </summary>
 public static partial class RoleCatalog
 {
-    /// <summary>Level 0's folder, under the skills folder: the voices of the agent the user talks to.</summary>
-    public const string AgentFolder = "agents";
+    /// <summary>The agents' folder, written once from the shared names (ADR 0043).</summary>
+    private static readonly string Agents = PromptFolder.Agents.Wire();
 
-    /// <summary>
-    /// Where an agent keeps its subagents, level 1 (ADR 0133): <c>agents/{identity}/subagents/{name}/</c>, a folder
-    /// each.
-    /// </summary>
-    public const string SubagentsFolder = "subagents";
+    /// <summary>Where an agent keeps its subagents, a folder each (ADR 0133).</summary>
+    private static readonly string SubagentsFolder = PromptFolder.Subagents.Wire();
 
-    /// <summary>A subagent's own prompt in its folder, as an agent's is in its.</summary>
-    public const string VoiceFile = "voice.md";
-
-    /// <summary>Level 2's folder: one function per minion (F30).</summary>
-    public const string MinionsFolder = "minions";
+    /// <summary>An agent's or a subagent's own prompt in its folder.</summary>
+    private static readonly string Voice = PromptFileName.Voice.Wire();
 
     private const int MaxNameLength = 40;
 
@@ -50,8 +46,8 @@ public static partial class RoleCatalog
     /// </summary>
     private static string FolderOf(RoleLevel level) => level switch
     {
-        RoleLevel.Agent => AgentFolder,
-        RoleLevel.Minion => MinionsFolder,
+        RoleLevel.Agent => Agents,
+        RoleLevel.Minion => PromptFolder.Minions.Wire(),
         _ => throw new ArgumentOutOfRangeException(nameof(level), level, null),
     };
 
@@ -130,10 +126,10 @@ public static partial class RoleCatalog
     private static IEnumerable<string> Modes()
     {
         var files = SkillFileSource.EmbeddedFiles
-            .Where(f => f.StartsWith(AgentFolder + "/", StringComparison.Ordinal) &&
+            .Where(f => f.StartsWith(Agents + "/", StringComparison.Ordinal) &&
                         f.EndsWith(".md", StringComparison.Ordinal)
                         && !f.StartsWith(SkillFiles.FunctionsFolder + "/", StringComparison.Ordinal))
-            .Select(f => f[(AgentFolder.Length + 1)..^".md".Length])
+            .Select(f => f[(Agents.Length + 1)..^".md".Length])
             .Where(n => n.Count(c => c == '/') == 1)
             .ToList();
         // A product with languages shares its voice.md between them; it isn't a mode of its own ({product}/voice).
@@ -147,7 +143,8 @@ public static partial class RoleCatalog
     private static IEnumerable<string> Subagents() =>
         SkillFileSource.EmbeddedFiles
             .Select(file => file.Split('/'))
-            .Where(parts => parts is [AgentFolder, _, SubagentsFolder, _, VoiceFile])
+            .Where(parts => parts is [var agents, _, var subagents, _, var voice]
+                            && agents == Agents && subagents == SubagentsFolder && voice == Voice)
             .Select(parts => $"{parts[1]}.{parts[3]}");
 
     /// <summary>
@@ -155,8 +152,8 @@ public static partial class RoleCatalog
     /// refused as unknown.
     /// </summary>
     private static string SubagentFile(string address) => address.Split('.') is [var identity, var subagent]
-        ? $"{AgentFolder}/{identity}/{SubagentsFolder}/{subagent}/{VoiceFile}"
-        : $"{AgentFolder}/{SubagentsFolder}/{address}/{VoiceFile}";
+        ? $"{Agents}/{identity}/{SubagentsFolder}/{subagent}/{Voice}"
+        : $"{Agents}/{SubagentsFolder}/{address}/{Voice}";
 
     /// <summary>A language mode: matches <c>acme/voice-af</c> (code <c>af</c>), not <c>acme/voice</c>.</summary>
     [GeneratedRegex("^[a-z0-9-]+/voice-(?<code>[a-z]{2})$")]

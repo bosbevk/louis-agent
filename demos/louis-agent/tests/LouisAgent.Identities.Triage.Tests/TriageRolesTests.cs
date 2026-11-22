@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Prompts;
 using LouisAgent.Choices;
 using LouisAgent.Core.Skills.Roles;
 using LouisAgent.Core.Skills;
@@ -48,7 +49,7 @@ public class TriageRolesTests
     {
         var identity = new TriageIdentity();
         var members = Enum.GetValues<TriageRole>().Select(AddressOf).ToHashSet();
-        var subagents = identity.Prompts.GetDirectoryContents($"agents/triage/{RoleCatalog.SubagentsFolder}")
+        var subagents = identity.Prompts.GetDirectoryContents($"agents/triage/{PromptFolder.Subagents.Wire()}")
             .Where(folder => folder.IsDirectory).Select(folder => $"triage.{folder.Name}").ToList();
 
         Assert.That(subagents, Is.Not.Empty, "the subagents folder was found");

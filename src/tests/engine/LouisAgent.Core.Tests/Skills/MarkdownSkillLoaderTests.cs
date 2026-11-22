@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Prompts;
 using LouisAgent.Choices;
 using LouisAgent.Core.Skills.Languages;
 using LouisAgent.Core.Skills;
@@ -17,7 +18,7 @@ public class MarkdownSkillLoaderTests
         var repoRoot =
             TestPaths.RepoRoot;
         // Use default.md which should contain skill definitions
-        var filePath = Path.Combine(TestPaths.Prompts, RoleCatalog.AgentFolder, "louis-agent", "voice.md");
+        var filePath = Path.Combine(TestPaths.Prompts, PromptFolder.Agents.Wire(), "louis-agent", "voice.md");
 
         var skills = MarkdownSkillLoader.Load(filePath);
 

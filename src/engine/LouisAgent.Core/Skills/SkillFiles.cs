@@ -1,8 +1,12 @@
+using LouisAgent.Choices;
+using LouisAgent.Composition.Prompts;
+
 namespace LouisAgent.Core.Skills;
 
 /// <summary>
-/// The skill files core knows by name, by their path in core's project (CL8: in the folder of the level that reads
-/// them). Public since CL15, so a pack names its guide the way core does (<see cref="Guide"/>).
+/// The skill files core knows by name, by their path in core's project, built from the shared folder names
+/// (<see cref="PromptFolder"/>, ADR 0043). Public since CL15, so a pack names its guide the way core does
+/// (<see cref="Guide"/>).
 /// </summary>
 public static class SkillFiles
 {
@@ -18,50 +22,36 @@ public static class SkillFiles
     /// </summary>
     internal const string MarkedFolderPath = "skills/" + FolderMarker;
 
-    /// <summary>The folder of what every agent loads, at every level (CL9): the principles.</summary>
-    internal const string SharedFolder = "shared";
-
     /// <summary>
     /// The principles (ADR 0020): first in every agent's prompt, so nothing later can push them aside.
     /// </summary>
-    internal const string Principles = SharedFolder + "/principles.md";
+    internal static string Principles { get; } = $"{PromptFolder.Shared.Wire()}/principles.md";
 
     /// <summary>
-    /// The folder of the toolset guides, which every level shares (a guide is the same whichever level loads it).
+    /// The folder of the function skills, the procedures ExecuteSkill runs: level 0's, <c>agents/functions</c>.
     /// </summary>
-    internal const string ToolsetsFolder = "toolsets";
-
-    /// <summary>
-    /// The folder of the function skills, the procedures ExecuteSkill runs: level 0's, under <c>agents/</c>. Written
-    /// out, not built from <c>RoleCatalog.AgentFolder</c>, so the top of <c>Skills/</c> uses nothing below it (CL13);
-    /// <c>SkillFilesTests</c> holds the two together.
-    /// </summary>
-    internal const string FunctionsFolder = "agents/functions";
+    internal static string FunctionsFolder { get; } = $"{PromptFolder.Agents.Wire()}/{PromptFolder.Functions.Wire()}";
 
     /// <summary>
     /// Where a function skill the agent writes waits for the user's <c>/approve</c> (FX20), as agent-built tools wait
     /// in <c>tools/pending/</c>: discovery reads only <see cref="FunctionsFolder"/>'s top, so a later session never
     /// loads it.
     /// </summary>
-    internal const string PendingFunctionsFolder = FunctionsFolder + "/pending";
+    internal static string PendingFunctionsFolder { get; } = FunctionsFolder + "/pending";
 
     /// <summary>
-    /// The folder of an identity's skills, beside its voice (F129, ADR 0114): <c>agents/{identity}/skills/</c>. Written
-    /// out, as <see cref="FunctionsFolder"/> is.
+    /// The folder of an identity's skills, beside its voice (F129, ADR 0114): <c>agents/{identity}/skills/</c>.
     /// </summary>
-    public static string SkillsOf(string identity) => $"agents/{identity}/skills/";
-
-    /// <summary>
-    /// The file a skill's folder holds, <c>skills/{name}/SKILL.md</c> (CL68.1): the skill's name is its folder's, the
-    /// shape Claude Code's skills have.
-    /// </summary>
-    public const string SkillFile = "SKILL.md";
+    public static string SkillsOf(string identity) =>
+        $"{PromptFolder.Agents.Wire()}/{identity}/{PromptFolder.Skills.Wire()}/";
 
     /// <summary>A pending function skill's file: <c>agents/functions/pending/{name}.md</c>.</summary>
     internal static string PendingFunction(string name) => $"{PendingFunctionsFolder}/{name}.md";
 
-    /// <summary>A toolset guide's file: <c>toolsets/{name}.md</c>.</summary>
-    public static string Guide(string name) => $"{ToolsetsFolder}/{name}.md";
+    /// <summary>
+    /// A toolset guide's file: <c>toolsets/{name}.md</c>, the same whichever level loads it.
+    /// </summary>
+    public static string Guide(string name) => $"{PromptFolder.Toolsets.Wire()}/{name}.md";
 
     /// <summary>A function skill's file: <c>agents/functions/{name}.md</c>.</summary>
     internal static string Function(string name) => $"{FunctionsFolder}/{name}.md";

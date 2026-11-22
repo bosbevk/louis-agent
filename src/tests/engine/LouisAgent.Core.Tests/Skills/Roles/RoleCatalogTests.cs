@@ -1,3 +1,5 @@
+using LouisAgent.Choices;
+using LouisAgent.Composition.Prompts;
 using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Skills;
@@ -21,8 +23,8 @@ public class RoleCatalogTests
     public void SetUp()
     {
         _skills = Path.Combine(Path.GetTempPath(), "roles-" + Guid.NewGuid().ToString("N"));
-        Directory.CreateDirectory(Path.Combine(_skills, RoleCatalog.AgentFolder));
-        File.WriteAllText(Path.Combine(_skills, RoleCatalog.AgentFolder, "test-voice.md"),
+        Directory.CreateDirectory(Path.Combine(_skills, PromptFolder.Agents.Wire()));
+        File.WriteAllText(Path.Combine(_skills, PromptFolder.Agents.Wire(), "test-voice.md"),
             "# Test Voice\n\nKort en kragtig.\n");
     }
 

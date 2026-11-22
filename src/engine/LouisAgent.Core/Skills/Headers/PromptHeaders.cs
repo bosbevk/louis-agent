@@ -1,5 +1,6 @@
 using LouisAgent.Composition.Messages;
 using LouisAgent.Choices;
+using LouisAgent.Composition.Prompts;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Skills.Messages;
 using LouisAgent.Core.Skills.Messages.Holes.Fields;
@@ -89,7 +90,7 @@ public static class PromptHeaders
     /// Code's skills have), every other prompt's own file's.
     /// </summary>
     private static string NameFor(string path) =>
-        Path.GetFileName(path) == SkillFiles.SkillFile
+        Path.GetFileName(path) == PromptFileName.Skill.Wire()
             ? Path.GetFileName(Path.GetDirectoryName(path))!
             : Path.GetFileNameWithoutExtension(path);
 
