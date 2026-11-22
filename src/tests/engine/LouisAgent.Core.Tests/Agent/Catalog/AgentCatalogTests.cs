@@ -213,6 +213,24 @@ public class AgentCatalogTests
         Assert.That(error.Message, Does.Contain("agents/shared/voice.md"));
     }
 
+    /// <summary>
+    /// One provider several identities share, as the showroom's three businesses do (CL68.1), is read once: each
+    /// voice appears once, and the catalogue holds the provider once.
+    /// </summary>
+    [Test]
+    public void AProviderTwoIdentitiesShare_IsReadOnce()
+    {
+        var shared = new FakePrompts(new Dictionary<string, string>
+        {
+            ["agents/one/voice.md"] = "# one",
+            ["agents/two/voice.md"] = "# two",
+        });
+
+        var catalog = Catalog([new FakeIdentity("one", provider: shared), new FakeIdentity("two", provider: shared)]);
+
+        Assert.That(catalog.Prompts.Count(prompts => ReferenceEquals(prompts, shared)), Is.EqualTo(1));
+    }
+
     /// <summary>A pack an identity or a pack asks for that nobody registered is refused, naming what is.</summary>
     [Test]
     public void ANameThatResolvesToNothing_IsRefused_ListingTheRegisteredOnes()

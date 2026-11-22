@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="koringland-attorneys\**\*.md;seemeeu-guesthouse\**\*.md;wheatfield-kitchen\**\*.md" />
+    <EmbeddedResource Include="agents\**\*.md" />
   </ItemGroup>
 
   <ItemGroup>

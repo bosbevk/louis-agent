@@ -16,12 +16,9 @@ namespace LouisAgent.Composition.Packs;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
 public static class EmbeddedPrompts
 {
-    /// <summary>Every prompt the assembly embeds, by its path in the project.</summary>
-    public static IFileProvider Of(Assembly assembly) => new ManifestEmbeddedFileProvider(assembly);
-
     /// <summary>
-    /// The prompts under one folder of the project, for a project that holds several identities' (the showroom's).
+    /// Every prompt the assembly embeds, by its path in the project. A project that holds several identities (the
+    /// showroom) hands each the same provider, and the catalogue reads it once.
     /// </summary>
-    public static IFileProvider Of(Assembly assembly, string subfolder) =>
-        new ManifestEmbeddedFileProvider(assembly, subfolder);
+    public static IFileProvider Of(Assembly assembly) => new ManifestEmbeddedFileProvider(assembly);
 }
