@@ -2,8 +2,8 @@
 
 > **Skill:** #12 in the [goal](../GOAL.md)'s map, with #16 (human in the loop), a nod to #15 (least privilege) and side
 > lessons for #17, #4 and #3 · **Stages:** F18 steps 6.3 to 6a.5, the judge calibrated and then checked from the portal
-> (2026-10-26 to 27); the rest of F18 and its first v2 baseline (2026-10-29); F49.2b, the generic checks (2026-10-31)
-> · **Written by** Claude, for Louis to read (2026-10-27, extended 2026-10-29 and 2026-10-31)
+> (2026-10-26 to 27); the rest of F18 and its first v2 baseline (2026-10-29); F49.2b, the generic checks (2026-10-31); F126.1, the old evals deleted (2026-11-22)
+> · **Written by** Claude, for Louis to read (2026-10-27, extended 2026-10-29, 2026-10-31 and 2026-11-22)
 
 What this answers: how we know the model that grades the cook's answers sees what you see, what it took to get it there, and
 why the check is now a button in the admin portal instead of four commands in a terminal.
@@ -272,6 +272,38 @@ one small class in between that knows the difference.
 **In the field's words:** evals as code in a repository (*evals-as-code*), a *pre-flight validation* that is the same
 gate CI runs, and *interoperability* with a common format instead of a format of our own that only we can read.
 
+## Deleting the old evals (F126.1)
+
+Everything above built something, and this part takes it all away. You looked at the old evals on 2026-11-09 and
+said "we cannot have 23000 lines of code for something simple". On 2026-11-22 you picked to delete them first,
+before a line of the new design is written. So F126.1 deleted the harness, its protocol, its check contract, its
+runner, the studio's API, the eval pages, their stores and their tests, and ported nothing.
+
+Here is the cut, counted one way and said once: the lines of `.cs`, `.razor` and `.scss` that git tracks, from
+`f2fbd098a` (the commit before the first deleting step) to the last step. The code went down by 32,892 lines and
+the tests by 35,466, against 435 lines added. With the docs, the pictures and the settings, 89,201 lines left. The
+plan had guessed about 32,100 of code and 33,200 of tests, so the guess was close and a little low.
+
+The order was the lesson. It ran from the outside in: first the sites that named the eval area, then the demo,
+then the pages, then the studio's own tests, then the API's test library, then the studio, and only then the
+harness. Each step deleted something nothing else still used, so every commit built and every touched test
+passed. In a deletion, the tests that go red first are the rule tests that hold the repo's layout. A list such as
+`PackagesTests`' packable projects changes first and fails on the folder that's still there, then the folder goes.
+
+Some things only showed up on the way. A removed test case can't fail, it just stops running, so a layout list
+isn't always a test first. Two sanity floors (`>= 30` projects, `> 40` docs) and a package count in an integration
+test still held the old numbers, and only a search for the numbers found them. And this PC's copies of some files
+had Windows line endings that git didn't, which made one page test fail here and never on CI.
+
+What a later child may need is still in git. The session client the new runs will use was
+`src/evals/LouisAgent.Evals/Api/HttpSessionClient.cs`, and the judge's helpers were in
+`src/evals/LouisAgent.Evals/Grading/Models/`. Copy them from `f2fbd098a`, with a test first, as you picked ("1.
+Delete everything"). The decision itself is [ADR 0134](../adr/0134-an-eval-is-one-file-of-conversations.md), which
+supersedes the nine ADRs this write-up's earlier parts rest on.
+
+**In the field's words:** a *preparatory refactoring* comes before the change it makes easy (Fowler), and an
+*Architecture Decision Record* that is replaced stays, marked *superseded* (Nygard).
+
 ## The limits, said plainly
 
 36 labels, one judge, one person. Nine fails is "few labels" by the card's own rule. A pass at 100% on nine is weaker
@@ -289,4 +321,4 @@ The button hasn't been pressed in anger on a new prompt yet. Its first real use 
 prompt we had already tuned.
 
 ---
-[Learning](README.md) · [Docs index](../README.md) · Related: [the evals design](../projects/LouisAgent.Evals.md#limits-and-plans) · [FX25](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/fixes/FX25-runner-environment.md)
+[Learning](README.md) · [Docs index](../README.md) · Related: [ADR 0134](../adr/0134-an-eval-is-one-file-of-conversations.md) · [FX25](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/fixes/FX25-runner-environment.md)
