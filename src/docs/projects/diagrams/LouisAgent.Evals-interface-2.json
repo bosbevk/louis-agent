@@ -1,0 +1,131 @@
+{
+  "kind": "classes",
+  "title": "LouisAgent.Evals: the interface design of the grading",
+  "caption": "A turn's transcript is what happened. Facts tells a fact from it in code, and the judge asks a model about one criterion. Both give back the same small record, a mark.",
+  "classes": {
+    "types": [
+      {
+        "id": "turn",
+        "name": "TurnTranscript",
+        "kind": "record",
+        "members": [
+          "string Ask",
+          "string Answer",
+          "IReadOnlyList<ToolCallTranscript> Calls",
+          "TimeSpan Took",
+          "string? Error"
+        ]
+      },
+      {
+        "id": "call",
+        "name": "ToolCallTranscript",
+        "kind": "record",
+        "members": [
+          "string Tool",
+          "string Input",
+          "string Result",
+          "bool Failed"
+        ]
+      },
+      {
+        "id": "fact",
+        "name": "Fact",
+        "kind": "record",
+        "members": [
+          "FactKind Kind",
+          "string Argument"
+        ]
+      },
+      {
+        "id": "facts",
+        "name": "Facts",
+        "kind": "static",
+        "members": [
+          "Mark Tell(Fact fact, TurnTranscript turn,",
+          "  IReadOnlyList<TurnTranscript> earlier)"
+        ]
+      },
+      {
+        "id": "judge",
+        "name": "Judge",
+        "kind": "class",
+        "members": [
+          "Task<Mark> MarkAsync(string criterion,",
+          "  IReadOnlyList<TurnTranscript> conversation, ct)",
+          "throws JudgeFailedException"
+        ]
+      },
+      {
+        "id": "answer",
+        "name": "JudgeAnswer",
+        "kind": "record",
+        "members": [
+          "string Reason",
+          "bool Met"
+        ]
+      },
+      {
+        "id": "mark",
+        "name": "Mark",
+        "kind": "record",
+        "members": [
+          "string Text",
+          "bool Met",
+          "string Reason"
+        ]
+      },
+      {
+        "id": "client",
+        "name": "IChatClient",
+        "kind": "interface, Microsoft.Extensions.AI",
+        "tone": "violet",
+        "members": [
+          "GetResponseAsync<T>(messages, options, ct)"
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "from": "turn",
+        "to": "call",
+        "kind": "holds"
+      },
+      {
+        "from": "facts",
+        "to": "fact",
+        "kind": "uses"
+      },
+      {
+        "from": "facts",
+        "to": "turn",
+        "kind": "uses"
+      },
+      {
+        "from": "facts",
+        "to": "mark",
+        "kind": "creates"
+      },
+      {
+        "from": "judge",
+        "to": "turn",
+        "kind": "uses"
+      },
+      {
+        "from": "judge",
+        "to": "client",
+        "kind": "holds"
+      },
+      {
+        "from": "judge",
+        "to": "answer",
+        "kind": "uses",
+        "word": "asks for"
+      },
+      {
+        "from": "judge",
+        "to": "mark",
+        "kind": "creates"
+      }
+    ]
+  }
+}

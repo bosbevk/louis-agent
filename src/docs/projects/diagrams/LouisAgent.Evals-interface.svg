@@ -1,5 +1,5 @@
-<svg viewBox="-24 -24 689 1341" width="689" height="1341" role="img" aria-label="F126.2 the file and the grading: the interface design of the file" xmlns="http://www.w3.org/2000/svg">
-  <title>F126.2 the file and the grading: the interface design of the file</title>
+<svg viewBox="-24 -24 689 1341" width="689" height="1341" role="img" aria-label="LouisAgent.Evals: the interface design of the file" xmlns="http://www.w3.org/2000/svg">
+  <title>LouisAgent.Evals: the interface design of the file</title>
   <style>svg {
   --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #e2dfff; --violet-line: #6b4dff; --violet-ink: #3a22c4; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
   --mono: var(--bs-font-monospace, "Geist Mono", ui-monospace, Menlo, Consolas, monospace);
@@ -204,7 +204,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <rect class="ground" x="-24" y="-24" width="689" height="1341" rx="14" />
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a344.5 190 0 1 0 689 0a344.5 190 0 1 0 -689 0Z" />
-    <text class="mrq-title" x="16" y="14" text-anchor="start">F126.2 the file and the grading: the interface design of the file</text>
+    <text class="mrq-title" x="16" y="14" text-anchor="start">LouisAgent.Evals: the interface design of the file</text>
     <text class="pic-group" x="625" y="14" text-anchor="end">Class diagram</text>
     <rect class="mrq-rule" x="0" y="26" width="641" height="1" rx="0" />
     <g class="cls-drawing" transform="translate(0 44)">
@@ -238,7 +238,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="cls-badge tone-green" x="66.5" y="18" width="28" height="28" rx="9" />
       <text class="cls-mark" x="80.5" y="36.5" text-anchor="middle">S</text>
       <text class="pic-name" x="104.5" y="28" text-anchor="start">EvalFileReader</text>
-      <text class="pic-note" x="104.5" y="44" text-anchor="start">static, steps 5 and 6</text>
+      <text class="pic-note" x="104.5" y="44" text-anchor="start">static</text>
       <path class="cls-divide" d="M66.5 64H248.5" />
       <text class="cls-member" x="66.5" y="82" text-anchor="start">EvalFile Read(string json)</text>
       <text class="cls-member" x="66.5" y="96" text-anchor="start">throws EvalFileException</text>
@@ -247,16 +247,16 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="cls-badge tone-green" x="419.5" y="18" width="28" height="28" rx="9" />
       <text class="cls-mark" x="433.5" y="36.5" text-anchor="middle">S</text>
       <text class="pic-name" x="457.5" y="28" text-anchor="start">EvalSchema</text>
-      <text class="pic-note" x="457.5" y="44" text-anchor="start">static, step 7</text>
+      <text class="pic-note" x="457.5" y="44" text-anchor="start">static</text>
       <path class="cls-divide" d="M419.5 64H561.5" />
-      <text class="cls-member" x="419.5" y="82" text-anchor="start">JsonNode Of()</text>
+      <text class="cls-member" x="419.5" y="82" text-anchor="start">string Write()</text>
       <rect class="cls-cover" x="0" y="176" width="315" height="124" rx="14" />
       <rect class="mrq-glass" x="0" y="176" width="315" height="124" rx="14" />
       <rect class="mrq-edge" x="24" y="175.5" width="267" height="1.6" rx="0" />
       <rect class="cls-badge tone-teal" x="14" y="194" width="28" height="28" rx="9" />
       <text class="cls-mark" x="28" y="212.5" text-anchor="middle">R</text>
       <text class="pic-name" x="52" y="204" text-anchor="start">EvalFile</text>
-      <text class="pic-note" x="52" y="220" text-anchor="start">record, step 5</text>
+      <text class="pic-note" x="52" y="220" text-anchor="start">record</text>
       <path class="cls-divide" d="M14 240H301" />
       <text class="cls-member" x="14" y="258" text-anchor="start">AgentAddress Agent</text>
       <text class="cls-member" x="14" y="272" text-anchor="start">IReadOnlyList&lt;Conversation&gt; Conversations</text>
@@ -267,7 +267,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="cls-badge tone-teal" x="70" y="384" width="28" height="28" rx="9" />
       <text class="cls-mark" x="84" y="402.5" text-anchor="middle">R</text>
       <text class="pic-name" x="108" y="394" text-anchor="start">Conversation</text>
-      <text class="pic-note" x="108" y="410" text-anchor="start">record, step 5</text>
+      <text class="pic-note" x="108" y="410" text-anchor="start">record</text>
       <path class="cls-divide" d="M70 430H245" />
       <text class="cls-member" x="70" y="448" text-anchor="start">string Id</text>
       <text class="cls-member" x="70" y="462" text-anchor="start">IReadOnlyList&lt;Turn&gt; Turns</text>
@@ -278,7 +278,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="cls-badge tone-violet" x="354" y="384" width="28" height="28" rx="9" />
       <text class="cls-mark" x="368" y="402.5" text-anchor="middle">R</text>
       <text class="pic-name" x="392" y="394" text-anchor="start">AgentAddress</text>
-      <text class="pic-note" x="392" y="410" text-anchor="start">record, as it is</text>
+      <text class="pic-note" x="392" y="410" text-anchor="start">record, the engine's</text>
       <path class="cls-divide" d="M354 430H627" />
       <text class="cls-member" x="354" y="448" text-anchor="start">static bool TryParse(text, out address)</text>
       <rect class="cls-cover" x="38.5" y="556" width="238" height="124" rx="14" />
@@ -287,7 +287,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="cls-badge tone-teal" x="52.5" y="574" width="28" height="28" rx="9" />
       <text class="cls-mark" x="66.5" y="592.5" text-anchor="middle">R</text>
       <text class="pic-name" x="90.5" y="584" text-anchor="start">Turn</text>
-      <text class="pic-note" x="90.5" y="600" text-anchor="start">record, step 5</text>
+      <text class="pic-note" x="90.5" y="600" text-anchor="start">record</text>
       <path class="cls-divide" d="M52.5 620H262.5" />
       <text class="cls-member" x="52.5" y="638" text-anchor="start">string Ask</text>
       <text class="cls-member" x="52.5" y="652" text-anchor="start">IReadOnlyList&lt;Fact&gt; Facts</text>
@@ -298,7 +298,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="cls-badge tone-teal" x="49" y="764" width="28" height="28" rx="9" />
       <text class="cls-mark" x="63" y="782.5" text-anchor="middle">R</text>
       <text class="pic-name" x="87" y="774" text-anchor="start">Fact</text>
-      <text class="pic-note" x="87" y="790" text-anchor="start">record, step 4</text>
+      <text class="pic-note" x="87" y="790" text-anchor="start">record</text>
       <path class="cls-divide" d="M49 810H266" />
       <text class="cls-member" x="49" y="828" text-anchor="start">FactKind Kind</text>
       <text class="cls-member" x="49" y="842" text-anchor="start">string Argument</text>
@@ -309,7 +309,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <rect class="cls-badge tone-teal" x="52.5" y="954" width="28" height="28" rx="9" />
       <text class="cls-mark" x="66.5" y="972.5" text-anchor="middle">E</text>
       <text class="pic-name" x="90.5" y="964" text-anchor="start">FactKind</text>
-      <text class="pic-note" x="90.5" y="980" text-anchor="start">enum, step 4</text>
+      <text class="pic-note" x="90.5" y="980" text-anchor="start">enum</text>
       <path class="cls-divide" d="M52.5 1000H262.5" />
       <text class="cls-member" x="52.5" y="1018" text-anchor="start">NoError, Used, NotUsed, Under,</text>
       <text class="cls-member" x="52.5" y="1032" text-anchor="start">NeverSays, RoutedTo, Continued</text>
@@ -356,6 +356,6 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <tspan class="note-rest">its one argument. The reader makes them from the file's text, and the schema is</tspan>
   </text>
   <text class="notes" x="38" y="1278">
-    <tspan class="note-rest">made from the same records. The number is the step that builds each.</tspan>
+    <tspan class="note-rest">made from the same records.</tspan>
   </text>
 </svg>

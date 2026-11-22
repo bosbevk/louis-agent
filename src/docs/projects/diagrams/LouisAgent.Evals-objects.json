@@ -1,0 +1,122 @@
+{
+  "kind": "flow",
+  "type": "object",
+  "title": "LouisAgent.Evals: objects in memory",
+  "caption": "One turn of the guide's first conversation, graded. The file's records say what must hold, the transcript says what happened, and each fact and each criterion ends as one mark.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "file",
+        "icon": "file",
+        "tone": "teal",
+        "label": "EvalFile\nagent louis-agent-guide"
+      },
+      {
+        "id": "conv",
+        "icon": "message",
+        "tone": "teal",
+        "label": "Conversation\nguide-what-is · page /"
+      },
+      {
+        "id": "turn",
+        "icon": "message",
+        "tone": "teal",
+        "label": "Turn\n\"What is louis-agent, in one minute?\""
+      },
+      {
+        "id": "fact",
+        "icon": "search",
+        "tone": "teal",
+        "label": "Fact\nUsed · ReadDoc"
+      },
+      {
+        "id": "crit",
+        "icon": "scales",
+        "tone": "teal",
+        "label": "A criterion\n\"Names the doc it read\"",
+        "shape": "data"
+      },
+      {
+        "id": "tt",
+        "icon": "book",
+        "tone": "blue",
+        "label": "TurnTranscript\nthe answer · 12 s · no error"
+      },
+      {
+        "id": "c1",
+        "icon": "settings",
+        "tone": "blue",
+        "label": "ToolCallTranscript\nSearchDocs"
+      },
+      {
+        "id": "c2",
+        "icon": "settings",
+        "tone": "blue",
+        "label": "ToolCallTranscript\nReadDoc"
+      },
+      {
+        "id": "m1",
+        "icon": "checks",
+        "tone": "green",
+        "label": "Mark\nused ReadDoc · met"
+      },
+      {
+        "id": "m2",
+        "icon": "checks",
+        "tone": "green",
+        "label": "Mark\nNames the doc it read · met"
+      },
+      {
+        "id": "judge",
+        "icon": "scales",
+        "tone": "violet",
+        "label": "Judge\nholds the model client"
+      }
+    ],
+    "edges": [
+      {
+        "from": "file",
+        "to": "conv"
+      },
+      {
+        "from": "conv",
+        "to": "turn"
+      },
+      {
+        "from": "turn",
+        "to": "fact"
+      },
+      {
+        "from": "turn",
+        "to": "crit"
+      },
+      {
+        "from": "tt",
+        "to": "c1"
+      },
+      {
+        "from": "tt",
+        "to": "c2"
+      },
+      {
+        "from": "fact",
+        "to": "m1",
+        "word": "told in code",
+        "style": "dashed"
+      },
+      {
+        "from": "crit",
+        "to": "judge",
+        "word": "asked",
+        "style": "dashed"
+      },
+      {
+        "from": "judge",
+        "to": "m2",
+        "word": "creates",
+        "style": "dashed"
+      }
+    ],
+    "direction": "down"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "kind": "flow",
+  "type": "activity",
+  "title": "LouisAgent.Evals: a file read, step by step",
+  "caption": "The serializer reads the file strictly, a fact and the agent straight into their types; then the reader walks it in order. The first fault stops the read, with its place.",
+  "flow": {
+    "direction": "down",
+    "nodes": [
+      { "id": "start", "label": "An eval file's text", "icon": "file", "tone": "blue", "shape": "terminal" },
+      { "id": "shape", "label": "The serializer reads it:\nan unknown field refused,\na fact and the agent parsed", "icon": "code", "tone": "violet" },
+      { "id": "shaped", "label": "Its shape\nright?", "icon": "branch", "tone": "green", "shape": "decision" },
+      { "id": "walk", "label": "Walk the conversations:\nan id once, a turn, an ask,\na page with /, a check", "icon": "search", "tone": "violet" },
+      { "id": "meant", "label": "Each one\nright?", "icon": "branch", "tone": "green", "shape": "decision" },
+      { "id": "records", "label": "The records", "icon": "box", "tone": "green", "shape": "terminal" },
+      { "id": "refused", "label": "EvalFileException:\nthe place, then why", "icon": "shield", "tone": "red", "shape": "terminal" }
+    ],
+    "edges": [
+      { "from": "start", "to": "shape" },
+      { "from": "shape", "to": "shaped" },
+      { "from": "shaped", "to": "walk", "word": "yes" },
+      { "from": "shaped", "to": "refused", "word": "no, with its line" },
+      { "from": "walk", "to": "meant" },
+      { "from": "meant", "to": "records", "word": "yes" },
+      { "from": "meant", "to": "refused", "word": "no, the first fault" }
+    ]
+  }
+}

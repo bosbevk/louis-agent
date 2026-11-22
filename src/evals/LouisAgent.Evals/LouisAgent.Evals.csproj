@@ -20,4 +20,9 @@
     <ProjectReference Include="..\..\engine\LouisAgent.Core\LouisAgent.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- This project's design doc, shown under docs/ in the IDE's solution explorer; nothing is built or copied. -->
+    <None Include="..\..\docs\projects\LouisAgent.Evals.md" Link="docs\LouisAgent.Evals.md" />
+  </ItemGroup>
+
 </Project>

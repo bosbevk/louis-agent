@@ -73,7 +73,7 @@ public sealed record FrameworkFamily(
         "Measure an agent. They are being rebuilt from scratch, starting with the eval file and how a turn is graded.",
         DiagramIcon.Checks, DiagramTone.Green,
         [
-            new("LouisAgent.Evals", "The eval file and its grading, being built.")
+            new("LouisAgent.Evals", "The eval file and how a turn is graded.")
         ]);
 
     /// <summary>The tools, which draw the docs' pictures and read a provider's usage.</summary>

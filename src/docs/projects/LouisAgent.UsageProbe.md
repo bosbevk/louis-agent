@@ -146,4 +146,4 @@ with it yet.
 [LouisAgent.Core](LouisAgent.Core.md)
 
 ---
-[Projects](README.md) · Previous: [LouisAgent.Orchestrator](../../../demos/louis-agent/docs/projects/LouisAgent.Orchestrator.md) · Next: [Test projects](tests.md)
+[Projects](README.md) · Previous: [LouisAgent.Orchestrator](../../../demos/louis-agent/docs/projects/LouisAgent.Orchestrator.md) · Next: [LouisAgent.Evals](LouisAgent.Evals.md)
