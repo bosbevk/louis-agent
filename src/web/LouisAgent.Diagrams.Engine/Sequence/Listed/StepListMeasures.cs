@@ -26,7 +26,10 @@ public sealed record StepListMeasures
     /// <summary>The room a step's bar takes at its left, before its names and words start.</summary>
     public double Rail { get; init; } = 14;
 
-    /// <summary>How far a block's steps stand inside its frame, at its left and at its right.</summary>
+    /// <summary>
+    /// How far a block's steps stand inside its frame, at its left, at its right and above its foot, and above an
+    /// other case's divider.
+    /// </summary>
     public double Inset { get; init; } = 10;
 
     /// <summary>The room between one step's foot and the next one's top.</summary>
@@ -64,9 +67,6 @@ public sealed record StepListMeasures
 
     /// <summary>A line of a note's words.</summary>
     public double NoteLine { get; init; } = 16;
-
-    /// <summary>The room under a block's last step, inside its frame.</summary>
-    public double BlockEnd { get; init; } = 4;
 
     /// <summary>The face a participant's name is measured in, a little bolder than the words.</summary>
     public Face NameFace { get; init; } = new(7);

@@ -65,12 +65,12 @@ internal sealed class StepListRows(
         foreach (var @case in block.Else ?? [])
         {
             var caseLines = measures.CaseLines(@case.Label, room);
-            double divider = foot + measures.BlockEnd;
+            double divider = foot + measures.Inset;
             cases.Add(new PlacedCase(@case.Label, caseLines, divider));
             foot = Walk(@case.Steps, inLeft, divider + measures.Frames.TabHeight(caseLines), inRoom, depth + 1);
         }
 
-        double bottom = foot + measures.BlockEnd;
+        double bottom = foot + measures.Inset;
         Blocks.Add(new PlacedBlock(block, lines, cases, depth, geometry.Box(left, top, room, bottom - top)));
         return bottom;
     }

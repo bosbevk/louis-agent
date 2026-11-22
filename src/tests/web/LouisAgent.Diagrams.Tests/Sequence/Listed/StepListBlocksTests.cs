@@ -118,16 +118,21 @@ public class StepListBlocksTests
         });
     }
 
-    /// <summary>What follows a block starts under its frame, by the gap.</summary>
+    /// <summary>
+    /// What follows a block starts under its frame, by the gap, and a frame's last step ends a level in from its
+    /// foot, as from its sides, so the feet of frames inside frames never bunch together.
+    /// </summary>
     [Test]
-    public void WhatFollows_StartsUnderTheFrame()
+    public void WhatFollows_StartsUnderTheFrame_AndAFrameEndsALevelIn()
     {
         var answer = Placed.Steps[^1];
+        var note = Placed.Steps[3];
 
         Assert.Multiple(() =>
         {
             Assert.That(answer.Box.Top, Is.EqualTo(Loop.Box.Bottom + Measures.StepGap).Within(0.01));
-            Assert.That(Alt.Box.Bottom, Is.LessThanOrEqualTo(Loop.Box.Bottom - Measures.BlockEnd));
+            Assert.That(Alt.Box.Bottom, Is.EqualTo(note.Box.Bottom + Measures.Inset).Within(0.01));
+            Assert.That(Loop.Box.Bottom, Is.EqualTo(Alt.Box.Bottom + Measures.Inset).Within(0.01));
             Assert.That(Placed.Height, Is.EqualTo(answer.Box.Bottom).Within(0.01));
         });
     }
