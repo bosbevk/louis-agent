@@ -27,9 +27,9 @@ namespace LouisAgent.Core.Delegation.Agents;
 /// <remarks>
 /// Every check is in code, before anything is sent: the address is read once (<see cref="AgentAddress"/>), the asker
 /// must name it in its <c>Calls</c> (<see cref="AgentCalls"/>), and it must reach an agent here
-/// (<see cref="AgentAddresses"/>). The child opens one level down, on the same path as a specialist
+/// (<see cref="AgentAddresses"/>). The child opens one level down, on the same path as a subagent
 /// (<see cref="PeerSession"/>): the key from AGENT_API_KEY, the limit of three a turn, the timeout, the roll-up and the
-/// live events. A minion's address takes one of the asker's tools and goes to <see cref="LookupAsk"/>, on its own
+/// live events. A lookup agent's address takes one of the asker's tools and goes to <see cref="LookupAsk"/>, on its own
 /// limits (F127.5: one tool for every call an agent makes).
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0117-one-address-for-every-agent-call.md">ADR 0117: one address for every agent call</seealso>
@@ -43,8 +43,8 @@ public sealed class AskAgentTools(
     TimeProvider? time = null,
     IUsageSink? usageSink = null,
     IReadOnlyDictionary<string, string>? peerKeys = null,
-    IReadOnlyDictionary<string, IReadOnlyList<string>>? minionLlms = null,
-    TimeSpan? minionTimeout = null,
+    IReadOnlyDictionary<string, IReadOnlyList<string>>? lookupLlms = null,
+    TimeSpan? lookupTimeout = null,
     int maxDepth = AgentOptions.DefaultAgentMaxDepth)
 {
     /// <summary>Asks one turn may make; outside a turn (an MCP call), the most a minute may.</summary>
@@ -58,9 +58,12 @@ public sealed class AskAgentTools(
 
     private readonly PeerSession _session = SessionOf(http, apiKey, usageSink, time, peers, peerKeys);
 
-    /// <summary>A minion's address goes here (F127.5), on a path built the same way, with the minion models.</summary>
-    private readonly LookupAsk _minions = new(SessionOf(http, apiKey, usageSink, time, peers, peerKeys),
-        minionLlms ?? new Dictionary<string, IReadOnlyList<string>>(), minionTimeout);
+    /// <summary>
+    /// A lookup agent's address goes here (F127.5), on a path built the same way, with this instance's models for
+    /// lookup agents.
+    /// </summary>
+    private readonly LookupAsk _lookups = new(SessionOf(http, apiKey, usageSink, time, peers, peerKeys),
+        lookupLlms ?? new Dictionary<string, IReadOnlyList<string>>(), lookupTimeout);
 
     /// <summary>The name this instance goes by among its peers, when the host names more than one (F127.3.1).</summary>
     public const string Self = "self";
@@ -76,7 +79,7 @@ public sealed class AskAgentTools(
     /// </summary>
     public AskAgentTools(AgentOptions options, IReadOnlyList<IAgentIdentity> identities, IUsageSink? usageSink = null)
         : this(options.AgentPeers, identities, options.AgentApiKey, usageSink: usageSink,
-            peerKeys: options.AgentPeerKeys, minionLlms: options.LookupLlms, maxDepth: options.AgentMaxDepth)
+            peerKeys: options.AgentPeerKeys, lookupLlms: options.LookupLlms, maxDepth: options.AgentMaxDepth)
     {
     }
 
@@ -89,11 +92,11 @@ public sealed class AskAgentTools(
     /// <summary>Asks the agent at an address and gives back its answer.</summary>
     [Description(
         "Asks another agent by its address and waits for its answer: an agent in its own voice (\"acme\") or one " +
-        "of its roles (\"acme.cook\"), on another server after its name (\"partner:acme\"), only one the agents " +
+        "of its subagents (\"acme.cook\"), on another server after its name (\"partner:acme\"), only one the agents " +
         "guide lists. It sees your message and the files you " +
         "name, never this conversation; asked again in this chat, it carries on the conversation you have with it. " +
-        "At most 3 asks per turn, 5 minutes each. A minion's address (\"acme.lookup\") also takes one of your own " +
-        "tools, and answers once: at most 16 a user turn, 2 minutes each.")]
+        "At most 3 asks per turn, 5 minutes each. A lookup agent's address (\"acme.lookup\") also takes one of your " +
+        "own tools, and answers once: at most 16 a user turn, 2 minutes each.")]
     public async Task<string> AskAgent(
         [Description("Who answers: the agent's address, as the agents guide lists it.")]
         string address,
@@ -104,12 +107,12 @@ public sealed class AskAgentTools(
         [Description("Names of files the user attached in this conversation that the agent needs.")]
         string[]? attachments = null,
         [Description(
-            "Only for a minion's address: the one tool of yours it uses, e.g. \"FetchUrl\" (never a delegation or " +
-            "skills tool), as your role file says.")]
+            "Only for a lookup agent's address: the one tool of yours it uses, e.g. \"FetchUrl\" (never a delegation " +
+            "or skills tool), as your voice says.")]
         string? tool = null,
         [Description(
-            "Only for a minion's address: true to run the same task on the next, stronger model in its list, when " +
-            "the first answer failed your check. Once per task; false the first time.")]
+            "Only for a lookup agent's address: true to run the same task on the next, stronger model in its list, " +
+            "when the first answer failed your check. Once per task; false the first time.")]
         bool stronger = false,
         CancellationToken cancellationToken = default)
     {
@@ -123,9 +126,9 @@ public sealed class AskAgentTools(
         if (agent.Address.Peer is not null &&
             await _identities.RefusalAsync(name, peer, agent.Address.Identity, cancellationToken) is { } notThere)
             return notThere;
-        // A minion answers once, on its own limits: it never takes one of the turn's three asks, nor is it kept.
+        // A lookup agent answers once, on its own limits: it never takes one of the turn's three asks, nor is it kept.
         if (agent.Kind == AddressKind.Lookup)
-            return await _minions.AskAsync(agent, tool, new SendMessageRequest(message, forwarded), stronger, peer,
+            return await _lookups.AskAsync(agent, tool, new SendMessageRequest(message, forwarded), stronger, peer,
                 name, cancellationToken);
 
         // A voice whose window is on the visitor's screen gets the page it sits in, as its window would send (FX134).
@@ -181,12 +184,13 @@ public sealed class AskAgentTools(
     }
 
     /// <summary>
-    /// The agent an address reaches for this asker, a minion when the address names one here (F127.5), or the reason
-    /// the model reads instead.
+    /// The agent an address reaches for this asker, a lookup agent when the address names one here (F127.5), or the
+    /// reason the model reads instead.
     /// </summary>
     /// <remarks>
     /// Guard clauses (Fowler), one per check, in the order the model can fix them. A tool says the ask is for a
-    /// minion, so a tool with a server is refused before the server is named in <c>Calls</c>: a minion runs here.
+    /// lookup agent, so a tool with a server is refused before the server is named in <c>Calls</c>: a lookup agent
+    /// runs here.
     /// </remarks>
     private AddressedAgent? Reach(string address, string? tool, out string? refusal)
     {

@@ -30,8 +30,8 @@ public class LookupRolesTests
             .Documentation;
 
         int principles = docs.IndexOf("# Principles", StringComparison.Ordinal);
-        int @base = docs.IndexOf("You are a **minion**", StringComparison.Ordinal);
-        int role = docs.IndexOf("# Testprod minion: Lookup", StringComparison.Ordinal);
+        int @base = docs.IndexOf("You are a **lookup agent**", StringComparison.Ordinal);
+        int role = docs.IndexOf("# Testprod lookup agent: Lookup", StringComparison.Ordinal);
         Assert.That(principles, Is.GreaterThanOrEqualTo(0), "the principles open every prompt (ADR 0020)");
         Assert.That(@base, Is.GreaterThan(principles), "the base after the principles");
         Assert.That(role, Is.GreaterThan(@base), "the role after the base");

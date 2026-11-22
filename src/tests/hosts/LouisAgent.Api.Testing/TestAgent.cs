@@ -49,16 +49,16 @@ public static class TestAgent
     /// What every lookup agent of the test agent is, loaded before its own prompt: the engine finds it from the
     /// lookup agent's identity.
     /// </summary>
-    public const string MinionBase = Name + "-minion";
+    public const string LookupBase = Name + "-minion";
 
     /// <summary>The heading of a lookup agent's own prompt, so a test can tell it loaded.</summary>
-    public const string MinionHeading = "# Test agent minion: lookup";
+    public const string LookupHeading = "# Test agent lookup agent: lookup";
 
     /// <summary>A lookup agent its subagent hands one small task and one tool, named by its address.</summary>
-    public const string Minion = Name + ".lookup";
+    public const string Lookup = Name + ".lookup";
 
     /// <summary>A second lookup agent, for a test that names two.</summary>
-    public const string OtherMinion = Name + ".find";
+    public const string OtherLookup = Name + ".find";
 
     /// <summary>
     /// The packs it names: fakes under the web's and the calculator's real names, since the framework's tests reference
@@ -79,12 +79,12 @@ public static class TestAgent
                 "# Test agent specialist", "The test agent's specialist.", "web, calculator"),
             [RoleCatalog.FileName(Reader, RoleLevel.Subagent)] = Prompt("voice", "subagent", "# Test agent reader",
                 "Works with the toolsets it is handed."),
-            [RoleCatalog.LookupBaseOf(Minion)!] =
-                Prompt("lookup", "lookup", "# Test agent minion", "One task, one tool, one answer."),
-            [RoleCatalog.FileName(Minion, RoleLevel.Lookup)] =
-                Prompt("voice", "lookup", MinionHeading, "Looks one thing up."),
-            [RoleCatalog.FileName(OtherMinion, RoleLevel.Lookup)] =
-                Prompt("voice", "lookup", "# Test agent minion: find", "Finds one thing.")
+            [RoleCatalog.LookupBaseOf(Lookup)!] =
+                Prompt("lookup", "lookup", "# Test agent lookup agent", "One task, one tool, one answer."),
+            [RoleCatalog.FileName(Lookup, RoleLevel.Lookup)] =
+                Prompt("voice", "lookup", LookupHeading, "Looks one thing up."),
+            [RoleCatalog.FileName(OtherLookup, RoleLevel.Lookup)] =
+                Prompt("voice", "lookup", "# Test agent lookup agent: find", "Finds one thing.")
         },
         voice: Voice,
         calls: [Specialist],

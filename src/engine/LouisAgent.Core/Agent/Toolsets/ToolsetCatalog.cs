@@ -22,9 +22,10 @@ public static class ToolsetCatalog
     public static IReadOnlyList<ToolsetDefinition> All { get; } =
     [
         // F127.3.1: ask another agent by its address, and read back what it did; the asker's Calls and the identities
-        // this instance runs decide who may be asked. F127.5: a minion too, with one of the asker's tools.
+        // this instance runs decide who may be asked. F127.5: a lookup agent too, with one of the asker's tools.
         new(CoreToolset.Agents.Wire(),
-            "Ask another agent by its address: an identity in its own voice, one of its roles, or one of its minions",
+            "Ask another agent by its address: an identity in its own voice, one of its subagents, or one of its " +
+            "lookup agents",
             GuideFile: SkillFiles.Guide(CoreToolset.Agents.Wire()),
             MissingSettings: ctx => ctx.Options.AgentPeers.Count == 0 ? ["AGENT_PEERS"] : [],
             ToolTypes: [typeof(AskAgentTools), typeof(AgentWorkTools)],

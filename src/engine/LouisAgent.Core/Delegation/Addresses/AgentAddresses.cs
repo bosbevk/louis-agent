@@ -10,8 +10,8 @@ namespace LouisAgent.Core.Delegation.Addresses;
 
 /// <summary>
 /// Finds who an address reaches on this instance: the identity's voice, or one of its subagents, named by the address
-/// itself (<c>acme.cook</c>, ADR 0133), or for the minion tool a minion's file
-/// (<c>minions/{identity}-minion-{role}.md</c>, F127.5), or says why it reaches no one.
+/// itself (<c>acme.cook</c>, ADR 0133), or, when a tool is handed, one of its lookup agents, by its address too
+/// (<c>acme.lookup</c>, F127.5, CL68.3), or says why it reaches no one.
 /// </summary>
 /// <remarks>
 /// It takes the identities this instance runs, not the catalogue: delegation sits below the agent in core's layers
@@ -54,12 +54,14 @@ public static class AgentAddresses
         : new AddressedAgent(address, AddressKind.Subagent, $"{address.Identity}.{address.Role}");
 
     /// <summary>
-    /// The minion an address reaches (F127.5): <c>acme.lookup</c> is the file <c>minions/acme-minion-lookup.md</c>, its
-    /// function after the identity's name; or the reason, naming the identity's minions by their addresses.
+    /// The lookup agent an address reaches (F127.5): <c>acme.lookup</c>, its function after the identity's name,
+    /// at <c>agents/acme/lookups/lookup/voice.md</c>; or the reason, naming the identity's lookup agents by their
+    /// addresses.
     /// </summary>
     /// <remarks>
-    /// The minion tool says the address is a minion's, so the same words never reach a specialist and a minion both
-    /// (Claude's pick Q1, of three: the file's name as the role, which leaks its prefix; a grammar of its own).
+    /// A handed tool says the address is a lookup agent's, so the same words never reach a subagent and a lookup
+    /// agent both (Claude's pick Q1, of three: the file's name as the role, which leaks its prefix; a grammar of its
+    /// own).
     /// </remarks>
     public static AddressedAgent? ResolveLookup(AgentAddress address, IReadOnlyList<IAgentIdentity> identities,
         out string? why)
@@ -70,8 +72,8 @@ public static class AgentAddresses
             return Refuse(SubSessionToolMessage.AddressUnknownIdentity, UnknownIdentity(address, identities), out why);
         if (IsLookup(address))
             return Found(new AddressedAgent(address, AddressKind.Lookup, LookupName(address)), out why);
-        var unknownMinion = new AddressUnknownLookupHoles(address.Identity, address.Role ?? "", LookupsOf(identity));
-        return Refuse(SubSessionToolMessage.AddressUnknownLookup, unknownMinion, out why);
+        var unknownLookup = new AddressUnknownLookupHoles(address.Identity, address.Role ?? "", LookupsOf(identity));
+        return Refuse(SubSessionToolMessage.AddressUnknownLookup, unknownLookup, out why);
     }
 
     /// <summary>The identity an address named that isn't here, with the ones that are, in order.</summary>
@@ -90,7 +92,7 @@ public static class AgentAddresses
     public static string ChainKeyOf(AddressedAgent agent) =>
         agent.Kind == AddressKind.Identity ? agent.Address.Identity : agent.Role ?? agent.Address.Identity;
 
-    /// <summary>Whether the address names one of this instance's minions.</summary>
+    /// <summary>Whether the address names one of this instance's lookup agents.</summary>
     public static bool IsLookup(AgentAddress address) =>
         address is { Role: not null, Peer: null } &&
         RoleCatalog.Available(RoleLevel.Lookup).Contains(LookupName(address));
@@ -98,7 +100,9 @@ public static class AgentAddresses
     /// <summary>A lookup agent's name: its address, its identity then its function (CL68.3, ADR 0133).</summary>
     private static string LookupName(AgentAddress address) => $"{address.Identity}.{address.Role}";
 
-    /// <summary>One of this instance's subagents, by its address; a minion's is no role to ask (F127.5).</summary>
+    /// <summary>
+    /// One of this instance's subagents, by its address; a lookup agent's is no role to ask (F127.5).
+    /// </summary>
     private static AddressKind? KindOf(string subagent) =>
         RoleCatalog.Available(RoleLevel.Subagent).Contains(subagent) ? AddressKind.Subagent : null;
 
@@ -106,7 +110,7 @@ public static class AgentAddresses
     private static string RolesOf(IAgentIdentity identity) =>
         Addresses(RoleLevel.Subagent, $"{identity.Name}.", identity.Name);
 
-    /// <summary>The identity's minions as the model writes them, <c>acme.lookup</c>, or "(none)".</summary>
+    /// <summary>The identity's lookup agents as the model writes them, <c>acme.lookup</c>, or "(none)".</summary>
     private static string LookupsOf(IAgentIdentity identity) =>
         Addresses(RoleLevel.Lookup, $"{identity.Name}.", identity.Name);
 

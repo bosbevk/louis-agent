@@ -94,7 +94,7 @@ public class LookupAskTests
         IReadOnlyDictionary<string, IReadOnlyList<string>>? llms = null, TimeSpan? timeout = null,
         IUsageSink? sink = null) =>
         new(new AskAgentTools(Self, [Testprod], "the-key", new HttpClient(handler), usageSink: sink,
-            minionLlms: llms ?? Cascade, minionTimeout: timeout));
+            lookupLlms: llms ?? Cascade, lookupTimeout: timeout));
 
     /// <summary>A minion asked through <c>AskAgent</c>, its arguments in the order these tests write them.</summary>
     private sealed class Minions(AskAgentTools tools)
@@ -252,7 +252,7 @@ public class LookupAskTests
     {
         var creates = new List<JsonDocument>();
         var tools = new AskAgentTools(Self, [Testprod], "the-key", new HttpClient(Peer(creates)),
-            minionLlms: Cascade);
+            lookupLlms: Cascade);
 
         using (CooksTurn())
             Assert.That(await tools.AskAgent(Address, "a page"),

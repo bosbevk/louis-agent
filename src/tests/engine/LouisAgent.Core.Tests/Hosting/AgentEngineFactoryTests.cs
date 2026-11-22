@@ -408,8 +408,8 @@ public class AgentEngineFactoryTests
 
         Assert.That(ListToolNames(minion), Is.EqualTo(new[] { "FetchUrl" }),
             "one tool: no clock, no ExecuteSkill, no WebSearch");
-        Assert.That(minion.SkillDocumentation, Does.Contain("# Testprod minion: Lookup").And
-            .Contain("You are a **minion**")
+        Assert.That(minion.SkillDocumentation, Does.Contain("# Testprod lookup agent: Lookup").And
+            .Contain("You are a **lookup agent**")
             .And.Not.Contain("# Web Skills").And.Not.Contain("# Testprod - Routing"));
         Assert.That(factory.Profiles, Is.EqualTo(new[] { "web|testprod.lookup|lookup|tool:FetchUrl" }));
         Assert.That(
