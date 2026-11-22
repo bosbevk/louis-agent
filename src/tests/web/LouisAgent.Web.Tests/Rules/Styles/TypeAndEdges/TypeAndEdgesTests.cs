@@ -135,6 +135,25 @@ public class TypeAndEdgesTests
     }
 
     /// <summary>
+    /// F169.5: on a phone a docs page's words stand 24 from the screen's edge, the grid's 12 and the page's 12, since
+    /// the layout sets the site's gutter to none, which a section and the page turn both read; a section has 48 of
+    /// room above it and 32 below.
+    /// </summary>
+    [Test]
+    public void OnAPhone_TheWordsStand24FromTheEdge()
+    {
+        var phone = RuleOpenedBy(DocsLayout, "@media (max-width: 720px) {").ToList();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(phone, Does.Contain("    .site-docs { --site-gutter: 0px; }"));
+            Assert.That(phone, Does.Contain("    .site-docs ::deep .site-main { padding-inline: 12px; }"));
+            Assert.That(phone,
+                Does.Contain("    .site-docs ::deep .site-main .band { padding-top: 48px; padding-bottom: 32px; }"));
+        });
+    }
+
+    /// <summary>
     /// The lines of the rule a sheet opens with that exact line, up to the brace at the same indent that closes it.
     /// </summary>
     private static IEnumerable<string> RuleOpenedBy(string sheet, string opening)

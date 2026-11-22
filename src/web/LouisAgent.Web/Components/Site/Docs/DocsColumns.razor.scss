@@ -53,6 +53,16 @@
 
 .site-docs ::deep .site-main .band { max-width: none; padding-top: 56px; }
 
+/* On a phone the words stand 24 from the screen's edge (F169.5, the design review's pick 2): the grid's 12 and the
+   page's 12. A section's own sides read the site's gutter, as the page turn's do, so the layout sets it to none and
+   both follow; a section has a little less room above and below. At the frame's phone width, where its header turns
+   into a sheet. */
+@media (max-width: 720px) {
+    .site-docs { --site-gutter: 0px; }
+    .site-docs ::deep .site-main { padding-inline: 12px; }
+    .site-docs ::deep .site-main .band { padding-top: 48px; padding-bottom: 32px; }
+}
+
 /* A docs page's headings by their rank (F169.2, Louis's pick A of the design review's finding 1): the page's top, a
    section and a part, so a reader tells them apart. Each has its phone size as a floor ("A: 40, 32, 24") and its
    desktop size as a ceiling, and grows with the width between. Here and not in the base rule, so a page of slides
