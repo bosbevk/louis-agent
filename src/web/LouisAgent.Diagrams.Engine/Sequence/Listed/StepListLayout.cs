@@ -17,7 +17,7 @@ namespace LouisAgent.Diagrams.Engine.Sequence.Listed;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0118-a-diagram-is-data-our-renderer-draws.md">ADR 0118: a diagram is data our renderer draws</seealso>
 public static class StepListLayout
 {
-    /// <summary>Where every step and frame stands, laid out to the width it is handed, by the measures handed.</summary>
+    /// <summary>Where every step and frame stands, laid out to the width and by the measures it is handed.</summary>
     public static PlacedStepList Place(SequenceSpec spec, double width, StepListMeasures measures,
         IGeometry? geometry = null)
     {
