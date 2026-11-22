@@ -2,6 +2,8 @@ using System.Collections.Concurrent;
 using System.Text;
 using LouisAgent.Composition.Logging;
 using LouisAgent.Api.Messages;
+using LouisAgent.Api.Messages.Holes.Pages;
+using LouisAgent.Api.Site.Cards;
 using LouisAgent.Api.Site.Rendering;
 using LouisAgent.Core.Logging;
 using Microsoft.AspNetCore.Hosting;
@@ -13,15 +15,16 @@ namespace LouisAgent.Api.Site;
 
 /// <summary>
 /// Answers a site's page address with its HTML (F121): the page rendered once and kept until the process restarts (a
-/// deploy), put into the site's index.html at the address asked for. A page that declares no description, or that
-/// fails to render, answers the plain shell as before; an address that names no page answers the shell with a 404.
-/// A site that knows its address sends a page asked for on any other host there for good (FX216), so Google sees one
-/// copy of each page, never a second one on www.
+/// deploy), put into the site's index.html at the address asked for, with the page's own share card when its web root
+/// holds one (F169.6). A page that declares no description, or that fails to render, answers the plain shell as
+/// before; an address that names no page answers the shell with a 404. A site that knows its address sends a page
+/// asked for on any other host there for good (FX216), so Google sees one copy of each page, never a second one on
+/// www.
 /// </summary>
 /// <remarks>
 /// One handler class for the endpoint's work (ADR 0051), holding what every request shares: the routes, the renderer,
-/// the rendered pages and the shell. A page is rendered once per process, whatever address under it is asked for, so
-/// a crawler walking every section of a page costs one render.
+/// the rendered pages, the pages' cards and the shell. A page is rendered once per process, whatever address under it
+/// is asked for, so a crawler walking every section of a page costs one render.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0051-flat-conditionals-and-named-endpoints.md">ADR 0051: flat conditionals and named endpoints</seealso>
 internal sealed class SitePageHandler(
@@ -34,6 +37,7 @@ internal sealed class SitePageHandler(
 
     private readonly ConcurrentDictionary<Type, Task<RenderedPage?>> _rendered = new();
     private readonly Lazy<string> _index = new(() => ReadIndex(environment));
+    private readonly PageCards _cards = new(environment.WebRootFileProvider);
 
     /// <summary>
     /// The page's HTML at its address, the plain shell, the shell with a 404, or, on a host that isn't the site's, a
@@ -54,7 +58,10 @@ internal sealed class SitePageHandler(
         var rendered = await _rendered.GetOrAdd(page, _ => RenderAsync(page, new Uri(site, route)));
         if (rendered is null || rendered.Description.Length == 0) return Html(_index.Value, StatusCodes.Status200OK);
 
-        return Html(PageShell.Fill(_index.Value, rendered, site, route, null), StatusCodes.Status200OK);
+        // The card is looked for by the page's own route, never the address asked for, so a section's address gets its
+        // page's card and nothing a visitor types reaches the file system.
+        var card = _cards.For(route);
+        return Html(PageShell.Fill(_index.Value, rendered, site, route, card), StatusCodes.Status200OK);
     }
 
     /// <summary>Whether the site knows its address and this request came to another host, such as www.</summary>
@@ -71,14 +78,11 @@ internal sealed class SitePageHandler(
     private async Task<RenderedPage?> RenderAsync(Type page, Uri at)
     {
         var rendered = await prerenderer.RenderAsync(page, at);
-        if (rendered is null)
-            Log.Log(LogLevel.Warning, ApiLogMessage.PagePrerenderFailed,
-                new
-                {
-                    Page = page.Name,
-                    Route = at.AbsolutePath
-                });
-        return rendered;
+        if (rendered is not null) return rendered;
+
+        var failed = new PagePrerenderFailedHoles(page.Name, at.AbsolutePath);
+        Log.Log(LogLevel.Warning, ApiLogMessage.PagePrerenderFailed, failed);
+        return null;
     }
 
     /// <summary>The site's index.html from its web root, read once.</summary>

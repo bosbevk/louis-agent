@@ -20,7 +20,9 @@ public class SitePagesTests
 {
     private const string Index =
         "<!DOCTYPE html><html><head><title>Site</title><meta name=\"description\" content=\"The site.\" />" +
-        "<meta property=\"og:url\" content=\"https://site.test/\" /></head>" +
+        "<meta property=\"og:url\" content=\"https://site.test/\" />" +
+        "<meta property=\"og:image\" content=\"https://site.test/social-card.png\" />" +
+        "<meta property=\"og:image:alt\" content=\"The site's own card.\" /></head>" +
         "<body><div id=\"app\"><div>Loading</div></div>" +
         "<script src=\"_framework/blazor.webassembly.js\"></script></body></html>";
 
@@ -38,6 +40,20 @@ public class SitePagesTests
                 b.AddMarkupContent(0, "<meta name=\"description\" content=\"A sample page of the site.\" />")));
             builder.CloseComponent();
             builder.AddMarkupContent(4, "<section id=\"top\"><h2>Sample words</h2></section>");
+        }
+    }
+
+    /// <summary>A second page meant for search, with no card of its own.</summary>
+    [Route("/second")]
+    public sealed class SecondPage : ComponentBase
+    {
+        protected override void BuildRenderTree(RenderTreeBuilder builder)
+        {
+            builder.OpenComponent<HeadContent>(0);
+            builder.AddComponentParameter(1, "ChildContent", (RenderFragment)(b =>
+                b.AddMarkupContent(0, "<meta name=\"description\" content=\"A second page of the site.\" />")));
+            builder.CloseComponent();
+            builder.AddMarkupContent(2, "<h2>Second words</h2>");
         }
     }
 
@@ -167,6 +183,33 @@ public class SitePagesTests
             Assert.That(section, Does.Contain("<h2>Sample words</h2>")
                 .And.Contain("<link rel=\"canonical\" href=\"https://site.test/sample\" />"));
             Assert.That(slashed, Does.Contain("<link rel=\"canonical\" href=\"https://site.test/sample\" />"));
+        });
+        Directory.Delete(root, recursive: true);
+    }
+
+    /// <summary>
+    /// A page whose card is in the web root (F169.6) names it in its head, and so does a section's address under it,
+    /// since the card is looked for by the page's route; a page with none wears the site's own picture.
+    /// </summary>
+    [Test]
+    public async Task APagesCard_IsInItsHead_AndInItsSections()
+    {
+        var (app, client, root) = await StartAsync();
+        await using var _ = app;
+        Directory.CreateDirectory(Path.Combine(root, "social-cards"));
+        await File.WriteAllTextAsync(Path.Combine(root, "social-cards", "sample.png"), "png");
+        await File.WriteAllTextAsync(Path.Combine(root, "social-cards", "sample.txt"), "site: Sample. Sample words.");
+
+        string page = await client.GetStringAsync("/sample");
+        string section = await client.GetStringAsync("/sample/top");
+        string other = await client.GetStringAsync("/second");
+
+        const string Card = "<meta property=\"og:image\" content=\"https://site.test/social-cards/sample.png\"";
+        Assert.Multiple(() =>
+        {
+            Assert.That(page, Does.Contain(Card).And.Contain("content=\"site: Sample. Sample words.\""));
+            Assert.That(section, Does.Contain(Card));
+            Assert.That(other, Does.Not.Contain("social-cards/"), "a page with no card wears the site's own");
         });
         Directory.Delete(root, recursive: true);
     }
