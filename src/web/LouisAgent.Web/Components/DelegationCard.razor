@@ -1,6 +1,6 @@
-@* A delegated task (F5): the specialist, the toolsets it loaded, the task it was sent, its work as it happens (thinking,
+@* A delegated task (F5): the subagent, the toolsets it loaded, the task it was sent, its work as it happens (thinking,
    tool calls and the notes between them, folded from the sub-session's own stream), its answer and what it cost. Open
-   while the specialist works; rolled up to one line when it's done (the chat's own reply carries the result), and
+   while the subagent works; rolled up to one line when it's done (the chat's own reply carries the result), and
    opened again with a click. *@
 
 @inject ChatText Text
@@ -40,7 +40,7 @@
 
         @if (Block.SubTurn is { } sub)
         {
-            var (work, answer) = SpecialistAnswer.Split(sub);
+            var (work, answer) = SubagentAnswer.Split(sub);
             @if (work.Count > 0)
             {
                 <details class="delegation-work" open="@Running">

@@ -109,7 +109,7 @@ public class StreamGoldenTests
                     [new TextContent("The note says: melktert on Sunday."), Usage(150, 12)]))),
             "Read the recipe note.", toolsets: [new NoteTools()]));
 
-        // A sub-session's event, as the specialist's stream reached the chat while its call ran.
+        // A sub-session's event, as the subagent's stream reached the chat while its call ran.
         events.Add(StreamFormats.Create(StreamFormat.Claude, "sess_golden", [TestToolset.Web.Wire()], null).SubSession(
             new SubSessionEvent("call_sub", "puls", "message_start",
                 """{"type":"message_start","message":{"session_id":"sess_peer","role":"assistant","toolsets":["web"]}}""")));

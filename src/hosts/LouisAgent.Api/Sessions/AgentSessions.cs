@@ -16,8 +16,8 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     public static readonly IReadOnlyList<string> DefaultToolsets = [CoreToolset.Skills.Wire()];
 
     /// <summary>
-    /// The toolset that asks another agent (F127.3.1); every session may load it but a minion's, which asks no one
-    /// (F127.5).
+    /// The toolset that asks another agent (F127.3.1); every session may load it but a lookup agent's, which asks no
+    /// one (F127.5).
     /// </summary>
     public static readonly string AgentsToolset = CoreToolset.Agents.Wire();
 

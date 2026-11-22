@@ -206,7 +206,7 @@ public class GraphLayoutTests
     }
 
     /// <summary>
-    /// An arrow from a box to itself loops out of its right side (a specialist may call another specialist).
+    /// An arrow from a box to itself loops out of its right side (a subagent may call another subagent).
     /// </summary>
     [Test]
     public void AnArrowToItself_LoopsOutOfTheRightSide()
@@ -391,10 +391,9 @@ public class GraphLayoutTests
         var drop = placed.Edges.Single(edge => edge.Edge.From == "a");
         Assert.Multiple(() =>
         {
-            Assert.That(Ways.Points(drop.Way), Is.EqualTo(new[]
-            {
-                Ways.At(a.Box.Middle.X, a.Box.Bottom), Ways.At(b.Box.Middle.X, b.Box.Top)
-            }), "one straight line");
+            Assert.That(Ways.Points(drop.Way),
+                Is.EqualTo(new[] { Ways.At(a.Box.Middle.X, a.Box.Bottom), Ways.At(b.Box.Middle.X, b.Box.Top) }),
+                "one straight line");
             Assert.That(drop.Word.X, Is.GreaterThan(a.Box.Middle.X), "the word stands beside the drop");
             Assert.That(drop.Word.Y, Is.GreaterThan(a.Box.Bottom).And.LessThan(b.Box.Top), "in the gap");
         });

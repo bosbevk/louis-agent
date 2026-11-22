@@ -4,7 +4,7 @@
     "AskAgent"
   ],
   "role": "puls.cook",
-  "specialist_tools": [
+  "subagent_tools": [
     "FetchUrl",
     "GetToday",
     "WebSearch",

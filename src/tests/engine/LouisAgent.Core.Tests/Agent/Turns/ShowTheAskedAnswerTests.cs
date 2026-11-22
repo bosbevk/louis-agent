@@ -10,7 +10,7 @@ namespace LouisAgent.Core.Tests.Agent.Turns;
 
 /// <summary>
 /// An identity can have the answer of an agent it asks shown as it is (F127.3.1, Louis's pick A), the way an instance
-/// showed a specialist's report (ADR 0079): whole, the line under it left off, the turn ended there. One that doesn't,
+/// showed a subagent's report (ADR 0079): whole, the line under it left off, the turn ended there. One that doesn't,
 /// such as a guide that speaks for itself, keeps the last word.
 /// </summary>
 public class ShowTheAskedAnswerTests

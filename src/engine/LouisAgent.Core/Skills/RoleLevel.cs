@@ -26,7 +26,7 @@ public enum RoleLevel
 
     /// <summary>
     /// Level 2: a lookup agent a subagent hands one task and one of its tools to (F30, CL68.3, ADR 0021: was the
-    /// minion), on the small model <c>LOOKUP_LLMS</c> names.
+    /// lookup agent), on the small model <c>LOOKUP_LLMS</c> names.
     /// </summary>
     Lookup = 2,
 }

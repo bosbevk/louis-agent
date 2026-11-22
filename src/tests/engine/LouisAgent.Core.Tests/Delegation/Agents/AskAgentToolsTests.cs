@@ -14,14 +14,14 @@ namespace LouisAgent.Core.Tests.Delegation.Agents;
 
 /// <summary>
 /// <c>AskAgent</c> starts a conversation with another agent by its address (F127.3.1 step 7), on the tests' own
-/// prompts: the guide may ask <c>testprod</c> in its voice and its specialist; the peer is a stub, so nothing goes
+/// prompts: the guide may ask <c>testprod</c> in its voice and its subagent; the peer is a stub, so nothing goes
 /// over the network. Every check is in code, before anything is sent.
 /// </summary>
 public class AskAgentToolsTests
 {
-    /// <summary>The asker, its <c>Calls</c> naming a voice, a specialist and a role no folder holds.</summary>
+    /// <summary>The asker, its <c>Calls</c> naming a voice, a subagent and a role no folder holds.</summary>
     private static readonly FakeIdentity Guide =
-        new("guide", voice: "testprod/voice-en", calls: ["testprod", "testprod.specialist", "testprod.cook"]);
+        new("guide", voice: "testprod/voice-en", calls: ["testprod", "testprod.researcher", "testprod.cook"]);
 
     /// <summary>The identities this instance runs.</summary>
     private static readonly IReadOnlyList<IAgentIdentity> Identities =
@@ -68,7 +68,7 @@ public class AskAgentToolsTests
 
     /// <summary>
     /// Each ask opens one level down from the turn that asks (F127.5, Louis's pick: "any address, depth decides"): a
-    /// specialist's ask, at depth 1, opens at depth 2.
+    /// subagent's ask, at depth 1, opens at depth 2.
     /// </summary>
     [Test]
     public async Task AnAsk_OpensOneLevelDownFromTheAsker()
@@ -76,7 +76,7 @@ public class AskAgentToolsTests
         var handler = Peer();
 
         using (TurnDepth.Use(1))
-            await AskAsGuide(Tools(handler), "testprod.specialist");
+            await AskAsGuide(Tools(handler), "testprod.researcher");
 
         Assert.That(Opening(handler).GetProperty("depth").GetInt32(), Is.EqualTo(2));
     }
@@ -95,7 +95,7 @@ public class AskAgentToolsTests
         using (WindowPages.Use([new WindowPageRequest("testprod", page)]))
         {
             await AskAsGuide(Tools(handler), "testprod");
-            await AskAsGuide(Tools(handler), "testprod.specialist");
+            await AskAsGuide(Tools(handler), "testprod.researcher");
         }
 
         var messages = handler.Requests.Where(r => r.Url.EndsWith("/messages", StringComparison.Ordinal))
@@ -105,7 +105,7 @@ public class AskAgentToolsTests
             Assert.That(messages[0].GetProperty("page").GetProperty("url").GetString(),
                 Is.EqualTo("https://testprod.example/"));
             Assert.That(messages[1].TryGetProperty("page", out var none) && none.ValueKind != JsonValueKind.Null,
-                Is.False, "its specialist has no window here");
+                Is.False, "its subagent has no window here");
         });
     }
 
@@ -115,18 +115,18 @@ public class AskAgentToolsTests
     {
         var handler = Peer();
 
-        await AskAsGuide(Tools(handler), "testprod.specialist");
+        await AskAsGuide(Tools(handler), "testprod.researcher");
 
         var opening = Opening(handler);
         Assert.That((opening.GetProperty("identity").GetString(), opening.GetProperty("role").GetString()),
-            Is.EqualTo(("testprod", "testprod.specialist")));
+            Is.EqualTo(("testprod", "testprod.researcher")));
     }
 
     /// <summary>
     /// Text that is no address, an address the asker may not call, and one this instance can't reach are refused
     /// with the reason, and nothing is sent.
     /// </summary>
-    [TestCase("testprod.specialist.extra", "no agent's address")]
+    [TestCase("testprod.researcher.extra", "no agent's address")]
     [TestCase("other", "may not call other")]
     [TestCase("testprod.cook", "has no role 'cook'")]
     public async Task ABadAddress_IsRefused_BeforeAnythingIsSent(string address, string reason)

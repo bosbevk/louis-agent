@@ -32,11 +32,11 @@ public class DelegationTests
     }
 
     /// <summary>
-    /// An ask that hands a tool is a minion's (F127.5: AskAgent asks minions too): its card reads the address, the
-    /// tool and the task from the call, and the model it ran on from the footer.
+    /// An ask that hands a tool is a lookup agent's (F127.5: AskAgent asks lookup agents too): its card reads the
+    /// address, the tool and the task from the call, and the model it ran on from the footer.
     /// </summary>
     [Test]
-    public void AnAskWithATool_IsAMinion_ReadingItsAddressToolAndModel()
+    public void AnAskWithATool_IsALookupAgent_ReadingItsAddressToolAndModel()
     {
         var block = Call(Delegation.AskToolName,
             """{"address":"sample.lookup","message":"Prys van rys","tool":"WebSearch"}""",
@@ -55,11 +55,11 @@ public class DelegationTests
         });
     }
 
-    /// <summary>A minion's ask that was refused shows the refusal, marked failed.</summary>
+    /// <summary>A lookup agent's ask that was refused shows the refusal, marked failed.</summary>
     [Test]
-    public void ARefusedMinion_ShowsTheRefusal()
+    public void ARefusedLookupAgent_ShowsTheRefusal()
     {
-        const string refusal = "Error: you don't hold a 'WebSearch' tool, so you can't hand it to a minion.";
+        const string refusal = "Error: you don't hold a 'WebSearch' tool, so you can't hand it to a lookup agent.";
 
         var delegation = Delegation.From(Call(Delegation.AskToolName,
             """{"address":"sample.lookup","message":"Prys","tool":"WebSearch"}""", refusal))!;

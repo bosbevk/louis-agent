@@ -14,7 +14,7 @@
 .delegation-usage { margin-top: 0; }
 .dots { display: inline-flex; gap: 3px; margin-left: 4px; }
 .dots::after { content: "•••"; letter-spacing: 2px; @include surface.brand-line(90deg); -webkit-background-clip: text; background-clip: text; color: transparent; animation: blink 1.2s ease-in-out infinite; }
-/* The card rolls up to its header when the specialist is done; a chevron and the cost show on that line. */
+/* The card rolls up to its header when the subagent is done; a chevron and the cost show on that line. */
 .delegation-body { display: flex; flex-direction: column; gap: 12px; margin-top: 14px; animation: rise .35s var(--web-ease) both; }
 .delegation-cost { font-size: 12px; color: var(--bs-secondary-color); font-variant-numeric: tabular-nums; }
 .delegation-task summary, .delegation-work summary { transition: color .2s; }

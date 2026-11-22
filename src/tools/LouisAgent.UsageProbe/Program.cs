@@ -1,3 +1,9 @@
+using LouisAgent.UsageProbe.Messages.Holes.Settings;
+using LouisAgent.UsageProbe.Messages.Holes.Ollama;
+using LouisAgent.UsageProbe.Messages.Holes.Lifetimes;
+using LouisAgent.UsageProbe.Messages.Holes.Ledger;
+using LouisAgent.UsageProbe.Messages.Holes.Gaps;
+using LouisAgent.UsageProbe.Messages.Holes.Culture;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Hosting.EnvFiles;
 using LouisAgent.Core.Llm.UsageMapping;
@@ -21,14 +27,18 @@ using LouisAgent.UsageProbe.Messages;
 // Run it before trusting the usage ledger for a new provider or after upgrading an adapter (F1 step 1).
 //
 //   dotnet run --project src/tools/LouisAgent.UsageProbe [-- --lines N]
-//   dotnet run --project src/tools/LouisAgent.UsageProbe -- --think     (2 requests that need reasoning: is thinking text returned?)
-//   dotnet run --project src/tools/LouisAgent.UsageProbe -- --ledger <usage-YYYY-MM.jsonl>   (price and total a ledger; no model call)
-//   dotnet run --project src/tools/LouisAgent.UsageProbe -- --cache-gaps <usage-YYYY-MM.jsonl>   (which LLM_CACHE_TTL; F4; no model call)
-//   dotnet run --project src/tools/LouisAgent.UsageProbe -- --host-culture [en-ZA]   (write the PC's culture to config/.env; F14)
+//   dotnet run --project src/tools/LouisAgent.UsageProbe -- --think
+//       (2 requests that need reasoning: is thinking text returned?)
+//   dotnet run --project src/tools/LouisAgent.UsageProbe -- --ledger <usage-YYYY-MM.jsonl>
+//       (price and total a ledger; no model call)
+//   dotnet run --project src/tools/LouisAgent.UsageProbe -- --cache-gaps <usage-YYYY-MM.jsonl>
+//       (which LLM_CACHE_TTL; F4; no model call)
+//   dotnet run --project src/tools/LouisAgent.UsageProbe -- --host-culture [en-ZA]
+//       (write the PC's culture to config/.env; F14)
 //
-// Uses LLM_PROVIDER / LLM_MODEL / LLM_ENDPOINT from config/.env; variables set in the shell win. Every request goes to the
-// real provider, so with Anthropic this costs money (about $0.05 on Haiku 4.5 with the default prompt). --ledger only
-// reads the file and the price table (PRICES_URL / PRICES_FILE / config/prices.json).
+// Uses LLM_PROVIDER / LLM_MODEL / LLM_ENDPOINT from config/.env; variables set in the shell win. Every request goes to
+// the real provider, so with Anthropic this costs money (about $0.05 on Haiku 4.5 with the default prompt). --ledger
+// only reads the file and the price table (PRICES_URL / PRICES_FILE / config/prices.json).
 
 HostEnvironment.Load();
 // Read before the line below makes it invariant: --host-culture writes this machine's culture (the Windows region's).
@@ -84,7 +94,8 @@ string filler = string.Join("\n",
 string prompt = NewPrompt();
 
 Console.WriteLine(
-    $"provider={llm.Provider} model={llm.Model} thinking={thinking?.ToString() ?? "off"} mapper={mapper.GetType().Name} lines={lines}");
+    $"provider={llm.Provider} model={llm.Model} thinking={thinking?.ToString() ?? "off"} " +
+    $"mapper={mapper.GetType().Name} lines={lines}");
 
 if (args.Contains("--think"))
 {
@@ -92,8 +103,9 @@ if (args.Contains("--think"))
     List<ChatMessage> puzzle =
     [
         new(ChatRole.User,
-            "Three boxes are labelled 'apples', 'oranges' and 'mixed', and every label is wrong. You may take one fruit " +
-            "from one box. Which box do you pick from, and how do you then relabel all three? Answer in two sentences."),
+            "Three boxes are labelled 'apples', 'oranges' and 'mixed', and every label is wrong. You may take one " +
+            "fruit from one box. Which box do you pick from, and how do you then relabel all three? Answer in two " +
+            "sentences."),
     ];
     ChatResponse response = await client.GetResponseAsync(puzzle, Options());
     Console.WriteLine($"--- think, non-streaming: finish={response.FinishReason}");
@@ -132,13 +144,12 @@ catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode
                                           StringComparison.OrdinalIgnoreCase))
 {
     // Ollama answers 404 for a model it hasn't pulled; the stack trace doesn't say so.
-    Console.Error.WriteLine(MessageText.Format(ProbeUserText.ModelNotPulled, new
-    {
-        llm.Model,
-        Endpoint = llm.Endpoint ?? "http://localhost:11434"
-    }));
-    Console.Error.WriteLine(MessageText.Format(ProbeUserText.PullInCompose, new { llm.Model }));
-    Console.Error.WriteLine(MessageText.Format(ProbeUserText.PullNative, new { llm.Model }));
+    var notPulled = new ModelNotPulledHoles(llm.Model, llm.Endpoint ?? "http://localhost:11434");
+    var inCompose = new PullInComposeHoles(llm.Model);
+    var native = new PullNativeHoles(llm.Model);
+    Console.Error.WriteLine(MessageText.Format(ProbeUserText.ModelNotPulled, notPulled));
+    Console.Error.WriteLine(MessageText.Format(ProbeUserText.PullInCompose, inCompose));
+    Console.Error.WriteLine(MessageText.Format(ProbeUserText.PullNative, native));
     return 1;
 }
 
@@ -194,8 +205,8 @@ async Task Streaming(string label, bool cache)
         .Where(x => x.Update.Contents.OfType<UsageContent>().Any())
         .Select(x => $"{x.Index + 1}{(x.Update.FinishReason is { } f ? $"(finish={f})" : "")}")
         .ToList();
-    Console.WriteLine(
-        $"--- {label}: {updates.Count} updates; UsageContent in update(s) {(carriers.Count == 0 ? "none" : string.Join(", ", carriers))} of {updates.Count}");
+    string carried = carriers.Count == 0 ? "none" : string.Join(", ", carriers);
+    Console.WriteLine($"--- {label}: {updates.Count} updates; UsageContent in update(s) {carried} of {updates.Count}");
     PrintThinking(updates.SelectMany(u => u.Contents));
     Print("ToChatResponse().Usage", updates.ToChatResponse().Usage);
 }
@@ -217,13 +228,14 @@ void Print(string source, UsageDetails? usage)
 
     UsageTokens tokens = mapper.Map(usage);
     Console.WriteLine(
-        $"  ledger: input={Show(tokens.Input)} cache_write={Show(tokens.CacheWrite)} cache_read={Show(tokens.CacheRead)} " +
-        $"output={Show(tokens.Output)} reasoning={Show(tokens.Reasoning)}");
+        $"  ledger: input={Show(tokens.Input)} cache_write={Show(tokens.CacheWrite)} " +
+        $"cache_read={Show(tokens.CacheRead)} output={Show(tokens.Output)} reasoning={Show(tokens.Reasoning)}");
 }
 
 static string Show(long? count) => count?.ToString() ?? "null";
 
-// Prices a ledger (records written before F2 have no cost) and totals it per piece of work, per purpose, per run and in all.
+// Prices a ledger (records written before F2 have no cost) and totals it per piece of work, per purpose, per run and
+// in all.
 // F14: the containers can't see the PC's region, so its culture is written once into config/.env, which they all read.
 static int WriteHostCulture(string name)
 {
@@ -243,11 +255,8 @@ static int WriteHostCulture(string name)
     }
     catch (Exception ex) when (ex is ArgumentException or System.Globalization.CultureNotFoundException)
     {
-        Console.Error.WriteLine(MessageText.Format(ProbeUserText.CultureNamesNoRegion, new
-        {
-            Name = name,
-            Reason = ex.Message
-        }));
+        var noRegion = new CultureNamesNoRegionHoles(name, ex.Message);
+        Console.Error.WriteLine(MessageText.Format(ProbeUserText.CultureNamesNoRegion, noRegion));
         return 1;
     }
 
@@ -258,23 +267,14 @@ static int WriteHostCulture(string name)
     ExchangeRates rates = ExchangeRatesLoader.Load(agent, prices.Currency);
     DisplayCurrency display = DisplayCurrency.Resolve(agent, prices.Currency, rates);
 
-    Console.WriteLine(MessageText.Format(ProbeUserText.CultureFound, new
-    {
-        Name = name,
-        Region = region.TwoLetterISORegionName,
-        Code = region.ISOCurrencySymbol,
-        Symbol = region.CurrencySymbol
-    }));
+    var found = new CultureFoundHoles(name, region.TwoLetterISORegionName, region.ISOCurrencySymbol,
+        region.CurrencySymbol);
+    var rate = new RateFoundHoles(display.Base, display.Rate, display.Code, display.RateAsOf, rates.Source);
+    var asCharged = new ShownAsChargedHoles(display.Base);
+    Console.WriteLine(MessageText.Format(ProbeUserText.CultureFound, found));
     Console.WriteLine(display.Converts
-        ? MessageText.Format(ProbeUserText.RateFound, new
-        {
-            display.Base,
-            display.Rate,
-            display.Code,
-            AsOf = display.RateAsOf,
-            rates.Source
-        })
-        : MessageText.Format(ProbeUserText.ShownAsCharged, new { display.Base }));
+        ? MessageText.Format(ProbeUserText.RateFound, rate)
+        : MessageText.Format(ProbeUserText.ShownAsCharged, asCharged));
 
     if (EnvFile.Find(Environment.CurrentDirectory) is not { } envFile)
     {
@@ -284,14 +284,17 @@ static int WriteHostCulture(string name)
 
     bool replaced = EnvFile.Write(envFile, "HOST_CULTURE", name,
         MessageText.Format(ProbeUserText.HostCultureComment));
-    Console.WriteLine(MessageText.Format(replaced ? ProbeUserText.HostCultureUpdated : ProbeUserText.HostCultureAdded,
-        new
-        {
-            Name = name,
-            File = envFile
-        }));
+    var updated = new HostCultureUpdatedHoles(name, envFile);
+    var added = new HostCultureAddedHoles(name, envFile);
+    Console.WriteLine(replaced
+        ? MessageText.Format(ProbeUserText.HostCultureUpdated, updated)
+        : MessageText.Format(ProbeUserText.HostCultureAdded, added));
     if (Environment.GetEnvironmentVariable("DISPLAY_CURRENCY") is { Length: > 0 } other)
-        Console.WriteLine(MessageText.Format(ProbeUserText.DisplayCurrencyOverrides, new { Code = other }));
+    {
+        var overrides = new DisplayCurrencyOverridesHoles(other);
+        Console.WriteLine(MessageText.Format(ProbeUserText.DisplayCurrencyOverrides, overrides));
+    }
+
     Console.WriteLine(MessageText.Format(ProbeUserText.RestartHosts));
     return 0;
 }
@@ -300,51 +303,42 @@ static int WriteHostCulture(string name)
 static void PrintCacheGaps(string path, PriceTable prices)
 {
     IReadOnlyList<CacheGapGroup> groups = CacheGaps.Analyse(UsageReport.Read(path), prices);
-    Console.WriteLine(MessageText.Format(ProbeUserText.CacheGapsHeader, new
-    {
-        Path = path,
-        AsOf = prices.AsOf ?? "(none)"
-    }));
-    if (groups.Count == 0) Console.WriteLine(MessageText.Format(ProbeUserText.CacheGapsNone, new { Path = path }));
+    var header = new CacheGapsHeaderHoles(path, prices.AsOf ?? "(none)");
+    var none = new CacheGapsNoneHoles(path);
+    Console.WriteLine(MessageText.Format(ProbeUserText.CacheGapsHeader, header));
+    if (groups.Count == 0) Console.WriteLine(MessageText.Format(ProbeUserText.CacheGapsNone, none));
 
     foreach (CacheGapGroup g in groups)
     {
         Console.WriteLine();
-        Console.WriteLine(MessageText.Format(ProbeUserText.CacheGapsGroup, new
-        {
-            g.Host,
-            g.Model,
-            g.Requests,
-            Prefix = g.PrefixTokens.ToString("N0")
-        }));
-        Console.WriteLine(MessageText.Format(ProbeUserText.CacheGapsGaps, new
-        {
-            g.Under5m,
-            g.From5To60m,
-            g.Over60m
-        }));
+        var group = new CacheGapsGroupHoles(g.Host, g.Model, g.Requests, g.PrefixTokens.ToString("N0"));
+        var gaps = new CacheGapsGapsHoles(g.Under5m, g.From5To60m, g.Over60m);
+        Console.WriteLine(MessageText.Format(ProbeUserText.CacheGapsGroup, group));
+        Console.WriteLine(MessageText.Format(ProbeUserText.CacheGapsGaps, gaps));
         foreach (var (lifetime, cost) in new[] { ("5 minutes", g.FiveMinutes), ("1 hour   ", g.OneHour) })
-            Console.WriteLine(MessageText.Format(ProbeUserText.CacheGapsLifetime,
-                new
-                {
-                    Lifetime = lifetime,
-                    cost.Writes,
-                    cost.Reads,
-                    Cost = cost.Cost is { } c ? Money(c) : "price unknown"
-                }));
+        {
+            var spent = new CacheGapsLifetimeHoles(lifetime, cost.Writes, cost.Reads,
+                cost.Cost is { } c ? Money(c) : "price unknown");
+            Console.WriteLine(MessageText.Format(ProbeUserText.CacheGapsLifetime, spent));
+        }
 
         if (g is not { FiveMinutes.Cost: { } five, OneHour.Cost: { } hour })
-            Console.WriteLine(MessageText.Format(ProbeUserText.CacheGapsNoPrice, new { g.Model }));
-        else if (g.Recommended == CacheLifetime.OneHour)
-            Console.WriteLine(MessageText.Format(ProbeUserText.CacheGapsRecommendOneHour,
-                new
-                {
-                    Saving = Money(five - hour),
-                    Percent = (five - hour) / five is var share ? share.ToString("0%") : ""
-                }));
-        else
-            Console.WriteLine(MessageText.Format(ProbeUserText.CacheGapsRecommendFiveMinutes,
-                new { Extra = Money(hour - five) }));
+        {
+            var noPrice = new CacheGapsNoPriceHoles(g.Model);
+            Console.WriteLine(MessageText.Format(ProbeUserText.CacheGapsNoPrice, noPrice));
+            continue;
+        }
+
+        if (g.Recommended == CacheLifetime.OneHour)
+        {
+            // The hour wins only when it costs less than five minutes did, so five is above zero for the share.
+            var oneHour = new CacheGapsRecommendOneHourHoles(Money(five - hour), ((five - hour) / five).ToString("0%"));
+            Console.WriteLine(MessageText.Format(ProbeUserText.CacheGapsRecommendOneHour, oneHour));
+            continue;
+        }
+
+        var fiveMinutes = new CacheGapsRecommendFiveMinutesHoles(Money(hour - five));
+        Console.WriteLine(MessageText.Format(ProbeUserText.CacheGapsRecommendFiveMinutes, fiveMinutes));
     }
 
     string Money(decimal amount) =>
@@ -355,27 +349,19 @@ static void PrintLedger(string path, PriceTable prices)
 {
     var rows = UsageReport.Price(UsageReport.Read(path), prices).ToList();
     // A sub-session's roll-up (F5) stands for requests that are rows of their own in the ledger they ran on (this one,
-    // when peers share LOG_DIRECTORY as Puls and its specialist do), so it is listed, not totalled: a turn's own line
+    // when peers share LOG_DIRECTORY as Puls and its subagent do), so it is listed, not totalled: a turn's own line
     // counts it; a ledger's totals count the requests.
     var rollUps = rows.Where(r => r.Purpose == UsagePurpose.SubSession).ToList();
     var records = rows.Except(rollUps).ToList();
     var models = records.Select(r => r.Model).Distinct().ToList();
-    Console.WriteLine(MessageText.Format(ProbeUserText.LedgerSummary, new
-    {
-        Path = path,
-        records.Count,
-        Models = string.Join(", ", models),
-        AsOf = prices.AsOf ?? "(none)"
-    }));
+    var summary = new LedgerSummaryHoles(path, records.Count, string.Join(", ", models), prices.AsOf ?? "(none)");
+    Console.WriteLine(MessageText.Format(ProbeUserText.LedgerSummary, summary));
     if (rollUps.Count > 0)
     {
         UsageTotal delegated = UsageReport.Total("sub_session", rollUps);
-        Console.WriteLine(MessageText.Format(ProbeUserText.LedgerRollUps, new
-        {
-            Rows = rollUps.Count,
-            delegated.Requests,
-            Cost = delegated.Cost is { } cost ? $"${cost:0.0000}" : "unknown",
-        }));
+        var listed = new LedgerRollUpsHoles(rollUps.Count, delegated.Requests,
+            delegated.Cost is { } cost ? $"${cost:0.0000}" : "unknown");
+        Console.WriteLine(MessageText.Format(ProbeUserText.LedgerRollUps, listed));
     }
 
     Section(MessageText.Format(ProbeUserText.SectionPerWork), UsageReport.Totals(records, UsageReport.WorkOf));
@@ -389,8 +375,12 @@ static void PrintLedger(string path, PriceTable prices)
         Console.WriteLine(
             $"  {"",-34} {"requests",8} {"input",11} {"cache w",9} {"cache r",9} {"output",8} {"cost",10}");
         foreach (UsageTotal t in totals)
+        {
+            string cost = t.Cost is { } charged ? $"${charged:0.0000}" : "unknown";
+            string unpriced = t.Unpriced > 0 ? $"  ({t.Unpriced} unpriced)" : "";
             Console.WriteLine(
-                $"  {t.Key,-34} {t.Requests,8} {t.Input,11:N0} {t.CacheWrite,9:N0} {t.CacheRead,9:N0} {t.Output,8:N0} " +
-                $"{(t.Cost is { } cost ? $"${cost:0.0000}" : "unknown"),10}{(t.Unpriced > 0 ? $"  ({t.Unpriced} unpriced)" : "")}");
+                $"  {t.Key,-34} {t.Requests,8} {t.Input,11:N0} {t.CacheWrite,9:N0} {t.CacheRead,9:N0} " +
+                $"{t.Output,8:N0} {cost,10}{unpriced}");
+        }
     }
 }

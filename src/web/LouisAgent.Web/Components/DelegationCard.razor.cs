@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Web.Components;
 
-/// <summary>A specialist's or minion's card: who it went to, what it was asked, its work and its answer.</summary>
+/// <summary>A subagent's or lookup agent's card: who it went to, what it was asked, its work and its answer.</summary>
 public partial class DelegationCard
 {
     [Parameter, EditorRequired] public Delegation Delegation { get; set; } = default!;

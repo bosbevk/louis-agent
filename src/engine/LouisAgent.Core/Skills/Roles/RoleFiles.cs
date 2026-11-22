@@ -1,10 +1,11 @@
-
 using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Skills.Messages;
+using LouisAgent.Core.Skills.Messages.Holes.Roles;
 
 namespace LouisAgent.Core.Skills.Roles;
+
 /// <summary>Which roles this instance offers, and the file of one (F29, CL8, CL15; S, from AgentHost).</summary>
 public static class RoleFiles
 {
@@ -18,22 +19,33 @@ public static class RoleFiles
     {
         if (string.IsNullOrEmpty(role))
         {
-            // A minion with no role would be the coding agent's voice with one tool (F30): it always opens with a role.
+            // A lookup agent with no role would be the coding agent's voice with one tool (F30): it always opens with
+            // a role.
             if (level == RoleLevel.Lookup)
-                throw new RoleException(MessageText.Format(SkillErrorMessage.MinionNeedsRole,
-                    new { Available = string.Join(", ", Enabled(agent, level)) }));
+            {
+                var noRole = new LookupNeedsRoleHoles(string.Join(", ", Enabled(agent, level)));
+                throw new RoleException(MessageText.Format(SkillErrorMessage.LookupNeedsRole, noRole));
+            }
+
             return agent.DefaultVoice is { } voice ? RoleCatalog.FileName(voice, RoleLevel.Agent) : null;
         }
 
         if (!RoleCatalog.IsValidName(role))
-            throw new RoleException(MessageText.Format(SkillErrorMessage.RoleNameInvalid, new { Name = role }));
+        {
+            var invalid = new RoleNameInvalidHoles(role);
+            throw new RoleException(MessageText.Format(SkillErrorMessage.RoleNameInvalid, invalid));
+        }
+
         string file = RoleCatalog.FileName(role, level);
         // A role that's off (F29) is refused as an unknown one: the list names what this instance may use. At level
-        // 0 only a mode is a name (CL9); at level 2 a role on the base (F30), never the base itself.
+        // 0 only a mode is a name (CL9); a lookup agent a role on the base (F30), never the base itself.
         bool offered = level == RoleLevel.Subagent || RoleCatalog.Available(level).Contains(role);
         if (!offered || !IsEnabled(agent, role) || SkillFolder.Read(agent, file) is null)
-            throw new RoleException(MessageText.Format(SkillErrorMessage.UnknownRole,
-                new { Name = role, Available = string.Join(", ", Enabled(agent, level)) }));
+        {
+            var unknownRole = new UnknownRoleHoles(role, string.Join(", ", Enabled(agent, level)));
+            throw new RoleException(MessageText.Format(SkillErrorMessage.UnknownRole, unknownRole));
+        }
+
         return file;
     }
 
@@ -50,20 +62,19 @@ public static class RoleFiles
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
         var unknown = agent.RolesEnabled.Where(r => !known.Contains(r)).ToList();
         if (unknown.Count > 0)
-            throw new RoleException(MessageText.Format(SkillErrorMessage.UnknownRolesEnabled,
-                new
-                {
-                    Names = string.Join(", ", unknown),
-                    Available = string.Join(", ", known.Order(StringComparer.Ordinal))
-                }));
+        {
+            var notRoles = new UnknownRolesEnabledHoles(string.Join(", ", unknown),
+                string.Join(", ", known.Order(StringComparer.Ordinal)));
+            throw new RoleException(MessageText.Format(SkillErrorMessage.UnknownRolesEnabled, notRoles));
+        }
 
         // A framework host with no identity has no default: its sessions name their own.
         if (defaultMode is null) return;
 
         string file = RoleCatalog.FileName(defaultMode, RoleLevel.Agent);
-        if (SkillFolder.Read(agent, file) is null)
-            throw new RoleException(MessageText.Format(SkillErrorMessage.DefaultModeMissing,
-                new { Mode = defaultMode, File = file }));
+        if (SkillFolder.Read(agent, file) is not null) return;
+        var noMode = new DefaultModeMissingHoles(defaultMode, file);
+        throw new RoleException(MessageText.Format(SkillErrorMessage.DefaultModeMissing, noMode));
     }
 
     /// <summary>

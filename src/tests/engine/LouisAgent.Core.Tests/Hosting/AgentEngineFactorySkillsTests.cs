@@ -29,9 +29,9 @@ public class AgentEngineFactorySkillsTests
         Assert.That(Factory().GetOrCreate([TestToolset.Web.Wire()], mode).Tools.Select(t => t.Name),
             Does.Contain("ReadSkill"));
 
-    /// <summary>A specialist is no identity's voice, so it has none to read.</summary>
+    /// <summary>A subagent is no identity's voice, so it has none to read.</summary>
     [Test]
-    public void ASpecialist_HasNoReadSkill() =>
-        Assert.That(Factory().GetOrCreate([TestToolset.Web.Wire()], "testprod.specialist", RoleLevel.Subagent)
+    public void ASubagent_HasNoReadSkill() =>
+        Assert.That(Factory().GetOrCreate([TestToolset.Web.Wire()], "testprod.researcher", RoleLevel.Subagent)
             .Tools.Select(t => t.Name), Does.Not.Contain("ReadSkill"));
 }

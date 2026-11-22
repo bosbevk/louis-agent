@@ -12,23 +12,23 @@ namespace LouisAgent.Core.Tests.Skills.Headers;
 /// </summary>
 public class PromptHeadersTests
 {
-    private const string Path = "specialists/acme-cook.md", Name = "acme-cook";
+    private const string Path = "subagents/acme-cook.md", Name = "acme-cook";
 
     /// <summary>
     /// A role's file with its header: the web always, the shops where this instance has them. In LF, whatever line
     /// endings git gave this test file (FX33): a raw string takes the file's own, CRLF on a Windows checkout.
     /// </summary>
     private static string Cook => $"""
-        ---
-        name: {Name}
-        description: Acme's local cook. A recipe for the people and town asked for.
-        metadata:
-          level: {RoleLevel.Subagent.Wire()}
-          toolsets: {TestToolset.Web.Wire()}, shops?
-        ---
-        # Acme specialist: Local cook
+                                   ---
+                                   name: {Name}
+                                   description: Acme's local cook. A recipe for the people and town asked for.
+                                   metadata:
+                                     level: {RoleLevel.Subagent.Wire()}
+                                     toolsets: {TestToolset.Web.Wire()}, shops?
+                                   ---
+                                   # Acme subagent: Local cook
 
-        """.ReplaceLineEndings("\n");
+                                   """.ReplaceLineEndings("\n");
 
     /// <summary>A header gives its fields, and the body is the text after it, as it was.</summary>
     [Test]
@@ -39,7 +39,7 @@ public class PromptHeadersTests
         Assert.That(file.Header, Is.EqualTo(new PromptHeader(Name,
             "Acme's local cook. A recipe for the people and town asked for.", RoleLevel.Subagent,
             [TestToolset.Web.Wire(), "shops?"])).Using<PromptHeader>(SameHeader));
-        Assert.That(file.Body, Is.EqualTo("# Acme specialist: Local cook\n"));
+        Assert.That(file.Body, Is.EqualTo("# Acme subagent: Local cook\n"));
     }
 
     /// <summary>Windows line endings are read the same, and the body keeps its own.</summary>
@@ -48,7 +48,7 @@ public class PromptHeadersTests
     {
         var file = PromptHeaders.Split(Path, Cook.ReplaceLineEndings("\r\n"));
 
-        Assert.That((file.Header?.Name, file.Body), Is.EqualTo((Name, "# Acme specialist: Local cook\r\n")));
+        Assert.That((file.Header?.Name, file.Body), Is.EqualTo((Name, "# Acme subagent: Local cook\r\n")));
     }
 
     /// <summary>
@@ -86,7 +86,7 @@ public class PromptHeadersTests
     }
 
     /// <summary>A file with no header (the agent's own function files) is read whole.</summary>
-    [TestCase("# Acme specialist: Local cook\n\nYou are …")]
+    [TestCase("# Acme subagent: Local cook\n\nYou are …")]
     [TestCase("")]
     [TestCase("--- not a header\ntext")]
     public void NoHeader_IsTheTextWhole(string text)

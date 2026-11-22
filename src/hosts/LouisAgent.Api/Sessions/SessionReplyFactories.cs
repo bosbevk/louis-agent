@@ -18,7 +18,7 @@ internal static class SessionReplyFactories
     /// <summary>A session's read carries its usage in its stream format's shape, which only the format knows.</summary>
     extension(SessionReply)
     {
-        /// <summary>The session now, with its tools, the specialists it keeps open and its usage.</summary>
+        /// <summary>The session now, with its tools, the subagents it keeps open and its usage.</summary>
         public static SessionReply Of(AgentSession session) => new(
             session.Id,
             session.CreatedAt,

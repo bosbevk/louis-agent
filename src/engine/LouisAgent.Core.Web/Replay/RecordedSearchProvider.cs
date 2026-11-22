@@ -1,3 +1,5 @@
+using LouisAgent.Core.Web.Replay.Keys;
+using LouisAgent.Composition.Web.Messages.Holes.Replay;
 using LouisAgent.Composition.Web.Messages;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Composition.Web.Search;
@@ -10,11 +12,12 @@ using LouisAgent.Core.Web.Search;
 namespace LouisAgent.Core.Web.Replay;
 
 /// <summary>
-/// A search provider, recorded or replayed (F18 step 4b), by <see cref="ReplayTrial.Current"/> on each call: no trial passes through and
-/// saves nothing; Record saves the results under the trial and returns them unchanged, a <see cref="WebSearchException"/> as its text (and
-/// rethrown; the model sees that text), any other exception and a cancel not at all; Replay never calls the inner provider, answers from
-/// the first recording of the ask, rethrows a recorded failure's text, and a miss as a text that names the query (ADR 0005). The key is the
-/// provider's name and the query's fields; the request to the provider, and so its key, is never saved.
+/// A search provider, recorded or replayed (F18 step 4b), by <see cref="ReplayTrial.Current"/> on each call: no trial
+/// passes through and saves nothing; Record saves the results under the trial and returns them unchanged, a <see
+/// cref="WebSearchException"/> as its text (and rethrown; the model sees that text), any other exception and a cancel
+/// not at all; Replay never calls the inner provider, answers from the first recording of the ask, rethrows a recorded
+/// failure's text, and a miss as a text that names the query (ADR 0005). The key is the provider's name and the query's
+/// fields; the request to the provider, and so its key, is never saved.
 /// </summary>
 public sealed class RecordedSearchProvider(IWebSearchProvider inner, ReplayStore store) : IWebSearchProvider
 {
@@ -29,8 +32,8 @@ public sealed class RecordedSearchProvider(IWebSearchProvider inner, ReplayStore
     {
         if (ReplayTrial.Current is not { } trial) return await inner.SearchAsync(query, cancellationToken);
 
-        var ask = ReplayAsk.Of(ReplayKind.Search,
-            new { Provider = inner.Name, query.Text, query.MaxResults, query.Site, query.Recency });
+        var key = new SearchKey(inner.Name, query.Text, query.MaxResults, query.Site, query.Recency);
+        var ask = ReplayAsk.Of(ReplayKind.Search, key);
         return trial.Replaying
             ? await ReplayAsync(trial.Of, ask, query, cancellationToken)
             : await RecordAsync(trial.Of, ask, query, cancellationToken);
@@ -58,8 +61,11 @@ public sealed class RecordedSearchProvider(IWebSearchProvider inner, ReplayStore
         CancellationToken cancellationToken)
     {
         if (await store.FindAsync<IReadOnlyList<WebSearchResult>>(trial, ask, cancellationToken) is not { } recorded)
-            throw new WebSearchException(
-                MessageText.Format(WebToolMessage.ReplaySearchMiss, new { Query = query.Text }));
+        {
+            var miss = new ReplaySearchMissHoles(query.Text);
+            throw new WebSearchException(MessageText.Format(WebToolMessage.ReplaySearchMiss, miss));
+        }
+
         return recorded.OrThrow(error => new WebSearchException(error));
     }
 }

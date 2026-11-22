@@ -16,7 +16,7 @@ public interface IAgentIdentity
     /// </summary>
     string Name { get; }
 
-    /// <summary>Its modes, its own specialists and its own minion roles: content, never converted to MCP.</summary>
+    /// <summary>Its modes, its own subagents and its own lookup agent roles: content, never converted to MCP.</summary>
     IFileProvider Prompts { get; }
 
     /// <summary>

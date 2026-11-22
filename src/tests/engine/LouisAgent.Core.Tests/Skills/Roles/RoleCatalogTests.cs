@@ -9,7 +9,7 @@ using LouisAgent.Core.Skills.Roles;
 namespace LouisAgent.Core.Tests.Skills.Roles;
 
 // F21 step 1: a session names its role (its personality before CL13); the prompt starts with that one instead of
-// personality.md, and a name never reaches outside its level's folder (CL8: Skills/agent/, Skills/specialists/).
+// personality.md, and a name never reaches outside its level's folder (CL8: Skills/agent/, Skills/subagents/).
 // CL15 step 3: the mechanism is tested on the tests' own roles (agents/testprod and the rest); Puls's content is
 // tested with Puls, in its identity's tests.
 public class RoleCatalogTests
@@ -102,7 +102,7 @@ public class RoleCatalogTests
     [Test]
     public void Core_EmbedsNoRoleOfAProduct_UntilAnIdentityBringsIt()
     {
-        // CL15 step 3 (the cut): Puls's modes, specialists and minions live in its identity. Without it registered
+        // CL15 step 3 (the cut): Puls's modes, subagents and lookup agents live in its identity. Without it registered
         // (these tests register only their own roles) no level lists a Puls role; the identity's tests show the other
         // side.
         foreach (var level in Enum.GetValues<RoleLevel>())
@@ -152,7 +152,7 @@ public class RoleCatalogTests
     public void EachLevel_ListsOnlyItsOwnRoles()
     {
         // CL8: each level lists only its own; a lookup agent (level 2) lives in its agent's lookups/ (CL68.3).
-        Assert.That(RoleCatalog.Available(RoleLevel.Subagent), Is.EqualTo(new[] { "testprod.specialist" }));
+        Assert.That(RoleCatalog.Available(RoleLevel.Subagent), Is.EqualTo(new[] { "testprod.researcher" }));
         Assert.That(RoleCatalog.Available(RoleLevel.Lookup), Is.EqualTo(new[] { "testprod.lookup" }));
     }
 
@@ -163,22 +163,22 @@ public class RoleCatalogTests
     [Test]
     public void ASubagentsName_IsItsAddress_AndTheCatalogueFindsItsFile()
     {
-        Assert.That(new[] { "testprod.specialist", "acme.cook", "acme/voice-en" }.All(RoleCatalog.IsValidName));
+        Assert.That(new[] { "testprod.researcher", "acme.cook", "acme/voice-en" }.All(RoleCatalog.IsValidName));
         Assert.That(new[] { "a.b.c", "a.b/c", ".cook", "acme." }.Any(RoleCatalog.IsValidName), Is.False);
 
-        Assert.That(RoleCatalog.FileName("testprod.specialist", RoleLevel.Subagent),
-            Is.EqualTo("agents/testprod/subagents/specialist/voice.md"));
+        Assert.That(RoleCatalog.FileName("testprod.researcher", RoleLevel.Subagent),
+            Is.EqualTo("agents/testprod/subagents/researcher/voice.md"));
     }
 
     [Test]
-    public void ASpecialistsRole_IsRefusedAtLevelZero_NamingTheVoicesThereAre()
+    public void ASubagentsRole_IsRefusedAtLevelZero_NamingTheVoicesThereAre()
     {
-        // CL8: a role opens only at its own level, so a chat can't take a specialist's role as its voice.
+        // CL8: a role opens only at its own level, so a chat can't take a subagent's role as its voice.
         var ex = Assert.Throws<RoleException>(() =>
-            SkillLoader.Load(new AgentOptions { DefaultVoice = "testprod/voice-en" }, [], "testprod.specialist"));
+            SkillLoader.Load(new AgentOptions { DefaultVoice = "testprod/voice-en" }, [], "testprod.researcher"));
 
         Assert.That(ex!.Message,
-            Does.Contain("Unknown role 'testprod.specialist'").And.EndWith($"Available: {Modes}."));
+            Does.Contain("Unknown role 'testprod.researcher'").And.EndWith($"Available: {Modes}."));
     }
 
     [Test]
@@ -188,14 +188,14 @@ public class RoleCatalogTests
             SkillLoader.Load(new AgentOptions { DefaultVoice = "testprod/voice-en" }, [], "testprod/voice-af",
                 RoleLevel.Subagent));
 
-        Assert.That(ex!.Message, Does.Contain("Unknown role 'testprod/voice-af'").And.Contain("testprod.specialist"));
+        Assert.That(ex!.Message, Does.Contain("Unknown role 'testprod/voice-af'").And.Contain("testprod.researcher"));
     }
 
     [Test]
     public void OnlyLevelZero_HasTheRouter()
     {
-        // The router picks toolsets and delegates; a specialist's toolsets were chosen for it (F21), and so are a
-        // minion's.
+        // The router picks toolsets and delegates; a subagent's toolsets were chosen for it (F21), and so are a
+        // lookup agent's.
         Assert.That(
             SkillLoader.Load(new AgentOptions { DefaultVoice = "testprod/voice-en" }, [], level: RoleLevel.Agent)
                 .Documentation,
@@ -208,8 +208,8 @@ public class RoleCatalogTests
 
     /// <summary>
     /// The guide every identity that asks other agents reads (F127.3.1) says how to ask, follow up and read the work,
-    /// and names no product: a product's briefing and its specialists stay in its own voice, as Puls's do. The
-    /// specialists' guide it replaced is gone.
+    /// and names no product: a product's briefing and its subagents stay in its own voice, as Puls's do. The
+    /// subagents' guide it replaced is gone.
     /// </summary>
     [Test]
     public void TheAgentsGuide_IsTheMechanism_NotAProductsProtocol()
@@ -221,24 +221,24 @@ public class RoleCatalogTests
             Assert.That(guide, Does.Contain("`AskAgent(address, message)`").And.Contain("`ReadAgentWork(address)`"));
             Assert.That(guide, Does.Contain("Asking the same address again carries on"));
             Assert.That(guide, Does.Not.Contain("puls").IgnoreCase.And.Not.Contain("seemeeu").IgnoreCase);
-            Assert.That(SkillFileSource.ReadEmbedded("toolsets/specialists.md"), Is.Null);
-            Assert.That(SkillFileSource.ReadEmbedded("specialists/roles.json"), Is.Null,
+            Assert.That(SkillFileSource.ReadEmbedded("toolsets/subagents.md"), Is.Null);
+            Assert.That(SkillFileSource.ReadEmbedded("subagents/roles.json"), Is.Null,
                 "CL10: a role is named, never derived");
         });
     }
 
     /// <summary>
-    /// A minion is asked through the agents guide's <c>AskAgent</c>, with its tool (F127.5), and the guide names no
-    /// product's role; the minions guide it folded into is gone.
+    /// A lookup agent is asked through the agents guide's <c>AskAgent</c>, with its tool (F127.5), and the guide names
+    /// no product's role; the lookup agents guide it folded into is gone.
     /// </summary>
     [Test]
-    public void TheAgentsGuide_SaysHowToAskAMinion_AndNamesNoProductsRole()
+    public void TheAgentsGuide_SaysHowToAskALookupAgent_AndNamesNoProductsRole()
     {
         string guide = SkillFileSource.ReadEmbedded("toolsets/agents.md")!;
 
         Assert.That(guide, Does.Contain("`AskAgent(address, message, tool, stronger)`"));
         Assert.That(guide, Does.Not.Contain("puls").IgnoreCase.And.Not.Contain("Malmesbury"));
-        Assert.That(SkillFileSource.ReadEmbedded("toolsets/minions.md"), Is.Null);
+        Assert.That(SkillFileSource.ReadEmbedded("toolsets/lookup agents.md"), Is.Null);
     }
 
     public void AVoicesHeading_SaysVoice(string file, string heading) =>

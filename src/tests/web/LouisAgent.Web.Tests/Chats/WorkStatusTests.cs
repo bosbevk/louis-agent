@@ -27,18 +27,18 @@ public class WorkStatusTests
     public void NothingYet_IsBusy() =>
         Assert.That(WorkStatus.Label(new Turn(), Text), Is.EqualTo("BESIG"));
 
-    /// <summary>A specialist that's just started is gathering.</summary>
+    /// <summary>A subagent that's just started is gathering.</summary>
     [Test]
-    public void ASpecialistJustStarted_IsGathering()
+    public void ASubagentJustStarted_IsGathering()
     {
         var turn = new Turn { Blocks = [RunningCall()] };
 
         Assert.That(WorkStatus.Label(turn, Text), Is.EqualTo("Soek bestanddele"));
     }
 
-    /// <summary>A specialist searching is gathering.</summary>
+    /// <summary>A subagent searching is gathering.</summary>
     [Test]
-    public void ASpecialistSearching_IsGathering()
+    public void ASubagentSearching_IsGathering()
     {
         var call = RunningCall();
         call.SubTurn!.Blocks.Add(new Block
@@ -51,9 +51,9 @@ public class WorkStatusTests
         Assert.That(WorkStatus.Label(turn, Text), Is.EqualTo("Soek bestanddele"));
     }
 
-    /// <summary>A specialist writing after a result is building.</summary>
+    /// <summary>A subagent writing after a result is building.</summary>
     [Test]
-    public void ASpecialistWritingAfterAResult_IsBuilding()
+    public void ASubagentWritingAfterAResult_IsBuilding()
     {
         var call = RunningCall();
         call.SubTurn!.Blocks.Add(new Block
@@ -72,9 +72,9 @@ public class WorkStatusTests
         Assert.That(WorkStatus.Label(turn, Text), Is.EqualTo("Bou resep"));
     }
 
-    /// <summary>A specialist searching again goes back to gathering.</summary>
+    /// <summary>A subagent searching again goes back to gathering.</summary>
     [Test]
-    public void ASpecialistSearchingAgain_IsGatheringAgain()
+    public void ASubagentSearchingAgain_IsGatheringAgain()
     {
         var call = RunningCall();
         call.SubTurn!.Blocks.Add(new Block

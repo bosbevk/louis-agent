@@ -62,16 +62,16 @@ public static class FixtureApi
                 Json($$"""{"session_id":"{{SessionId}}","deleted":true}"""),
             ("/v1/model", true, _) => Json("""{"provider":"anthropic","model":"claude-haiku-5-5"}"""),
             ("/v1/roles", true, _) => Json("""
-                {"default":"louis-agent/voice","agent":["louis-agent/voice","puls/voice-af","puls/voice-en"],
-                 "subagents":["puls.cook"],"lookups":[]}
-                """),
+                                           {"default":"louis-agent/voice","agent":["louis-agent/voice","puls/voice-af","puls/voice-en"],
+                                            "subagents":["puls.cook"],"lookups":[]}
+                                           """),
             ("/v1/toolsets", true, _) => Json("""
-                {"default":["skills"],"toolsets":[{"name":"files","available":true},{"name":"git","available":true},
-                 {"name":"web","available":true},{"name":"specialists","available":true},
-                 {"name":"shops","available":true}]}
-                """),
+                                              {"default":["skills"],"toolsets":[{"name":"files","available":true},{"name":"git","available":true},
+                                               {"name":"web","available":true},{"name":"agents","available":true},
+                                               {"name":"shops","available":true}]}
+                                              """),
             ("/v1/sessions", _, true) =>
-                Json($$"""{"session_id":"{{SessionId}}","toolsets":["specialists","web"]}"""),
+                Json($$"""{"session_id":"{{SessionId}}","toolsets":["agents","web"]}"""),
             ($"/v1/sessions/{SessionId}/messages", _, true) => Stream(),
             ("/v1/git/status", true, _) => Json("""{"branch":"main","files":[],"committed":null}"""),
             ("/v1/git/branches", true, _) => Json("""{"current":"main","branches":[],"message":null}"""),

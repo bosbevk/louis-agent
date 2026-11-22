@@ -13,15 +13,15 @@ using static LouisAgent.Core.Tests.Delegation.FakePeer;
 namespace LouisAgent.Core.Tests.Delegation.Agents;
 
 /// <summary>
-/// The limits an ask keeps (F127.3.1 step 11d, from the specialist tool's tests): a child that takes too long is
+/// The limits an ask keeps (F127.3.1 step 11d, from the subagent tool's tests): a child that takes too long is
 /// stopped and deleted, a turn's asks are capped (outside a turn, per minute), what a failed child was charged still
 /// reaches the ledger, a follow-up that fails closes the conversation, and a chat keeps only so many open.
 /// </summary>
 public class AskAgentLimitsTests
 {
-    /// <summary>The asker, who may ask testprod in its voice and its specialist.</summary>
+    /// <summary>The asker, who may ask testprod in its voice and its subagent.</summary>
     private static readonly FakeIdentity Guide =
-        new("guide", voice: "testprod/voice-en", calls: ["testprod", "testprod.specialist"]);
+        new("guide", voice: "testprod/voice-en", calls: ["testprod", "testprod.researcher"]);
 
     /// <summary>The identities this instance runs.</summary>
     private static readonly IReadOnlyList<IAgentIdentity> Identities =
@@ -62,7 +62,7 @@ public class AskAgentLimitsTests
 
     /// <summary>
     /// No agent twice in a chain of asks (F127.5, Louis: "a cook can't call a cook. but it could call a recipe
-    /// specialist"): an agent already above the asker, or the asker itself, is refused before anything is sent; one
+    /// subagent"): an agent already above the asker, or the asker itself, is refused before anything is sent; one
     /// that isn't is asked.
     /// </summary>
     [Test]
@@ -71,9 +71,9 @@ public class AskAgentLimitsTests
         var handler = Peer();
 
         string again, back, other;
-        using (TurnChain.Use(["guide", "testprod.specialist"]))
+        using (TurnChain.Use(["guide", "testprod.researcher"]))
         {
-            again = await AskAsync(Tools(handler), "testprod.specialist");
+            again = await AskAsync(Tools(handler), "testprod.researcher");
             other = await AskAsync(Tools(handler));
         }
 
@@ -82,7 +82,7 @@ public class AskAgentLimitsTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(again, Does.StartWith("Error:").And.Contain("testprod.specialist").And.Contain("loop"));
+            Assert.That(again, Does.StartWith("Error:").And.Contain("testprod.researcher").And.Contain("loop"));
             Assert.That(back, Does.StartWith("Error:").And.Contain("testprod"), "the voice it was asked by");
             Assert.That(other, Does.Not.StartWith("Error:"));
             Assert.That(Calls(handler).Count(call => call == "POST /v1/sessions"), Is.EqualTo(1));
@@ -191,7 +191,7 @@ public class AskAgentLimitsTests
         using (UsageScope.Begin(session: "sess_guide", turn: 1))
         {
             await AskAsync(tools);
-            await AskAsync(tools, "testprod.specialist");
+            await AskAsync(tools, "testprod.researcher");
         }
 
         Assert.Multiple(() =>

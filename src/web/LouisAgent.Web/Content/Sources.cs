@@ -5,7 +5,7 @@ using LouisAgent.Web.Chats;
 namespace LouisAgent.Web.Content;
 
 /// <summary>
-/// The sources of a turn (F20): the links in its answer, and the pages its specialists fetched. Read from the turn the
+/// The sources of a turn (F20): the links in its answer, and the pages its subagents fetched. Read from the turn the
 /// app already has, so nothing new is asked of the API.
 /// </summary>
 public static partial class Sources
@@ -14,6 +14,7 @@ public static partial class Sources
     public static List<Source> Of(Turn turn)
     {
         var found = new List<Source>();
+
         void Add(string url, string? title)
         {
             url = url.TrimEnd('.', ',', ';', ':');
@@ -27,13 +28,18 @@ public static partial class Sources
         {
             if (block.Kind == BlockKind.Text)
             {
-                foreach (Match link in MarkdownLink().Matches(block.Text)) Add(link.Groups["url"].Value, link.Groups["title"].Value);
+                foreach (Match link in MarkdownLink().Matches(block.Text))
+                    Add(link.Groups["url"].Value, link.Groups["title"].Value);
                 foreach (Match bare in BareUrl().Matches(block.Text)) Add(bare.Value, null);
             }
-            // The pages the specialist read (FetchUrl's or ReadRenderedPage's url), even when the answer doesn't link them.
+
+            // The pages the subagent read (FetchUrl's or ReadRenderedPage's url), even when the answer doesn't link
+            // them.
             foreach (var step in block.SubTurn?.Blocks.Where(b => b.ToolName is "FetchUrl" or "ReadRenderedPage") ?? [])
-                if (Url(step.ToolInput) is { } fetched) Add(fetched, null);
+                if (Url(step.ToolInput) is { } fetched)
+                    Add(fetched, null);
         }
+
         return found;
     }
 

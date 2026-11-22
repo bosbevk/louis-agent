@@ -69,8 +69,8 @@ public class AgentSessionsTests
     private static string SkillsFolder { get; } = Directory.CreateTempSubdirectory("agent-sessions-skills-").FullName;
 
     /// <summary>
-    /// The settings the sessions run with: the repo as the workspace, a peer for the minions (this instance itself)
-    /// and a minion on the instance's own model.
+    /// The settings the sessions run with: the repo as the workspace, a peer for the lookup agents (this instance
+    /// itself) and a lookup agent on the instance's own model.
     /// </summary>
     private static AgentOptions TestOptions() =>
         new()
@@ -169,20 +169,20 @@ public class AgentSessionsTests
     }
 
     /// <summary>
-    /// A specialist brings its own toolsets: its parent hands it the files, and its role's header adds the web and the
+    /// A subagent brings its own toolsets: its parent hands it the files, and its role's header adds the web and the
     /// calculator.
     /// </summary>
     [Test]
-    public void ASpecialist_LoadsTheToolsetsItsRoleNames()
+    public void ASubagent_LoadsTheToolsetsItsRoleNames()
     {
         // F35.2 and F50.2: a role's header names its toolsets, so they come with the role, beside what the parent
         // passed.
-        var specialist = Sessions()
-            .Create(new SessionRequest([TestToolset.Files.Wire()], Depth: 1, Role: TestAgent.Specialist));
+        var subagent = Sessions()
+            .Create(new SessionRequest([TestToolset.Files.Wire()], Depth: 1, Role: TestAgent.Researcher));
 
-        Assert.That(specialist.Toolsets,
+        Assert.That(subagent.Toolsets,
             Is.EquivalentTo(new[] { TestToolset.Files.Wire(), TestToolset.Web.Wire(), TestToolset.Calculator.Wire() }));
-        Assert.That(Names(specialist),
+        Assert.That(Names(subagent),
             Does.Contain("ReadWorkspaceFile").And.Contain("FetchUrl").And.Contain("Calculate"));
     }
 
@@ -229,7 +229,7 @@ public class AgentSessionsTests
     }
 
     /// <summary>
-    /// A role opens at its own level: a specialist below the top, never at it; the voice at the top, and also
+    /// A role opens at its own level: a subagent below the top, never at it; the voice at the top, and also
     /// lower down, still as a voice, when another agent asks it.
     /// </summary>
     [Test]
@@ -239,14 +239,14 @@ public class AgentSessionsTests
         var sessions = Sessions();
 
         Assert.Throws<RoleException>(() =>
-            sessions.Create(new SessionRequest([TestToolset.Web.Wire()], Role: TestAgent.Specialist)));
+            sessions.Create(new SessionRequest([TestToolset.Web.Wire()], Role: TestAgent.Researcher)));
         Assert.That(sessions.Create(new SessionRequest([TestToolset.Web.Wire()], Depth: 1, Role: TestAgent.Voice)).Role,
             Is.EqualTo(TestAgent.Voice));
         Assert.That(sessions.Create(new SessionRequest([TestToolset.Web.Wire()], Role: TestAgent.Voice)).Role,
             Is.EqualTo(TestAgent.Voice));
         Assert.That(
-            sessions.Create(new SessionRequest([TestToolset.Web.Wire()], Depth: 1, Role: TestAgent.Specialist)).Role,
-            Is.EqualTo(TestAgent.Specialist));
+            sessions.Create(new SessionRequest([TestToolset.Web.Wire()], Depth: 1, Role: TestAgent.Researcher)).Role,
+            Is.EqualTo(TestAgent.Researcher));
     }
 
     /// <summary>
@@ -267,7 +267,7 @@ public class AgentSessionsTests
     [Test]
     public void ASession_RemembersItsAttachments_ByName_Capped()
     {
-        // F22: a later turn can still hand an earlier attachment to a specialist.
+        // F22: a later turn can still hand an earlier attachment to a subagent.
         var session = Sessions().Create(new SessionRequest([TestToolset.Files.Wire()]));
 
         session.Remember("Verslag.txt", "eerste");
@@ -325,16 +325,16 @@ public class AgentSessionsTests
     public void TheSessionJson_SaysRole_NotPersonality()
     {
         var cook = Sessions()
-            .Create(new SessionRequest([TestToolset.Web.Wire()], Depth: 1, Role: TestAgent.Specialist));
+            .Create(new SessionRequest([TestToolset.Web.Wire()], Depth: 1, Role: TestAgent.Researcher));
 
         Assert.That(Json(SessionCreatedReply.Of(cook)),
-            Does.Contain($"\"role\":\"{TestAgent.Specialist}\"").And.Not.Contain("personality"));
+            Does.Contain($"\"role\":\"{TestAgent.Researcher}\"").And.Not.Contain("personality"));
         Assert.That(Json(SessionReply.Of(cook)),
-            Does.Contain($"\"role\":\"{TestAgent.Specialist}\"").And.Not.Contain("personality"));
+            Does.Contain($"\"role\":\"{TestAgent.Researcher}\"").And.Not.Contain("personality"));
     }
 
     /// <summary>
-    /// A specialist the chat keeps open shows up in the session's JSON with its role.
+    /// A subagent the chat keeps open shows up in the session's JSON with its role.
     /// </summary>
     [Test]
     public async Task ASubSessionTheChatKeeps_IsListedWithItsRole()
@@ -343,7 +343,7 @@ public class AgentSessionsTests
         await session.SubSessions.AddAsync(Kept("sess_cook", []));
 
         Assert.That(Json(SessionReply.Of(session)),
-            Does.Contain($"\"role\":\"{TestAgent.Specialist}\"").And.Not.Contain("personality"));
+            Does.Contain($"\"role\":\"{TestAgent.Researcher}\"").And.Not.Contain("personality"));
     }
 
     /// <summary>
@@ -365,15 +365,15 @@ public class AgentSessionsTests
 
         Assert.That(roles,
             Does.Contain($"\"default\":\"{TestAgent.Voice}\"").And.Contain("\"subagents\":[").And
-                .Contain(TestAgent.Specialist));
+                .Contain(TestAgent.Researcher));
     }
 
     /// <summary>
-    /// A specialist sub-session the chat keeps open; closing it writes its id into the list you pass, so a test can
+    /// A subagent sub-session the chat keeps open; closing it writes its id into the list you pass, so a test can
     /// see it was closed.
     /// </summary>
     private static LouisAgent.Core.Sessions.SubSessions.OpenSubSession Kept(string sessionId, List<string> closed) =>
-        new(new Uri("http://testagent/"), sessionId, TestAgent.Name, [TestToolset.Web.Wire()], TestAgent.Specialist,
+        new(new Uri("http://testagent/"), sessionId, TestAgent.Name, [TestToolset.Web.Wire()], TestAgent.Researcher,
             () =>
             {
                 closed.Add(sessionId);
@@ -381,12 +381,12 @@ public class AgentSessionsTests
             });
 
     /// <summary>
-    /// Deleting a chat closes the specialists it kept open on the peer too.
+    /// Deleting a chat closes the subagents it kept open on the peer too.
     /// </summary>
     [Test]
     public async Task RemovingASession_ClosesTheSubSessionsItKept()
     {
-        // F26 step 3 (F26-S3): the chat is deleted, so its specialists are deleted on the peer too.
+        // F26 step 3 (F26-S3): the chat is deleted, so its subagents are deleted on the peer too.
         var sessions = Sessions();
         var session =
             sessions.Create(new SessionRequest([
@@ -402,7 +402,7 @@ public class AgentSessionsTests
     }
 
     /// <summary>
-    /// A session left idle too long is dropped, and its specialists are closed with it.
+    /// A session left idle too long is dropped, and its subagents are closed with it.
     /// </summary>
     [Test]
     public async Task AnIdleSession_IsDropped_WithItsSubSessions()
@@ -434,8 +434,8 @@ public class AgentSessionsTests
         Assert.That(unnamed.Engine.SkillDocumentation,
             Does.Contain(TestAgent.VoiceHeading).And.Not.Contain(TestAgent.RoutingHeading));
         Assert.That(
-            sessions.Create(new SessionRequest([TestToolset.Web.Wire()], Depth: 1, Role: TestAgent.Specialist)).Role,
-            Is.EqualTo(TestAgent.Specialist));
+            sessions.Create(new SessionRequest([TestToolset.Web.Wire()], Depth: 1, Role: TestAgent.Researcher)).Role,
+            Is.EqualTo(TestAgent.Researcher));
         Assert.That(sessions.Create(new SessionRequest([TestToolset.Web.Wire()])).Role, Is.Null,
             "a top-level session that names none gets the default voice");
     }
@@ -476,42 +476,43 @@ public class AgentSessionsTests
     internal static UsageTags ParentOf(AgentSession parent) => new(null, null, null, $"{parent.Id}#1");
 
     /// <summary>
-    /// A minion opens under its specialist with just one of that specialist's tools and its own guide.
+    /// A lookup agent opens under its subagent with just one of that subagent's tools and its own guide.
     /// </summary>
     [Test]
-    public void AMinion_OpensAtDepthTwo_WithOneToolItsParentHas()
+    public void ALookupAgent_OpensAtDepthTwo_WithOneToolItsParentHas()
     {
-        // F30 step 4: a specialist hands a minion one task and one of its own tools; the peer checks the tool against
-        // the parent session it finds here (minions run on the specialist's own instance).
+        // F30 step 4: a subagent hands a lookup agent one task and one of its own tools; the peer checks the tool
+        // against the parent session it finds here (lookup agents run on the subagent's own instance).
         var sessions = Sessions();
-        var cook = sessions.Create(new SessionRequest([TestToolset.Web.Wire()], Depth: 1, Role: TestAgent.Specialist));
+        var cook = sessions.Create(new SessionRequest([TestToolset.Web.Wire()], Depth: 1, Role: TestAgent.Researcher));
 
-        var minion = sessions.Create(new SessionRequest([TestToolset.Web.Wire()], ParentOf(cook), Depth: 2,
+        var lookup = sessions.Create(new SessionRequest([TestToolset.Web.Wire()], ParentOf(cook), Depth: 2,
             Role: TestAgent.Lookup, Tool: "FetchUrl"));
 
-        Assert.That(minion.Depth, Is.EqualTo(2));
-        Assert.That(minion.Tool, Is.EqualTo("FetchUrl"));
-        Assert.That(Names(minion), Is.EqualTo(new[] { "FetchUrl" }));
-        Assert.That(minion.Engine.SkillDocumentation,
+        Assert.That(lookup.Depth, Is.EqualTo(2));
+        Assert.That(lookup.Tool, Is.EqualTo("FetchUrl"));
+        Assert.That(Names(lookup), Is.EqualTo(new[] { "FetchUrl" }));
+        Assert.That(lookup.Engine.SkillDocumentation,
             Does.Contain(TestAgent.LookupHeading).And.Not.Contain("# Web Skills"));
-        Assert.That(cook.Tool, Is.Null, "a specialist has toolsets, not one tool");
+        Assert.That(cook.Tool, Is.Null, "a subagent has toolsets, not one tool");
     }
 
     /// <summary>
-    /// A minion can never do more than the specialist that sent it: only the parent's own tools, and never one that
+    /// A lookup agent can never do more than the subagent that sent it: only the parent's own tools, and never one that
     /// delegates or extends the agent.
     /// </summary>
     [Test]
-    public void AMinion_GetsOnlyAToolItsParentHas_AndOneThatIsEverHandedDown()
+    public void ALookupAgent_GetsOnlyAToolItsParentHas_AndOneThatIsEverHandedDown()
     {
-        // Capability delegation: a minion can never do more than the specialist that sent it. The parent's toolbox is
-        // the only list (Louis: "the specialist must give him its tools"); delegation and self-extension never go down.
+        // Capability delegation: a lookup agent can never do more than the subagent that sent it. The parent's toolbox
+        // is the only list (Louis: "the specialist must give him its tools"); delegation and self-extension never go
+        // down.
         var sessions = Sessions();
         // The reader, which declares no toolsets of its own: the cook's header brings the web (F127.3.1).
         var withFiles =
             sessions.Create(new SessionRequest([TestToolset.Files.Wire()], Depth: 1, Role: TestAgent.Reader));
         var withWeb = sessions.Create(new SessionRequest([TestToolset.Web.Wire(), TestToolset.Files.Wire()], Depth: 1,
-            Role: TestAgent.Specialist));
+            Role: TestAgent.Researcher));
 
         Assert.That(
             () => sessions.Create(new SessionRequest([TestToolset.Web.Wire()], ParentOf(withFiles), Depth: 2,
@@ -520,7 +521,7 @@ public class AgentSessionsTests
         Assert.That(
             sessions.Create(new SessionRequest([TestToolset.Files.Wire()], ParentOf(withWeb), Depth: 2,
                 Role: TestAgent.Lookup, Tool: "ReadWorkspaceFile")).Tool,
-            Is.EqualTo("ReadWorkspaceFile"), "any tool of the parent's own: which one is the specialist's call");
+            Is.EqualTo("ReadWorkspaceFile"), "any tool of the parent's own: which one is the subagent's call");
         Assert.That(
             () => sessions.Create(new SessionRequest([CoreToolset.Skills.Wire()], ParentOf(withWeb), Depth: 2,
                 Role: TestAgent.Lookup, Tool: "ExecuteSkill")),
@@ -528,14 +529,14 @@ public class AgentSessionsTests
     }
 
     /// <summary>
-    /// A minion needs a parent we can find, a minion's role and its one tool (that it asks no one is
+    /// A lookup agent needs a parent we can find, a lookup agent's role and its one tool (that it asks no one is
     /// <c>AskDepthTests</c>').
     /// </summary>
     [Test]
-    public void AMinion_NeedsAParentItCanFind_AMinionRole_AndATool()
+    public void ALookupAgent_NeedsAParentItCanFind_ALookupAgentRole_AndATool()
     {
         var sessions = Sessions();
-        var cook = sessions.Create(new SessionRequest([TestToolset.Web.Wire()], Depth: 1, Role: TestAgent.Specialist));
+        var cook = sessions.Create(new SessionRequest([TestToolset.Web.Wire()], Depth: 1, Role: TestAgent.Researcher));
         var parent = ParentOf(cook);
 
         Assert.That(
@@ -549,10 +550,10 @@ public class AgentSessionsTests
             Throws.TypeOf<ToolsetException>().With.Message.Contain("sess_gone"), "a parent it can't find");
         Assert.That(
             () => sessions.Create(new SessionRequest([TestToolset.Web.Wire()], parent, Depth: 2,
-                Role: TestAgent.Specialist,
+                Role: TestAgent.Researcher,
                 Tool: "FetchUrl")),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("'tool'"),
-            "a specialist's role is no minion role, at any depth");
+            "a subagent's role is no lookup agent role, at any depth");
         Assert.That(
             () => sessions.Create(new SessionRequest([TestToolset.Web.Wire()], parent, Depth: 2,
                 Role: TestAgent.LookupBase,
@@ -560,32 +561,32 @@ public class AgentSessionsTests
             Throws.TypeOf<RoleException>(), "the base is no role");
         Assert.That(
             () => sessions.Create(new SessionRequest([TestToolset.Web.Wire()], parent, Depth: 2, Tool: "FetchUrl")),
-            Throws.TypeOf<RoleException>(), "a minion always has a role");
+            Throws.TypeOf<RoleException>(), "a lookup agent always has a role");
         Assert.That(
             () => sessions.Create(new SessionRequest([TestToolset.Web.Wire()], parent, Depth: 2,
                 Role: TestAgent.Lookup)),
-            Throws.TypeOf<ToolsetException>().With.Message.Contain("'tool'"), "a minion always has its one tool");
+            Throws.TypeOf<ToolsetException>().With.Message.Contain("'tool'"), "a lookup agent always has its one tool");
         Assert.That(
-            () => sessions.Create(new SessionRequest([TestToolset.Web.Wire()], Depth: 1, Role: TestAgent.Specialist,
+            () => sessions.Create(new SessionRequest([TestToolset.Web.Wire()], Depth: 1, Role: TestAgent.Researcher,
                 Tool: "FetchUrl")),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("'tool'"),
-            "a specialist loads toolsets, not a tool");
+            "a subagent loads toolsets, not a tool");
     }
 
     /// <summary>
-    /// A minion works out its toolset from the tool it's handed.
+    /// A lookup agent works out its toolset from the tool it's handed.
     /// </summary>
     [Test]
-    public void AMinionSession_DerivesItsToolsetFromItsTool()
+    public void ALookupAgentSession_DerivesItsToolsetFromItsTool()
     {
-        // F30 step 5: AskAgent sends a minion no toolsets, only the tool; the peer finds the toolset that builds it.
-        // F127.5: the minions toolset is gone, since AskAgent asks minions too.
+        // F30 step 5: AskAgent sends a lookup agent no toolsets, only the tool; the peer finds the toolset that builds
+        // it. F127.5: the lookup agents toolset is gone, since AskAgent asks lookup agents too.
         var sessions = Sessions();
-        var cook = sessions.Create(new SessionRequest([TestToolset.Web.Wire()], Depth: 1, Role: TestAgent.Specialist));
+        var cook = sessions.Create(new SessionRequest([TestToolset.Web.Wire()], Depth: 1, Role: TestAgent.Researcher));
 
-        var minion = sessions.Create(new SessionRequest(null, ParentOf(cook), Depth: 2, Role: TestAgent.Lookup,
+        var lookup = sessions.Create(new SessionRequest(null, ParentOf(cook), Depth: 2, Role: TestAgent.Lookup,
             Tool: "FetchUrl"));
-        Assert.That(minion.Toolsets, Is.EqualTo(new[] { TestToolset.Web.Wire() }));
-        Assert.That(Names(minion), Is.EqualTo(new[] { "FetchUrl" }));
+        Assert.That(lookup.Toolsets, Is.EqualTo(new[] { TestToolset.Web.Wire() }));
+        Assert.That(Names(lookup), Is.EqualTo(new[] { "FetchUrl" }));
     }
 }

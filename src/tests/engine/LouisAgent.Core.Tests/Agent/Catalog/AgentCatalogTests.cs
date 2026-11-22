@@ -283,7 +283,7 @@ public class AgentCatalogTests
         Assert.That(catalog.ToolsetOf("FetchUrl"), Is.EqualTo(TestToolset.Web.Wire()));
         Assert.That(catalog.ToolsetOf("CreateTool"), Is.Null, "engine-provided: no toolset builds it");
         Assert.That(catalog.ToolNamesOf(catalog.Resolve(["fakeshop"], Context())),
-            Is.EqualTo(new[] { "FindFakeProducts" }), "a minion may be handed it");
+            Is.EqualTo(new[] { "FindFakeProducts" }), "a lookup agent may be handed it");
 
         // The engine's own check (AgentBuiltTools) reads the names it is given, not core's static list.
         string skills = Directory.CreateTempSubdirectory("catalog-").FullName;
@@ -366,7 +366,7 @@ public class AgentCatalogTests
         {
             WorkspaceRoot = TestPaths.RepoRoot,
             SkillsDirectory = TestPaths.Skills,
-            RolesEnabled = ["testprod.specialist", "nope"]
+            RolesEnabled = ["testprod.researcher", "nope"]
         };
 
         var error = Assert.Throws<RoleException>(() => RoleFiles.Check(options, "testprod/voice-af"))!;
@@ -378,7 +378,7 @@ public class AgentCatalogTests
                 new AgentOptions
                 {
                     WorkspaceRoot = TestPaths.RepoRoot,
-                    RolesEnabled = ["testprod.specialist", "testprod/voice-af"]
+                    RolesEnabled = ["testprod.researcher", "testprod/voice-af"]
                 },
                 "testprod/voice-af"));
     }
@@ -423,8 +423,8 @@ public class AgentCatalogTests
         {
             Assert.That(catalog.IdentityOf("two/voice")?.Name, Is.EqualTo("two"));
             Assert.That(catalog.IdentityOf(null)?.Name, Is.EqualTo("one"));
-            Assert.That(catalog.IdentityOf("a-specialist")?.Name, Is.EqualTo("one"),
-                "a specialist's role is the host's own");
+            Assert.That(catalog.IdentityOf("a-researcher")?.Name, Is.EqualTo("one"),
+                "a subagent's role is the host's own");
         });
     }
 }

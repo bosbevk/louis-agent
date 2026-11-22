@@ -8,11 +8,14 @@ public partial class CreditsMenu
 {
     [Inject] private ChatText Text { get; set; } = null!;
 
-    /// <summary>What the shown chat cost, specialists included; "—" without a chat.</summary>
-    [Parameter] public string ChatCost { get; set; } = "—";
+    /// <summary>What the shown chat cost, subagents included; "—" without a chat.</summary>
+    [Parameter]
+    public string ChatCost { get; set; } = "—";
 
     /// <summary>What this month's chats cost, and how many there were.</summary>
-    [Parameter] public string MonthCost { get; set; } = "";
+    [Parameter]
+    public string MonthCost { get; set; } = "";
+
     [Parameter] public int MonthChats { get; set; }
     [Parameter] public EventCallback<string> OnComingSoon { get; set; }
 }

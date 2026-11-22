@@ -132,7 +132,7 @@ the toolsets, the rates and the other GETs. Components never touch `HttpClient`.
 **The stream becomes a turn.** `TurnStream` folds the API's events (thinking, text, tool calls, usage) into the
 `Turn` and its `Block`s, which is what the page shows. A sub-session's events go to its `Delegation`, so a
 subagent's work appears inside the turn that called it. `WorkStatus` and `RolePhases` say what the subagent
-is doing, and `SpecialistAnswer` splits its turn into its work and its answer.
+is doing, and `SubagentAnswer` splits its turn into its work and its answer.
 
 **The views draw the turn.** `TurnView` and `BlocksView` show one turn: the message, thinking that folds away,
 text and tool cards. `DelegationCard` shows a subagent's work, live, with its cost. `MessageList`, `Composer`,
@@ -1111,7 +1111,7 @@ This section is for looking a file up, not for reading through. Each row is a fo
 |---|---|
 | `Api/` | `AgentApi`, `AgentApiException` (an error with its status). The events are the session-stream reader's `SessionEvent`s (`LouisAgent.SessionStream`) |
 | `Api/AskedToolset.cs`, `Api/ScriptLanguage.cs` | The browser side's own copies of the names it uses (it cannot reference core); a test in `api.tests` checks them against core's, so they cannot drift (ADR 0043) |
-| `Chats/` | The records (`Chat`, `Turn`, `Block`, `BlockKind`, `Attachment`), the stream's folding (`TurnStream`, `Delegation`, `WorkStatus`, `RolePhases`, `SpecialistAnswer`) and `ChatRunner` |
+| `Chats/` | The records (`Chat`, `Turn`, `Block`, `BlockKind`, `Attachment`), the stream's folding (`TurnStream`, `Delegation`, `WorkStatus`, `RolePhases`, `SubagentAnswer`) and `ChatRunner` |
 | `Chats/Calls/` | `CardCall`, `OfferCall`, `Offered`, `OfferChoice`, `CardsLast`: the tool calls the chat draws (F127.4.1); `WatchedAsk`, an ask shown in its agent's window (F127.4.2) |
 | `Components/` | `TurnView`, `BlocksView`, `DelegationCard`, `CurrencySwitcher`; each component's C# in its `.razor.cs`; in `Blocks/`, `DrawnCard` and `OfferCards` |
 | `Components/Areas/` | `SiteAreasServices` (`AddSiteAreas`), `SiteAreasBuilder`, `SiteArea` and `SiteAreas`: how a site names its areas (F127.6) |
@@ -1167,7 +1167,7 @@ The tests are in `src/tests/web/LouisAgent.Web.Tests`, on NUnit, with bUnit for 
 mirror the library's.
 
 The chat's logic has `ChatRunnerTests`, `TurnStreamTests`, `DelegationTests`, `WorkStatusTests` and
-`SpecialistAnswerTests`. Its views have `TurnViewTests`, `BlocksViewTests`, `DelegationCardTests` and
+`SubagentAnswerTests`. Its views have `TurnViewTests`, `BlocksViewTests`, `DelegationCardTests` and
 `CurrencySwitcherTests`, and `DrawnCardTests` and `OfferCardsTests` in `Components/Blocks/`. The frames have
 `AdminShellTests`, `ChatShellTests`, a test for each part of the chat's frame, and `Pages/Admin/`. Then there are
 `MarkdownTests`, `ToolArgsTests` and `UsageFormatTests`, and `RazorHasNoCodeTests`, which fails on a `@code` block in

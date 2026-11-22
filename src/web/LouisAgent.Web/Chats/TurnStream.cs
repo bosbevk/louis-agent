@@ -96,8 +96,8 @@ public static class TurnStream
     }
 
     /// <summary>
-    /// An event of a sub-session an AskAgent call opened, folded into that call's own turn the same way. A minion's
-    /// events arrive inside the asked agent's as a nested sub_session, so this recurses a level.
+    /// An event of a sub-session an AskAgent call opened, folded into that call's own turn the same way. A lookup
+    /// agent's events arrive inside the asked agent's as a nested sub_session, so this recurses a level.
     /// </summary>
     private static void ApplySubSession(Turn turn, SubSessionStreamed sub)
     {

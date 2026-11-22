@@ -30,7 +30,7 @@ public sealed class AgentApi(HttpClient http, ChatSettings settings)
 {
     /// <summary>
     /// Opens a session with the toolsets it keeps (F5): one site asks for every available toolset, another only
-    /// <c>specialists</c>, since it delegates. The role is its voice (F21; none is the API's default), and the
+    /// <c>subagents</c>, since it delegates. The role is its voice (F21; none is the API's default), and the
     /// place is where the user is, only when they shared it (F22).
     /// </summary>
     public async Task<string> CreateSessionAsync(IEnumerable<string> toolsets, string? role = null,
@@ -55,7 +55,8 @@ public sealed class AgentApi(HttpClient http, ChatSettings settings)
         if (string.IsNullOrWhiteSpace(settings.AdminKey)) return;
         try
         {
-            using var _ = await SendAsync(new HttpRequestMessage(HttpMethod.Post, $"v1/admin/sessions/{sessionId}/mine"));
+            using var _ =
+                await SendAsync(new HttpRequestMessage(HttpMethod.Post, $"v1/admin/sessions/{sessionId}/mine"));
         }
         // An old or wrong key only loses the mark: the chat opens all the same.
         catch (AgentApiException)

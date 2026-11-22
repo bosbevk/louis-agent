@@ -17,9 +17,9 @@ namespace LouisAgent.Core.Tests.Delegation.Agents;
 /// </summary>
 public class AskAgentFollowUpTests
 {
-    /// <summary>The asker, who may ask testprod in its voice and its specialist.</summary>
+    /// <summary>The asker, who may ask testprod in its voice and its subagent.</summary>
     private static readonly FakeIdentity Guide =
-        new("guide", voice: "testprod/voice-en", calls: ["testprod", "testprod.specialist"]);
+        new("guide", voice: "testprod/voice-en", calls: ["testprod", "testprod.researcher"]);
 
     /// <summary>The identities this instance runs.</summary>
     private static readonly IReadOnlyList<IAgentIdentity> Identities =
@@ -135,7 +135,7 @@ public class AskAgentFollowUpTests
         var handler = PeerWithIds();
         var chat = new SubSessionRegistry();
 
-        await AskInOneChat(Tools(handler), chat, ("testprod", "a"), ("testprod.specialist", "b"), ("testprod", "c"));
+        await AskInOneChat(Tools(handler), chat, ("testprod", "a"), ("testprod.researcher", "b"), ("testprod", "c"));
 
         Assert.That(Calls(handler).Where(call => call.EndsWith("/messages")),
             Is.EqualTo(new[]

@@ -1,8 +1,8 @@
 namespace LouisAgent.SessionStream.Wire.Replies;
 
 /// <summary>
-/// What a session opened with: its id and time, its toolsets, depth, role, LLM profile and minion tool, and the usage
-/// tags it puts on every record.
+/// What a session opened with: its id and time, its toolsets, depth, role, LLM profile and lookup agent tool, and the
+/// usage tags it puts on every record.
 /// </summary>
 /// <remarks>
 /// Shared since F127.3.1: the API writes it, and core's sub-sessions, the browser, the eval runner and the orchestrator

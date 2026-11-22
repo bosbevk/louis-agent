@@ -89,7 +89,7 @@
 
         <Notice Text="@Runner.Notice" OnClose="() => Runner.Notice = null"/>
 
-        @* The whole cost, specialists included (pay as you go: what's shown is what's paid). *@
+        @* The whole cost, subagents included (pay as you go: what's shown is what's paid). *@
         <ChatUsageBar Usage="@ChatUsage" Currency="Currency.Current" ChildContent="UsageLine"/>
 
         @if (ViewContent is null && !ChatIsEmpty)

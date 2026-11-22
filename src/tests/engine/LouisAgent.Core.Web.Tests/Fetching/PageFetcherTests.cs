@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Web.Messages.Holes.Robots;
 using LouisAgent.Composition.Web.Messages;
 using LouisAgent.Composition.Web.Fetching;
 using LouisAgent.Composition.Messages;
@@ -49,12 +50,8 @@ public class PageFetcherTests
         var failure = Assert.ThrowsAsync<BlockedAddressException>(() =>
             fetcher.GetFollowingRedirectsAsync(new Uri("https://a.com/private/x")));
 
-        Assert.That(failure.Message, Is.EqualTo(MessageText.Format(WebToolMessage.RobotsDisallows,
-            new
-            {
-                Host = "a.com",
-                Path = "/private/x"
-            })));
+        var disallows = new RobotsDisallowsHoles("a.com", "/private/x");
+        Assert.That(failure.Message, Is.EqualTo(MessageText.Format(WebToolMessage.RobotsDisallows, disallows)));
         Assert.That(web.Requests, Is.Empty);
     }
 
@@ -87,12 +84,8 @@ public class PageFetcherTests
         var failure = Assert.ThrowsAsync<BlockedAddressException>(() =>
             fetcher.GetFollowingRedirectsAsync(new Uri("https://a.com/recipes/")));
 
-        Assert.That(failure.Message, Is.EqualTo(MessageText.Format(WebToolMessage.PageRefusesAiReaders,
-            new
-            {
-                Host = "a.com",
-                Signal = "X-Robots-Tag noai"
-            })));
+        var refuses = new PageRefusesAiReadersHoles("a.com", "X-Robots-Tag noai");
+        Assert.That(failure.Message, Is.EqualTo(MessageText.Format(WebToolMessage.PageRefusesAiReaders, refuses)));
     }
 
     /// <summary>A page whose body carries the noai meta is refused too.</summary>
@@ -105,12 +98,8 @@ public class PageFetcherTests
         var failure = Assert.ThrowsAsync<BlockedAddressException>(() =>
             fetcher.GetFollowingRedirectsAsync(new Uri("https://a.com/recipes/")));
 
-        Assert.That(failure.Message, Is.EqualTo(MessageText.Format(WebToolMessage.PageRefusesAiReaders,
-            new
-            {
-                Host = "a.com",
-                Signal = "meta robots noai"
-            })));
+        var refuses = new PageRefusesAiReadersHoles("a.com", "meta robots noai");
+        Assert.That(failure.Message, Is.EqualTo(MessageText.Format(WebToolMessage.PageRefusesAiReaders, refuses)));
     }
 
     /// <summary>An allowed page is returned, and its body can still be read by whoever asked.</summary>

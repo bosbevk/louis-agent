@@ -4,12 +4,12 @@ using LouisAgent.Web.Usage;
 namespace LouisAgent.Web.Shell;
 
 /// <summary>
-/// What a chat and a month cost, specialists included, since a chat's own usage doesn't hold theirs yet. Nothing spent
+/// What a chat and a month cost, subagents included, since a chat's own usage doesn't hold theirs yet. Nothing spent
 /// reads as nothing, and the month is the person's own calendar month.
 /// </summary>
 public static class ChatCosts
 {
-    /// <summary>A chat's whole cost: its own requests and its specialists'; null when it used nothing.</summary>
+    /// <summary>A chat's whole cost: its own requests and its subagents'; null when it used nothing.</summary>
     public static TurnUsage? Total(Chat chat) =>
         Sum(chat.Turns.SelectMany(turn => turn.Blocks.Select(block => block.SubTurn?.Usage).Prepend(turn.Usage)));
 

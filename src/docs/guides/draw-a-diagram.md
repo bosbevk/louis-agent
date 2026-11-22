@@ -133,7 +133,7 @@ the project to its main parts, and leave what else it has unlinked. A picture wi
 skips a row, or joins two cards of one row, is refused with the two cards it names. Its `kind` says which way its
 arrowheads point: `down` (the default), `up` or `both`.
 
-**The icons.** `icon` names one of the 36 icons the framework holds. They come in five groups.
+**The icons.** `icon` names one of the 37 icons the framework holds. They come in six groups.
 
 | Group | The names |
 |---|---|
@@ -142,6 +142,7 @@ arrowheads point: `down` (the default), `up` or `both`.
 | A ticket's facts | `calendar`, `clock`, `phone`, `home`, `tag`, `paw` |
 | What a showroom's demos wear | `bed`, `dining`, `scales`, `exchange` |
 | A deck's arrows | `chevron-left`, `chevron-right` |
+| A run or a release | `play` |
 
 To add an icon, add a member to `DiagramIcon` and its Tabler path data to `IconPaths`. This is the framework's one
 set of icons. A page's line icons are drawn from it too, by `LineIconView` in the framework's web.

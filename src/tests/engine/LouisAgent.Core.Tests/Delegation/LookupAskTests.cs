@@ -20,22 +20,23 @@ using LouisAgent.Composition.Sessions;
 namespace LouisAgent.Core.Tests.Delegation;
 
 /// <summary>
-/// A specialist hands one task and one of its own tools to a minion on a cheap model (F30 step 5; MinionS: small
-/// single-step tasks for the local model, the cloud model coordinates). The peer is a stub: no network, no model.
+/// A subagent hands one task and one of its own tools to a lookup agent on a cheap model (F30 step 5: small
+/// single-step tasks for the local model, while the cloud model coordinates). The peer is a stub: no network, no model.
 /// </summary>
 public class LookupAskTests
 {
-    /// <summary>The minion every test hands work to, by its address (F127.5).</summary>
+    /// <summary>The lookup agent every test hands work to, by its address (F127.5).</summary>
     private const string Address = "testprod.lookup";
 
-    /// <summary>That minion's role file, which the session opens with.</summary>
+    /// <summary>That lookup agent's role file, which the session opens with.</summary>
     private const string Role = "testprod.lookup";
 
-    /// <summary>The identity the cook's turn runs as: it may ask that minion and its own voice, nothing else.</summary>
+    /// <summary>The identity the cook's turn runs as: it may ask that lookup agent and its own voice, nothing
+    /// else.</summary>
     private static readonly FakeIdentity Testprod =
         new("testprod", voice: "testprod/voice-en", calls: [Address, "testprod"]);
 
-    /// <summary>This instance as its own peer, where a minion's session opens.</summary>
+    /// <summary>This instance as its own peer, where a lookup agent's session opens.</summary>
     private static readonly Dictionary<string, Uri> Self = new()
     {
         [SampleIdentity.Alpha] = new Uri("http://puls-agent.test/")
@@ -47,7 +48,7 @@ public class LookupAskTests
         ["*"] = ["ollama-puls", "instance"]
     };
 
-    /// <summary>A minion's answer: one shop and its price, and what it used on the local model.</summary>
+    /// <summary>A lookup agent's answer: one shop and its price, and what it used on the local model.</summary>
     private const string Stream = """
                                   event: content_block_delta
                                   data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"shop: Checkers\nprice: R35.99"}}
@@ -62,7 +63,7 @@ public class LookupAskTests
         new(status) { Content = new StringContent(json, Encoding.UTF8, "application/json") };
 
     /// <summary>
-    /// The specialist's own instance: it opens sess_minion, answers with the stream and accepts the delete, and keeps
+    /// The subagent's own instance: it opens sess_lookup, answers with the stream and accepts the delete, and keeps
     /// every body it was asked to open a session with.
     /// </summary>
     private static StubHandler Peer(List<JsonDocument> creates, Func<HttpResponseMessage>? answer = null) =>
@@ -72,7 +73,7 @@ public class LookupAskTests
             {
                 creates.Add(JsonDocument.Parse(request.Content!.ReadAsStringAsync().Result));
                 return Json(HttpStatusCode.Created,
-                    $$"""{"session_id":"sess_minion","role":"{{Role}}"}""");
+                    $$"""{"session_id":"sess_lookup","role":"{{Role}}"}""");
             }
 
             return request.Method.Method switch
@@ -87,20 +88,21 @@ public class LookupAskTests
         });
 
     /// <summary>
-    /// <c>AskAgent</c> on the stub peer, as a specialist asks its minion (F127.5: "it should use askagent also"), with
-    /// the default models unless a test gives its own.
+    /// <c>AskAgent</c> on the stub peer, as a subagent asks its lookup agent (F127.5: "it should use askagent also"),
+    /// with the default models unless a test gives its own.
     /// </summary>
-    private static Minions Tools(StubHandler handler,
+    private static Lookups Tools(StubHandler handler,
         IReadOnlyDictionary<string, IReadOnlyList<string>>? llms = null, TimeSpan? timeout = null,
         IUsageSink? sink = null) =>
         new(new AskAgentTools(Self, [Testprod], "the-key", new HttpClient(handler), usageSink: sink,
             lookupLlms: llms ?? Cascade, lookupTimeout: timeout));
 
-    /// <summary>A minion asked through <c>AskAgent</c>, its arguments in the order these tests write them.</summary>
-    private sealed class Minions(AskAgentTools tools)
+    /// <summary>A lookup agent asked through <c>AskAgent</c>, its arguments in the order these tests write
+    /// them.</summary>
+    private sealed class Lookups(AskAgentTools tools)
     {
-        /// <summary>Asks the minion at the address with one of the caller's tools.</summary>
-        public Task<string> AskMinion(string address, string tool, string task, bool stronger = false) =>
+        /// <summary>Asks the lookup agent at the address with one of the caller's tools.</summary>
+        public Task<string> AskLookupAgent(string address, string tool, string task, bool stronger = false) =>
             tools.AskAgent(address, task, tool: tool, stronger: stronger);
     }
 
@@ -130,17 +132,17 @@ public class LookupAskTests
     }
 
     /// <summary>
-    /// A minion opens two levels down with its role, its one tool and the role's model, and what it used is rolled up
-    /// under the specialist's turn.
+    /// A lookup agent opens two levels down with its role, its one tool and the role's model, and what it used is
+    /// rolled up under the subagent's turn.
     /// </summary>
     [Test]
-    public async Task AMinion_OpensAtDepthTwo_WithItsRoleItsToolAndTheRolesModel_AndRollsUpUnderTheSpecialist()
+    public async Task ALookupAgent_OpensAtDepthTwo_WithItsRoleItsToolAndTheRolesModel_AndRollsUpUnderTheSubagent()
     {
         var creates = new List<JsonDocument>();
         var sink = new ListUsageSink();
         string answer;
         using (CooksTurn())
-            answer = await Tools(Peer(creates), sink: sink).AskMinion(Address, "FetchUrl",
+            answer = await Tools(Peer(creates), sink: sink).AskLookupAgent(Address, "FetchUrl",
                 "https://shop.test/mince; beef mince 500 g; Stellenbosch");
 
         var body = creates.Single().RootElement;
@@ -150,7 +152,7 @@ public class LookupAskTests
         Assert.That(body.GetProperty("llm").GetString(), Is.EqualTo("ollama-puls"),
             "the cheapest model in the role's list first");
         Assert.That(body.GetProperty("parent").GetString(), Is.EqualTo("sess_cook#2"),
-            "the specialist's turn, so the ledger chains Puls → cook → minion");
+            "the subagent's turn, so the ledger chains Puls → cook → lookup agent");
         Assert.That(body.GetProperty("task").GetString(), Is.EqualTo($"lookup:{Role}"));
         Assert.That(body.GetProperty("toolsets").ValueKind, Is.EqualTo(JsonValueKind.Null),
             "the peer derives the toolset from the tool");
@@ -166,11 +168,11 @@ public class LookupAskTests
     }
 
     /// <summary>
-    /// A minion's answer reads the same whatever it used: on a replay its usage is zero, and the specialist's next
+    /// A lookup agent's answer reads the same whatever it used: on a replay its usage is zero, and the subagent's next
     /// request must still match its recording (FX27).
     /// </summary>
     [Test]
-    public async Task TheAnswer_ReadsTheSame_WhateverTheMinionUsed()
+    public async Task TheAnswer_ReadsTheSame_WhateverTheLookupAgentUsed()
     {
         string replayedStream = Stream.Replace("\"input_tokens\":1500", "\"input_tokens\":0")
             .Replace("\"output_tokens\":40", "\"output_tokens\":0");
@@ -181,7 +183,7 @@ public class LookupAskTests
         Assert.That(replayed, Is.EqualTo(recorded));
     }
 
-    /// <summary>What the specialist reads back from one minion whose stream is <paramref name="stream"/>.</summary>
+    /// <summary>What the subagent reads back from one lookup agent whose stream is <paramref name="stream"/>.</summary>
     private static async Task<string> AnswerFrom(string stream)
     {
         var answer = () => new HttpResponseMessage(HttpStatusCode.OK)
@@ -189,24 +191,26 @@ public class LookupAskTests
             Content = new StringContent(stream, Encoding.UTF8, "text/event-stream")
         };
         using (CooksTurn())
-            return await Tools(Peer([], answer)).AskMinion(Address, "FetchUrl", "https://shop.test/mince");
+            return await Tools(Peer([], answer)).AskLookupAgent(Address, "FetchUrl", "https://shop.test/mince");
     }
 
-    /// <summary>A minion records into, or replays from, its chat's own trial; with no trial it gets none.</summary>
+    /// <summary>A lookup agent records into, or replays from, its chat's own trial; with no trial it gets
+    /// none.</summary>
     [Test]
-    public async Task TheReplay_GoesToTheMinion_AsTheParentsOwnTrial_AndNoneWhenThereIsNone()
+    public async Task TheReplay_GoesToTheLookupAgent_AsTheParentsOwnTrial_AndNoneWhenThereIsNone()
     {
-        // F18 step 4a: a minion that reads a page records into, or replays from, the trial of the chat it works for.
+        // F18 step 4a: a lookup agent that reads a page records into, or replays from, the trial of the chat it works
+        // for.
         var withReplay = new List<JsonDocument>();
         using (SessionReplay.Use(new SessionReplay(WebReplayMode.Replay,
                    SampleMode.Fill("run_1:<ModeBeta>:1/bobotie"), Model: false)))
         using (CooksTurn())
             await Tools(Peer(withReplay))
-                .AskMinion(Address, "FetchUrl", "https://shop.test/mince; beef mince 500 g; Stellenbosch");
+                .AskLookupAgent(Address, "FetchUrl", "https://shop.test/mince; beef mince 500 g; Stellenbosch");
         var without = new List<JsonDocument>();
         using (CooksTurn())
             await Tools(Peer(without))
-                .AskMinion(Address, "FetchUrl", "https://shop.test/mince; beef mince 500 g; Stellenbosch");
+                .AskLookupAgent(Address, "FetchUrl", "https://shop.test/mince; beef mince 500 g; Stellenbosch");
 
         var replay = withReplay.Single().RootElement.GetProperty("replay");
         Assert.That(
@@ -219,36 +223,37 @@ public class LookupAskTests
     }
 
     /// <summary>
-    /// A tool the specialist doesn't hold, one never handed down, or a role that isn't a minion's is refused before
+    /// A tool the subagent doesn't hold, one never handed down, or a role that isn't a lookup agent's is refused before
     /// anything is sent.
     /// </summary>
     [Test]
     public async Task
-        AToolTheSpecialistDoesntHold_OrNeverHandedDown_OrARoleThatIsntAMinions_IsRefused_WithoutANetworkCall()
+        AToolTheSubagentDoesntHold_OrNeverHandedDown_OrARoleThatIsntALookupAgents_IsRefused_WithoutANetworkCall()
     {
         var creates = new List<JsonDocument>();
         var tools = Tools(Peer(creates));
 
         using (CooksTurn(tools: ["FetchUrl"]))
         {
-            Assert.That(await tools.AskMinion(Address, "ReadRenderedPage", "a page"),
+            Assert.That(await tools.AskLookupAgent(Address, "ReadRenderedPage", "a page"),
                 Does.StartWith("Error:").And.Contain("ReadRenderedPage").And.Contain("FetchUrl"),
                 "only one of its own: the parent's toolbox is the ceiling");
-            Assert.That(await tools.AskMinion(Address, "ExecuteSkill", "a page"),
+            Assert.That(await tools.AskLookupAgent(Address, "ExecuteSkill", "a page"),
                 Does.StartWith("Error:").And.Contain("never"));
-            Assert.That(await tools.AskMinion("testprod.specialist", "FetchUrl", "a page"),
-                Does.StartWith("Error:").And.Contain("testprod.specialist"), "a specialist is no minion");
-            Assert.That(await tools.AskMinion("testprod", "FetchUrl", "a page"),
-                Does.StartWith("Error:").And.Contain("only a lookup agent"), "an identity alone is no minion");
-            Assert.That(await tools.AskMinion("not an address", "FetchUrl", "a page"), Does.StartWith("Error:"));
+            Assert.That(await tools.AskLookupAgent("testprod.researcher", "FetchUrl", "a page"),
+                Does.StartWith("Error:").And.Contain("testprod.researcher"), "a subagent is no lookup agent");
+            Assert.That(await tools.AskLookupAgent("testprod", "FetchUrl", "a page"),
+                Does.StartWith("Error:").And.Contain("only a lookup agent"), "an identity alone is no lookup agent");
+            Assert.That(await tools.AskLookupAgent("not an address", "FetchUrl", "a page"), Does.StartWith("Error:"));
         }
 
         Assert.That(creates, Is.Empty);
     }
 
-    /// <summary>A minion's address without a tool is refused before anything is sent: a minion runs one tool.</summary>
+    /// <summary>A lookup agent's address without a tool is refused before anything is sent: a lookup agent runs one
+    /// tool.</summary>
     [Test]
-    public async Task AMinionAskedWithoutATool_IsRefused_WithoutANetworkCall()
+    public async Task ALookupAgentAskedWithoutATool_IsRefused_WithoutANetworkCall()
     {
         var creates = new List<JsonDocument>();
         var tools = new AskAgentTools(Self, [Testprod], "the-key", new HttpClient(Peer(creates)),
@@ -262,20 +267,20 @@ public class LookupAskTests
     }
 
     /// <summary>
-    /// A minion the identity's <c>Calls</c> don't list is refused naming the ones they do, and a minion on another
-    /// server is refused: a minion runs here, on a local model (F127.5, ADR 0081).
+    /// A lookup agent the identity's <c>Calls</c> don't list is refused naming the ones they do, and a lookup agent on
+    /// another server is refused: a lookup agent runs here, on a local model (F127.5, ADR 0081).
     /// </summary>
     [Test]
-    public async Task AMinionNotListed_OrOnAnotherServer_IsRefused_WithoutANetworkCall()
+    public async Task ALookupAgentNotListed_OrOnAnotherServer_IsRefused_WithoutANetworkCall()
     {
         var creates = new List<JsonDocument>();
         var tools = Tools(Peer(creates));
 
         using (CooksTurn())
         {
-            Assert.That(await tools.AskMinion("testprod.summary", "FetchUrl", "a page"),
+            Assert.That(await tools.AskLookupAgent("testprod.summary", "FetchUrl", "a page"),
                 Does.StartWith("Error:").And.Contain("testprod.summary").And.Contain(Address));
-            Assert.That(await tools.AskMinion("partner:testprod.lookup", "FetchUrl", "a page"),
+            Assert.That(await tools.AskLookupAgent("partner:testprod.lookup", "FetchUrl", "a page"),
                 Does.StartWith("Error:").And.Contain("this instance"));
         }
 
@@ -288,21 +293,21 @@ public class LookupAskTests
     [Test]
     public async Task Stronger_RunsTheSameTaskOnTheNextModel_AndIsRefusedAtTheEndOfTheList()
     {
-        // FrugalGPT's cascade with VerifyQuote as the check: the specialist asks for the next model, never names one.
+        // FrugalGPT's cascade with VerifyQuote as the check: the subagent asks for the next model, never names one.
         var creates = new List<JsonDocument>();
         var tools = Tools(Peer(creates));
 
         using (CooksTurn())
         {
-            await tools.AskMinion(Address, "FetchUrl", "a page", stronger: true);
+            await tools.AskLookupAgent(Address, "FetchUrl", "a page", stronger: true);
             Assert.That(
                 creates.Single().RootElement.TryGetProperty("llm", out var llm) &&
                 llm.ValueKind == JsonValueKind.String, Is.False,
-                "'instance' is the specialist's own model: no llm in the body");
+                "'instance' is the subagent's own model: no llm in the body");
 
             var oneModel = Tools(Peer(creates),
                 new Dictionary<string, IReadOnlyList<string>> { ["*"] = ["ollama-puls"] });
-            string refused = await oneModel.AskMinion(Address, "FetchUrl", "a page", stronger: true);
+            string refused = await oneModel.AskLookupAgent(Address, "FetchUrl", "a page", stronger: true);
             Assert.That(refused, Does.StartWith("Error:").And.Contain("ollama-puls"),
                 "no stronger model left: the refusal says which list ended");
             Assert.That(creates, Has.Count.EqualTo(1));
@@ -318,13 +323,13 @@ public class LookupAskTests
 
         using (CooksTurn())
         {
-            await Tools(Peer(creates), llms).AskMinion(Address, "FetchUrl", "a page");
+            await Tools(Peer(creates), llms).AskLookupAgent(Address, "FetchUrl", "a page");
             Assert.That(
                 creates.Single().RootElement.TryGetProperty("llm", out var llm) &&
                 llm.ValueKind == JsonValueKind.String, Is.False);
 
-            var noListForIt = new Dictionary<string, IReadOnlyList<string>> { ["another-minion"] = ["instance"] };
-            string refused = await Tools(Peer(creates), noListForIt).AskMinion(Address, "FetchUrl", "a page");
+            var noListForIt = new Dictionary<string, IReadOnlyList<string>> { ["another-lookup"] = ["instance"] };
+            string refused = await Tools(Peer(creates), noListForIt).AskLookupAgent(Address, "FetchUrl", "a page");
             Assert.That(refused, Does.StartWith("Error:").And.Contain("LOOKUP_LLMS"),
                 "no list for the role and no default");
             Assert.That(creates, Has.Count.EqualTo(1));
@@ -332,15 +337,15 @@ public class LookupAskTests
     }
 
     /// <summary>
-    /// One minion past the cap is refused, counted across every specialist of the same user turn; the next turn starts
-    /// fresh.
+    /// One lookup agent past the cap is refused, counted across every subagent of the same user turn; the next turn
+    /// starts fresh.
     /// </summary>
     [Test]
-    public async Task OnePastTheCap_IsRefused_AcrossSpecialists()
+    public async Task OnePastTheCap_IsRefused_AcrossSubagents()
     {
-        // One GPU answers one request at a time, so the limit counts the whole tree of Puls's turn: two specialists
-        // under the same Puls turn share it. Every shop's price goes through a minion (Louis, F30 hand check), so a
-        // meal of about eight ingredients at two shops needs sixteen.
+        // One GPU answers one request at a time, so the limit counts the whole tree of Puls's turn: two subagents
+        // under the same Puls turn share it. Every shop's price goes through a lookup agent (Louis, F30 hand check), so
+        // a meal of about eight ingredients at two shops needs sixteen.
         Assert.That(LookupAsk.MaxPerTurn, Is.EqualTo(16));
         var creates = new List<JsonDocument>();
         var tools = Tools(Peer(creates));
@@ -348,25 +353,25 @@ public class LookupAskTests
 
         using (CooksTurn(session: "sess_cook", turn: 1, parent: "sess_puls#4"))
             for (int i = 0; i < first; i++)
-                Assert.That(await tools.AskMinion(Address, "FetchUrl", $"page {i}"), Does.Not.StartWith("Error:"));
+                Assert.That(await tools.AskLookupAgent(Address, "FetchUrl", $"page {i}"), Does.Not.StartWith("Error:"));
         using (CooksTurn(session: "sess_researcher", turn: 1, parent: "sess_puls#4"))
         {
             for (int i = 0; i < 2; i++)
-                Assert.That(await tools.AskMinion(Address, "FetchUrl", $"page {i}"), Does.Not.StartWith("Error:"));
-            Assert.That(await tools.AskMinion(Address, "FetchUrl", "one more"),
+                Assert.That(await tools.AskLookupAgent(Address, "FetchUrl", $"page {i}"), Does.Not.StartWith("Error:"));
+            Assert.That(await tools.AskLookupAgent(Address, "FetchUrl", "one more"),
                 Does.StartWith("Error:").And.Contain("16"));
         }
 
         using (CooksTurn(session: "sess_cook", turn: 1, parent: "sess_puls#5"))
-            Assert.That(await tools.AskMinion(Address, "FetchUrl", "next turn"), Does.Not.StartWith("Error:"),
+            Assert.That(await tools.AskLookupAgent(Address, "FetchUrl", "next turn"), Does.Not.StartWith("Error:"),
                 "another user turn starts fresh");
 
         Assert.That(creates, Has.Count.EqualTo(LookupAsk.MaxPerTurn + 1));
     }
 
-    /// <summary>A minion that takes too long is stopped after its own timeout and deleted on the peer.</summary>
+    /// <summary>A lookup agent that takes too long is stopped after its own timeout and deleted on the peer.</summary>
     [Test]
-    public async Task AMinion_IsStoppedAfterItsOwnTimeout_AndDeleted()
+    public async Task ALookupAgent_IsStoppedAfterItsOwnTimeout_AndDeleted()
     {
         var deleted = false;
         var handler = new StubHandler(request =>
@@ -378,7 +383,7 @@ public class LookupAskTests
             }
 
             if (request.RequestUri!.AbsolutePath == "/v1/sessions")
-                return Json(HttpStatusCode.Created, """{"session_id":"sess_minion"}""");
+                return Json(HttpStatusCode.Created, """{"session_id":"sess_lookup"}""");
 
             Thread.Sleep(2000);
             return new HttpResponseMessage(HttpStatusCode.OK)
@@ -390,19 +395,19 @@ public class LookupAskTests
         string answer;
         using (CooksTurn())
             answer = await Tools(handler, timeout: TimeSpan.FromMilliseconds(200))
-                .AskMinion(Address, "FetchUrl", "a slow page");
+                .AskLookupAgent(Address, "FetchUrl", "a slow page");
 
         Assert.That(answer, Does.StartWith("Error:").And.Contain("didn't finish"));
         Assert.That(deleted, Is.True);
-        Assert.That(LookupAsk.DefaultTimeout, Is.EqualTo(TimeSpan.FromMinutes(2)), "inside the specialist's 5");
+        Assert.That(LookupAsk.DefaultTimeout, Is.EqualTo(TimeSpan.FromMinutes(2)), "inside the subagent's 5");
     }
 
-    /// <summary>Even in a chat a minion is never kept: it's deleted as soon as it answers.</summary>
+    /// <summary>Even in a chat a lookup agent is never kept: it's deleted as soon as it answers.</summary>
     [Test]
-    public async Task InAChat_AMinionIsNeverKept_ItIsDeletedOnceItAnswers()
+    public async Task InAChat_ALookupAgentIsNeverKept_ItIsDeletedOnceItAnswers()
     {
-        // F30, the fourth hand check: a chat keeps three children, so kept minions evicted the cook's earlier ones and
-        // its ContinueMinion calls failed. A minion answers once and closes (Louis: "do all three").
+        // F30, the fourth hand check: a chat keeps three children, so kept lookup agents evicted the cook's earlier
+        // ones and its calls to continue them failed. A lookup agent answers once and closes (Louis: "do all three").
         int deletes = 0;
         var handler = new StubHandler(request =>
         {
@@ -413,7 +418,7 @@ public class LookupAskTests
             }
 
             if (request.RequestUri!.AbsolutePath == "/v1/sessions")
-                return Json(HttpStatusCode.Created, """{"session_id":"sess_minion"}""");
+                return Json(HttpStatusCode.Created, """{"session_id":"sess_lookup"}""");
 
             return new HttpResponseMessage(HttpStatusCode.OK)
             {
@@ -425,13 +430,13 @@ public class LookupAskTests
         string answer;
         using (CooksTurn())
         using (SubSessionRegistry.Use(registry))
-            answer = await Tools(handler).AskMinion(Address, "FetchUrl", "a page");
+            answer = await Tools(handler).AskLookupAgent(Address, "FetchUrl", "a page");
 
         Assert.That(answer, Does.StartWith("shop: Checkers").And.Not.Contain("handle"));
-        Assert.That(registry.Open, Is.Empty, "the chat's three places stay for its specialists");
+        Assert.That(registry.Open, Is.Empty, "the chat's three places stay for its subagents");
         Assert.That(deletes, Is.EqualTo(1));
         Assert.That(typeof(AskAgentTools).GetMethods().Select(m => m.Name),
-            Has.None.EqualTo("ContinueMinion").And.None.EqualTo("StartMinion"), "AskAgent alone: nothing to continue");
+            Has.None.StartsWith("Continue").And.None.StartsWith("Start"), "AskAgent alone: nothing to continue");
     }
 
     /// <summary>
@@ -441,11 +446,11 @@ public class LookupAskTests
     public void TheLookupModels_AreParsedFromLookupLlms_RoleOrStar_CheapestFirst()
     {
         var llms = AgentOptions.ParseLookupLlms(
-            " *=Ollama-Puls > instance , puls-minion-web-summary=instance, broken, =x, puls-minion-a=");
+            " *=Ollama-Puls > instance , puls-lookup-web-summary=instance, broken, =x, puls-lookup-a=");
 
         Assert.That(llms["*"], Is.EqualTo(new[] { "ollama-puls", "instance" }));
-        Assert.That(llms["puls-minion-web-summary"], Is.EqualTo(new[] { "instance" }));
-        Assert.That(llms.Keys, Is.EquivalentTo(new[] { "*", "puls-minion-web-summary" }),
+        Assert.That(llms["puls-lookup-web-summary"], Is.EqualTo(new[] { "instance" }));
+        Assert.That(llms.Keys, Is.EquivalentTo(new[] { "*", "puls-lookup-web-summary" }),
             "an entry without a role or a model is dropped");
         Assert.That(
             AgentOptions.FromEnvironment(name => name == "LOOKUP_LLMS" ? "*=ollama-puls>instance" : null)
@@ -453,12 +458,12 @@ public class LookupAskTests
         Assert.That(
             AgentOptions.FromEnvironment(name => name == "MINION_LLMS" ? "*=instance" : null).LookupLlms, Is.Empty,
             "the old name sets nothing (CL68.3, ADR 0049)");
-        Assert.That(AgentOptions.FromEnvironment(_ => null).LookupLlms, Is.Empty, "unset: no minions toolset");
+        Assert.That(AgentOptions.FromEnvironment(_ => null).LookupLlms, Is.Empty, "unset: no lookup agents toolset");
     }
 
-    /// <summary>A minion model that is neither a known profile nor the instance's own stops start-up.</summary>
+    /// <summary>A lookup agent model that is neither a known profile nor the instance's own stops start-up.</summary>
     [Test]
-    public void AMinionModel_ThatIsntAProfileOrTheInstance_StopsStartUp()
+    public void ALookupAgentModel_ThatIsntAProfileOrTheInstance_StopsStartUp()
     {
         var agent = new AgentOptions
         {
@@ -477,11 +482,11 @@ public class LookupAskTests
     }
 
     /// <summary>
-    /// No minions toolset any more: the agents toolset asks minions too, and needs only its peers (a minion without
-    /// models is refused when it is asked). A tool still names the toolset it belongs to.
+    /// No lookup agents toolset any more: the agents toolset asks lookup agents too, and needs only its peers (a lookup
+    /// agent without models is refused when it is asked). A tool still names the toolset it belongs to.
     /// </summary>
     [Test]
-    public void TheMinionsToolset_IsGone_TheAgentsToolsetAsksMinions_AndATool_NamesItsToolset()
+    public void TheLookupAgentsToolset_IsGone_TheAgentsToolsetAsksLookupAgents_AndATool_NamesItsToolset()
     {
         var agents = ToolsetCatalog.Find(CoreToolset.Agents.Wire())!;
         var without = new ToolsetContext(new AgentOptions { RatesUrl = null }, new WebParts(new NoSearch()));

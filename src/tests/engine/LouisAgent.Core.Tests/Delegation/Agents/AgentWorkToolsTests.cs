@@ -124,8 +124,8 @@ public class AgentWorkToolsTests
     /// <summary>An address this chat never asked is refused, naming the ones it did.</summary>
     [Test]
     public async Task AnAddressNotAsked_IsRefused_NamingTheOnesAsked() =>
-        Assert.That(await ReadAsync("testprod.specialist", Booking),
-            Does.StartWith("Error").And.Contain("testprod.specialist").And.Contain("Asked: testprod"));
+        Assert.That(await ReadAsync("testprod.researcher", Booking),
+            Does.StartWith("Error").And.Contain("testprod.researcher").And.Contain("Asked: testprod"));
 
     /// <summary>Outside a chat nothing was kept, so there is nothing to read.</summary>
     [Test]

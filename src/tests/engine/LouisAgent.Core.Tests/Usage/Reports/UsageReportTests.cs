@@ -23,11 +23,18 @@ public class UsageReportTests
         Models = new()
         {
             ["claude-haiku-5-5"] = new ModelPrice
-            { Input = 0.10m, Output = 0.50m, CacheRead = 0.01m, CacheWrite5m = 0.125m, CacheWrite1h = 0.20m },
+            {
+                Input = 0.10m,
+                Output = 0.50m,
+                CacheRead = 0.01m,
+                CacheWrite5m = 0.125m,
+                CacheWrite1h = 0.20m
+            },
         },
     };
 
-    // Three lines from a demo ledger (written before F2, so no "cost"): two fix requests and a triage, plus one unpriced model.
+    // Three lines from a demo ledger (written before F2, so no "cost"): two fix requests and a triage, plus one
+    // unpriced model.
     private const string Ledger = """
                                   {"at":"2026-10-10T17:43:13+00:00","round":1,"purpose":"triage","host":"orchestrator","session":"triage_83d0","turn":1,"task":null,"run":"run-1","service":"order-service","model":"claude-haiku-5-5","tokens":{"input":7000,"cache_write":null,"cache_read":0,"output":300,"reasoning":null},"duration_ms":1,"stop":"tool_calls"}
                                   {"at":"2026-10-10T17:43:20+00:00","round":1,"purpose":"turn","host":"api","session":"sess_1","turn":1,"task":"fix:83d0","run":"run-1","service":"order-service","model":"claude-haiku-5-5","tokens":{"input":47605,"cache_write":null,"cache_read":0,"output":470,"reasoning":null},"duration_ms":1,"stop":"tool_calls"}
@@ -105,7 +112,9 @@ public class UsageReportTests
         Assert.That(UsageReport.Price([record], Prices).Single().Cost, Is.SameAs(charged));
     }
 
-    /// <summary>A sub-session's roll-up (F5): one record standing for the specialist's 3 requests, with their charged cost.</summary>
+    /// <summary>
+    /// A sub-session's roll-up (F5): one record standing for the subagent's 3 requests, with their charged cost.
+    /// </summary>
     private static UsageRecord RollUp(UsageCost? cost = null, int requests = 3) => new(
         At: DateTimeOffset.Parse("2026-10-14T10:00:00Z"), Round: 0, Purpose: UsagePurpose.SubSession, Host: "api",
         Session: "sess_parent", Turn: 2, Task: null, Run: null, Service: null, Model: "sub-session:puls",
@@ -115,7 +124,7 @@ public class UsageReportTests
     [Test]
     public void Total_ARollUpRecord_CountsItsRequests()
     {
-        // F5 follow-up: a turn that delegated once made 1 request itself and 3 through the specialist, so it says 4.
+        // F5 follow-up: a turn that delegated once made 1 request itself and 3 through the subagent, so it says 4.
         UsageRecord own = UsageReport.Read(WriteLedger(Ledger)).Skip(1).First() with
         {
             Cost = new UsageCost("USD", 0.005m, null)
@@ -132,7 +141,7 @@ public class UsageReportTests
     [Test]
     public void Total_AnUnpricedRollUp_CountsItsRequestsAsUnpriced()
     {
-        // A specialist on an unpriced model: "3 requests unpriced", not 1, so the partial cost isn't read as the whole.
+        // A subagent on an unpriced model: "3 requests unpriced", not 1, so the partial cost isn't read as the whole.
         UsageTotal total = UsageReport.Total("turn", [RollUp(cost: null) with { Cost = null }]);
 
         Assert.That((total.Requests, total.Unpriced, total.Cost), Is.EqualTo((3, 3, (decimal?)null)));

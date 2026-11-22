@@ -27,14 +27,14 @@ public class CodingRouterTests
         var catalog = CodingPrompts.Catalog;
 
         // Every toolset but the ones of packs another identity names (F109.3: the expert's docs are not the coding
-        // agent's to route); there is no minions toolset (F127.5: AskAgent asks minions too).
+        // agent's to route); the old `minions` toolset is gone (F127.5: AskAgent asks lookup agents too).
         var coding = catalog.Identities[0];
         var othersToolsets = catalog.Packs.Where(p => !coding.Packs.Contains(p.Name))
             .SelectMany(p => p.Toolsets.Select(t => t.Name)).ToHashSet(StringComparer.Ordinal);
         foreach (string toolset in catalog.Toolsets.Select(t => t.Name)
                      .Where(name => !othersToolsets.Contains(name)))
             Assert.That(doc, Does.Contain($"`{toolset}`"), $"the router should name the '{toolset}' toolset");
-        Assert.That(doc, Does.Not.Contain("`minions`"), "a chat never holds minions");
+        Assert.That(doc, Does.Not.Contain("`minions`"), "a chat never holds lookup agents");
 
         string[] tools =
         [

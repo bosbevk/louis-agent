@@ -51,7 +51,7 @@ public class SkillFileSourceTests
     {
         // CL15: the roles here are the tests' own (their agents/), registered as an identity's are; Puls's live in its
         // identity.
-        Assert.That(SkillFileSource.Files("agents/testprod/subagents/specialist"), Is.EqualTo(new[] { "voice.md" }));
+        Assert.That(SkillFileSource.Files("agents/testprod/subagents/researcher"), Is.EqualTo(new[] { "voice.md" }));
         Assert.That(SkillFileSource.Files($"agents/testprod/{PromptFolder.Lookups.Wire()}/lookup"),
             Is.EqualTo(new[] { "voice.md" }), "CL68.3: a lookup agent inside its agent");
     }

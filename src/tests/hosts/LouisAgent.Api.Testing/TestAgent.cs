@@ -6,13 +6,13 @@ namespace LouisAgent.Api.Testing;
 
 /// <summary>
 /// The agent the API's tests run on (F166.1): a made-up identity with the shape a real one has, its voices, a
-/// specialist, a reader and its minions, on fake packs under the web's and the calculator's names. It replaces Puls,
-/// so the API is proved with no product and no real pack in it.
+/// subagent, a reader and its lookup agents, on fake packs under the web's and the calculator's names. It replaces
+/// Puls, so the API is proved with no product and no real pack in it.
 /// </summary>
 /// <remarks>
 /// Louis's pick A of three: a test agent of the framework's own fakes, over running the tests on a site's identity or
 /// leaving them with Puls. It is a <see cref="FakeIdentity"/> with its prompts in memory, each role file carrying the
-/// header the engine reads (its level and, for the specialist, its toolsets), so a session can open it as it opens a
+/// header the engine reads (its level and, for the subagent, its toolsets), so a session can open it as it opens a
 /// real identity's.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0076-core-ships-no-agent.md">ADR 0076: core ships no agent</seealso>
@@ -40,7 +40,7 @@ public static class TestAgent
     public const string OtherVoiceHeading = "# Test agent: in German";
 
     /// <summary>Its subagent, named by its address, whose role adds the web and the calculator.</summary>
-    public const string Specialist = Name + ".specialist";
+    public const string Researcher = Name + ".researcher";
 
     /// <summary>A second subagent that adds no toolset of its own, working with what it is handed.</summary>
     public const string Reader = Name + ".reader";
@@ -49,7 +49,7 @@ public static class TestAgent
     /// What every lookup agent of the test agent is, loaded before its own prompt: the engine finds it from the
     /// lookup agent's identity.
     /// </summary>
-    public const string LookupBase = Name + "-minion";
+    public const string LookupBase = Name + "-lookup";
 
     /// <summary>The heading of a lookup agent's own prompt, so a test can tell it loaded.</summary>
     public const string LookupHeading = "# Test agent lookup agent: lookup";
@@ -66,7 +66,7 @@ public static class TestAgent
     /// </summary>
     public static IReadOnlyList<IAgentPack> Packs { get; } = [TestTools.WebPack, TestTools.CalculatorPack];
 
-    /// <summary>The identity, its prompts in memory, asking its specialist and passing its answers on whole.</summary>
+    /// <summary>The identity, its prompts in memory, asking its subagent and passing its answers on whole.</summary>
     public static FakeIdentity Identity { get; } = new(Name,
         packs: [.. Packs.Select(pack => pack.Name)],
         prompts: new Dictionary<string, string>
@@ -75,8 +75,8 @@ public static class TestAgent
             [$"agents/{Name}/voice-en.md"] = Prompt("voice-en", "agent", VoiceHeading, "The test agent in English."),
             [$"agents/{Name}/voice-de.md"] =
                 Prompt("voice-de", "agent", OtherVoiceHeading, "The test agent in German."),
-            [RoleCatalog.FileName(Specialist, RoleLevel.Subagent)] = Prompt("voice", "subagent",
-                "# Test agent specialist", "The test agent's specialist.", "web, calculator"),
+            [RoleCatalog.FileName(Researcher, RoleLevel.Subagent)] = Prompt("voice", "subagent",
+                "# Test agent researcher", "The test agent's researcher.", "web, calculator"),
             [RoleCatalog.FileName(Reader, RoleLevel.Subagent)] = Prompt("voice", "subagent", "# Test agent reader",
                 "Works with the toolsets it is handed."),
             [RoleCatalog.LookupBaseOf(Lookup)!] =
@@ -87,7 +87,7 @@ public static class TestAgent
                 Prompt("voice", "lookup", "# Test agent lookup agent: find", "Finds one thing.")
         },
         voice: Voice,
-        calls: [Specialist],
+        calls: [Researcher],
         relaysAnswersWhole: true);
 
     /// <summary>

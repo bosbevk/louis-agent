@@ -25,6 +25,21 @@ before writing a kind you have not written in this session.
 3. **Link it** in the doc as a markdown image whose alt text says what the picture shows.
 4. **Check it.** `dotnet test src/tests/tools/LouisAgent.DocDiagrams.Tests`, then look at the SVG yourself.
 
+## The names an icon and a tone take
+
+The tool reads `icon` and `tone` as enums, so a name it doesn't hold stops the picture from being drawn ("can't be
+drawn: The JSON value could not be converted"). Pick from these, never from memory: `lock`, `orange`, `tool`,
+`check` and `list` look right and are refused.
+
+| Field | The names |
+|---|---|
+| `icon` (37) | `chip`, `user`, `users`, `box`, `server`, `database`, `world`, `message`, `shield`, `code`, `folder`, `file`, `browser`, `checks`, `chart`, `cloud`, `settings`, `branch`, `mail`, `search`, `book`, `terminal`, `stack`, `info`, `calendar`, `clock`, `phone`, `home`, `tag`, `paw`, `bed`, `dining`, `scales`, `exchange`, `chevron-left`, `chevron-right`, `play` |
+| `tone` (7) | `plain`, `blue` (who starts it), `green` (this project's parts), `violet` (the framework), `teal` (contracts and data), `amber` (files, databases, logs), `red` (what runs outside the process) |
+
+They are the `[WireName]`s of `DiagramIcon` (`src/web/LouisAgent.Diagrams/Icons/`) and `DiagramTone`
+(`src/web/LouisAgent.Diagrams/Tones/`); when the two disagree with this table, the code is right and the table is
+fixed. The guide's *The icons* groups them by what they are for.
+
 ## A shape on a flow's box
 
 A box of a `flow` names a `shape` only where the shape means something, and most name none.

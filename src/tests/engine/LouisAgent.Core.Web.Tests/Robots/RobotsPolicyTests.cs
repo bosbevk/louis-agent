@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Web.Messages.Holes.Robots;
 using LouisAgent.Composition.Web.Messages;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Messages;
@@ -172,12 +173,8 @@ public class RobotsPolicyTests
         string? blocked = await policy.RefusalAsync(new Uri("https://a.com/private/x?y=1"));
         string? allowed = await policy.RefusalAsync(new Uri("https://a.com/recipes/"));
 
-        Assert.That(blocked, Is.EqualTo(MessageText.Format(WebToolMessage.RobotsDisallows,
-            new
-            {
-                Host = "a.com",
-                Path = "/private/x?y=1"
-            })));
+        var disallows = new RobotsDisallowsHoles("a.com", "/private/x?y=1");
+        Assert.That(blocked, Is.EqualTo(MessageText.Format(WebToolMessage.RobotsDisallows, disallows)));
         Assert.That(allowed, Is.Null);
     }
 
@@ -189,12 +186,8 @@ public class RobotsPolicyTests
 
         string? refusal = await policy.RefusalAsync(new Uri("https://a.com/x"));
 
-        Assert.That(refusal, Is.EqualTo(MessageText.Format(WebToolMessage.RobotsUnreachable,
-            new
-            {
-                Host = "a.com",
-                Reason = "503"
-            })));
+        var unreachable = new RobotsUnreachableHoles("a.com", "503");
+        Assert.That(refusal, Is.EqualTo(MessageText.Format(WebToolMessage.RobotsUnreachable, unreachable)));
     }
 
     /// <summary>A page's own signal is refused with the host and the signal's name.</summary>
@@ -206,12 +199,8 @@ public class RobotsPolicyTests
         string? refusal = policy.PageRefusal(new Uri("https://a.com/x"), null,
             "<meta name=\"robots\" content=\"noai\">");
 
-        Assert.That(refusal, Is.EqualTo(MessageText.Format(WebToolMessage.PageRefusesAiReaders,
-            new
-            {
-                Host = "a.com",
-                Signal = "meta robots noai"
-            })));
+        var refuses = new PageRefusesAiReadersHoles("a.com", "meta robots noai");
+        Assert.That(refusal, Is.EqualTo(MessageText.Format(WebToolMessage.PageRefusesAiReaders, refuses)));
         Assert.That(policy.PageRefusal(new Uri("https://a.com/x"), null, "<p>plain</p>"), Is.Null);
     }
 }

@@ -124,7 +124,7 @@ public sealed class AgentCatalog
 
     /// <summary>
     /// Who a session is from its role: the identity whose mode the role is (<c>{name}/{mode}</c>), else the first
-    /// identity, which a session with no role or a specialist's role runs as; null for a host with none.
+    /// identity, which a session with no role or a subagent's role runs as; null for a host with none.
     /// </summary>
     public IAgentIdentity? IdentityOf(string? role)
     {
@@ -176,14 +176,14 @@ public sealed class AgentCatalog
 
     /// <summary>
     /// The tool names <paramref name="resolved"/> register (an engine-provided toolset contributes none): what a
-    /// minion's one tool may be chosen from (F30).
+    /// lookup agent's one tool may be chosen from (F30).
     /// </summary>
     public IReadOnlySet<string> ToolNamesOf(IEnumerable<ToolsetDefinition> resolved) =>
         resolved.SelectMany(NamesOf).ToHashSet(StringComparer.Ordinal);
 
     /// <summary>
-    /// The toolset whose class builds <paramref name="tool"/> (a minion's one tool names its toolset, F30); null for
-    /// none.
+    /// The toolset whose class builds <paramref name="tool"/> (a lookup agent's one tool names its toolset, F30); null
+    /// for none.
     /// </summary>
     public string? ToolsetOf(string tool) => _toolsetOfTool.TryGetValue(tool, out var toolset) ? toolset.Name : null;
 

@@ -49,7 +49,8 @@ public class ModelRequestSnapshotTests
             DefaultVoice = CodingPrompts.Catalog.DefaultVoice,
             SkillsDirectory = _skillsDir,
             RatesUrl = null,
-            // The agents toolset needs a peer; AskAgent asks minions too (F127.5), so no model map is needed for it.
+            // The agents toolset needs a peer; AskAgent asks lookup agents too (F127.5), so no model map is needed for
+            // it.
             AgentPeers = new Dictionary<string, Uri> { ["coder"] = new("http://coder.test/") },
             // F33: a browser for the web toolset's renderer; building the engine connects to nothing. (The shops are
             // a pack, CL15.)

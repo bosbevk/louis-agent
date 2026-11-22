@@ -18,7 +18,7 @@ public class CardDeckTests
         builder.AddComponentParameter(1, nameof(Card.Title), "Puls");
         builder.AddComponentParameter(2, nameof(Card.Summary), "A South African assistant.");
         builder.AddComponentParameter(3, nameof(Card.ChildContent),
-            (RenderFragment)(b => b.AddMarkupContent(0, "<p>Puls hands each task to a specialist.</p>")));
+            (RenderFragment)(b => b.AddMarkupContent(0, "<p>Puls hands each task to a subagent.</p>")));
         builder.CloseComponent();
         builder.OpenComponent<Card>(4);
         builder.AddComponentParameter(5, nameof(Card.Title), "The guide");
@@ -65,7 +65,7 @@ public class CardDeckTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(first, Is.EqualTo("Puls hands each task to a specialist."));
+            Assert.That(first, Is.EqualTo("Puls hands each task to a subagent."));
             Assert.That(marked, Is.True);
             Assert.That(second, Is.EqualTo("The one in the corner."));
             Assert.That(cut.FindAll(".card-detail"), Is.Empty);

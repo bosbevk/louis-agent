@@ -14,15 +14,14 @@
 |---|---|---|
 | Features (`F`) | 152 | 77 |
 | Fixes (`FX`) | 213 | 4 |
-| Cleanups (`CL`) | 46 | 27 |
+| Cleanups (`CL`) | 47 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (108 in the TODO)
+## Open (107 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
-| CL69 | The old words left in code: "specialist" in the framework's web library (`SpecialistAnswer` and its tests, about 20 files' summaries) and "minion" in about 30 files' comments and 25 test methods' names (`AMinion_OpensAtDepthTwo…`): rename them to subagent and lookup agent through Rider (found in CL68.2 and CL68.3, ADR 0133, ADR 0021) | Now |
 | F126 | Evals, redesigned: one `.eval.json` of conversations with turns, six facts in code, criteria a judge marks, flips to correct it, its own eval host, six screens; today's evals deleted, not ported; five children since 2026-11-22: F126.1 delete the old evals (plan approved 2026-11-22); F126.2 the file and the grading; F126.3 runs and the run page; F126.4 flips, re-grade and better-or-worse; F126.5 new evals | Now, after CL69 |
 | F171 | The bill checker (Louis, 2026-11-21; 2026-11-22: "this feature is next"): a phone app that reads a Western Cape municipal account from a photo or a PDF, checks every line against Cape Town's, Swartland's and Overstrand's own tariffs and drafts the dispute, free to download with one subscription; the product in its own private `bill-checker` repository on the framework's packages, the framework's parts here: F171.1 a photo or PDF reaches a tool (started 2026-11-22); F171.2 the bills pack reads and checks; F171.3 the dispute letter; F171.4 the identity and evals; F171.5 the account, consent and our own subscriptions part; F171.6 the phone app; F171.7 the stores; F171.8 the monthly report | Now, F171.1 after F126; F171.2 on after F140 |
 | F43 | Accounts, tenants and durable sessions; its first child, durable sessions, after F171.1 and before F157 | Now, its first child after F171.1 |
@@ -506,10 +505,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | FX2 | 2026-10-10 | The usage probe says which model to pull on an Ollama 404 |
 | FX1 | 2026-10-10 | Keep the tools on the request after the 10-round limit |
 
-## Cleanups (46 done)
+## Cleanups (47 done)
 
 | Id | When | What |
 |---|---|---|
+| CL69 | 2026-11-22 | The old words left in code: specialist and minion leave everything outside the evals (Louis's pick A), held by OldWordsTests, a ratchet that ended empty; the web texts' 48 holes records, a long tool description as a raw string, C# on LF everywhere |
 | CL70 | 2026-11-22 | A session opens in steps: AgentSessions.Create takes one SessionRequest record (Introduce Parameter Object) and hands it to SessionOpening, a method object whose steps run in order, with LookupChecks beside it; the eleven refusals' holes records (Louis's pick A, over a builder and a chain of checks) |
 | CL68 | 2026-11-22 | Agents and their subagents, all three children done: no prompts/ wrapper, every agent at agents/{identity}/ with its voice, its skills (SKILL.md folders), its subagents and its lookup agents, each named by its address; ADR 0133, ADR 0021 amended, PartWords (ADR 0132), PromptFolder and PromptFileName |
 | CL68.3 | 2026-11-22 | Minions are lookup agents: agents/{identity}/lookups/{name}/voice.md with level: lookup and the base agents/{identity}/lookup.md (Louis's pick B, a folder of their own), RoleLevel.Lookup, LookupAsk, LOOKUP_LLMS, the API's lookups, the chat's Lookup agent and every word the model reads; ADR 0021 amended |

@@ -86,7 +86,7 @@ public class ReplayResolutionTests
     }
 
     /// <summary>
-    /// A parent that said off passes nothing on, so its specialist isn't an eval either, and doesn't fall back to the
+    /// A parent that said off passes nothing on, so its subagent isn't an eval either, and doesn't fall back to the
     /// instance's default and record behind its parent's back.
     /// </summary>
     [Test]

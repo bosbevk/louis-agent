@@ -14,8 +14,8 @@ using LouisAgent.Core.Hosting.Messages;
 namespace LouisAgent.Core.Hosting.SessionLlms;
 
 /// <summary>
-/// Reads the models a session may name besides the instance's own (F30), and checks the ones the minions name (moved
-/// from AgentHost in CL15).
+/// Reads the models a session may name besides the instance's own (F30), and checks the ones the lookup agents name
+/// (moved from AgentHost in CL15).
 /// </summary>
 public static class SessionLlmLoader
 {
@@ -83,8 +83,8 @@ public static class SessionLlmLoader
 
     /// <summary>
     /// Every model <c>LOOKUP_LLMS</c> names is a profile in <c>LLM_SESSION_PROFILES</c> or <c>instance</c> (F30);
-    /// another stops start-up (<see cref="SessionLlmException"/>), so a typo never leaves a minion with no model at run
-    /// time.
+    /// another stops start-up (<see cref="SessionLlmException"/>), so a typo never leaves a lookup agent with no model
+    /// at run time.
     /// </summary>
     internal static void CheckLookupLlms(AgentOptions agent)
     {

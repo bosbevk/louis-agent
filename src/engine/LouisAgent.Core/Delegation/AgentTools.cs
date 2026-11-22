@@ -4,9 +4,9 @@ namespace LouisAgent.Core.Delegation;
 
 /// <summary>
 /// The running agent's own tool names, set per turn (F30): the host (the API's session) sets them for a turn, and
-/// <see cref="LookupAsk"/> refuses, before any HTTP, a tool the asker doesn't hold itself: a minion can never do more
-/// than the agent that sent it. Held in an <see cref="AsyncLocal{T}"/>, like
-/// <see cref="SessionAttachments"/>; empty by default, so outside a host's turn no tool can be handed down.
+/// <see cref="LookupAsk"/> refuses, before any HTTP, a tool the asker doesn't hold itself: a lookup agent can never do
+/// more than the agent that sent it. Held in an <see cref="AsyncLocal{T}"/>, like <see cref="SessionAttachments"/>;
+/// empty by default, so outside a host's turn no tool can be handed down.
 /// </summary>
 public static class AgentTools
 {

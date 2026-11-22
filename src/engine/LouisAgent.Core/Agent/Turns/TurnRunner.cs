@@ -112,7 +112,7 @@ internal sealed class TurnRunner(
                 yield return stream.Current;
             }
 
-            // The turn ended on a specialist's report: it's shown as it is, and no request is made to retype it.
+            // The turn ended on a subagent's report: it's shown as it is, and no request is made to retype it.
             if (ShownReport.In([.. updates.SelectMany(update => update.Contents)]) is { } report)
             {
                 var shown = new ChatResponseUpdate(ChatRole.Assistant, report)

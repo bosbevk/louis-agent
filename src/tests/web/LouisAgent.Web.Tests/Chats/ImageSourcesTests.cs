@@ -31,13 +31,13 @@ public class ImageSourcesTests
     [Test]
     public void ItIsTheUnionOfTheTurnsBlocks_AndEverySubTurnsRecursively()
     {
-        var minion = new Turn { Blocks = { Tool("https://c.example/3.jpg") } };
-        var specialist = new Turn
+        var lookup = new Turn { Blocks = { Tool("https://c.example/3.jpg") } };
+        var subagent = new Turn
         {
             Blocks =
             {
                 Tool("https://b.example/2.jpg", "https://a.example/1.jpg"),
-                Delegating(minion)
+                Delegating(lookup)
             }
         };
         var turn = new Turn
@@ -45,7 +45,7 @@ public class ImageSourcesTests
             Blocks =
             {
                 Tool("https://a.example/1.jpg"),
-                Delegating(specialist)
+                Delegating(subagent)
             }
         };
 

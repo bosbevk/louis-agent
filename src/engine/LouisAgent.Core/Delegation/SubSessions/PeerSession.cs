@@ -13,7 +13,7 @@ namespace LouisAgent.Core.Delegation.SubSessions;
 /// <summary>
 /// A sub-session's life on a peer (S, CL15): opened, sent the task, read to the end, kept for a follow-up (F26) or
 /// deleted. Every failure is an answer the model can act on, never a crash. Shared by the asked agents (depth 1) and
-/// the minions (F30, depth 2).
+/// the lookup agents (F30, depth 2).
 /// </summary>
 internal sealed class PeerSession(PeerHttp http, SubSessionMessenger messenger)
 {
@@ -31,7 +31,8 @@ internal sealed class PeerSession(PeerHttp http, SubSessionMessenger messenger)
     /// <summary>
     /// Opens a child on <paramref name="peer"/> with <paramref name="createBody"/>, sends
     /// <paramref name="messageBody"/> and reads the answer to the end; in a chat the child is kept on the registry
-    /// (F26) and the answer carries its handle, else (or with <paramref name="keep"/> false: a minion) it is deleted.
+    /// (F26) and the answer carries its handle, else (or with <paramref name="keep"/> false: a lookup agent) it is
+    /// deleted.
     /// </summary>
     public async Task<string> OpenAsync(Uri peer, string agent, CreateSessionRequest createBody,
         SendMessageRequest messageBody,

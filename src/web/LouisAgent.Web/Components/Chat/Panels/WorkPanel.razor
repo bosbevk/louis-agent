@@ -30,7 +30,7 @@
     }
 </div>
 
-@* The pages this chat used or cited: the answers' links and the pages the specialists read, newest turn first. *@
+@* The pages this chat used or cited: the answers' links and the pages the subagents read, newest turn first. *@
 @if (ChatSources.Count > 0)
 {
     <div class="work-sources">
@@ -45,16 +45,16 @@
     </div>
 }
 
-@* What the chat cost so far: its own requests and its specialists', side by side. Not added up: the chat's usage doesn't
-   include the specialists' yet, and once it does, a sum here would count them twice. *@
+@* What the chat cost so far: its own requests and its subagents', side by side. Not added up: the chat's usage doesn't
+   include the subagents' yet, and once it does, a sum here would count them twice. *@
 @if (Chat?.Usage() is { } own)
 {
     <div class="work-foot">
         @* data-count: a changed cost counts up to its value. *@
         <span title="@UsageFormat.Detail(own, Currency)">@Text.OwnCost <strong data-count="@UsageFormat.Cost(own, Currency)">@UsageFormat.Cost(own, Currency)</strong></span>
-        @if (SpecialistUsage is { } specialists)
+        @if (SubagentUsage is { } subagents)
         {
-            <span title="@UsageFormat.Detail(specialists, Currency)">@Text.Subagents <strong data-count="@UsageFormat.Cost(specialists, Currency)">@UsageFormat.Cost(specialists, Currency)</strong></span>
+            <span title="@UsageFormat.Detail(subagents, Currency)">@Text.Subagents <strong data-count="@UsageFormat.Cost(subagents, Currency)">@UsageFormat.Cost(subagents, Currency)</strong></span>
         }
     </div>
 }

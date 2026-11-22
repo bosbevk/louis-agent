@@ -27,10 +27,10 @@ namespace LouisAgent.Core.Hosting;
 /// <summary>
 /// One engine per toolset profile (F5): a session names its toolsets, and gets an engine with only those tools and
 /// only their guides in its system prompt. Engines are cached by their normalised list, its role, its level
-/// (F21, CL8), the LLM profile it names and, for a minion, its one tool (F30), so every session with the same five
-/// shares one engine, one tool list and one cacheable prefix. The model client and thinking are the instance's
-/// unless the session names a profile; the usage ledger and the display currency are shared by all of them. Each
-/// engine is named for its role, or the default mode, so a trace tells the agents apart (F52).
+/// (F21, CL8), the LLM profile it names and, for a lookup agent, its one tool (F30), so every session with the same
+/// five shares one engine, one tool list and one cacheable prefix. The model client and thinking are the instance's
+/// unless the session names a profile; the usage ledger and the display currency are shared by all of them. Each engine
+/// is named for its role, or the default mode, so a trace tells the agents apart (F52).
 /// </summary>
 /// <remarks>
 /// In <c>Hosting/</c>, not <c>Agent/</c>: it loads the skills through <see cref="AgentHost"/>, a layer above the
@@ -148,14 +148,16 @@ public sealed class AgentEngineFactory
     /// <see cref="RoleException"/> for an unknown role or one from another level, and
     /// <see cref="SessionLlmException"/> for an LLM profile it doesn't offer (<paramref name="llm"/>, F30; null: the
     /// instance's own model), before anything is built. A full cache drops its least recently used profile (on a
-    /// specialist the model chooses the lists, so they are many).
+    /// subagent the model chooses the lists, so they are many).
     /// </summary>
     /// <param name="toolsets">The toolsets the session loads, by name; an optional one ends in <c>?</c>.</param>
     /// <param name="role">The session's role or mode; null for the default mode.</param>
-    /// <param name="level">Where the role is: a mode at level 0, a specialist's or a minion's role below it.</param>
+    /// <param name="level">
+    /// Where the role is: a mode at level 0, a subagent's or a lookup agent's role below it.
+    /// </param>
     /// <param name="llm">The LLM profile the session names; null for the instance's own model.</param>
     /// <param name="tool">
-    /// A minion's one tool (F30): the engine keeps only it, with no toolset guide and no router, so a small model
+    /// A lookup agent's one tool (F30): the engine keeps only it, with no toolset guide and no router, so a small model
     /// reads a prompt it can follow. It must be a tool of <paramref name="toolsets"/>, else
     /// <see cref="ToolsetException"/>. Null: every tool of the toolsets.
     /// </param>
@@ -195,13 +197,13 @@ public sealed class AgentEngineFactory
 
     /// <summary>
     /// Builds a profile's engine: its prompt from its guides, role and level, its tools, its model, and its name; a
-    /// minion's keeps its one tool. Logs the profile's size, an estimate of the prefix every request sends.
+    /// lookup agent's keeps its one tool. Logs the profile's size, an estimate of the prefix every request sends.
     /// </summary>
     private AgentEngine Build(IReadOnlyList<ToolsetDefinition> resolved, ProfileKey key, SessionLlm? model)
     {
         var (_, role, level, _, tool) = key;
         bool selfExtension = resolved.Any(t => t.IsEngineProvided);
-        // A minion's prompt has no toolset guide (F30): its role says what to do with its one tool.
+        // A lookup agent's prompt has no toolset guide (F30): its role says what to do with its one tool.
         var guided = tool is null ? resolved : [];
         // A session's own model (F30) brings its provider's client, usage mapping, tool support and thinking; the
         // ledger, prices and display currency are the instance's.

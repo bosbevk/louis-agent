@@ -2,14 +2,14 @@ using LouisAgent.Web.Text;
 
 namespace LouisAgent.Web.Chats;
 
-/// <summary>The line under a running turn (F34): what its specialist is doing, by its role's phases.</summary>
+/// <summary>The line under a running turn (F34): what its subagent is doing, by its role's phases.</summary>
 public static class WorkStatus
 {
     /// <summary>
     /// A child still at work whose role has phases: <see cref="RolePhases.Building"/> once it has a tool's result
     /// and is thinking or writing after it, else <see cref="RolePhases.Gathering"/> (starting, or searching again).
     /// Anything else is <see cref="ChatText.Processing"/>. The role is the one the child's own stream reports when it
-    /// starts (an ask names an address, not a role), else the call's own (a minion's).
+    /// starts (an ask names an address, not a role), else the call's own (a lookup agent's).
     /// </summary>
     public static string Label(Turn turn, ChatText text)
     {

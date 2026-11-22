@@ -3,7 +3,7 @@ using LouisAgent.Web.Chats;
 namespace LouisAgent.Web.Text;
 
 /// <summary>
-/// How the work panel marks one step of a specialist or minion: still waiting, failed, or done, as a class name for
+/// How the work panel marks one step of a subagent or lookup agent: still waiting, failed, or done, as a class name for
 /// its colour and as the sign beside it.
 /// </summary>
 /// <remarks>

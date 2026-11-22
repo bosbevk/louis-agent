@@ -165,7 +165,7 @@ public static partial class RoleCatalog
     private static partial Regex SecondHeading();
 
     /// <summary>
-    /// A role's name: matches <c>acme.cook</c>, <c>acme-minion-lookup</c> and <c>acme/voice-en</c>, not
+    /// A role's name: matches <c>acme.cook</c>, <c>acme-page-lookup</c> and <c>acme/voice-en</c>, not
     /// <c>../acme</c> or <c>a.b.c</c>.
     /// </summary>
     [GeneratedRegex("^[a-z0-9]+(-[a-z0-9]+)*([/.][a-z0-9]+(-[a-z0-9]+)*)?$")]

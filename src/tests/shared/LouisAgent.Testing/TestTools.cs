@@ -149,7 +149,7 @@ public sealed class FakeWebTools
     [Description("Fetches a page.")]
     public string FetchUrl([Description("Its address")] string url) => $"the page at {url}";
 
-    /// <summary>Pretends to render, as a second tool a minion can be handed.</summary>
+    /// <summary>Pretends to render, as a second tool a lookup agent can be handed.</summary>
     [Description("Reads a page a browser has to draw.")]
     public string ReadRenderedPage([Description("Its address")] string url) => $"the drawn page at {url}";
 }

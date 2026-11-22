@@ -1,3 +1,5 @@
+using LouisAgent.Core.Web.Replay.Keys;
+using LouisAgent.Composition.Web.Messages.Holes.Replay;
 using LouisAgent.Composition.Web.Messages;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Sessions.Replay;
@@ -10,12 +12,14 @@ using LouisAgent.Core.Sessions.Replay.Store;
 namespace LouisAgent.Core.Web.Replay;
 
 /// <summary>
-/// The fetcher's handler, recorded or replayed (F18 step 4b), by <see cref="ReplayTrial.Current"/> on each request. It sits outside the SSRF
-/// guard, so a recording's request still meets the connect-time check. No trial passes through. Record sends the request, buffers the body
-/// (up to <see cref="PageFetcher.MaxResponseBytes"/>), saves the <see cref="ReplayResponse"/> under the method and address, and returns
-/// the response, whose buffered content reads again; each redirect hop arrives as its own request, so each is its own recording. Only an
-/// answer is recorded: a network error, a timeout, a body over the limit and a connect-time refusal propagate unrecorded, and in a replay
-/// that request is a miss. Replay never calls the inner handler and answers a miss with <see cref="WebToolMessage.ReplayMiss"/> (ADR 0005).
+/// The fetcher's handler, recorded or replayed (F18 step 4b), by <see cref="ReplayTrial.Current"/> on each request. It
+/// sits outside the SSRF guard, so a recording's request still meets the connect-time check. No trial passes through.
+/// Record sends the request, buffers the body (up to <see cref="PageFetcher.MaxResponseBytes"/>), saves the <see
+/// cref="ReplayResponse"/> under the method and address, and returns the response, whose buffered content reads again;
+/// each redirect hop arrives as its own request, so each is its own recording. Only an answer is recorded: a network
+/// error, a timeout, a body over the limit and a connect-time refusal propagate unrecorded, and in a replay that
+/// request is a miss. Replay never calls the inner handler and answers a miss with <see
+/// cref="WebToolMessage.ReplayMiss"/> (ADR 0005).
 /// </summary>
 public sealed class RecordedFetchHandler(ReplayStore store) : DelegatingHandler
 {
@@ -24,8 +28,8 @@ public sealed class RecordedFetchHandler(ReplayStore store) : DelegatingHandler
     {
         if (ReplayTrial.Current is not { } trial) return await base.SendAsync(request, cancellationToken);
 
-        var ask = ReplayAsk.Of(ReplayKind.Fetch,
-            new { Method = request.Method.Method, Url = request.RequestUri!.AbsoluteUri });
+        var key = new FetchKey(request.Method.Method, request.RequestUri!.AbsoluteUri);
+        var ask = ReplayAsk.Of(ReplayKind.Fetch, key);
         return trial.Replaying
             ? await ReplayAsync(trial.Of, ask, request, cancellationToken)
             : await RecordAsync(trial.Of, ask, request, cancellationToken);
@@ -53,8 +57,11 @@ public sealed class RecordedFetchHandler(ReplayStore store) : DelegatingHandler
         CancellationToken cancellationToken)
     {
         if (await store.FindAsync<ReplayResponse>(trial, ask, cancellationToken) is not { } recorded)
-            throw new HttpRequestException(MessageText.Format(WebToolMessage.ReplayMiss,
-                new { Url = request.RequestUri!.AbsoluteUri }));
+        {
+            var miss = new ReplayMissHoles(request.RequestUri!.AbsoluteUri);
+            throw new HttpRequestException(MessageText.Format(WebToolMessage.ReplayMiss, miss));
+        }
+
         return recorded.OrThrow(error => new HttpRequestException(error)).ToResponse(request);
     }
 }

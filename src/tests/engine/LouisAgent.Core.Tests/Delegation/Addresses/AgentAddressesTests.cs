@@ -6,8 +6,8 @@ namespace LouisAgent.Core.Tests.Delegation.Addresses;
 
 /// <summary>
 /// Who an address reaches on this instance (F127.3.1 step 4), on the tests' own prompts: <c>testprod</c> has a voice,
-/// a subagent (<c>testprod.specialist</c>), a lookup agent (<c>testprod.lookup</c>) and the minions' base
-/// (<c>testprod-minion</c>), which is no role; <c>other</c> has no voice and no roles.
+/// a subagent (<c>testprod.researcher</c>), a lookup agent (<c>testprod.lookup</c>) and the lookup agents' base
+/// (<c>testprod-helper</c>), which is no role; <c>other</c> has no voice and no roles.
 /// </summary>
 public class AgentAddressesTests
 {
@@ -35,16 +35,17 @@ public class AgentAddressesTests
     /// </summary>
     [Test]
     public void ARole_ReachesItsSubagent_NamedByTheAddress() =>
-        Assert.That(Resolve("testprod", "specialist").Agent,
-            Is.EqualTo(new AddressedAgent(new AgentAddress("testprod", "specialist"), AddressKind.Subagent,
-                "testprod.specialist")));
+        Assert.That(Resolve("testprod", "researcher").Agent,
+            Is.EqualTo(new AddressedAgent(new AgentAddress("testprod", "researcher"), AddressKind.Subagent,
+                "testprod.researcher")));
 
     /// <summary>
-    /// A minion is no agent to ask (F127.5): its file's name written as a role reaches no one here, whatever it names.
+    /// A lookup agent is no agent to ask (F127.5): its file's name written as a role reaches no one here, whatever it
+    /// names.
     /// </summary>
     [Test]
-    public void AMinionsFile_IsNoRoleToAsk() =>
-        Assert.That(Resolve("testprod", "minion-lookup").Agent, Is.Null);
+    public void ALookupAgentsFile_IsNoRoleToAsk() =>
+        Assert.That(Resolve("testprod", "page-lookup").Agent, Is.Null);
 
     /// <summary>
     /// A lookup agent's address (F127.5) is its identity and its function, <c>testprod.lookup</c>, and that address is
@@ -60,15 +61,16 @@ public class AgentAddressesTests
             Assert.That(AgentAddresses.ResolveLookup(address, Identities, out _),
                 Is.EqualTo(new AddressedAgent(address, AddressKind.Lookup, "testprod.lookup")));
             Assert.That(AgentAddresses.IsLookup(address), Is.True);
-            Assert.That(AgentAddresses.IsLookup(new AgentAddress("testprod", "specialist")), Is.False);
+            Assert.That(AgentAddresses.IsLookup(new AgentAddress("testprod", "researcher")), Is.False);
         });
     }
 
     /// <summary>
-    /// A minion address with no such minion is refused, naming the identity's minions by their addresses.
+    /// A lookup agent address with no such lookup agent is refused, naming the identity's lookup agents by their
+    /// addresses.
     /// </summary>
     [Test]
-    public void AnUnknownMinion_IsRefused_NamingTheIdentitysMinions()
+    public void AnUnknownLookupAgent_IsRefused_NamingTheIdentitysLookupAgents()
     {
         var agent = AgentAddresses.ResolveLookup(new AgentAddress("testprod", "cook"), Identities, out string? why);
 
@@ -90,27 +92,26 @@ public class AgentAddressesTests
     }
 
     /// <summary>
-    /// A role with no file reaches no one, the minions' base included, and the reason names the identity's roles by
-    /// their addresses.
+    /// A role with no file reaches no one, and the reason names the identity's roles by their addresses.
     /// </summary>
     [TestCase("cook")]
-    [TestCase("minion")]
+    [TestCase("helper")]
     public void AnUnknownRole_IsRefused_NamingTheIdentitysRoles(string role)
     {
         var (agent, why) = Resolve("testprod", role);
 
         Assert.That(agent, Is.Null);
-        Assert.That(why, Does.Contain($"'{role}'").And.Contain("testprod.specialist").And.Not.Contain("minion-lookup"));
+        Assert.That(why, Does.Contain($"'{role}'").And.Contain("testprod.researcher").And.Not.Contain("page-lookup"));
     }
 
     /// <summary>A role file belongs to the identity it is named for: another identity can't reach it.</summary>
     [Test]
     public void AnotherIdentitysRole_IsRefused()
     {
-        var (agent, why) = Resolve("other", "specialist");
+        var (agent, why) = Resolve("other", "researcher");
 
         Assert.That(agent, Is.Null);
-        Assert.That(why, Does.Contain("other").And.Contain("'specialist'"));
+        Assert.That(why, Does.Contain("other").And.Contain("'researcher'"));
     }
 
     /// <summary>An identity with no voice of its own can't be asked as itself.</summary>

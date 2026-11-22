@@ -5,18 +5,18 @@ using LouisAgent.Web.Usage;
 namespace LouisAgent.Web.Tests.Shell;
 
 /// <summary>
-/// What a chat and a month cost, specialists included, since a chat's own usage doesn't hold theirs yet. Nothing spent
+/// What a chat and a month cost, subagents included, since a chat's own usage doesn't hold theirs yet. Nothing spent
 /// reads as nothing, and the month is the person's own calendar month.
 /// </summary>
 public class ChatCostsTests
 {
     private static readonly DateTimeOffset Now = new(2026, 11, 6, 12, 0, 0, TimeSpan.FromHours(2));
 
-    /// <summary>A chat's total adds its own requests and its specialists'.</summary>
+    /// <summary>A chat's total adds its own requests and its subagents'.</summary>
     [Test]
-    public void AChatsTotal_AddsItsSpecialists()
+    public void AChatsTotal_AddsItsSubagents()
     {
-        var chat = Chat(Now, Turn(1.00m, specialist: 0.50m), Turn(0.25m));
+        var chat = Chat(Now, Turn(1.00m, subagent: 0.50m), Turn(0.25m));
 
         Assert.That(ChatCosts.Total(chat)!.Cost, Is.EqualTo(1.75m));
     }
@@ -45,7 +45,7 @@ public class ChatCostsTests
     [Test]
     public void TheMonthsTotal_AddsItsChats()
     {
-        var total = ChatCosts.Total([Chat(Now, Turn(1.00m)), Chat(Now, Turn(2.00m, specialist: 0.50m)), Chat(Now)]);
+        var total = ChatCosts.Total([Chat(Now, Turn(1.00m)), Chat(Now, Turn(2.00m, subagent: 0.50m)), Chat(Now)]);
 
         Assert.That(total!.Cost, Is.EqualTo(3.50m));
     }
@@ -62,13 +62,23 @@ public class ChatCostsTests
 
     /// <summary>A chat used at this time, with these turns.</summary>
     private static Chat Chat(DateTimeOffset used, params Turn[] turns) =>
-        new() { SessionId = Guid.NewGuid().ToString(), UpdatedAt = used, Turns = [.. turns] };
+        new()
+        {
+            SessionId = Guid.NewGuid().ToString(),
+            UpdatedAt = used,
+            Turns = [.. turns]
+        };
 
-    /// <summary>A turn that cost this, with a specialist that cost that.</summary>
-    private static Turn Turn(decimal cost, decimal? specialist = null)
+    /// <summary>A turn that cost this, with a subagent that cost that.</summary>
+    private static Turn Turn(decimal cost, decimal? subagent = null)
     {
         var turn = new Turn { Usage = Usage(cost) };
-        if (specialist is { } own) turn.Blocks.Add(new Block { Kind = BlockKind.Tool, SubTurn = new Turn { Usage = Usage(own) } });
+        if (subagent is { } own)
+            turn.Blocks.Add(new Block
+            {
+                Kind = BlockKind.Tool,
+                SubTurn = new Turn { Usage = Usage(own) }
+            });
         return turn;
     }
 

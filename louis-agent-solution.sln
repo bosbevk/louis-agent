@@ -161,6 +161,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "draw-a-diagram", "draw-a-diagram", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C66}"
 	ProjectSection(SolutionItems) = preProject
 		.claude\skills\draw-a-diagram\SKILL.md = .claude\skills\draw-a-diagram\SKILL.md
+		.claude\skills\draw-a-diagram\tests.md = .claude\skills\draw-a-diagram\tests.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "write-a-skill", "write-a-skill", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C74}"

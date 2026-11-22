@@ -11,7 +11,7 @@ using static LouisAgent.Core.Tests.Delegation.FakePeer;
 namespace LouisAgent.Core.Tests.Delegation.Agents;
 
 /// <summary>
-/// The path every ask takes to its peer (F127.3.1 step 11d, from the specialist tool's tests): the answer read to the
+/// The path every ask takes to its peer (F127.3.1 step 11d, from the subagent tool's tests): the answer read to the
 /// end and the child deleted outside a chat, an empty answer asked for once more, what goes with the message (the
 /// files, the user's place, the replay, the parent turn), and every failure an answer the model can act on.
 /// </summary>

@@ -61,8 +61,8 @@ internal sealed class ToolRegistry(bool supportsTools = true)
     public bool Remove(AITool tool) => Live.Remove(tool);
 
     /// <summary>
-    /// Keeps the one tool named and drops every other, the clock and <c>ExecuteSkill</c> included (F30: a minion gets
-    /// one task and one tool, so its prompt lists exactly what it may call). Before the engine's first turn.
+    /// Keeps the one tool named and drops every other, the clock and <c>ExecuteSkill</c> included (F30: a lookup agent
+    /// gets one task and one tool, so its prompt lists exactly what it may call). Before the engine's first turn.
     /// </summary>
     public void KeepOnly(string name)
     {

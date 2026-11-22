@@ -16,9 +16,9 @@ using Microsoft.Extensions.AI;
 namespace LouisAgent.Core.Delegation;
 
 /// <summary>
-/// What <c>AskAgent</c> does when the address is a lookup agent's (F127.5, CL68.3: was the minion's): it hands the
-/// lookup agent one task and one of the asker's own tools on a cheap model, so the page the lookup agent reads never
-/// enters the asker's context. Only its short answer comes back; what it used goes to the turn's totals and the ledger.
+/// What <c>AskAgent</c> does when the address is a lookup agent's (F127.5, CL68.3): it hands the lookup agent one task
+/// and one of the asker's own tools on a cheap model, so the page the lookup agent reads never enters the asker's
+/// context. Only its short answer comes back; what it used goes to the turn's totals and the ledger.
 /// </summary>
 /// <remarks>
 /// The limits are in code, not in the prompt (Louis's rule: a lookup agent can never do more than the agent that sent
