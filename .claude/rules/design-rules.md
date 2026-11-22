@@ -44,6 +44,9 @@ The design decisions every change keeps, one line each: the *why* is its ADR in 
   before its text. [ADR 0038](../../src/docs/adr/0038-the-browser-says-what-it-is.md), [0068](../../src/docs/adr/0068-every-fetch-obeys-robots-txt.md), [0067](../../src/docs/adr/0067-a-pages-own-data-before-its-text.md).
 - **Measure every request, and show it** — the usage ledger is the only source of cost, priced by a dated table;
   unknown is `null`, never 0; every host shows the same totals. [ADR 0007](../../src/docs/adr/0007-measure-every-request.md).
+- **The sites' Azure is one Bicep file a person deploys** — `src/site/deploy/azure/main.bicep` on Microsoft's
+  verified modules, pinned, every name a parameter, the infrastructure and its rights but never the apps; proved by
+  `what-if` against what runs, deployed with `deploy.ps1 infra` on a yes, never by CI. [ADR 0131](../../src/docs/adr/0131-the-sites-azure-is-one-bicep-file-a-person-deploys.md).
 - **Evals in C#** — every check is a C# eval on one harness, under `evals/`, apart from what it proves; one event
   contract; a live run waits for Louis's go. [ADR 0029](../../src/docs/adr/0029-simulations-in-csharp.md),
   [ADR 0047](../../src/docs/adr/0047-protocol-v2-one-event-contract.md).

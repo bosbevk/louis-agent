@@ -1,0 +1,29 @@
+{
+  "kind": "cards",
+  "title": "ADR 0131 at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "file", "icon": "code", "title": "One Bicep file", "code": "main.bicep",
+          "look": "highlight",
+          "text": "Everything the framework's sites stand on in Azure, made again from code." }
+      ] },
+      { "cards": [
+        { "id": "modules", "icon": "box", "title": "Verified modules, pinned",
+          "text": "Microsoft's parts; plain Bicep only where a module can't say what stands." },
+        { "id": "names", "icon": "settings", "title": "Names as parameters",
+          "text": "Our own in main.bicepparam, so the file names no product." },
+        { "id": "proof", "icon": "checks", "title": "Proved by what-if",
+          "text": "Nothing to create or delete against what runs, every default read first." },
+        { "id": "person", "icon": "user", "title": "A person deploys it",
+          "text": "infra on a yes; CI builds and lints, and every release reads its outputs." }
+      ] }
+    ],
+    "links": [
+      { "from": "file", "to": "modules" },
+      { "from": "file", "to": "names" },
+      { "from": "file", "to": "proof" },
+      { "from": "file", "to": "person" }
+    ]
+  }
+}
