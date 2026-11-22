@@ -111,7 +111,9 @@ public class CardsRendererTests
             [
                 new CardRow([new Card("family", DiagramIcon.Browser, "The web", "src/web", "", CardLook.Highlight,
                     DiagramTone.Teal)]),
-                new CardRow([new Card("one", DiagramIcon.Box, "One part", null, "What it does.", Tone: DiagramTone.Teal)]),
+                new CardRow([
+                    new Card("one", DiagramIcon.Box, "One part", null, "What it does.", Tone: DiagramTone.Teal)
+                ]),
                 // No line reaches it, so it is a quiet card, and its icon still wears its tone.
                 new CardRow([new Card("two", DiagramIcon.Box, "Apart", null, "On its own.", Tone: DiagramTone.Red)])
             ],

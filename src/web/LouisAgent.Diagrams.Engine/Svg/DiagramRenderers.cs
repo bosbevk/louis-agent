@@ -2,6 +2,7 @@ using LouisAgent.Choices;
 using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Messages;
 using LouisAgent.Diagrams.Engine.Messages.Holes.Reading;
+using LouisAgent.Diagrams.Engine.Svg.Fits;
 using LouisAgent.Diagrams.Engine.Svg.Renderers;
 using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Flows;
 using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Lifelines;
@@ -44,9 +45,14 @@ public static class DiagramRenderers
 
     /// <summary>
     /// The diagram as a page holds it inline (F127.4.1): the same drawing, its styles kept to itself
-    /// (<see cref="PageSvg"/>), so the page's colour variables reach it and its rules reach nothing else.
+    /// (<see cref="PageSvg"/>), so the page's colour variables reach it and its rules reach nothing else. Asked for
+    /// the narrow fit (F169.5), it draws the picture's narrow form, for a phone, when it has one.
     /// </summary>
-    public static string RenderForPage(DiagramSource source) => PageSvg.Of(Render(source));
+    public static string RenderForPage(DiagramSource source, PictureFit fit = PictureFit.Wide)
+    {
+        var drawn = fit == PictureFit.Narrow ? NarrowFit.Of(source) ?? source : source;
+        return PageSvg.Of(Render(drawn));
+    }
 
     /// <summary>
     /// The diagram as the docs show it: drawn without its caption, then framed with the caption as a note bar
