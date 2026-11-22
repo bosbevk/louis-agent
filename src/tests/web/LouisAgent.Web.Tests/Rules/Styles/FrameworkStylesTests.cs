@@ -357,14 +357,15 @@ public partial class FrameworkStylesTests
             Does.Contain(".site-drop:last-child .site-drop-list { left: auto; right: -14px; }"));
 
     /// <summary>
-    /// What is right for a screen and wrong for paper is switched off in print (FX154). The grain over every page is
-    /// a layer fixed to the whole window, so it was drawn again on every sheet, margins and all, and it blends with
-    /// what is under it, so the browser turned each page into a picture: a grey cast and a 13 MB file. And a page that
-    /// says it is dark has its sheet painted with the browser's dark canvas, which no background rule reaches, so the
-    /// margins printed black (Louis: "where is the space", "it is still black", "it must be white").
+    /// What is right for a screen and wrong for paper is switched off in print (FX154). The page's two layers, its
+    /// lights and what a theme draws over it, such as retro's scanlines, are fixed to the whole window, so they would
+    /// be drawn again on every sheet, margins and all, and a layer that blends turns each page into a picture: a grey
+    /// cast and a 13 MB file. And a page that says it is dark has its sheet painted with the browser's dark canvas,
+    /// which no background rule reaches, so the margins printed black (Louis: "where is the space", "it is still
+    /// black", "it must be white").
     /// </summary>
     [Test]
-    public void OnPaper_ThereIsNoGrain_AndTheSheetIsLight() =>
+    public void OnPaper_ThePagesLayersAreHidden_AndTheSheetIsLight() =>
         Assert.That(string.Concat(Rules().Select(File.ReadAllText)).ReplaceLineEndings("\n"),
             Does.Contain(
                 "@media print {\n    body::before, body::after { display: none; }\n    :root { color-scheme: light; }\n}"));

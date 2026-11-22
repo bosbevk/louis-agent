@@ -77,6 +77,17 @@ public class ThemeTests
     public void RetrosSwitchOn_LetsGoOfTheApp_WhenItEnds() =>
         Assert.That(Css.Source("retro/terminal"), Does.Contain("animation: crt-on .55s var(--web-ease) backwards;"));
 
+    /// <summary>
+    /// Retro's scanlines say their own strength: faint, and blended into what is under them. They once took both from
+    /// the framework's paper grain on the same layer, and with the grain gone (F169.4) they would be drawn twenty
+    /// times stronger.
+    /// </summary>
+    [Test]
+    public void RetrosScanlines_SayTheirOwnStrength() =>
+        Assert.That(Css.Source("retro/terminal").ReplaceLineEndings("\n"), Does.Contain(
+            "body::before {\n        background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, .07) 0 1px, " +
+            "transparent 1px 3px);\n        opacity: .05;\n        mix-blend-mode: overlay;\n    }"));
+
     /// <summary>The framework's partial that holds the sign-in providers' own colours.</summary>
     private const string ProvidersColours = "web/settings/brands";
 
