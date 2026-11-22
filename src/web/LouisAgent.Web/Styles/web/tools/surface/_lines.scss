@@ -110,9 +110,12 @@ $-mark-offsets: (left: 1 0, right: -1 0, top: 0 1, bottom: 0 -1);
     background: linear-gradient(90deg, transparent, rgba(var(--web-overlay-rgb), .45), transparent);
 }
 
-/* What is behind a piece, blurred. */
-@mixin frosted($blur: 14px) {
-    backdrop-filter: blur($blur);
+/* What is behind a piece, blurred as a theme says: the pane's blur, unless the piece names another of the theme's,
+   such as the veil's behind a window. A theme with no blur sets none, and nothing is blurred (F169.4, Louis's pick
+   "A: the names there are"). */
+@mixin frosted($blur: var(--web-pane-blur)) {
+    -webkit-backdrop-filter: $blur;
+    backdrop-filter: $blur;
 }
 
 /* The depth of a piece that lies on the page: a shadow under it, how far down, how soft, how far pulled in and how

@@ -174,7 +174,8 @@
     background-color: $fill;
 }
 
-/* A dialog over the whole page: a deep shadow under it and a faint ring of the brand's colour round it. */
+/* A dialog over the whole page, such as the search window: the shadow a theme gives what floats, so a theme with no
+   depth sets it apart by its line and the dimmed page alone (F169.4, Louis's pick "A: the names there are"). */
 @mixin hovering() {
-    box-shadow: 0 30px 80px -20px rgba(var(--bs-black-rgb), .8), 0 0 0 1px rgba(var(--bs-primary-rgb), .08);
+    box-shadow: var(--web-float-shadow);
 }
