@@ -129,7 +129,19 @@ Each of steps 3 to 8 is a pure rename and adds no test: it is held by the tests 
 
 ## Approved during the build
 
-Nothing yet.
+- **2026-11-22, steps 1 and 2 are one step** (Louis's pick A of three, over an `[Ignore]` for one commit and a red
+  commit): the plan had step 1 commit the guard with its text check failing, against finish-a-step's rule that the
+  tests decide a commit. So the guard and the texts it found are one commit. The texts were four, not three:
+  `VerifyQuote`'s own description said "every quote a minion returns" too.
+- **2026-11-22, a touched file is fixed whole, the usage probe's texts too** (Louis's pick A of three): changing
+  the texts touched `SkillErrorMessage`, `RoleFiles` and `ProbeUserText`, so their members with holes take holes
+  records (5 in core's `Skills/Messages/Holes/Roles/`, 20 in the probe's `Messages/Holes/`) and their anonymous
+  objects become named locals. The probe has no test project, so its records were checked against their templates
+  by hand.
+- **2026-11-22, the web texts take their holes records in a step of their own** (Louis's pick C of three, over a
+  cleanup of its own and fixing only the quote part): `QuoteTools`' messages are `WebToolMessage`'s, whose 37
+  members with holes have no records, built in 26 files. They are step 2, before core's rename, so the steps run
+  1 the guard and the texts, 2 the web texts' holes, then 3 to 9 as planned.
 
 ## The records
 

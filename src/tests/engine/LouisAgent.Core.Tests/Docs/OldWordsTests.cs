@@ -1,0 +1,275 @@
+namespace LouisAgent.Core.Tests.Docs;
+
+/// <summary>
+/// The levels below a voice are a subagent and a lookup agent (ADR 0133, ADR 0021), so outside the places kept on
+/// purpose no file says "specialist" or "minion", and no text the model or a person reads ever does (CL69).
+/// </summary>
+/// <remarks>
+/// A ratchet, as <see cref="WriteUpsTests"/> and <see cref="FileSizeTests"/>: the files that still said the words on
+/// the day the test arrived are listed, a new one fails, and a listed one that no longer says them fails too until it
+/// is taken off, so the list only shrinks. The texts are held at once, with no list, since a word the model reads
+/// steers what it does.
+/// </remarks>
+public class OldWordsTests
+{
+    /// <summary>The words the levels were called before CL68.2 and CL68.3.</summary>
+    private static readonly string[] OldWords = ["minion", "specialist"];
+
+    /// <summary>Where our own source lives; the docs, in each <c>docs/</c> folder, have their own reviews.</summary>
+    private static readonly string[] SourceRoots = ["src", "packs", "demos"];
+
+    /// <summary>What we write by hand and a model or a person may read: code, markup, styles, data.</summary>
+    private static readonly string[] SourceExtensions = [".cs", ".razor", ".scss", ".js", ".json", ".csproj"];
+
+    /// <summary>
+    /// The places that keep the words on purpose: the eval code, left for its rework (Louis, 2026-11-22: "we are
+    /// going to scrap all about evals and redo it total rework"), with the run rows it shares with the API; Louis's
+    /// own CV, which says what the Puls specialists are; and the coding agent's persona, whose name is his.
+    /// </summary>
+    private static readonly string[] Kept =
+    [
+        "/evals/",
+        "Evals",
+        "src/hosts/LouisAgent.Api.Contracts/Admin/Runs/",
+        "src/tests/hosts/LouisAgent.Api.Testing/Contracts/Records/",
+        "src/site/LouisAgent.Site/Content/cv.json",
+        "demos/louis-agent/identity/LouisAgent.Identities.Coding/agents/louis-agent/voice.md",
+    ];
+
+    /// <summary>The files that still said the words when CL69 began; each step of CL69 takes its own off.</summary>
+    private static readonly HashSet<string> StillToRename =
+    [
+        "demos/louis-agent/tests/LouisAgent.Coding.Catalog.Tests/CodingRouterTests.cs",
+        "demos/louis-agent/tests/LouisAgent.Coding.Catalog.Tests/Golden/ModelRequestSnapshot.json",
+        "demos/louis-agent/tests/LouisAgent.Coding.Catalog.Tests/Golden/ModelRequestSnapshotTests.cs",
+        "packs/tests/LouisAgent.Packs.Rules.Tests/EveryPromptHasAHeaderTests.cs",
+        "packs/tests/LouisAgent.Packs.Web.Tests/Quotes/VerifyQuoteTests.cs",
+        "src/engine/LouisAgent.Composition/Packs/IAgentIdentity.cs",
+        "src/engine/LouisAgent.Core.Web/Browsing/ChromeWebBrowser.cs",
+        "src/engine/LouisAgent.Core/Agent/AgentEngine.cs",
+        "src/engine/LouisAgent.Core/Agent/Catalog/AgentCatalog.cs",
+        "src/engine/LouisAgent.Core/Agent/ToolRegistry.cs",
+        "src/engine/LouisAgent.Core/Agent/Turns/ToolCallGuards.cs",
+        "src/engine/LouisAgent.Core/Agent/Turns/TurnRunner.cs",
+        "src/engine/LouisAgent.Core/Config/AgentOptions.cs",
+        "src/engine/LouisAgent.Core/Delegation/Addresses/AddressKind.cs",
+        "src/engine/LouisAgent.Core/Delegation/AgentTools.cs",
+        "src/engine/LouisAgent.Core/Delegation/LookupAsk.cs",
+        "src/engine/LouisAgent.Core/Delegation/SubSessions/PeerSession.cs",
+        "src/engine/LouisAgent.Core/Delegation/SubSessions/SubSessionKind.cs",
+        "src/engine/LouisAgent.Core/Delegation/SubSessions/SubSessionMessenger.cs",
+        "src/engine/LouisAgent.Core/Delegation/SubSessions/UsageRollUp.cs",
+        "src/engine/LouisAgent.Core/Hosting/AgentEngineFactory.cs",
+        "src/engine/LouisAgent.Core/Hosting/Engines/ProfileKey.cs",
+        "src/engine/LouisAgent.Core/Hosting/Prompts/SkillLoader.cs",
+        "src/engine/LouisAgent.Core/Hosting/SessionLlms/SessionLlmLoader.cs",
+        "src/engine/LouisAgent.Core/Sessions/SubSessions/OpenSubSession.cs",
+        "src/engine/LouisAgent.Core/Sessions/SubSessions/SubSessionRegistry.cs",
+        "src/engine/LouisAgent.Core/Skills/RoleLevel.cs",
+        "src/engine/LouisAgent.Core/Skills/Roles/RoleCatalog.cs",
+        "src/engine/LouisAgent.Core/Usage/Records/UsagePurpose.cs",
+        "src/engine/LouisAgent.SessionStream/SessionEventMapper.cs",
+        "src/engine/LouisAgent.SessionStream/SessionEvents.cs",
+        "src/engine/LouisAgent.SessionStream/Wire/Replies/SessionCreatedReply.cs",
+        "src/engine/LouisAgent.SessionStream/Wire/Replies/SessionReply.cs",
+        "src/engine/LouisAgent.SessionStream/Wire/Replies/SubSessionRow.cs",
+        "src/engine/LouisAgent.SessionStream/Wire/Requests/CreateSessionRequest.cs",
+        "src/hosts/LouisAgent.Api.Contracts/Admin/Prompts/PromptRows.cs",
+        "src/hosts/LouisAgent.Api/Endpoints/Sessions/SessionHandlers.cs",
+        "src/hosts/LouisAgent.Api/Sessions/AgentSession.cs",
+        "src/hosts/LouisAgent.Api/Sessions/AgentSessions.cs",
+        "src/hosts/LouisAgent.Api/Sessions/Opening/LookupChecks.cs",
+        "src/hosts/LouisAgent.Api/Sessions/SessionReplyFactories.cs",
+        "src/hosts/LouisAgent.Api/Sessions/Streaming/Claude/ClaudeEvents.cs",
+        "src/hosts/LouisAgent.Api/Sessions/TurnStream.cs",
+        "src/tests/engine/LouisAgent.Core.Tests/Agent/Catalog/AgentCatalogTests.cs",
+        "src/tests/engine/LouisAgent.Core.Tests/Agent/SubSessionPromptBudgetTests.cs",
+        "src/tests/engine/LouisAgent.Core.Tests/Agent/ToolRegistryKeepOnlyTests.cs",
+        "src/tests/engine/LouisAgent.Core.Tests/Agent/Toolsets/ToolsetCatalogTests.cs",
+        "src/tests/engine/LouisAgent.Core.Tests/Agent/Turns/ShowTheAskedAnswerTests.cs",
+        "src/tests/engine/LouisAgent.Core.Tests/ArchitectureTests.cs",
+        "src/tests/engine/LouisAgent.Core.Tests/Composition/Agents/AgentAddressTests.cs",
+        "src/tests/engine/LouisAgent.Core.Tests/Delegation/Addresses/AgentAddressesTests.cs",
+        "src/tests/engine/LouisAgent.Core.Tests/Delegation/Agents/AgentWorkToolsTests.cs",
+        "src/tests/engine/LouisAgent.Core.Tests/Delegation/Agents/AskAgentFollowUpTests.cs",
+        "src/tests/engine/LouisAgent.Core.Tests/Delegation/Agents/AskAgentLimitsTests.cs",
+        "src/tests/engine/LouisAgent.Core.Tests/Delegation/Agents/AskAgentPeerTests.cs",
+        "src/tests/engine/LouisAgent.Core.Tests/Delegation/Agents/AskAgentToolsTests.cs",
+        "src/tests/engine/LouisAgent.Core.Tests/Delegation/LookupAskTests.cs",
+        "src/tests/engine/LouisAgent.Core.Tests/Docs/OldWordsTests.cs",
+        "src/tests/engine/LouisAgent.Core.Tests/Hosting/AgentEngineFactorySkillsTests.cs",
+        "src/tests/engine/LouisAgent.Core.Tests/Hosting/AgentEngineFactoryTests.cs",
+        "src/tests/engine/LouisAgent.Core.Tests/Hosting/Engines/ProfileKeyTests.cs",
+        "src/tests/engine/LouisAgent.Core.Tests/Hosting/Prompts/SkillLoaderHeadersTests.cs",
+        "src/tests/engine/LouisAgent.Core.Tests/Hosting/Prompts/SkillLoaderSkillsTests.cs",
+        "src/tests/engine/LouisAgent.Core.Tests/Hosting/Prompts/SkillLoaderTests.cs",
+        "src/tests/engine/LouisAgent.Core.Tests/LouisAgent.Core.Tests.csproj",
+        "src/tests/engine/LouisAgent.Core.Tests/RepeatedNames/Scanning/NotAToolset.cs",
+        "src/tests/engine/LouisAgent.Core.Tests/RepeatedNames/Scanning/RazorNameScan.cs",
+        "src/tests/engine/LouisAgent.Core.Tests/Skills/Headers/PromptCatalogTests.cs",
+        "src/tests/engine/LouisAgent.Core.Tests/Skills/Headers/PromptHeadersTests.cs",
+        "src/tests/engine/LouisAgent.Core.Tests/Skills/Roles/LookupRolesTests.cs",
+        "src/tests/engine/LouisAgent.Core.Tests/Skills/Roles/RoleCatalogTests.cs",
+        "src/tests/engine/LouisAgent.Core.Tests/Skills/Roles/RoleLevelOfTests.cs",
+        "src/tests/engine/LouisAgent.Core.Tests/Skills/Roles/RoleNamingTests.cs",
+        "src/tests/engine/LouisAgent.Core.Tests/Skills/SkillFileSourceTests.cs",
+        "src/tests/engine/LouisAgent.Core.Tests/TestPrompts.cs",
+        "src/tests/engine/LouisAgent.Core.Tests/Usage/Records/UsageSessionTests.cs",
+        "src/tests/engine/LouisAgent.Core.Tests/Usage/Reports/CacheGapsTests.cs",
+        "src/tests/engine/LouisAgent.Core.Tests/Usage/Reports/UsageReportTests.cs",
+        "src/tests/engine/LouisAgent.Core.Tests/agents/testprod/subagents/specialist/voice.md",
+        "src/tests/engine/LouisAgent.Core.Tests/agents/testprod/voice.md",
+        "src/tests/engine/LouisAgent.SessionStream.Tests/Fixtures/session-stream.expected.json",
+        "src/tests/engine/LouisAgent.SessionStream.Tests/SessionStreamReaderTests.cs",
+        "src/tests/hosts/LouisAgent.Acp.Tests/AcpTranscriptTests.cs",
+        "src/tests/hosts/LouisAgent.Api.Testing/TestAgent.cs",
+        "src/tests/hosts/LouisAgent.Api.Tests/Sessions/AgentSessionsTests.cs",
+        "src/tests/hosts/LouisAgent.Api.Tests/Sessions/AskDepthTests.cs",
+        "src/tests/hosts/LouisAgent.Api.Tests/Sessions/ContinuedSpecialistRoleTests.cs",
+        "src/tests/hosts/LouisAgent.Api.Tests/Sessions/PeerTraceTests.cs",
+        "src/tests/hosts/LouisAgent.Api.Tests/Sessions/Requests/ReplayResolutionTests.cs",
+        "src/tests/hosts/LouisAgent.Api.Tests/Sessions/StreamGoldenTests.cs",
+        "src/tests/hosts/LouisAgent.Api.Tests/WorkStatusTests.cs",
+        "src/tests/shared/LouisAgent.Testing/SampleRole.cs",
+        "src/tests/shared/LouisAgent.Testing/TestTools.cs",
+        "src/tests/web/LouisAgent.Diagrams.Tests/Flow/GraphLayoutTests.cs",
+        "src/tests/web/LouisAgent.Web.Framework.Tests/SubagentWordTests.cs",
+        "src/tests/web/LouisAgent.Web.Testing/FixtureApi.cs",
+        "src/tests/web/LouisAgent.Web.Tests/Chats/ChatRunnerTests.cs",
+        "src/tests/web/LouisAgent.Web.Tests/Chats/DelegationTests.cs",
+        "src/tests/web/LouisAgent.Web.Tests/Chats/ImageSourcesTests.cs",
+        "src/tests/web/LouisAgent.Web.Tests/Chats/SpecialistAnswerTests.cs",
+        "src/tests/web/LouisAgent.Web.Tests/Chats/TurnStreamImageTests.cs",
+        "src/tests/web/LouisAgent.Web.Tests/Chats/TurnStreamTests.cs",
+        "src/tests/web/LouisAgent.Web.Tests/Chats/WorkStatusTests.cs",
+        "src/tests/web/LouisAgent.Web.Tests/Components/DelegationCardTests.cs",
+        "src/tests/web/LouisAgent.Web.Tests/Components/Site/CardDeckTests.cs",
+        "src/tests/web/LouisAgent.Web.Tests/Shell/ChatCostsTests.cs",
+        "src/tools/LouisAgent.UsageProbe/Program.cs",
+        "src/web/LouisAgent.Web/Api/AgentApi.cs",
+        "src/web/LouisAgent.Web/Chats/Block.cs",
+        "src/web/LouisAgent.Web/Chats/Delegation.cs",
+        "src/web/LouisAgent.Web/Chats/ImageSources.cs",
+        "src/web/LouisAgent.Web/Chats/RolePhases.cs",
+        "src/web/LouisAgent.Web/Chats/SpecialistAnswer.cs",
+        "src/web/LouisAgent.Web/Chats/Turn.cs",
+        "src/web/LouisAgent.Web/Chats/TurnStream.cs",
+        "src/web/LouisAgent.Web/Chats/WorkStatus.cs",
+        "src/web/LouisAgent.Web/Components/Chat/Header/CreditsMenu.razor.cs",
+        "src/web/LouisAgent.Web/Components/Chat/Panels/WorkItem.razor.cs",
+        "src/web/LouisAgent.Web/Components/Chat/Panels/WorkPanel.razor",
+        "src/web/LouisAgent.Web/Components/Chat/Panels/WorkPanel.razor.cs",
+        "src/web/LouisAgent.Web/Components/Chat/Shell/ChatShell.razor",
+        "src/web/LouisAgent.Web/Components/Chat/Turns/AnswerActions.razor.cs",
+        "src/web/LouisAgent.Web/Components/DelegationCard.razor",
+        "src/web/LouisAgent.Web/Components/DelegationCard.razor.cs",
+        "src/web/LouisAgent.Web/Components/DelegationCard.razor.scss",
+        "src/web/LouisAgent.Web/Components/TurnView.razor.cs",
+        "src/web/LouisAgent.Web/Content/Sources.cs",
+        "src/web/LouisAgent.Web/Shell/ChatCosts.cs",
+        "src/web/LouisAgent.Web/Styles/web/tools/surface/_marks.scss",
+        "src/web/LouisAgent.Web/Text/StepMarks.cs",
+    ];
+
+    /// <summary>No <c>[Description]</c> says the old words: what a tool, a message or a setting tells.</summary>
+    [Test]
+    public void NoText_SaysTheOldWords()
+    {
+        var saying = SourceFiles()
+            .Where(file => file.EndsWith(".cs", StringComparison.Ordinal))
+            .SelectMany(file => Descriptions(Read(file)).Where(SaysAnOldWord).Select(text => $"{file}: {text}"))
+            .ToList();
+
+        Assert.That(saying, Is.Empty,
+            "A text says subagent or lookup agent, never specialist or minion (ADR 0133, ADR 0021):\n  " +
+            string.Join("\n  ", saying));
+    }
+
+    /// <summary>Only the listed files still say the words, and a listed one that no longer does is taken off.</summary>
+    [Test]
+    public void OnlyTheListedFiles_StillSayThem()
+    {
+        var saying = SourceFiles().Where(file => SaysAnOldWord(Read(file))).ToHashSet();
+
+        var newOnes = saying.Except(StillToRename).Order().ToList();
+        var renamed = StillToRename.Except(saying).Order().ToList();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(newOnes, Is.Empty,
+                "Say subagent or lookup agent (ADR 0133, ADR 0021); these say specialist or minion:\n  " +
+                string.Join("\n  ", newOnes));
+            Assert.That(renamed, Is.Empty,
+                "No longer says the old words: take it off StillToRename so the list only shrinks:\n  " +
+                string.Join("\n  ", renamed));
+        });
+    }
+
+    /// <summary>A kept place keeps its words, and a file beside one is still read.</summary>
+    [TestCase("src/evals/LouisAgent.Evals/Protocol/ProtocolWriter.cs", true)]
+    [TestCase("src/web/LouisAgent.Web.Evals/Pages/Runs.razor", true)]
+    [TestCase("src/site/LouisAgent.Site/Content/cv.json", true)]
+    [TestCase("src/hosts/LouisAgent.Api.Contracts/Admin/Prompts/PromptRows.cs", false)]
+    [TestCase("src/web/LouisAgent.Web/Chats/Delegation.cs", false)]
+    public void AKeptPlace_IsSkipped(string file, bool kept) => Assert.That(IsKept(file), Is.EqualTo(kept));
+
+    /// <summary>A description is read whole, even when its text is split across lines with <c>+</c>.</summary>
+    [Test]
+    public void ADescription_IsReadAcrossItsLines()
+    {
+        const string source = "[Description(\"one \" +\n    \"two\")]\nFirst,\n[Description(\"three\")] Second";
+
+        Assert.That(Descriptions(source), Is.EqualTo(new[] { "\"one \" +\n    \"two\"", "\"three\"" }));
+    }
+
+    /// <summary>
+    /// Every source file under the roots, as a path from the repository's root with forward slashes: not what a build
+    /// wrote, not a doc, not a kept place. A prompt is a markdown file under an <c>agents</c> folder.
+    /// </summary>
+    private static IEnumerable<string> SourceFiles() =>
+        SourceRoots
+            .Select(root => Path.Combine(TestPaths.RepoRoot, root))
+            .Where(Directory.Exists)
+            .SelectMany(dir => Directory.EnumerateFiles(dir, "*", SearchOption.AllDirectories))
+            .Select(file => Path.GetRelativePath(TestPaths.RepoRoot, file).Replace('\\', '/'))
+            .Where(IsOurs)
+            .Where(file => !IsKept(file));
+
+    /// <summary>A file we wrote by hand, in a kind we read: never build output, a package's files or a doc.</summary>
+    private static bool IsOurs(string file)
+    {
+        if (file.Contains("/bin/") || file.Contains("/obj/") || file.Contains("/node_modules/")) return false;
+        if (file.Contains("/docs/")) return false;
+        if (file.EndsWith(".md", StringComparison.Ordinal)) return file.Contains("/agents/");
+        return SourceExtensions.Any(extension => file.EndsWith(extension, StringComparison.Ordinal));
+    }
+
+    /// <summary>Whether a file is in a place that keeps the old words on purpose.</summary>
+    private static bool IsKept(string file) => Kept.Any(place => file.Contains(place, StringComparison.Ordinal));
+
+    /// <summary>Whether a text says either old word, in any case or form ("Minions", "specialist's").</summary>
+    private static bool SaysAnOldWord(string text) =>
+        OldWords.Any(word => text.Contains(word, StringComparison.OrdinalIgnoreCase));
+
+    /// <summary>The file's text, from its path from the repository's root.</summary>
+    private static string Read(string file) => File.ReadAllText(Path.Combine(TestPaths.RepoRoot, file));
+
+    /// <summary>
+    /// The text of each <c>[Description(...)]</c> in a source file, from after its opening parenthesis to its closing
+    /// <c>)]</c>, so a text split over lines is read whole.
+    /// </summary>
+    private static IEnumerable<string> Descriptions(string source)
+    {
+        const string open = "[Description(";
+        const string close = ")]";
+        int at = source.IndexOf(open, StringComparison.Ordinal);
+        while (at >= 0)
+        {
+            int start = at + open.Length;
+            int end = source.IndexOf(close, start, StringComparison.Ordinal);
+            if (end < 0) yield break;
+            yield return source[start..end];
+            at = source.IndexOf(open, end, StringComparison.Ordinal);
+        }
+    }
+}

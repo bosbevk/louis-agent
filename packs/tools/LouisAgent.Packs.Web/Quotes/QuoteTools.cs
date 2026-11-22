@@ -25,11 +25,11 @@ public sealed class QuoteTools(IPageFetcher fetcher, IPageRenderer? renderer = n
         "must stand right after the product's name, no other price between; a quote that is only a price needs it. " +
         "Answers 'Found', 'Not found' or 'Not found with the product' (treat the value as unconfirmed), 'Page empty' " +
         "(a JavaScript page that couldn't be read) or an error with its reason. No model reads the page, so a check " +
-        "costs nothing but the fetch. Use it on every quote a minion returns before you use its value.")]
+        "costs nothing but the fetch. Use it on every quote a lookup agent returns before you use its value.")]
     public async Task<string> VerifyQuote(
         [Description("Absolute http(s) URL of the page the value came from")]
         string url,
-        [Description("The exact words the value came from, as the minion (or you) copied them")]
+        [Description("The exact words the value came from, as the lookup agent (or you) copied them")]
         string quote,
         [Description(
             "The product's name as the page shows it. Needed when the quote is only a price (R22.99): a price " +

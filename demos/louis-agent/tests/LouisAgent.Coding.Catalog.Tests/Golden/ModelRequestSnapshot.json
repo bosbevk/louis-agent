@@ -1955,7 +1955,7 @@
     },
     {
       "Name": "VerifyQuote",
-      "Description": "Checks that the exact words a price (or any fact) came from are on the page itself: fetches the page with FetchUrl's address rules and looks for the quote with spacing and case ignored. With product, the quote must stand right after the product's name, no other price between; a quote that is only a price needs it. Answers 'Found', 'Not found' or 'Not found with the product' (treat the value as unconfirmed), 'Page empty' (a JavaScript page that couldn't be read) or an error with its reason. No model reads the page, so a check costs nothing but the fetch. Use it on every quote a minion returns before you use its value.",
+      "Description": "Checks that the exact words a price (or any fact) came from are on the page itself: fetches the page with FetchUrl's address rules and looks for the quote with spacing and case ignored. With product, the quote must stand right after the product's name, no other price between; a quote that is only a price needs it. Answers 'Found', 'Not found' or 'Not found with the product' (treat the value as unconfirmed), 'Page empty' (a JavaScript page that couldn't be read) or an error with its reason. No model reads the page, so a check costs nothing but the fetch. Use it on every quote a lookup agent returns before you use its value.",
       "Schema": {
         "type": "object",
         "properties": {
@@ -1964,7 +1964,7 @@
             "type": "string"
           },
           "quote": {
-            "description": "The exact words the value came from, as the minion (or you) copied them",
+            "description": "The exact words the value came from, as the lookup agent (or you) copied them",
             "type": "string"
           },
           "product": {
