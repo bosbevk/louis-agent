@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 146 | 72 |
-| Fixes (`FX`) | 211 | 4 |
+| Fixes (`FX`) | 212 | 4 |
 | Cleanups (`CL`) | 41 | 27 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -277,10 +277,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (211 done)
+## Fixes (212 done)
 
 | Id | When | What |
 |---|---|---|
+| FX223 | 2026-11-22 | Two of the vault's rights out, given to Puls's apps that are gone |
 | FX222 | 2026-11-22 | The band test's id is no longer the core toolset's wire name, so main's repeated-names rule passes again |
 | FX221 | 2026-11-22 | Two leftovers out of Azure: the old VM's empty subnet and three image-pull rights of apps that are gone |
 | FX220 | 2026-11-22 | The parallel engine's test holds its round open until all three calls have started, so a busy machine can't make it count two |
