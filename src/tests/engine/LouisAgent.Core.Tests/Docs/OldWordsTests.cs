@@ -5,10 +5,9 @@ namespace LouisAgent.Core.Tests.Docs;
 /// purpose no file says "specialist" or "minion", and no text the model or a person reads ever does (CL69).
 /// </summary>
 /// <remarks>
-/// A ratchet, as <see cref="WriteUpsTests"/> and <see cref="FileSizeTests"/>: the files that still said the words on
-/// the day the test arrived are listed, a new one fails, and a listed one that no longer says them fails too until it
-/// is taken off, so the list only shrinks. The texts are held at once, with no list, since a word the model reads
-/// steers what it does.
+/// It was a ratchet while CL69 ran, as <see cref="WriteUpsTests"/> is: the files that still said the words were
+/// listed, and each step took its own off. The list ended empty, so the rule now holds every file; the texts were
+/// held from the first day, since a word the model reads steers what it does.
 /// </remarks>
 public class OldWordsTests
 {
@@ -24,9 +23,9 @@ public class OldWordsTests
     /// <summary>
     /// The places that keep the words on purpose: the eval code, left for its rework (Louis, 2026-11-22: "we are
     /// going to scrap all about evals and redo it total rework"), with the run rows it shares with the API; Louis's
-    /// own CV, which says what the Puls specialists are; the coding agent's persona, whose name is his; and the tests
-    /// whose job is the words: this one, the framework pages' check, and the headers' check that the old levels are
-    /// refused.
+    /// own CV, which says what the Puls specialists are; the coding agent's persona, whose name is his, with the golden
+    /// file that pins its prompt; and the tests whose job is the words: this one, the framework pages' check, and the
+    /// headers' check that the old levels are refused.
     /// </summary>
     private static readonly string[] Kept =
     [
@@ -39,17 +38,7 @@ public class OldWordsTests
         "src/tests/engine/LouisAgent.Core.Tests/Docs/OldWordsTests.cs",
         "src/tests/web/LouisAgent.Web.Framework.Tests/SubagentWordTests.cs",
         "src/tests/engine/LouisAgent.Core.Tests/Skills/Headers/PromptHeadersTests.cs",
-    ];
-
-    /// <summary>The files that still said the words when CL69 began; each step of CL69 takes its own off.</summary>
-    private static readonly HashSet<string> StillToRename =
-    [
-        "demos/louis-agent/tests/LouisAgent.Coding.Catalog.Tests/CodingRouterTests.cs",
         "demos/louis-agent/tests/LouisAgent.Coding.Catalog.Tests/Golden/ModelRequestSnapshot.json",
-        "demos/louis-agent/tests/LouisAgent.Coding.Catalog.Tests/Golden/ModelRequestSnapshotTests.cs",
-        "packs/tests/LouisAgent.Packs.Web.Tests/Quotes/VerifyQuoteTests.cs",
-        "src/tests/shared/LouisAgent.Testing/TestTools.cs",
-        "src/tools/LouisAgent.UsageProbe/Program.cs",
     ];
 
     /// <summary>No <c>[Description]</c> says the old words: what a tool, a message or a setting tells.</summary>
@@ -66,24 +55,15 @@ public class OldWordsTests
             string.Join("\n  ", saying));
     }
 
-    /// <summary>Only the listed files still say the words, and a listed one that no longer does is taken off.</summary>
+    /// <summary>No file outside the kept places says the words.</summary>
     [Test]
-    public void OnlyTheListedFiles_StillSayThem()
+    public void NoFile_SaysTheOldWords()
     {
-        var saying = SourceFiles().Where(file => SaysAnOldWord(Read(file))).ToHashSet();
+        var saying = SourceFiles().Where(file => SaysAnOldWord(Read(file))).Order().ToList();
 
-        var newOnes = saying.Except(StillToRename).Order().ToList();
-        var renamed = StillToRename.Except(saying).Order().ToList();
-
-        Assert.Multiple(() =>
-        {
-            Assert.That(newOnes, Is.Empty,
-                "Say subagent or lookup agent (ADR 0133, ADR 0021); these say specialist or minion:\n  " +
-                string.Join("\n  ", newOnes));
-            Assert.That(renamed, Is.Empty,
-                "No longer says the old words: take it off StillToRename so the list only shrinks:\n  " +
-                string.Join("\n  ", renamed));
-        });
+        Assert.That(saying, Is.Empty,
+            "Say subagent or lookup agent (ADR 0133, ADR 0021); these say specialist or minion:\n  " +
+            string.Join("\n  ", saying));
     }
 
     /// <summary>A kept place keeps its words, and a file beside one is still read.</summary>
@@ -148,11 +128,11 @@ public class OldWordsTests
 
     /// <summary>
     /// Names that keep an old word and are no word anyone reads: <c>MINION_LLMS</c>, which a test writes to prove it
-    /// sets nothing since CL68.3 (ADR 0049); the tools <c>StartMinion</c> and <c>ContinueMinion</c>, which a test
-    /// proves are no longer asked through; and ADR 0021's file name, which links to it.
+    /// sets nothing since CL68.3 (ADR 0049); the tools <c>StartMinion</c> and <c>ContinueMinion</c> and the toolset
+    /// <c>`minions`</c>, which tests prove are gone; and ADR 0021's file name, which links to it.
     /// </summary>
     private static readonly string[] NamesThatStay =
-        ["MINION_LLMS", "StartMinion", "ContinueMinion", "0021-minions-one-task-one-tool.md"];
+        ["MINION_LLMS", "StartMinion", "ContinueMinion", "`minions`", "0021-minions-one-task-one-tool.md"];
 
     /// <summary>
     /// The text with each quote of Louis's taken out: from <c>Louis</c> to the next opening quote within a few words
