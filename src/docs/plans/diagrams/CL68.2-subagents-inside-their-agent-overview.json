@@ -1,0 +1,59 @@
+{
+  "kind": "cards",
+  "title": "CL68.2 Subagents inside their agent: the overview",
+  "caption": "A specialist is a subagent, kept in its agent's folder, named by its address everywhere, its level read from its header.",
+  "cards": {
+    "rows": [
+      {
+        "cards": [
+          {
+            "id": "cl68-2",
+            "icon": "users",
+            "title": "CL68.2 Subagents inside their agent",
+            "code": "agents/triage/subagents/sorter/voice.md",
+            "look": "highlight",
+            "text": "The address triage.sorter is the path the engine reads."
+          }
+        ]
+      },
+      {
+        "cards": [
+          {
+            "id": "adr",
+            "icon": "book",
+            "title": "ADR 0133",
+            "code": "step 1",
+            "text": "Subagents inside their agent, the level in the header; 0017 superseded."
+          },
+          {
+            "id": "word",
+            "icon": "tag",
+            "title": "specialist is subagent",
+            "code": "step 2",
+            "text": "RoleLevel.Subagent, renamed through Rider, and the four headers."
+          },
+          {
+            "id": "name",
+            "icon": "exchange",
+            "title": "One name, the address",
+            "code": "step 3",
+            "text": "triage.sorter everywhere; no dashed role name built."
+          },
+          {
+            "id": "move",
+            "icon": "folder",
+            "title": "Inside their agent",
+            "code": "steps 4 to 7",
+            "text": "The files move, the level from the header, the triage team, the docs."
+          }
+        ]
+      }
+    ],
+    "links": [
+      { "from": "cl68-2", "to": "adr" },
+      { "from": "cl68-2", "to": "word" },
+      { "from": "cl68-2", "to": "name" },
+      { "from": "cl68-2", "to": "move" }
+    ]
+  }
+}

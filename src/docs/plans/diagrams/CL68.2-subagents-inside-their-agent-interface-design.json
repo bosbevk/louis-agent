@@ -1,0 +1,62 @@
+{
+  "kind": "classes",
+  "title": "CL68.2: the interface design",
+  "caption": "The address is the role's one name: RoleCatalog finds a subagent under its agent, and its level is its header's.",
+  "classes": {
+    "types": [
+      {
+        "id": "Address",
+        "name": "AgentAddress",
+        "kind": "record",
+        "members": [
+          "+Identity string",
+          "+Role string?",
+          "+TryParse(text) bool"
+        ]
+      },
+      {
+        "id": "Addresses",
+        "name": "AgentAddresses",
+        "kind": "static",
+        "members": [
+          "+Resolve(address, identities) AddressedAgent?: the address as the role (3)"
+        ]
+      },
+      {
+        "id": "Level",
+        "name": "RoleLevel",
+        "kind": "enum",
+        "members": [
+          "Agent",
+          "Subagent: was Specialist (2)",
+          "Minion"
+        ]
+      },
+      {
+        "id": "Roles",
+        "name": "RoleCatalog",
+        "kind": "static",
+        "members": [
+          "+SubagentsFolder \"subagents\" (4)",
+          "+FileName(\"triage.sorter\", Subagent): agents/triage/subagents/sorter/voice.md (4)",
+          "+Available(Subagent): every subagent by its address (4)",
+          "-NamePattern: one dot allowed (3)"
+        ]
+      },
+      {
+        "id": "Header",
+        "name": "PromptHeader",
+        "kind": "record",
+        "members": [
+          "+Level RoleLevel?: subagent or agent (2, 5)"
+        ]
+      }
+    ],
+    "relations": [
+      { "from": "Addresses", "to": "Address", "kind": "uses" },
+      { "from": "Addresses", "to": "Roles", "kind": "uses" },
+      { "from": "Roles", "to": "Level", "kind": "uses" },
+      { "from": "Header", "to": "Level", "kind": "uses" }
+    ]
+  }
+}

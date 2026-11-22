@@ -1,0 +1,22 @@
+{
+  "kind": "flow",
+  "type": "object",
+  "title": "CL68.2: objects in memory",
+  "caption": "The manager's session holds a sub-session for triage.sorter, its engine built from the sorter's voice, whose header says subagent.",
+  "flow": {
+    "nodes": [
+      { "id": "session", "label": "the manager's session\nrole triage/voice", "icon": "message", "tone": "green" },
+      { "id": "sub", "label": "a sub-session\nrole triage.sorter, depth 1", "icon": "users", "tone": "green" },
+      { "id": "engine", "label": "its engine\nthe sorter's toolsets", "icon": "chip", "tone": "violet" },
+      { "id": "prompt", "label": "PromptFile\nagents/triage/subagents/sorter/voice.md", "icon": "file", "tone": "teal" },
+      { "id": "header", "label": "PromptHeader\nlevel: subagent", "icon": "tag", "tone": "teal" }
+    ],
+    "edges": [
+      { "from": "session", "to": "sub", "word": "asks" },
+      { "from": "sub", "to": "engine" },
+      { "from": "engine", "to": "prompt", "word": "built from" },
+      { "from": "prompt", "to": "header" }
+    ],
+    "direction": "down"
+  }
+}
