@@ -45,7 +45,7 @@ public class OverviewPageTests
                 Is.EqualTo(ProgramListings.RunTheCodingAgent));
             Assert.That(cut.FindAll("section[id]").Select(section => section.Id),
                 Is.SupersetOf(new[] { "what-it-is", "the-whole", "why-csharp", "your-hardware" }));
-            Assert.That(cut.FindAll("figure.diagram-figure svg"), Has.Count.EqualTo(6),
+            Assert.That(cut.FindAll("figure.diagram-figure"), Has.Count.EqualTo(6),
                 "at a glance, then each of the five families under its own heading");
         });
     }

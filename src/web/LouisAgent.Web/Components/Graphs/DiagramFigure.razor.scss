@@ -11,6 +11,14 @@
     height: auto;
 }
 
+/* A phone's drawing (F169.5) is shown at the size the engine drew it, the width of a phone's words, never stretched
+   to its column, so its words are the engine's sizes on any screen below medium; it shrinks only in a column
+   narrower than it. */
+.diagram-narrow ::deep svg {
+    width: auto;
+    max-width: 100%;
+}
+
 .diagram-figure figcaption {
     margin-top: 8px;
     font-size: 13px;
