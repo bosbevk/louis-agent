@@ -756,10 +756,40 @@ words a quarter of their size. So a page can ask for a picture in a fit, `Pictur
 second argument of `RenderForPage`. Wide, the default, is the drawing as it always was. Narrow asks `NarrowFit`,
 which answers one question for any picture: its narrow form, or none. A flow's narrow form is the same flow running
 down, with the columns and the row gap its author set for the wide drawing dropped, so each box sits in the rank its
-arrows give it. A cards picture's is the same cards running down, when `CanRunDown` allows it. A sequence, a class
-chart, a nested or a composite picture and a ticket have none today, and neither has a cards picture whose links
-leave more than one card; for those the page gets the wide drawing. `NarrowFit.Has` says which is which, so the page
-that holds a picture asks the engine and never works it out for itself.
+arrows give it. A cards picture's is the same cards running down, when `CanRunDown` allows it. A sequence's is the
+sequence just as it is, since nothing in its data can be told to run down: its narrow form is a drawing of its own,
+the step list below. A class chart, a nested or a composite picture and a ticket have none today, and neither has a
+cards picture whose links leave more than one card; for those the page gets the wide drawing. `NarrowFit.Has` says
+which is which, so the page that holds a picture asks the engine and never works it out for itself.
+
+**A sequence on a phone is a list of steps.** Five lifelines side by side need width a phone doesn't have, so on a
+phone a sequence is written down the page instead, one step under the other, in the order they happen. A call is
+two lines beside a short solid bar in the accent. The first line is its two ends: a small square in the sender's
+tone and the sender's name, then the wide drawing's own beam with its arrowhead, then the receiver's square and
+name. The second line is the call's words. An answer is the same with the wide drawing's dashes between the names, a
+dashed grey bar and grey words. So a call and an answer are told apart exactly as they are in the wide drawing, and
+the key under the picture, the sequence's own, explains both drawings. The beam stands still here, as the key's
+sample does.
+
+When two names and the line between them don't fit on one line, the receiver goes to a second line that starts
+with the beam or the dashes. A call a participant makes to itself has its one name and a small turn after it. In a
+numbered sequence a step's number stands in its ring before the sender's square. A note is the wide drawing's glass,
+as wide as its words. A block is the wide drawing's frame, with its kind in a pill and its label beside it, and its
+steps stand 10 in from its left, its right and its foot; an `alt`'s other case stands under its dashed divider with
+`else`. No row of participants opens the picture: the names stand on every step, so there is nothing to look up.
+
+The step list keeps the split the wide drawing has between a layout that decides every place and a drawing that
+decides none. `StepListLayout` (`Sequence/Listed/`) lays the steps down a width and hands back a `PlacedStepList`:
+each step as a `PlacedStep` with its box, its words broken for its room and its two ends as a `PlacedEnds`, and each
+block as the wide layout's own `PlacedBlock`, so the wide drawing's `SequenceFrames` draw it as they are.
+`StepListRows` walks the steps' tree the way `SequenceRows` does: a step is placed at the height and in the room it
+is handed, and a block lays its own steps a level in, then frames what came back. Its numbers are one record,
+`StepListMeasures`, which also answers the two questions the layout asks of them, a text's lines for a room and how
+wide two names are on one line. `StepListDrawing` (`Svg/Renderers/Parts/StepLists/`) puts the picture together with
+the builder every picture uses, and `StepListSteps` draws one step with the very `SequenceSteps.Beam` and
+`SequenceSteps.Dashes` the key draws its samples with. `StepListStyle` adds the bar, the squares, the names and the
+words, all plain colours, so a flat page has nothing of it to hide. The sequence's data has no field for any of this,
+so a picture in the docs is never drawn as a list.
 
 A narrow drawing is laid out 338 wide (`PageSvg.NarrowLayout`), so with the page copy's 2 pixels of edge on each
 side it is 342, the width of the words on a 390 screen (`PageSvg.PhoneWords`). Its head changes too. Wide, the
@@ -768,7 +798,7 @@ title, so the type stands on its own line under the title, both at the inset, an
 The picture's width then counts the body, the title alone and the type alone (`PictureBuilder.Fit`). Only a page's
 copy is ever drawn narrow, so a picture as a file, in the docs, is byte for byte as it was.
 
-*Decided in:* F127.4.1, F164.1, F169.4, F169.5.
+*Decided in:* F127.4.1, F164.1, F169.4, F169.5, F169.7.
 
 ### 5. The types, in two pictures
 
@@ -811,8 +841,8 @@ src/web/LouisAgent.Diagrams.Engine/
 ├── Keys/       # KeyParts, KeyRows
 ├── Messages/   # DrawingMessage; Holes/Reading/ (NoRendererHoles)
 ├── Nested/     # KeyLayout, NeighbourLayout, NestedLayout, NestedSizes; Placed/ (PlacedBox, PlacedNeighbour, PlacedNested, PlacedPill, PlacedPin); Placed/Keys/ (KeyRow, KeyRowKind, PlacedKey); Placed/Lines/ (LineKind, LinePath, PlacedLine); Routing/ (Obstacles, StateRoutes)
-├── Sequence/   # SequenceLayout, SequenceMeasures, SequenceRows; Keys/ (SequenceKeyItem, SequenceKeyKind, SequenceKeyLayout); Placed/ (PlacedBlock, PlacedCase, PlacedHead, PlacedRow, PlacedSequence)
-├── Svg/        # DiagramRenderers, IDiagramRenderer, PageSvg, SvgWriter, TitledFrame; Ends/ (LineEnd); Fits/ (NarrowFit, PictureFit); Paints/ (Fade, PaintRun); Paths/ (PathWriter); Renderers/ (TicketRenderer); Renderers/Parts/ (PictureBrand, PictureBuilder, PictureMeasures, PictureParts); Renderers/Parts/Flows/ (FlowDrawing, FlowKey, FlowRenderer); Renderers/Parts/Lifelines/ (SequenceDrawing, SequenceFrames, SequenceHeads, SequenceKey, SequenceRenderer, SequenceSteps); Renderers/Parts/Nesting/ (NestedChips, NestedKey, NestedPins, NestedRenderer); Renderers/Parts/Overview/ (CardsRenderer, OverviewCards, OverviewDrawing, OverviewRails, OverviewTrunks); Renderers/Parts/Structure/ (CompositeDrawing, CompositeKey, CompositeKeyItem, CompositeRenderer); Renderers/Parts/Types/ (ClassesDrawing, ClassesKey, ClassesRenderer, RelationLines, TypeCards); Theme/ (PageScheme, SvgPalette, SvgStyle, SvgTheme, SvgTone, TicketStyle); Theme/Looks/ (MarqueeLook, PictureFonts, PictureLook); Theme/Pages/ (PagePalettes); Theme/Looks/Kinds/ (CardsStyle, ClassesStyle, CompositeStyle, FlowStyle, NestedStyle, SequenceStyle)
+├── Sequence/   # SequenceLayout, SequenceMeasures, SequenceRows; Keys/ (SequenceKeyItem, SequenceKeyKind, SequenceKeyLayout); Placed/ (PlacedBlock, PlacedCase, PlacedHead, PlacedRow, PlacedSequence); Listed/ (StepListLayout, StepListMeasures, StepListRows); Listed/Placed/ (PlacedEnds, PlacedStep, PlacedStepList)
+├── Svg/        # DiagramRenderers, IDiagramRenderer, PageSvg, SvgWriter, TitledFrame; Ends/ (LineEnd); Fits/ (NarrowFit, PictureFit); Paints/ (Fade, PaintRun); Paths/ (PathWriter); Renderers/ (TicketRenderer); Renderers/Parts/ (PictureBrand, PictureBuilder, PictureMeasures, PictureParts); Renderers/Parts/Flows/ (FlowDrawing, FlowKey, FlowRenderer); Renderers/Parts/Lifelines/ (SequenceDrawing, SequenceFrames, SequenceHeads, SequenceKey, SequenceRenderer, SequenceSteps); Renderers/Parts/Nesting/ (NestedChips, NestedKey, NestedPins, NestedRenderer); Renderers/Parts/Overview/ (CardsRenderer, OverviewCards, OverviewDrawing, OverviewRails, OverviewTrunks); Renderers/Parts/StepLists/ (StepListDrawing, StepListSteps); Renderers/Parts/Structure/ (CompositeDrawing, CompositeKey, CompositeKeyItem, CompositeRenderer); Renderers/Parts/Types/ (ClassesDrawing, ClassesKey, ClassesRenderer, RelationLines, TypeCards); Theme/ (PageScheme, SvgPalette, SvgStyle, SvgTheme, SvgTone, TicketStyle); Theme/Looks/ (MarqueeLook, PictureFonts, PictureLook); Theme/Pages/ (PagePalettes); Theme/Looks/Kinds/ (CardsStyle, ClassesStyle, CompositeStyle, FlowStyle, NestedStyle, SequenceStyle, StepListStyle)
 ├── Tickets/    # TicketLayout; Placed/ (PlacedPill, PlacedRow, PlacedTicket, PlacedWords, TicketWords)
 ├── Tones/      # ToneMeanings
 ├── Types/      # TypeNames
