@@ -219,11 +219,47 @@ The first rule catches the loop you can name; the cap catches the long chain you
 
 No live run. Puls, the only identity with minions, is paused, and no voice asks one today; the tests carry it.
 
+## Subagents inside their agent (CL68.2, 2026-11-22)
+
+Reading the engine closely showed something the word "specialist" hid. A specialist runs on exactly the same loop as
+the agent you talk to. What makes it different is only what it's given: its own instructions, only the tools its
+work needs, and a fresh conversation. Louis put it in four words, "So it is actually a SubAgent", which is also what
+Claude Code calls an agent with its own instructions file. So the level below the agent is now a subagent, in the
+code, the headers, the prompts and the pages.
+
+Where it lives changed with the name. A subagent used to sit in a `specialists/` folder of its own, apart from the
+agent it belongs to, as `specialists/triage-sorter.md`. Now it lives inside its agent, a folder each:
+`agents/triage/subagents/sorter/voice.md`. You can see who owns it by looking at the tree, and the folder has room for
+the subagent's own skills one day. ADR 0133 records it, and it replaces ADR 0017's folder per level.
+
+The best part is the name. A subagent used to have two: its address, `triage.sorter`, which a caller writes, and its
+role, `triage-sorter`, which was its file's name, with a step in the engine that turned the dot into a dash. Now the
+address is its only name, in a call, a session's `role`, `ROLES_ENABLED`, an eval and the logs, and the engine reads
+it as the path. The triage team lost a whole enum that only existed to hold the second spelling.
+
+The level moved into the header. ADR 0017's folders stopped a role opening at the wrong level. With subagents inside
+their agents there's no folder per level any more, so a prompt's level is the `level` its header already named, and a
+rule test refuses a header whose level isn't the one its place stands for. I proved that it bites by setting the test
+subagent's header to `agent`: the test named the file at once.
+
+Three things surfaced during the build. The plan's order didn't work: renaming a subagent before its file moved
+needed something to find the old file from the new name, so for one step only the catalogue knew it. Louis also asked
+"should this not be shared enums?" of the folder names, and he was right by our own rule, ADR 0043: the prompt
+folders and files are now `PromptFolder` and `PromptFileName`, in Composition, because where a prompt sits is the
+contract every identity and pack follows. And a test that forbids a lowercase `prompts/` folder fired on Windows for
+the new C# folder `Prompts/`, because Windows ignores case when it looks a folder up; it now compares the name exactly.
+
+What wasn't done: no live run (only names and paths moved; the coding agent's prompt changed by one word, which its
+golden file shows). The framework's web library still calls its chat code by the old word (`SpecialistAnswer` and
+others), and the eval protocol's `specialist_calls` waits for the evals to be rebuilt. Puls follows when it moves to
+this version.
+
 ## Next
 
 Decide how often Puls should delegate (keep research and long work, answer short read-only questions itself?) and
 measure it the same way; Puls on `AskAgent`, measured when Puls resumes (F135); more evals per role for quality, not
-only cost; and parallel specialists for a task with independent parts.
+only cost; parallel subagents for a task with independent parts; and CL68.3, minions as lookup agents beside the
+subagents.
 
 ---
 [Learning](README.md) · [Goal](../GOAL.md)
