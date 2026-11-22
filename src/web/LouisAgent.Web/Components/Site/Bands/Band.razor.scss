@@ -8,9 +8,9 @@
 .band-body { display: contents; }
 
 /* A mark over the topic (F169.3, Louis's pick 5): an orb, 64 across on a desktop and 48 on a phone, grown with the
-   screen's width between them so no breakpoint is written, 20 above the topic, standing still with no ring. A letter
-   on it keeps its share of the disc, 17 of 46. */
-.band-mark { --band-mark: clamp(48px, 12vw, 64px); display: flex; margin-bottom: 20px; }
+   screen's width between them so no breakpoint is written, standing still with no ring. Its room above the topic is
+   the band's own gap between its parts. A letter on it keeps its share of the disc, 17 of 46. */
+.band-mark { --band-mark: clamp(48px, 12vw, 64px); display: flex; }
 .band-mark ::deep .orb {
     width: var(--band-mark);
     height: var(--band-mark);

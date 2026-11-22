@@ -496,7 +496,7 @@ draws no style of its own. The id is required so that every area on every site i
 visitor to it. A band whose content is one piece, such as a demo that plays, sets `Paged="false"`, and the frame
 then never pages it sideways. A band may also take a mark over its topic, in its named `Mark` slot, as `CornerLink`
 takes one before its words. The band knows nothing of what the mark is; it draws it as drawing only, hidden from a
-screen reader, with 20 of room under it, and sizes an orb in it to grow with the screen's width from 48 to 64, so no
+screen reader, the band's own gap between its parts as its room above the topic, and sizes an orb in it to grow with the screen's width from 48 to 64, so no
 breakpoint is written. The framework's Overview is where it is used: its first section opens with the orb.
 
 A band's heading, `BandTitle`, takes its rank from where the band stands, so a page never says it by hand. The band
