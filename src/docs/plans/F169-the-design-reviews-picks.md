@@ -141,6 +141,10 @@ as values for a list of names, which is extensibility, skill 20.
   section's.
 - **2026-11-21, F169.2's step number in glass.** Louis: "A: the theme decides". A step's number gets names of its
   own: flat sets the squared label, and glass and retro keep the circle they show today.
+- **2026-11-22, F169.4's way of asking for depth.** Louis: "A: the names there are". The two windows and the talk
+  read the names the themes already set, and no name is added for them. So F169.4's done-when changes in one
+  place: glass does move where it draws these pieces, a visitor's message and a code block taking glass's small
+  shadow in place of the deep ones, as the sheets showed.
 
 ---
 [Docs index](../README.md) · Related: [the plans' index](README.md), [F151 Two themes, each light and dark](F151-themes-and-styles.md)
