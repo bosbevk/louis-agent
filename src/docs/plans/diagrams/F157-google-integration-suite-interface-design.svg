@@ -278,7 +278,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="pic-note" x="571" y="261" text-anchor="start">F157.1, in</text>
       <text class="pic-note" x="571" y="273" text-anchor="start">LouisAgent.Accounts</text>
       <path class="cls-divide" d="M533 293H953" />
-      <text class="cls-member" x="533" y="311" text-anchor="start">reads the tenant's refresh token from AspNetUserTokens</text>
+      <text class="cls-member" x="533" y="311" text-anchor="start">reads the owner's refresh token from AspNetUserTokens</text>
       <text class="cls-member" x="533" y="325" text-anchor="start">unprotects it with Data Protection</text>
       <text class="cls-member" x="533" y="339" text-anchor="start">refreshes at Google, keeps the access token until it expires</text>
       <rect class="cls-cover" x="519" y="426" width="448" height="110" rx="14" />
@@ -298,8 +298,8 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="pic-note" x="571" y="659" text-anchor="start">F157.3</text>
       <path class="cls-divide" d="M533 679H953" />
       <text class="cls-member" x="533" y="697" text-anchor="start">FindFreeTimes(DateOnly from, DateOnly to, int minutes)</text>
-      <text class="cls-member" x="533" y="711" text-anchor="start">BookTime(DateTime startUtc, int minutes, string name, string</text>
-      <text class="cls-member" x="533" y="725" text-anchor="start">  contact)</text>
+      <text class="cls-member" x="533" y="711" text-anchor="start">RequestBooking(DateTime startUtc, int minutes, string name,</text>
+      <text class="cls-member" x="533" y="725" text-anchor="start">  string contact)</text>
       <rect class="cls-cover" x="1057" y="392" width="357" height="178" rx="14" />
       <rect class="mrq-glass" x="1057" y="392" width="357" height="178" rx="14" />
       <rect class="mrq-edge" x="1081" y="391.5" width="309" height="1.6" rx="0" />

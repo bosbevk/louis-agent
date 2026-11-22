@@ -11,7 +11,7 @@
       { "id": "sheets", "label": "SheetsTools", "icon": "box", "tone": "green" },
       { "id": "cal", "label": "CalendarTools", "icon": "box", "tone": "green" },
       { "id": "conn", "label": "AccountConnections", "icon": "shield", "tone": "teal" },
-      { "id": "cache", "label": "access tokens\n(\"seemeeu\", sheets read) until 10:58", "icon": "clock", "tone": "amber", "shape": "data" },
+      { "id": "cache", "label": "access tokens\n(\"seemeeu\", drive.file) until 10:58", "icon": "clock", "tone": "amber", "shape": "data" },
       { "id": "turn", "label": "the turn's tenant\n\"seemeeu\" (AsyncLocal, F157.1)", "icon": "tag", "tone": "amber", "shape": "data" },
       { "id": "session", "label": "AgentSession\nOpener: the visitor\nTenant: the host's", "icon": "message", "tone": "blue" }
     ],

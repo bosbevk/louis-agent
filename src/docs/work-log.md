@@ -12,17 +12,18 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 151 | 73 |
+| Features (`F`) | 152 | 77 |
 | Fixes (`FX`) | 213 | 4 |
 | Cleanups (`CL`) | 43 | 28 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (105 in the TODO)
+## Open (109 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
-| F171 | The bill checker (Louis, 2026-11-21; 2026-11-22: "this feature is next"): a phone app that reads a Western Cape municipal account from a photo or a PDF, checks every line against Cape Town's, Swartland's and Overstrand's own tariffs and drafts the dispute, free to download with one subscription; the product in its own private `bill-checker` repository on the framework's packages, the framework's parts here: F171.1 a photo or PDF reaches a tool; F171.2 the bills pack reads and checks; F171.3 the dispute letter; F171.4 the identity and evals; F171.5 the account, consent and our own subscriptions part; F171.6 the phone app; F171.7 the stores; F171.8 the monthly report | Next |
+| F171 | The bill checker (Louis, 2026-11-21; 2026-11-22: "this feature is next"): a phone app that reads a Western Cape municipal account from a photo or a PDF, checks every line against Cape Town's, Swartland's and Overstrand's own tariffs and drafts the dispute, free to download with one subscription; the product in its own private `bill-checker` repository on the framework's packages, the framework's parts here: F171.1 a photo or PDF reaches a tool (started 2026-11-22); F171.2 the bills pack reads and checks; F171.3 the dispute letter; F171.4 the identity and evals; F171.5 the account, consent and our own subscriptions part; F171.6 the phone app; F171.7 the stores; F171.8 the monthly report | Next |
+| F172 | What we are building, and what just landed: a `/now` page on both sites, read live from GitHub's TODO, work log and commit scopes; ten steps | Now |
 | F158 | A chart kind in the docs' diagram tool (Louis, 2026-11-17, of the stream probe's fluency graph, his pick B of three): a line and bar chart drawn from JSON in the pictures' own look, so a measured graph is drawn like every other picture (ADR 0118) | Next |
 | F159 | The stream probe as a tool (Louis, 2026-11-17: "and the probe under tools", "store test results"): `src/tools/LouisAgent.StreamProbe` asks a site's guide with pacing on and off, stores each run's timings and the fluency chart's JSON in the docs, drawn by the tool; after F158 | Next |
 | F151 | Two themes a visitor picks between, glass and flat, each light and dark, remembered by the browser; each theme a package of values a site opts into, worn by every page and component we have, with the agent bar on it (Louis, 2026-11-15: "you will be able to choose your theme, it defaults to glass, light", "2 themes, 2 styles light and dark", "we should just have the user pick"); eight children: the contract, the two packages, the two switches, the framework's components, the libraries and the other sites, louis-agent.dev's pages, the pictures, and the demos recorded again | Now, next |
@@ -55,14 +56,14 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F125 | An agentic site: docs the standard way and public over MCP, buttons and cards in the guide, gaps, live demos, tools over MCP and discovery | Now |
 | F126 | Evals, redesigned: one `.eval.json` of conversations with turns, six facts in code, criteria a judge marks, flips to correct it, its own eval host, six screens; today's evals deleted, not ported | Now |
 | F168 | Facebook auto-answers (Louis, 2026-11-21: "plan integration into facebook to auto answer questions"): the guide answers the Page's Messenger in his voice through a framework library, `louis-agent.api.messenger`, over the sessions API with its own key and a daily cap per person, and steps back when Louis answers himself; a data-deletion callback; eleven steps, after F126 | Now, after F126 |
-| F169 | The framework's site, as the design review picked it (Louis, 2026-11-21: "review from a branding and look and feel perspective the framework site design and flat themeing", then "I want you to rhoroughly plan this"): his picks on thirteen findings, built in seven children. F169.1 flat's lines and inks: every text on a flat page at 4.5 to 1 or more, the ring at 3 to 1, held by a test (done 2026-11-21); F169.2 the docs page's type and edges: three heading sizes, 74, 40 and 28 (40, 32 and 24 at 390 wide), the Overview's families h3s under one h2, four corner names and a step's six set by every theme, Orbi's panel at 18, no step on a disc in flat, the rows of terms and the page turn ending on the page's edge (done 2026-11-21); F169.3 the brand's parts: the mark the only ball, the name's ball one size, the footer's three links (done 2026-11-22); F169.4 flat has no depth: no shadow, blur or gradient on a flat page, glass's talk on its own small shadow (done 2026-11-22); F169.5 the phone: no page scrolling sideways at 390 wide, every picture read without zooming (done 2026-11-22); F169.6 a card for each page: a link to a page previews that page's own card (done 2026-11-22); F169.7 the sequence drawn for a phone: on a 390 screen the sequence on How it works reads without sliding | Now |
+| F169 | The framework's site, as the design review picked it (Louis, 2026-11-21: "review from a branding and look and feel perspective the framework site design and flat themeing", then "I want you to rhoroughly plan this"): his picks on thirteen findings, built in seven children. F169.1 flat's lines and inks: every text on a flat page at 4.5 to 1 or more, the ring at 3 to 1, held by a test (done 2026-11-21); F169.2 the docs page's type and edges: three heading sizes, 74, 40 and 28 (40, 32 and 24 at 390 wide), the Overview's families h3s under one h2, four corner names and a step's six set by every theme, Orbi's panel at 18, no step on a disc in flat, the rows of terms and the page turn ending on the page's edge (done 2026-11-21); F169.3 the brand's parts: the mark the only ball, the name's ball one size, the footer's three links (done 2026-11-22); F169.4 flat has no depth: no shadow, blur or gradient on a flat page, glass's talk on its own small shadow (done 2026-11-22); F169.5 the phone: no page scrolling sideways at 390 wide, every picture read without zooming (done 2026-11-22); F169.6 a card for each page: a link to a page previews that page's own card (done 2026-11-22); F169.7 the sequence drawn for a phone: on a 390 screen the sequence on How it works reads without sliding (done 2026-11-22) | Now |
 | F131 | The chat on any website: one script tag opens our widget in a frame from louis-agent.dev on WordPress, static HTML or any site, nothing lost; a door per site, sites per tenant (after F43), a monthly rand budget (after F7), our own WordPress plugin, an answer that survives a page change; seven children | Now |
 | CL66 | The `ticket` kind's name, for Louis | Later |
 | CL68 | Agents and their subagents | Now |
 | F137 | The site's card content as JSON: the demo cards, the pricing, what it does and the custom-agent steps read from JSON beside their pages and drawn by one card component, so an agent that edits the site changes data, not markup; groundwork for F133, after CL60 | Next |
 | F133 | A website with an agent, set up by talking to it (Louis, 2026-11-11: "How about I build a wix with my platform"): not a Wix, but one record per business that draws both its site and its agent, three templates (guesthouse, restaurant, practice), a setup pack that writes the record as the owner talks, preview then checkout then live on its own host name; builds on F131, F43, F130.1 and F7; seven proposed children, four open choices (the record's shape before F131.1 starts) | Next |
 | F152 | The showroom's demos, fuller, each part Louis's pick: a business's chat draws a card for the place its agent opened, as the start's window shows it (Louis, 2026-11-15: "like the inner agent do not do this?"), and the three websites gain sections, which means recording their conversations again (ADR 0115) | Next |
-| F157 | The Google integration suite: connect Google per tenant, read a sheet, book a time, an Integrations section; seven children | Next |
+| F157 | The Google integration suite: connect Google per tenant, read a sheet, a booking request, an Integrations section; four children | Next |
 | F143 | The guide drives Louis's CV: a resume pack with `GetResume` over the same `cv.json`, `/cv` in the place index, a hiring focus skill, an eval of eight conversations; after F142 | Next, after F142 |
 | F46 | Localisation | Next |
 | F40 | The sales playground | Next |
@@ -102,6 +103,9 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL23 | Explore a Roslyn analyzer for the names rule | Later |
 | F30 | F30's minions tested | Later |
 | F104 | Build mode, a side note | Later |
+| F173 | Google Drive for a business's agent, was F157.5 | Later |
+| F174 | Gmail for a business's agent, a reply drafted for the owner, was F157.6 | Later |
+| F175 | Visitors connect their own Google, was F157.7 | Later |
 | CL34 | The work email out of git history | Cleanups |
 | CL35 | `Web/Browsing/RedirectBodies` goes when a PuppeteerSharp release awaits its own redirect body ta… | Cleanups |
 | CL36 | Design docs for the four projects that have none | Cleanups |
@@ -128,10 +132,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 | CL69 | The framework's web library still names its chat code with the old word (`SpecialistAnswer` and its tests, and about 20 files' summaries): rename it to subagent through Rider (found in CL68.2, ADR 0133) | Cleanups |
 
-## Features (151 done)
+## Features (152 done)
 
 | Id | When | What |
 |---|---|---|
+| F169.7 | 2026-11-22 | The sequence drawn for a phone, F169's seventh child: on a phone a sequence is its steps down the page (`StepListLayout`, `StepListDrawing`), each call or answer naming both ends with the wide drawing's own beam or dashes between them, its words under them, blocks as the wide drawing's frames a level in; `NarrowFit` says every sequence has a narrow form, so no picture on the framework's nine pages slides |
 | F169.6 | 2026-11-22 | A card for each page, F169's sixth child: every site's head says what its picture shows (`og:image:alt`); the host gives a page its own share card by where its file is (`social-cards/{route}.png` and `.txt`, `PageCards`); the card tool's `framework-cards` draws the framework's site's card and its eight pages' cards in flat from the running site, refusing one whose type didn't load or whose words pass the middle; `SiteCardsTests` holds each card's words to its page |
 | F169.5 | 2026-11-22 | The phone, F169's fifth child: in the docs layout the frame draws the site's pages in the header's sheet as well as in the column, one shown by width; the words 342 of a 390 screen; a long code word breaks; a cards picture can run down from a trunk, and the engine draws a flow or a cards picture for a phone on asking (`PictureFit`), its type under its title; a figure holds both drawings, Bootstrap showing one, and slides a picture with no narrow form, the sequence until F169.7 |
 | F169.4 | 2026-11-22 | Flat has no depth, F169's fourth child: the search window, the typing row, the send and a talk's pieces read the shadow and blur names every theme sets, so flat draws a line or nothing and glass's talk takes its small shadow; a picture on a flat page with no glow and no fade, its six tones kept; the working line plain words in flat by `--web-working-light`; the grain over every page gone, retro's scanlines keeping their strength |

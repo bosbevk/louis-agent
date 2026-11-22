@@ -1,0 +1,80 @@
+{
+  "kind": "flow",
+  "type": "object",
+  "title": "F172 what we are building: objects in memory",
+  "caption": "The host holds one cache and the report it last made; the page holds its copy of the report and draws a tile per busy item and an entry per day.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "cache",
+        "icon": "server",
+        "tone": "violet",
+        "label": "NowCache (one per host)\nkept until 12:25"
+      },
+      {
+        "id": "rep",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "NowReport\nmade 22 Nov 12:10"
+      },
+      {
+        "id": "b1",
+        "icon": "chip",
+        "tone": "amber",
+        "label": "BusyItem F169\n7 of 7, last 22 Nov"
+      },
+      {
+        "id": "b2",
+        "icon": "chip",
+        "tone": "amber",
+        "label": "BusyItem CL68\n1 of 3, last 22 Nov"
+      },
+      {
+        "id": "d1",
+        "icon": "chip",
+        "tone": "green",
+        "label": "ShippedDay 22 Nov\n6 items, 5 fixes"
+      },
+      {
+        "id": "i1",
+        "icon": "chip",
+        "tone": "green",
+        "label": "ShippedItem F169.7\nThe sequence drawn for a phone"
+      },
+      {
+        "id": "page",
+        "icon": "browser",
+        "tone": "blue",
+        "label": "the /now page (in the browser)\nNowBoard(its copy of the report)"
+      }
+    ],
+    "edges": [
+      {
+        "from": "cache",
+        "to": "rep",
+        "word": "holds"
+      },
+      {
+        "from": "rep",
+        "to": "b1"
+      },
+      {
+        "from": "rep",
+        "to": "b2"
+      },
+      {
+        "from": "rep",
+        "to": "d1"
+      },
+      {
+        "from": "d1",
+        "to": "i1"
+      },
+      {
+        "from": "page",
+        "to": "rep",
+        "word": "a copy, as JSON"
+      }
+    ]
+  }
+}

@@ -555,11 +555,12 @@ that the engine lacks is added to the engine, never drawn in the figure.
 
 A picture drawn for a wide screen and shrunk into a phone's column would have words a quarter of their size, so the
 figure asks the engine whether the picture has a narrow form. If it has, a flow or a cards picture running down,
-the figure holds both drawings under its one caption: the narrow one in Bootstrap's `d-md-none` and the wide one in
-`d-none d-md-block`, so below 768 the phone's is shown. The narrow drawing is shown at its own size, never
-stretched, and shrinks only if the column is narrower than it. If the picture has no narrow form, such as a
-sequence, the figure holds it once in a frame that, below 768, keeps the drawing at its own size and slides
-sideways with a slim bar under it. The frame can take the keyboard's focus and is named by the picture's title, so
+or a sequence drawn as its steps down the page, the figure holds both drawings under its one caption: the narrow
+one in Bootstrap's `d-md-none` and the wide one in `d-none d-md-block`, so below 768 the phone's is shown. The
+narrow drawing is shown at its own size, never stretched, and shrinks only if the column is narrower than it. So
+no picture on the framework's nine pages slides. If a picture has no narrow form, such as a class chart, the figure
+holds it once in a frame that, below 768, keeps the drawing at its own size and slides sideways with a slim bar
+under it. The frame can take the keyboard's focus and is named by the picture's title, so
 it can be scrolled without a pointer. Both drawings are in the page from its first paint, and that is paid for in
 bytes: a page's pictures come to about twice their size.
 

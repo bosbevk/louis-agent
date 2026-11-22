@@ -1,0 +1,89 @@
+{
+  "kind": "sequence",
+  "title": "F172 what we are building: a visitor opens /now",
+  "caption": "The host asks GitHub only when its answer is older than 15 minutes; otherwise the page gets the kept report at once.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "V",
+        "icon": "user",
+        "tone": "blue",
+        "label": "a visitor"
+      },
+      {
+        "id": "P",
+        "icon": "browser",
+        "tone": "green",
+        "label": "the /now page"
+      },
+      {
+        "id": "H",
+        "icon": "server",
+        "tone": "violet",
+        "label": "the host: NowRoute"
+      },
+      {
+        "id": "C",
+        "icon": "settings",
+        "tone": "violet",
+        "label": "NowCache"
+      },
+      {
+        "id": "G",
+        "icon": "folder",
+        "tone": "amber",
+        "label": "GitHub"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "V",
+        "to": "P",
+        "text": "opens /now"
+      },
+      {
+        "step": "message",
+        "from": "P",
+        "to": "H",
+        "text": "GET /v1/now"
+      },
+      {
+        "step": "message",
+        "from": "H",
+        "to": "C",
+        "text": "ReportAsync()"
+      },
+      {
+        "step": "message",
+        "from": "C",
+        "to": "G",
+        "text": "older than 15 minutes: TODO.md, work-log.md, commits since 21 days ago"
+      },
+      {
+        "step": "reply",
+        "from": "G",
+        "to": "C",
+        "text": "two markdown files, commit subjects with dates"
+      },
+      {
+        "step": "reply",
+        "from": "C",
+        "to": "H",
+        "text": "NowReport: busy items, shipped days, made at"
+      },
+      {
+        "step": "reply",
+        "from": "H",
+        "to": "P",
+        "text": "200 with the report, or 503 when none was ever read"
+      },
+      {
+        "step": "reply",
+        "from": "P",
+        "to": "V",
+        "text": "Busy with, Shipped lately, and when it was read"
+      }
+    ]
+  }
+}

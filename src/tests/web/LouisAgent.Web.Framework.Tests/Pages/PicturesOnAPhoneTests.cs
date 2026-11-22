@@ -1,7 +1,6 @@
 using LouisAgent.Diagrams.Engine.Svg.Fits;
 using LouisAgent.Web.Components.Graphs;
 using LouisAgent.Web.Docs;
-using LouisAgent.Web.Framework.Graphs;
 using LouisAgent.Web.Framework.Pages;
 using LouisAgent.Web.Framework.Pages.Build;
 using LouisAgent.Web.Framework.Pages.Decide;
@@ -12,9 +11,9 @@ using Microsoft.Extensions.DependencyInjection;
 namespace LouisAgent.Web.Framework.Tests.Pages;
 
 /// <summary>
-/// F169.5 (Louis's pick "A: both drawn for a phone"): every picture the framework's nine pages draw has a narrow form,
-/// so it reads on a phone without zooming, but the one sequence on How it works, which slides at its own size until
-/// it is drawn for a phone of its own (F169.7).
+/// F169.5 and F169.7 (Louis's pick "A: both drawn for a phone"): every picture the framework's nine pages draw has a
+/// narrow form, so it reads on a phone without zooming and nothing slides, the sequence on How it works drawn as its
+/// steps down the page.
 /// </summary>
 public class PicturesOnAPhoneTests
 {
@@ -26,9 +25,9 @@ public class PicturesOnAPhoneTests
         typeof(ComparisonPage)
     ];
 
-    /// <summary>Every picture a page draws has a narrow form, but the one sequence, named.</summary>
+    /// <summary>Every picture a page draws has a narrow form, the sequence too.</summary>
     [TestCaseSource(nameof(NinePages))]
-    public void EveryPicture_HasANarrowForm_ButTheSequence(Type page)
+    public void EveryPicture_HasANarrowForm(Type page)
     {
         using var ctx = new BunitContext();
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
@@ -44,9 +43,7 @@ public class PicturesOnAPhoneTests
 
         Assert.Multiple(() =>
         {
-            foreach (var picture in pictures.Where(picture => picture != OneTurn.Source))
-                Assert.That(NarrowFit.Has(picture), Is.True, picture.Title);
-            Assert.That(NarrowFit.Has(OneTurn.Source), Is.False, "the sequence slides until F169.7");
+            foreach (var picture in pictures) Assert.That(NarrowFit.Has(picture), Is.True, picture.Title);
         });
     }
 }

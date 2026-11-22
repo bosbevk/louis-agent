@@ -1209,3 +1209,51 @@ What it cost: nothing was paid for.
 Concept: *20 Extensibility* in the [goal](../GOAL.md): convention over configuration, where a file in the right place
 is the whole configuration. And *18 Testing and shipping*: a file drawn from a source goes stale, and a test that
 reads both is what notices.
+
+## F169.7: a second drawing for the same data (2026-11-22)
+
+After F169.5 every picture on the framework's site had a phone drawing but one. The sequence on How it works, five
+lifelines side by side, can't be told to run down the way a flow or a cards picture can, so on a phone it slid
+sideways at 1009 wide. Louis picked "A: both drawn for a phone" for it, and then, on a sheet with three ways to
+write one step, "A: an arrow between the two": each step shows both names with the wide drawing's own line between
+them, a beam for a call and dashes for an answer. The other two ways were the words "calls" and "answers", which
+read as wrong English with a name like "You", and five tiny lifelines beside each step, which send a reader to the
+key to learn which line is which.
+
+The lesson is in why this was a small change. The wide drawing was already split into a layout that decides every
+place and a drawing that decides none. So the phone's drawing is a second layout and a second drawing over the very
+same data, and nothing else moves. `StepListLayout` lays the steps down a width and is tested with numbers alone:
+each step under the one before, no line of words wider than its room, two long names putting the receiver on a
+second line. `StepListRows` walks the steps' tree the way the wide layout's `SequenceRows` does, a block laying its
+own steps a level in and then framing what came back, which is the Composite pattern's walk. Its numbers are one
+record, `StepListMeasures`, a Parameter Object, as the wide layout's are. And because a block's frame is the wide
+layout's own `PlacedBlock` record, the wide drawing's frames draw it unchanged.
+
+Reuse kept the two drawings honest. A step's line is drawn by `SequenceSteps.Beam` and `.Dashes`, the very functions
+the key draws its samples with, so a step can't look different from the key that explains it. Then the engine's one
+question, "does this picture have a narrow form?", got a third answer: a sequence's narrow form is the sequence as
+it is. The figure on the page asked that question already, so the page, the figure and the sequence's data were not
+touched. That is asking the type (ADR 0123) paying off a second time.
+
+What was measured, on the local framework site with Playwright, flat and glass, light and dark. At 390 wide How it
+works doesn't scroll sideways and nothing on it slides; the picture stands at its own 342 and its smallest words are
+10 pixels, the key's. At 360 it is shown at 312, its smallest words 9.1, as every phone picture is shrunk there. At
+768 and 1920 the wide drawing is as it was. The phone drawing is 27 KB in the page, 4.6 KB compressed, so How it
+works went from 54 KB to 81 KB, 12.4 KB compressed in all.
+
+What the look found. Measured at 7.4 a character, a long name like "LouisAgent.Api" left a wide gap before its line,
+while "You" nearly touched its own, since a short word in a proportional font runs wider per letter. A name is now
+measured at 7, and the line stands 8 from each name. And three frames inside each other ended 4 apart, so their feet
+bunched into one thick edge; a frame's last step now ends the same 10 above its foot as it stands from its sides.
+
+What didn't go well. A few edits early in the build were made with small scripts where the rules say to edit the
+file, the same slip F169.5 and F169.6 recorded. And the test for the figure that slides had used a sequence as its
+example of "a picture with no narrow form"; the plan's list of what each change reaches missed it, so it was found
+by running that project's tests, and it now uses a class chart.
+
+What it cost: nothing was paid for.
+
+Concept: *20 Extensibility* in the [goal](../GOAL.md): when the layout and the drawing were split for the first
+picture, a second way of drawing the same data became one new folder of each and one line in the place that asks.
+And *18 Testing and shipping*: the layout is held by numbers, the drawing by what it marks, and the look by a browser
+at 390 wide.
