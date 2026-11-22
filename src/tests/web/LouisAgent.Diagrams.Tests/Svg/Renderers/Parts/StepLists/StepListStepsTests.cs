@@ -44,7 +44,7 @@ public class StepListStepsTests
     /// <summary>The words of the shapes in a class.</summary>
     private static List<string> Words(List<XElement> shapes, string cls) => [.. In(shapes, cls).Select(t => t.Value)];
 
-    /// <summary>A call writes both names once, each after a square in its tone, a beam between, and its words.</summary>
+    /// <summary>A call writes both names, each after a square in its tone, a beam between, and its words.</summary>
     [Test]
     public void ACall_WritesBothNames_ABeamBetween_AndItsWords()
     {

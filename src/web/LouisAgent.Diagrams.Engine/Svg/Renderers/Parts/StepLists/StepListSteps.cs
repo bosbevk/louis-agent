@@ -36,7 +36,7 @@ internal static class StepListSteps
     private const double NameDrop = 4.5, WordDrop = 12.5, CountDrop = 3.5;
 
     /// <summary>How far the line between two names stands from each, and how far a turn reaches and how tall.</summary>
-    private const double LineGap = 6, TurnOut = 14, TurnHalf = 5;
+    private const double LineGap = 8, TurnOut = 14, TurnHalf = 5;
 
     private static readonly StepListMeasures Measures = StepListMeasures.Marquee;
 

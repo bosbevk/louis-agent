@@ -48,7 +48,7 @@ public sealed record StepListMeasures
     public double DotGap { get; init; } = 5;
 
     /// <summary>The beam or the dashes between two names, with the room either side.</summary>
-    public double Arrow { get; init; } = 38;
+    public double Arrow { get; init; } = 42;
 
     /// <summary>The turn after a name that calls itself, with the room before it.</summary>
     public double Turn { get; init; } = 26;
@@ -69,7 +69,7 @@ public sealed record StepListMeasures
     public double BlockEnd { get; init; } = 4;
 
     /// <summary>The face a participant's name is measured in, a little bolder than the words.</summary>
-    public Face NameFace { get; init; } = new(7.4);
+    public Face NameFace { get; init; } = new(7);
 
     /// <summary>The face a step's words and a note's are measured in.</summary>
     public Face WordFace { get; init; } = FlowText.Word;

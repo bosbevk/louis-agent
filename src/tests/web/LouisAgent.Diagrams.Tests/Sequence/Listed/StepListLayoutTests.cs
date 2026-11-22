@@ -75,7 +75,7 @@ public class StepListLayoutTests
         });
     }
 
-    /// <summary>Two short names fit one line with the line between; two long ones put the receiver on a second.</summary>
+    /// <summary>Two short names fit one line with the line between; two long ones wrap the receiver.</summary>
     [Test]
     public void TwoLongNames_AreWrapped_AndTwoShortOnesAreNot()
     {
