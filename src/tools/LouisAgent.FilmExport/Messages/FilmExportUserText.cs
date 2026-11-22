@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using LouisAgent.Composition.Messages;
 using LouisAgent.FilmExport.Messages.Holes;
+using LouisAgent.FilmExport.Messages.Holes.Cards;
 
 namespace LouisAgent.FilmExport.Messages;
 
@@ -36,4 +37,13 @@ public enum FilmExportUserText
     [Description("The share card: {Path}")]
     [Holes(typeof(CardWrittenHoles))]
     CardWritten,
+
+    [Description("{Site}: {Page}. {Heading}")]
+    [Holes(typeof(CardDescriptionHoles))]
+    CardDescription,
+
+    [Description("The page's title '{Title}' doesn't hold the site's name '{Site}', so its card would print the "
+                 + "whole title.")]
+    [Holes(typeof(TitleWithoutSiteHoles))]
+    TitleWithoutSite,
 }
