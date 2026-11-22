@@ -1,8 +1,0 @@
-@use "web/tools/surface";
-
-/* TryStep's own styles, moved beside it from the studio's partials (CL58, step 4). */
-.studio-try { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
-.studio-try input, .studio-try select { flex: 1; min-width: 160px; color: var(--bs-body-color); padding: 7px 10px; font: inherit; font-size: 13px; @include surface.field($edge: var(--web-bar-edge), $radius: 9px); }
-.studio-try-none, .studio-try-error { flex-basis: 100%; margin: 0; }
-.studio-try-error { color: var(--bs-danger); }
-.studio-try-start:disabled { opacity: .45; cursor: not-allowed; }

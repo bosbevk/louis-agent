@@ -2,11 +2,10 @@ namespace LouisAgent.Web.Chats.Replay;
 
 /// <summary>
 /// Plays stored events into a turn, each after its wait, folded the way the live chat folds them, so a page shows the
-/// answer typing out as it did. The eval studio replays a stored turn with it, and a site a recorded session (F120).
+/// answer typing out as it did. A site plays a recorded session with it (F120).
 /// </summary>
 /// <remarks>
-/// Each caller says how long each event waits (the studio from the events' own times, a recording from their kind),
-/// and this loop does the rest once: apply, and ask for a redraw every third event, after any pause and at the end,
+/// Each caller says how long each event waits (a recording by the events' kind), and this loop does the rest once: apply, and ask for a redraw every third event, after any pause and at the end,
 /// so a page isn't redrawn for every word.
 /// </remarks>
 public static class TurnReplay

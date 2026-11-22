@@ -1,7 +1,7 @@
 namespace LouisAgent.Core.Tests.Projects;
 
 /// <summary>
-/// F166.2: the framework ships as packages, the 31 projects Puls builds on and no other (Louis's pick C), each
+/// F166.2: the framework ships as packages, the projects a product builds on and no other (Louis's pick C), each
 /// versioned by tags of its own name (MinVer, his pick A), all under the framework's licence (ADR 0127).
 /// </summary>
 public class PackagesTests
@@ -14,7 +14,7 @@ public class PackagesTests
         "LouisAgent.SessionStream", "LouisAgent.Evals", "LouisAgent.Evals.Checks", "LouisAgent.Evals.Protocol",
         "LouisAgent.Evals.Runner", "LouisAgent.Accounts", "LouisAgent.Accounts.Contracts", "LouisAgent.Api",
         "LouisAgent.Api.Contracts", "LouisAgent.Api.Evals", "LouisAgent.Web", "LouisAgent.Web.Accounts",
-        "LouisAgent.Web.Evals", "LouisAgent.Diagrams", "LouisAgent.Diagrams.Engine", "LouisAgent.Packs.Calculator",
+        "LouisAgent.Diagrams", "LouisAgent.Diagrams.Engine", "LouisAgent.Packs.Calculator",
         "LouisAgent.Packs.DotNet", "LouisAgent.Packs.Files", "LouisAgent.Packs.Git", "LouisAgent.Packs.Shell",
         "LouisAgent.Packs.Web", "LouisAgent.Testing", "LouisAgent.Web.Testing"
     ];
@@ -35,9 +35,9 @@ public class PackagesTests
             .Select(file => KeyValuePair.Create(Path.GetFileNameWithoutExtension(file), File.ReadAllText(file)))
     ];
 
-    /// <summary>The 31 say they are packages, and no other project does.</summary>
+    /// <summary>The listed say they are packages, and no other project does.</summary>
     [Test]
-    public void The31_AndNoOther_ArePackable()
+    public void TheListed_AndNoOther_ArePackable()
     {
         var packable = Projects().Where(project => project.Value.Contains("<IsPackable>true</IsPackable>"))
             .Select(project => project.Key);

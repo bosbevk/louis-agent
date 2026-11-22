@@ -205,7 +205,7 @@ The starter has its own (`LouisAgent.Starter.Tests`), and `LouisAgent.Starter.In
 way `dotnet new louis-site` does.
 
 The framework as a product installs it is tested from outside the repository. `LouisAgent.Packages.IntegrationTests`,
-in `src/tests/packages/`, packs the 31 packages into a folder at a version of its own, checks that a package names its
+in `src/tests/packages/`, packs the framework's packages into a folder at a version of its own, checks that a package names its
 framework dependencies at the versions it was packed with, and writes a console project in a temporary folder that
 knows only that folder and nuget.org, then runs an agent from it. `PackagesTests` in `core.tests` holds which projects
 are packages, and `PublishWorkflowTests` and `ConsumeWorkflowTests` hold the two workflows that publish them and

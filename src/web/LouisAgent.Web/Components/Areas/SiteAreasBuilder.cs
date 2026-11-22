@@ -25,9 +25,8 @@ namespace LouisAgent.Web.Components.Areas;
 /// web's own, and a library above it adds its own area through <see cref="Add"/>. An area named twice counts once.
 /// </summary>
 /// <remarks>
-/// Builder (Gang of Four), open from outside as .NET's own setup calls are: the eval studio's and the accounts' areas
-/// are extension methods in their own libraries, since the framework's web can't name them (dependencies point one
-/// way). Of three (a record of flags each part looks up; each site keeping its wiring by hand, with a test listing it),
+/// Builder (Gang of Four), open from outside as .NET's own setup calls are: the accounts' area is an extension method
+/// in its own library, since the framework's web can't name it (dependencies point one way). Of three (a record of flags each part looks up; each site keeping its wiring by hand, with a test listing it),
 /// the one where a new site is a few lines that can't forget a part. A name twice counts once, as <c>TryAdd</c> does,
 /// so nothing is thrown (Claude's pick, of three, after Louis's "let's replan this").
 /// </remarks>
@@ -44,7 +43,7 @@ public sealed class SiteAreasBuilder
 
     /// <summary>
     /// The admin's frame (F144): the admin pages drawn inside <paramref name="layout"/>, which the admin's areas (the
-    /// overview, the packs, the evals) plug into.
+    /// overview and the packs) plug into.
     /// </summary>
     public SiteAreasBuilder Admin(Type layout)
     {

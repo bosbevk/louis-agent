@@ -44,7 +44,6 @@ project, for when you change that project's code.
 | [Change the site](change-the-site.md) | `src/site/LouisAgent.Site` | Run it, add a page, change its look, change the CV, draw the share card again, test it |
 | [Change the framework's web](change-the-web.md) | `src/web/LouisAgent.Web` | Decide what is shared, add an API call, follow a new event, add a component |
 | [Register a sign-in provider](register-a-sign-in-provider.md) | `src/hosts/LouisAgent.Accounts` | What to do at Google, Microsoft and LinkedIn, the callback each wants, the keys to set |
-| [Change the eval pages](change-the-eval-pages.md) | `src/web/LouisAgent.Web.Evals` | Give a site the pages, sort its sources chart, change a page |
 | [Change the engine](change-the-engine.md) | `src/engine/LouisAgent.Core` | Add a tool or a toolset, change a built-in prompt, add a setting or a message, handle a provider difference |
 | [Build a pack](build-a-pack.md#6-register-it-in-the-composition-root), [Build an identity](build-an-identity.md#5-register-it-in-the-composition-root) | `demos/louis-agent/hosts/LouisAgent.Coding.Catalog` | Register a new pack or identity: one more entry in a program's catalogue, and its reference |
 | [Write and run tests](write-tests.md) | `tests/` | Everything about the test projects |

@@ -14,8 +14,8 @@ public static class FrameworkPages
     public static readonly Assembly[] Assemblies = [typeof(Screen).Assembly];
 
     /// <summary>
-    /// The framework's pages and the libraries' a site opted into (CL57): the accounts' and the studio's, each named
-    /// by its own <c>Assembly</c>; a library a site adds services for but leaves out here answers nothing.
+    /// The framework's pages and the libraries' a site opted into (CL57), such as the accounts', each named by its own
+    /// <c>Assembly</c>; a library a site adds services for but leaves out here answers nothing.
     /// </summary>
     public static Assembly[] With(params Assembly[] libraries) => [.. Assemblies, .. libraries];
 }

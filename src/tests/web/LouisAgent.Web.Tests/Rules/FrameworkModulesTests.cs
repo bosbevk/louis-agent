@@ -16,7 +16,7 @@ public partial class FrameworkModulesTests
 
     /// <summary>The libraries whose classes import the framework's modules.</summary>
     private static readonly string[] Libraries =
-        ["LouisAgent.Web", "LouisAgent.Web.Evals", "LouisAgent.Web.Accounts"];
+        ["LouisAgent.Web", "LouisAgent.Web.Accounts"];
 
     /// <summary>Every class that may call the browser: the libraries' and the packs' web views (ADR 0086).</summary>
     private static IEnumerable<string> Callers() =>

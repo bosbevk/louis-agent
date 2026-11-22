@@ -880,8 +880,8 @@ it holds `NoAccounts`, a Null Object, so the guest's menu draws with no branch f
 Every call to the API still says it is the app's own, with an `X-Requested-With` header. That is what lets a
 signed-in person's cookie count in place of a key.
 
-**The eval studio** is [LouisAgent.Web.Evals](LouisAgent.Web.Evals.md), a library on this one that a site opts
-into the same way. The router lists what a site opted into.
+The router lists what a site opted into. The eval pages that were a library of their own were deleted with the old
+evals (F126.1); the new ones are drawn as an area of the admin in F126.3.
 
 *Decided in:* CL30, CL57, [ADR 0089](../adr/0089-the-account-client-is-a-library-a-site-opts-into.md).
 
@@ -1097,7 +1097,6 @@ cross, Enter keeps and Escape drops.
 
 *Decided in:* F134.1 (icons and the stage), FX154 (paper), F142 (editing).
 
-The [eval pages](LouisAgent.Web.Evals.md) have pictures of their own.
 
 ![The framework's web: a site's pages in the chat's and the admin's frames, and the API they call](diagrams/LouisAgent.Web-diagrams.svg)
 
@@ -1128,7 +1127,7 @@ This section is for looking a file up, not for reading through. Each row is a fo
 | `Components/Admin/`, `Components/Frames/`, `Layout/` | `AdminShell`, `AdminGate`; `AdminCard`, `AdminCardBase` and `AdminAccess`, every area's card on the home and the one ask for a refused key (F144); `Admin/Reset/`, Reset my session, `SessionReset` and its button `ResetSession` with its module (F153); `SiteFrames`, the site's two layouts; `AdminFrame`, the layout that hands over to the site's |
 | `Components/Chat/Header/Menu/` | `IAccountMenu`, what the profile menu asks of accounts, and `NoAccounts`, the answer when a site has none (CL30); the real side is in [LouisAgent.Web.Accounts](LouisAgent.Web.Accounts.md) |
 | `Components/Packs/`, `Components/Screens/` | `PackViews` and `IScreenView`, which component draws a screen; `PackMenu`, the packs area's sidebar links (the packs page, then a link per screen); `PackOffer`, what the packs offer, which the menu, the packs page and `PacksCard` read (F144); in `Table/`, `ScreenTable`, the default, with its cells; in `Acting/`, `ScreenActionButton`; in `Forms/`, `ScreenForm` and `ScreenRowsEditor` ([ADR 0086](../adr/0086-a-packs-screens-are-described.md)) |
-| `Pages/` | `FrameworkPages`, the list a site's router takes; in `Admin/`, `Screen`, the one page every pack's screen opens on, `ScreenRow`, a row's form, and `Imports`, the Uploads page; `AdminHome`, the admin's home, `Overview` and `Packs`; the eval pages are in `LouisAgent.Web.Evals` |
+| `Pages/` | `FrameworkPages`, the list a site's router takes; in `Admin/`, `Screen`, the one page every pack's screen opens on, `ScreenRow`, a row's form, and `Imports`, the Uploads page; `AdminHome`, the admin's home, `Overview` and `Packs` |
 | `Components/Imports/` | `ImportCard`, an upload by default, and `ImportForm`, the rules of when a preview or a save may run |
 | `Components/Chat/` | `MessageList`, `Composer`, `ComposerButtons`, `ChatUsageBar`, `Notice`, `Toast` |
 | `Components/Chat/Shell/` | `ChatShell`, the whole frame, with `ChatOpening` and `ChatShellEmpty`, the two records it hands a site, and `ChatHandoff`, how a screen's button opens the chat with a draft |
@@ -1191,7 +1190,7 @@ the gutter and the menu's line on the page's column. `BandTitleTests` holds a pa
 its markup, and `LookSwitchScriptTests`, which holds its module to `SiteLook` the same way; `SiteShellTests`,
 `ChatShellTests` and `AdminShellTests` hold where each frame puts it.
 
-The eval studio's tests are in `LouisAgent.Web.Evals.Tests`. `src/tests/web/LouisAgent.Web.Testing` holds the fakes
+`src/tests/web/LouisAgent.Web.Testing` holds the fakes
 the web test projects share. It also holds `ThemeSheet`, which says which names a theme's block for one style leaves
 unset, and `IndexLook`, which each site's own tests use to hold its `index.html` to the look its areas give.
 
@@ -1213,7 +1212,7 @@ component is built in, though a description isn't.
 
 ## Related docs
 
-[LouisAgent.CodeReview](../../../demos/louis-agent/docs/projects/LouisAgent.CodeReview.md) · [LouisAgent.Puls](https://github.com/bosbevk/louis-agent/blob/puls-moved-out/demos/puls/docs/projects/LouisAgent.Puls.md) · [LouisAgent.Api](LouisAgent.Api.md) · [The eval pages](LouisAgent.Web.Evals.md)
+[LouisAgent.CodeReview](../../../demos/louis-agent/docs/projects/LouisAgent.CodeReview.md) · [LouisAgent.Puls](https://github.com/bosbevk/louis-agent/blob/puls-moved-out/demos/puls/docs/projects/LouisAgent.Puls.md) · [LouisAgent.Api](LouisAgent.Api.md)
 
 ---
 [Projects](README.md) · Previous: [LouisAgent.CodeReview](../../../demos/louis-agent/docs/projects/LouisAgent.CodeReview.md) · Next: [LouisAgent.Mcp](LouisAgent.Mcp.md)

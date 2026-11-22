@@ -11,7 +11,7 @@ namespace LouisAgent.Web.Components.Admin;
 /// </summary>
 /// <remarks>
 /// Template Method (Gang of Four): the steps are fixed here and a card fills in <see cref="ReadAsync"/>, so the
-/// overview's, the packs' and the evals' cards can't each handle a refused key their own way. Without it each would
+/// overview's and the packs' cards can't each handle a refused key their own way. Without it each would
 /// repeat the same try, catch and listener, and one would forget to read again after a key is saved.
 /// </remarks>
 /// <seealso href="https://refactoring.guru/design-patterns/template-method">Template Method (Refactoring.Guru)</seealso>

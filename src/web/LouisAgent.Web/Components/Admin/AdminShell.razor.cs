@@ -50,8 +50,7 @@ public partial class AdminShell
     private bool OffersThemes => SiteAreas.OffersThemes(Services);
 
     /// <summary>
-    /// The links each area the site named adds to the sidebar (F127.6), the eval studio's among them; none on a site
-    /// that names its areas by hand.
+    /// The links each area the site named adds to the sidebar (F127.6); none on a site that names its areas by hand.
     /// </summary>
     private IReadOnlyList<Type> AreaLinks => Services.GetService<SiteAreas>()?.AdminLinks ?? [];
 }

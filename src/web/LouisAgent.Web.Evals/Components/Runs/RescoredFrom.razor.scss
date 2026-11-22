@@ -1,5 +1,0 @@
-@use "web/tools/surface";
-
-/* RescoredFrom's own styles, moved beside it from the studio's partials (CL58, step 4). */
-.rescored-from { font-size: 12px; color: var(--bs-secondary-color); text-decoration: none; @include surface.lined(); border-radius: 999px; padding: 3px 9px; white-space: nowrap; transition: color .15s, border-color .15s; }
-.rescored-from:hover { color: var(--bs-primary-text-emphasis); @include surface.edged(rgba(var(--bs-primary-rgb), .45)); }

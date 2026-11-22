@@ -7,8 +7,8 @@ namespace LouisAgent.Web.Tests.Rules.Styles.Surfaces;
 /// gradient, a shadow or a blur (Louis's pick A of three, and outline with it). <c>none</c>, <c>0</c>,
 /// <c>transparent</c> and <c>inherit</c> clear rather than paint, and <c>border-radius</c> is shape, so none of them
 /// counts. The tools and the settings are where the drawing lives, so they are not read. The libraries on the
-/// framework's web are read too (F151.5): the account pages, the eval studio and the packs' views. No sheet of any of
-/// them draws by hand, and one that starts to fails here.
+/// framework's web are read too (F151.5): the account pages, the docs' and the framework's own, and the packs'
+/// views. No sheet of any of them draws by hand, and one that starts to fails here.
 /// </summary>
 public class SurfacesAreDrawnByTheToolsTests
 {
@@ -18,8 +18,8 @@ public class SurfacesAreDrawnByTheToolsTests
     /// <summary>The folders whose sheets are read: the framework's web, and the libraries built on it.</summary>
     private static readonly string[] Read =
     [
-        "src/web/LouisAgent.Web", "src/web/LouisAgent.Web.Accounts", "src/web/LouisAgent.Web.Evals",
-        "src/web/LouisAgent.Web.Docs", "src/web/LouisAgent.Web.Framework", "packs/web"
+        "src/web/LouisAgent.Web", "src/web/LouisAgent.Web.Accounts", "src/web/LouisAgent.Web.Docs",
+        "src/web/LouisAgent.Web.Framework", "packs/web"
     ];
 
     /// <summary>The properties that draw a surface.</summary>

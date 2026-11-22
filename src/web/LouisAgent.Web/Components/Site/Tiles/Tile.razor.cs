@@ -52,7 +52,7 @@ public partial class Tile
     [Parameter]
     public RenderFragment? Brand { get; set; }
 
-    /// <summary>A colour to set the tile apart, the eval screens' four; none by default.</summary>
+    /// <summary>A colour to set the tile apart, one of the five accents; none by default.</summary>
     /// <summary>Whether what the tile describes is in place (F165); it picks the badge's colour.</summary>
     [Parameter]
     public TileStatus Status { get; set; }

@@ -11,18 +11,14 @@ public partial class FrameworkStylesTests
 {
     private static readonly string Styles = Path.Combine(TestPaths.RepoRoot, "src/web/LouisAgent.Web/Styles/web");
 
-    /// <summary>The studio's rules (CL57), under the same rules as the framework's.</summary>
-    private static readonly string EvalStyles =
-        Path.Combine(TestPaths.RepoRoot, "src/web/LouisAgent.Web.Evals/Styles/evals");
-
     /// <summary>A colour written as a value: matches <c>#f58220</c> and <c>rgba(245, 130, 32, .4)</c>, but not
     /// <c>rgba(var(--bs-primary-rgb), .4)</c>.</summary>
     [GeneratedRegex(@"#[0-9a-fA-F]{3,8}\b|rgba?\(\s*\d", RegexOptions.NonBacktracking)]
     private static partial Regex FixedColour();
 
-    /// <summary>The three libraries, whose components may carry their own styles beside them (CL58).</summary>
+    /// <summary>The two libraries, whose components may carry their own styles beside them (CL58).</summary>
     private static readonly string[] Libraries =
-        ["src/web/LouisAgent.Web", "src/web/LouisAgent.Web.Accounts", "src/web/LouisAgent.Web.Evals"];
+        ["src/web/LouisAgent.Web", "src/web/LouisAgent.Web.Accounts"];
 
     /// <summary>
     /// The framework's rules and the two libraries', the partials a site forwards and the styles a component carries
@@ -33,7 +29,6 @@ public partial class FrameworkStylesTests
         Directory.EnumerateFiles(Styles, "_*.scss", SearchOption.AllDirectories)
             .Where(file => !Path.GetRelativePath(Styles, file).Replace('\\', '/')
                 .StartsWith("settings/", StringComparison.Ordinal))
-            .Concat(Directory.EnumerateFiles(EvalStyles, "_*.scss", SearchOption.AllDirectories))
             .Concat(Libraries.SelectMany(library => Directory.EnumerateFiles(
                 Path.Combine(TestPaths.RepoRoot, library), "*.razor.scss", SearchOption.AllDirectories)));
 
@@ -45,8 +40,6 @@ public partial class FrameworkStylesTests
     [TestCase(".work-item")]
     [TestCase(".dropdown-item")]
     [TestCase(".admin-table")]
-    [TestCase(".run-table")]
-    [TestCase(".trend-delta")]
     [TestCase(".account-card")]
     public void TheFramesRules_AreInTheFramework(string selector) =>
         Assert.That(string.Concat(Rules().Select(File.ReadAllText)), Does.Contain(selector));
