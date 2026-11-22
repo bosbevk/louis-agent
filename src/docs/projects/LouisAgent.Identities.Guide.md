@@ -48,7 +48,7 @@ says goodbye and offers nothing (`StopsOn`).
 
 ### 2. Who it is
 
-The voice lives in `prompts/agent/louis-agent-guide/voice.md`. The guide is Orbi, Louis's AI agent. Louis is the man
+The voice lives in `agents/louis-agent-guide/voice.md`. The guide is Orbi, Louis's AI agent. Louis is the man
 who made louis-agent, and Orbi runs on it. Orbi tells his story as his, never as its own: "Louis grew up in
 Malmesbury". The story is Malmesbury, Yzerfontein, the PC at 10, .NET for twenty years, four kids, the outdoors, and
 a stoic who reads Kierkegaard. Orbi sounds like him, plain, dry and at home, with an idiom where it helps.
@@ -86,22 +86,23 @@ price question goes to the contact page.
 
 The voice works like an index. It holds who Orbi is, the seven rules it never breaks, a table of which skill goes
 with which job, and how it answers, and it ends with one whole example answer. The skills sit beside it, in
-`skills/`, and each has the same shape. The rules it never breaks come first, then its steps or its detail, then a
+`skills/`, each a folder named for the skill that holds its `SKILL.md`, the shape Claude Code's skills have, and
+each has the same shape inside. The rules it never breaks come first, then its steps or its detail, then a
 worked example, then the docs it rests on, which Orbi can open to check.
 
-Three skills are always in the prompt. `site-pages.md` is an index of every page, one line each, so it knows which
-page to open. `writing.md` says how it writes every answer, the way a copywriter writes for the web: sentences of
+Three skills are always in the prompt. `site-pages` is an index of every page, one line each, so it knows which
+page to open. `writing` says how it writes every answer, the way a copywriter writes for the web: sentences of
 about 14 words and never more than 25, the answer first, one idea to a paragraph, plain words, active voice, and no
 colon, semicolon or bracket. The voice says who the guide is and how it sounds, and the writing skill says how each
-sentence is built, so neither crowds the other. `live-demo.md` runs a business's demo live, as part 10 tells.
+sentence is built, so neither crowds the other. `live-demo` runs a business's demo live, as part 10 tells.
 
-The rest it reads with `ReadSkill` only when their job comes up, as the voice's table says. `docs-map.md` says where
-things are in the docs root, so a search goes to the right folder. `site-map.md` says what each page claims and which
+The rest it reads with `ReadSkill` only when their job comes up, as the voice's table says. `docs-map` says where
+things are in the docs root, so a search goes to the right folder. `site-map` says what each page claims and which
 docs it was written from, so a question about a page's claim goes to its source. Splitting those two off made its
-fixed prefix about 14% smaller, measured live. `take-a-lead.md` passes someone on to Louis, from the offer to the
-card and the send. `free-website-entry.md` finishes an entry for the two free websites once its form comes back. The
+fixed prefix about 14% smaller, measured live. `take-a-lead` passes someone on to Louis, from the offer to the
+card and the send. `free-website-entry` finishes an entry for the two free websites once its form comes back. The
 entry's start stays in the voice, so the form comes first with nothing before it and never waits on a skill being
-read. `walk-a-page.md` walks a page one stop per answer, and `what-we-sell.md` holds what is sold today, what it does
+read. `walk-a-page` walks a page one stop per answer, and `what-we-sell` holds what is sold today, what it does
 for a business, and why it is safe. The three focus skills are part 6.
 
 *Decided in:* F129, [ADR 0114](../adr/0114-an-identitys-skills-load-always-or-on-demand.md), F109.4.
@@ -207,8 +208,8 @@ The place to look a file up. Paths are from `src/site/LouisAgent.Identities.Guid
 | Path | What's in it |
 |---|---|
 | `GuideIdentity.cs` | The identity, and its four enums: `GuideIdentityName`, `GuidePack` (docs, leads, site), `GuideCall` (the three businesses it may ask) and `GuideFocus` (selling, demos) |
-| `prompts/agent/louis-agent-guide/voice.md` | Who Orbi is, his story, the seven rules, what we sell today, what stays Louis's, the skills' table, and how it answers |
-| `prompts/agent/louis-agent-guide/skills/` | `site-pages.md`, `writing.md` and `live-demo.md`, always; `docs-map.md`, `site-map.md`, `take-a-lead.md`, `free-website-entry.md`, `walk-a-page.md`, `what-we-sell.md`, `focus-selling.md` and `focus-demos.md`, on demand |
+| `agents/louis-agent-guide/voice.md` | Who Orbi is, his story, the seven rules, what we sell today, what stays Louis's, the skills' table, and how it answers |
+| `agents/louis-agent-guide/skills/` | `site-pages`, `writing` and `live-demo`, always; `docs-map`, `site-map`, `take-a-lead`, `free-website-entry`, `walk-a-page`, `what-we-sell`, `focus-selling` and `focus-demos`, on demand |
 
 ## Tests
 

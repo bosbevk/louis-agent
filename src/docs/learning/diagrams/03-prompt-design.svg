@@ -1,5 +1,5 @@
-<svg viewBox="-24 -24 944 640" width="944" height="640" role="img" aria-label="CL68.1 prompts/ goes, agent/ is agents/: the overview" xmlns="http://www.w3.org/2000/svg">
-  <title>CL68.1 prompts/ goes, agent/ is agents/: the overview</title>
+<svg viewBox="-24 -24 944 640" width="944" height="640" role="img" aria-label="3 · Prompt design: a prompt's path is its address" xmlns="http://www.w3.org/2000/svg">
+  <title>3 · Prompt design: a prompt's path is its address</title>
   <style>svg {
   --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #e2dfff; --violet-line: #6b4dff; --violet-ink: #3a22c4; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
   --mono: var(--bs-font-monospace, "Geist Mono", ui-monospace, Menlo, Consolas, monospace);
@@ -201,7 +201,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <rect class="ground" x="-24" y="-24" width="944" height="640" rx="14" />
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-22 126a470 210 0 1 0 940 0a470 210 0 1 0 -940 0Z" />
-    <text class="mrq-title" x="16" y="14" text-anchor="start">CL68.1 prompts/ goes, agent/ is agents/: the overview</text>
+    <text class="mrq-title" x="16" y="14" text-anchor="start">3 · Prompt design: a prompt's path is its address</text>
     <text class="pic-group" x="880" y="14" text-anchor="end">Overview</text>
     <rect class="mrq-rule" x="0" y="26" width="896" height="1" rx="0" />
     <g class="crd-cards" transform="translate(0 38)">

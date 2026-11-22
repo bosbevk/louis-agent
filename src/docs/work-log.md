@@ -14,7 +14,7 @@
 |---|---|---|
 | Features (`F`) | 148 | 72 |
 | Fixes (`FX`) | 213 | 4 |
-| Cleanups (`CL`) | 41 | 27 |
+| Cleanups (`CL`) | 42 | 27 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
@@ -497,10 +497,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | FX2 | 2026-10-10 | The usage probe says which model to pull on an Ollama 404 |
 | FX1 | 2026-10-10 | Keep the tools on the request after the 10-round limit |
 
-## Cleanups (41 done)
+## Cleanups (42 done)
 
 | Id | When | What |
 |---|---|---|
+| CL68.1 | 2026-11-22 | No prompts/ folder: every project's prompt folders at its root, agent/ is agents/, the showroom's businesses named once on one provider, each skill a folder with its SKILL.md |
 | CL64 | 2026-11-18 | Orbi's prompts in the skill shape (narrowed by Louis to the guide alone): the voice is an index, its seven rules first and a table of on-demand skills, 4,356 words to about 3,100; five procedures became skills; every skill, Orbi's and Claude Code's, has its rules first, an example and its references, held by tests |
 | CL67 | 2026-11-17 | The feeds' MCP scheme is `feeds://` (Louis: "A feed must change to Feeds"), plural like `/v1/feeds` and the docs' coming `docs://`; no alias for `feed://` (ADR 0049); ADR 0072's line changed with it |
 | CL65.5 | 2026-11-15 | The pictures a project needs, and CL65 done (Louis: "the project type and requirements must drive which diagrams is required", "placed where it is used ort needed not a section"; his pick of three): every project doc states its kind from a list of nine and what it shows beyond the kind's floor, a test holds it to exactly that and the guide's table to the floor; 27 missing pictures drawn from the code, 8 deployment, 5 nested, 14 activity; no Diagrams section, each picture in its story; the `components` kind is `nested`; the `ticket` kind's name left open as CL66 |

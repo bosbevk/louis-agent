@@ -49,7 +49,7 @@ says goodbye and offers nothing (`StopsOn`).
 
 ### 2. What it never does
 
-The voice, `prompts/agent/louis-agent-framework/voice.md`, opens with six rules, each with its reason. It never says
+The voice, `agents/louis-agent-framework/voice.md`, opens with six rules, each with its reason. It never says
 or suggests it is a person: the widget reads "Orbi · AI", and asked, it says it is the framework's Orbi, an AI agent
 built on louis-agent and answering from its docs. It never claims what no doc says, and says what is planned is
 planned. It never tells a story about Louis, which is the public Orbi's to tell, and asked about him it says he made
@@ -79,19 +79,19 @@ likeliest one suggested.
 
 ### 4. Its skills
 
-The voice ends with a table of which skill goes with which job, and the skills sit beside it in `skills/`, each in
-the same shape: its rules first, then its steps or its detail, a worked example, and the docs it rests on.
+The voice ends with a table of which skill goes with which job, and the skills sit beside it in `skills/`, each a
+folder named for the skill that holds its `SKILL.md`, and each in the same shape: its rules first, then its steps or its detail, a worked example, and the docs it rests on.
 
-Two are always in the prompt. `site-pages.md` lists the site's pages in reading order, with what each section
+Two are always in the prompt. `site-pages` lists the site's pages in reading order, with what each section
 covers, so it knows which page to open without searching; it never opens a page that isn't on that list, and says of
-the evals only what their redesign plans, never how they work today. `writing.md` says how it writes for a narrow panel beside the page: the answer
+the evals only what their redesign plans, never how they work today. `writing` says how it writes for a narrow panel beside the page: the answer
 first, sentences of about 14 words and never more than 25, at most three sentences to a paragraph, code only in a
 fenced block, and lists only for steps and choices.
 
-Three it reads with `ReadSkill` when their job comes up. `walk-a-page.md` walks a page one section per answer, in the
+Three it reads with `ReadSkill` when their job comes up. `walk-a-page` walks a page one section per answer, in the
 page's order, each stop shown and explained in two sentences and ending with three choices: the next section, another
-section, or Stop here. `explain-code.md` explains a listing a question carries, its lines in order, each type named
-from the doc that says where it lives. `docs-map.md` says where each kind of doc sits in the docs root, so a why goes
+section, or Stop here. `explain-code` explains a listing a question carries, its lines in order, each type named
+from the doc that says where it lives. `docs-map` says where each kind of doc sits in the docs root, so a why goes
 to an ADR, a how it works to a project doc and a how-to to a guide.
 
 ### 5. Where its knowledge comes from
@@ -107,8 +107,8 @@ The place to look a file up.
 | Path | What's in it |
 |---|---|
 | `FrameworkIdentity.cs` | The identity, and its two enums: `FrameworkIdentityName` and `FrameworkPack` |
-| `prompts/agent/louis-agent-framework/voice.md` | Who it is, its six rules, how it answers, and its skills' table |
-| `prompts/agent/louis-agent-framework/skills/` | `site-pages.md` and `writing.md`, always; `walk-a-page.md`, `explain-code.md` and `docs-map.md`, on demand |
+| `agents/louis-agent-framework/voice.md` | Who it is, its six rules, how it answers, and its skills' table |
+| `agents/louis-agent-framework/skills/` | `site-pages` and `writing`, always; `walk-a-page`, `explain-code` and `docs-map`, on demand |
 
 ## Tests
 

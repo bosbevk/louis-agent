@@ -7,7 +7,7 @@
 
 ![A function skill: write the file, approve it, and the sessions with the skills toolset get it](diagrams/add-a-skill.svg)
 
-A function skill is a markdown file on disk, at `demos/louis-agent/skills/agent/functions/{name}.md`. The agent writes
+A function skill is a markdown file on disk, at `demos/louis-agent/skills/agents/functions/{name}.md`. The agent writes
 one with `CreateSkillFile`, or you drop one in yourself.
 
 ## Write the file
@@ -40,7 +40,7 @@ Its arguments arrive as `SKILL_ARG_*` environment variables. Quote them, and nev
 ![What the agent writes waits in pending until you approve or reject it, then you start a new chat](diagrams/add-a-skill-flow.svg)
 
 What the agent writes doesn't go live for everyone straight away. It waits in
-`demos/louis-agent/skills/agent/functions/pending/`, which git ignores, and works only in the engine that wrote it.
+`demos/louis-agent/skills/agents/functions/pending/`, which git ignores, and works only in the engine that wrote it.
 
 1. Type `/tools` in the chat to list what's still waiting.
 2. Type `/approve {name}` to move it up a folder, so every session gets it, or `/reject {name}` to delete it.

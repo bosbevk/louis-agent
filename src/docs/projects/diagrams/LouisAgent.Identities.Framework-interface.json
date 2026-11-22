@@ -40,13 +40,13 @@
       },
       {
         "id": "prompts",
-        "name": "prompts/agent/louis-agent-framework/",
+        "name": "agents/louis-agent-framework/",
         "kind": "embedded content",
         "tone": "amber",
         "members": [
           "voice.md",
-          "skills/site-pages.md, writing.md (always)",
-          "skills/walk-a-page.md, explain-code.md, docs-map.md"
+          "skills/site-pages/, writing/ (always), each a SKILL.md",
+          "skills/walk-a-page/, explain-code/, docs-map/"
         ]
       }
     ],

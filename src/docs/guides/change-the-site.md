@@ -42,7 +42,7 @@ page, `Pages/About/PrivacyPage.razor`, is a good one to copy: a `Band` per secti
 2. **Put it on the menu**, as a `NavLink` in `Layout/SiteLayout.razor`, or inside a `SiteMenu` when it belongs to a
    group, as the demos do.
 3. **Tell the guide.** Its voice and skills (`src/site/LouisAgent.Identities.Guide`, the pages are in
-   `skills/site-pages.md`) get the page's address, what it says and the docs it came from.
+   `skills/site-pages/SKILL.md`) get the page's address, what it says and the docs it came from.
    `GuideKnowsTheSiteTests` fails until they name every page.
 4. **Hold it with the tests.** Add a row to `SitePagesTests.APage_IsAtItsAddress_WithItsHeading` with the page, its
    route and its heading, and one to `SiteLayoutTests.TheMenu_LeadsToThePage`. `PageDescriptionsTests`,

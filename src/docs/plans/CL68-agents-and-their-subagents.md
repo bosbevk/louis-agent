@@ -198,3 +198,7 @@ checked to be paths only.
   engine reading both layouts (ADR 0049).
 - **2026-11-22, CL68.1's open choice:** each project embeds its prompt folders by name and the provider reads from
   the root, with no filter (Louis's pick A), since the files that weren't prompts left with Puls.
+- **2026-11-22, CL68.1 done**, its plan folded. It also made each identity's skill a folder holding its `SKILL.md`
+  (Louis: "each skill in it's folder, and SKILL.md"; the voice stays at the agent's root), with ADR 0063 amended so a
+  skill's name is its folder's, and the source lists only markdown, since read from the root the embedded provider
+  also lists its own manifest. The write-up is `learning/03-prompt-design.md`.

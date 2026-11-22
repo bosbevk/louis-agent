@@ -208,17 +208,17 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <text class="pic-group" x="864" y="14" text-anchor="end">Class diagram</text>
     <rect class="mrq-rule" x="0" y="26" width="880" height="1" rx="0" />
     <g class="cls-drawing" transform="translate(0 44)">
-      <path class="cls-line uses" d="M329 249L495 249" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M329 249L352.5 249Q376 249 376 272.5L376 397Q376 421 400 421L495 421" marker-end="url(#open)" />
-      <path class="cls-line implements" d="M329 249L352.5 249Q376 249 376 225.5L376 101Q376 77 400 77L495 77" marker-end="url(#triangle-violet)" />
-      <path class="cls-line holds" d="M329 249L352.5 249Q376 249 376 272.5L376 569Q376 593 400 593L495 593" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M329 249L352.5 249Q376 249 376 272.5L376 569Q376 593 400 593L495 593" />
-      <rect class="pic-pill cls-chip implements" x="396.5" y="68" width="78" height="18" rx="9" />
-      <text class="pic-pill-word cls-word" x="435.5" y="80" text-anchor="middle">implements</text>
-      <rect class="pic-pill cls-chip uses" x="417.5" y="240" width="36" height="18" rx="9" />
-      <text class="pic-pill-word cls-word quiet" x="435.5" y="252" text-anchor="middle">uses</text>
-      <rect class="pic-pill cls-chip holds" x="414" y="584" width="43" height="18" rx="9" />
-      <text class="pic-pill-word cls-word" x="435.5" y="596" text-anchor="middle">holds</text>
+      <path class="cls-line uses" d="M329 249L474 249" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M329 249L347.3 249Q365.5 249 365.5 267.3L365.5 397Q365.5 421 389.5 421L474 421" marker-end="url(#open)" />
+      <path class="cls-line implements" d="M329 249L347.3 249Q365.5 249 365.5 230.8L365.5 101Q365.5 77 389.5 77L474 77" marker-end="url(#triangle-violet)" />
+      <path class="cls-line holds" d="M329 249L347.3 249Q365.5 249 365.5 267.3L365.5 569Q365.5 593 389.5 593L474 593" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M329 249L347.3 249Q365.5 249 365.5 267.3L365.5 569Q365.5 593 389.5 593L474 593" />
+      <rect class="pic-pill cls-chip implements" x="380.8" y="68" width="78" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="419.8" y="80" text-anchor="middle">implements</text>
+      <rect class="pic-pill cls-chip uses" x="401.8" y="240" width="36" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="419.8" y="252" text-anchor="middle">uses</text>
+      <rect class="pic-pill cls-chip holds" x="398.3" y="584" width="43" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="419.8" y="596" text-anchor="middle">holds</text>
       <rect class="cls-cover" x="0" y="172" width="329" height="154" rx="14" />
       <rect class="mrq-glass" x="0" y="172" width="329" height="154" rx="14" />
       <rect class="cls-badge tone-green" x="14" y="184" width="28" height="28" rx="9" />
@@ -231,42 +231,42 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="cls-member" x="14" y="284" text-anchor="start">Packs</text>
       <text class="cls-member" x="14" y="298" text-anchor="start">EndsEachAnswerWith "Offer"</text>
       <text class="cls-member" x="14" y="312" text-anchor="start">StopsOn "Stop here"</text>
-      <rect class="cls-cover" x="495" y="39" width="385" height="76" rx="14" />
-      <rect class="mrq-glass" x="495" y="39" width="385" height="76" rx="14" />
-      <rect class="mrq-edge" x="519" y="38.5" width="337" height="1.6" rx="0" />
-      <rect class="cls-badge tone-violet" x="509" y="63" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="523" y="81.5" text-anchor="middle">I</text>
-      <text class="pic-name" x="547" y="67" text-anchor="start">IAgentIdentity</text>
-      <text class="pic-note" x="547" y="83" text-anchor="start">interface,</text>
-      <text class="pic-note" x="547" y="95" text-anchor="start">LouisAgent.Composition</text>
-      <rect class="cls-cover" x="495" y="201" width="385" height="96" rx="14" />
-      <rect class="mrq-glass" x="495" y="201" width="385" height="96" rx="14" />
-      <rect class="mrq-edge" x="519" y="200.5" width="337" height="1.6" rx="0" />
-      <rect class="cls-badge tone-teal" x="509" y="219" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="523" y="237.5" text-anchor="middle">E</text>
-      <text class="pic-name" x="547" y="229" text-anchor="start">FrameworkIdentityName</text>
-      <text class="pic-note" x="547" y="245" text-anchor="start">enum</text>
-      <path class="cls-divide" d="M509 265H866" />
-      <text class="cls-member" x="509" y="283" text-anchor="start">LouisAgentFramework</text>
-      <rect class="cls-cover" x="495" y="373" width="385" height="96" rx="14" />
-      <rect class="mrq-glass" x="495" y="373" width="385" height="96" rx="14" />
-      <rect class="mrq-edge" x="519" y="372.5" width="337" height="1.6" rx="0" />
-      <rect class="cls-badge tone-teal" x="509" y="391" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="523" y="409.5" text-anchor="middle">E</text>
-      <text class="pic-name" x="547" y="401" text-anchor="start">FrameworkPack</text>
-      <text class="pic-note" x="547" y="417" text-anchor="start">enum</text>
-      <path class="cls-divide" d="M509 437H866" />
-      <text class="cls-member" x="509" y="455" text-anchor="start">Docs Site</text>
-      <rect class="cls-cover" x="495" y="531" width="385" height="124" rx="14" />
-      <rect class="mrq-glass" x="495" y="531" width="385" height="124" rx="14" />
-      <rect class="cls-badge tone-amber" x="509" y="549" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="523" y="567.5" text-anchor="middle">C</text>
-      <text class="pic-name" x="547" y="559" text-anchor="start">prompts/agent/louis-agent-framework/</text>
-      <text class="pic-note" x="547" y="575" text-anchor="start">embedded content</text>
-      <path class="cls-divide" d="M509 595H866" />
-      <text class="cls-member" x="509" y="613" text-anchor="start">voice.md</text>
-      <text class="cls-member" x="509" y="627" text-anchor="start">skills/site-pages.md, writing.md (always)</text>
-      <text class="cls-member" x="509" y="641" text-anchor="start">skills/walk-a-page.md, explain-code.md, docs-map.md</text>
+      <rect class="cls-cover" x="474" y="39" width="406" height="76" rx="14" />
+      <rect class="mrq-glass" x="474" y="39" width="406" height="76" rx="14" />
+      <rect class="mrq-edge" x="498" y="38.5" width="358" height="1.6" rx="0" />
+      <rect class="cls-badge tone-violet" x="488" y="63" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="502" y="81.5" text-anchor="middle">I</text>
+      <text class="pic-name" x="526" y="67" text-anchor="start">IAgentIdentity</text>
+      <text class="pic-note" x="526" y="83" text-anchor="start">interface,</text>
+      <text class="pic-note" x="526" y="95" text-anchor="start">LouisAgent.Composition</text>
+      <rect class="cls-cover" x="474" y="201" width="406" height="96" rx="14" />
+      <rect class="mrq-glass" x="474" y="201" width="406" height="96" rx="14" />
+      <rect class="mrq-edge" x="498" y="200.5" width="358" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="488" y="219" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="502" y="237.5" text-anchor="middle">E</text>
+      <text class="pic-name" x="526" y="229" text-anchor="start">FrameworkIdentityName</text>
+      <text class="pic-note" x="526" y="245" text-anchor="start">enum</text>
+      <path class="cls-divide" d="M488 265H866" />
+      <text class="cls-member" x="488" y="283" text-anchor="start">LouisAgentFramework</text>
+      <rect class="cls-cover" x="474" y="373" width="406" height="96" rx="14" />
+      <rect class="mrq-glass" x="474" y="373" width="406" height="96" rx="14" />
+      <rect class="mrq-edge" x="498" y="372.5" width="358" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="488" y="391" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="502" y="409.5" text-anchor="middle">E</text>
+      <text class="pic-name" x="526" y="401" text-anchor="start">FrameworkPack</text>
+      <text class="pic-note" x="526" y="417" text-anchor="start">enum</text>
+      <path class="cls-divide" d="M488 437H866" />
+      <text class="cls-member" x="488" y="455" text-anchor="start">Docs Site</text>
+      <rect class="cls-cover" x="474" y="531" width="406" height="124" rx="14" />
+      <rect class="mrq-glass" x="474" y="531" width="406" height="124" rx="14" />
+      <rect class="cls-badge tone-amber" x="488" y="549" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="502" y="567.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="526" y="559" text-anchor="start">agents/louis-agent-framework/</text>
+      <text class="pic-note" x="526" y="575" text-anchor="start">embedded content</text>
+      <path class="cls-divide" d="M488 595H866" />
+      <text class="cls-member" x="488" y="613" text-anchor="start">voice.md</text>
+      <text class="cls-member" x="488" y="627" text-anchor="start">skills/site-pages/, writing/ (always), each a SKILL.md</text>
+      <text class="cls-member" x="488" y="641" text-anchor="start">skills/walk-a-page/, explain-code/, docs-map/</text>
     </g>
     <g class="cls-legend" transform="translate(0 740)">
       <rect class="mrq-rule" x="0" y="0" width="880" height="1" rx="0" />

@@ -45,7 +45,7 @@
       },
       {
         "id": "guide",
-        "name": "prompts/toolsets/site.md",
+        "name": "toolsets/site.md",
         "kind": "when to move, show a card or offer",
         "tone": "amber"
       },
