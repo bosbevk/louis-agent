@@ -2,7 +2,7 @@ using LouisAgent.Composition.Agents;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Composition.Packs;
 using LouisAgent.Core.Delegation.Messages;
-using LouisAgent.Core.Delegation.Messages.Holes;
+using LouisAgent.Core.Delegation.Messages.Holes.Addresses;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Roles;
 
@@ -70,8 +70,8 @@ public static class AgentAddresses
             return Refuse(SubSessionToolMessage.AddressUnknownIdentity, UnknownIdentity(address, identities), out why);
         if (IsLookup(address))
             return Found(new AddressedAgent(address, AddressKind.Lookup, LookupName(address)), out why);
-        var unknownMinion = new AddressUnknownMinionHoles(address.Identity, address.Role ?? "", LookupsOf(identity));
-        return Refuse(SubSessionToolMessage.AddressUnknownMinion, unknownMinion, out why);
+        var unknownMinion = new AddressUnknownLookupHoles(address.Identity, address.Role ?? "", LookupsOf(identity));
+        return Refuse(SubSessionToolMessage.AddressUnknownLookup, unknownMinion, out why);
     }
 
     /// <summary>The identity an address named that isn't here, with the ones that are, in order.</summary>

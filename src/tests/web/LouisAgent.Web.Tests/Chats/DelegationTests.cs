@@ -40,7 +40,7 @@ public class DelegationTests
     {
         var block = Call(Delegation.AskToolName,
             """{"address":"sample.lookup","message":"Prys van rys","tool":"WebSearch"}""",
-            SampleRole.Fill("R24,99\n\n[Minion <RoleZeta> on ollama-puls with WebSearch]"));
+            SampleRole.Fill("R24,99\n\n[Lookup <RoleZeta> on ollama-puls with WebSearch]"));
 
         var delegation = Delegation.From(block)!;
 

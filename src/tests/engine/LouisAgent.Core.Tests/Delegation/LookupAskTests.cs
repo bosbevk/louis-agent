@@ -157,7 +157,7 @@ public class LookupAskTests
 
         Assert.That(answer,
             Does.StartWith("shop: Checkers").And
-                .Contain($"[Minion {Role} on ollama-puls with FetchUrl"));
+                .Contain($"[Lookup {Role} on ollama-puls with FetchUrl"));
         UsageRecord row = sink.Records.Single();
         Assert.That((row.Purpose, row.Model, row.Session, row.Turn, row.Parent),
             Is.EqualTo(("sub_session", $"lookup:{Role}", "sess_cook", (int?)2, "sess_puls#1")));
@@ -239,7 +239,7 @@ public class LookupAskTests
             Assert.That(await tools.AskMinion("testprod.specialist", "FetchUrl", "a page"),
                 Does.StartWith("Error:").And.Contain("testprod.specialist"), "a specialist is no minion");
             Assert.That(await tools.AskMinion("testprod", "FetchUrl", "a page"),
-                Does.StartWith("Error:").And.Contain("only a minion"), "an identity alone is no minion");
+                Does.StartWith("Error:").And.Contain("only a lookup agent"), "an identity alone is no minion");
             Assert.That(await tools.AskMinion("not an address", "FetchUrl", "a page"), Does.StartWith("Error:"));
         }
 
@@ -325,7 +325,7 @@ public class LookupAskTests
 
             var noListForIt = new Dictionary<string, IReadOnlyList<string>> { ["another-minion"] = ["instance"] };
             string refused = await Tools(Peer(creates), noListForIt).AskMinion(Address, "FetchUrl", "a page");
-            Assert.That(refused, Does.StartWith("Error:").And.Contain("MINION_LLMS"),
+            Assert.That(refused, Does.StartWith("Error:").And.Contain("LOOKUP_LLMS"),
                 "no list for the role and no default");
             Assert.That(creates, Has.Count.EqualTo(1));
         }

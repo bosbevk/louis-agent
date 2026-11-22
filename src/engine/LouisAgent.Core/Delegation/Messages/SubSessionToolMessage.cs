@@ -1,12 +1,14 @@
 using System.ComponentModel;
 using LouisAgent.Composition.Messages;
-using LouisAgent.Core.Delegation.Messages.Holes;
+using LouisAgent.Core.Delegation.Messages.Holes.Addresses;
+using LouisAgent.Core.Delegation.Messages.Holes.Asks;
+using LouisAgent.Core.Delegation.Messages.Holes.Lookups;
 
 namespace LouisAgent.Core.Delegation.Messages;
 
 /// <summary>
-/// What the ask and minion tools tell the model: what went wrong and what to do instead, and the line under an asked
-/// agent's answer that says who gave it and what it did.
+/// What the ask tool tells the model, for an agent and a lookup agent alike: what went wrong and what to do instead,
+/// and the line under an asked agent's answer that says who gave it and what it did.
 /// </summary>
 /// <remarks>
 /// A footer names the child, never what it used: that goes to the ledger and the parent's turn. Numbers that change
@@ -51,40 +53,49 @@ public enum SubSessionToolMessage
 
 
     [Description(
-        "Error: '{Address}' is a minion, which works with one of your tools: name it in tool, as your role file " +
+        "Error: '{Address}' is a lookup agent, which works with one of your tools: name it in tool, as your voice " +
         "says.")]
-    MinionNeedsTool,
+    [Holes(typeof(AddressHoles))]
+    LookupNeedsTool,
 
     [Description(
-        "Error: only a minion takes a tool, and '{Address}' is no minion. Ask it without a tool, or give a minion's " +
-        "address.")]
-    ToolOnlyForMinion,
+        "Error: only a lookup agent takes a tool, and '{Address}' is no lookup agent. Ask it without a tool, or give " +
+        "a lookup agent's address.")]
+    [Holes(typeof(AddressHoles))]
+    ToolOnlyForLookup,
 
     [Description(
-        "Error: '{Tool}' is never handed to a minion: a minion gets one of your working tools, not delegation or " +
-        "skills.")]
-    MinionToolNeverHandedDown,
-
-    [Description("Error: you don't hold a '{Tool}' tool, so you can't hand it to a minion. Your tools: {Tools}.")]
-    MinionToolNotMine,
+        "Error: '{Tool}' is never handed to a lookup agent: a lookup agent gets one of your working tools, not " +
+        "delegation or skills.")]
+    [Holes(typeof(LookupToolNeverHandedDownHoles))]
+    LookupToolNeverHandedDown,
 
     [Description(
-        "Error: no model is configured for the '{Role}' minion (MINION_LLMS names neither it nor *). Do the task " +
-        "yourself.")]
-    MinionNoLlm,
+        "Error: you don't hold a '{Tool}' tool, so you can't hand it to a lookup agent. Your tools: {Tools}.")]
+    [Holes(typeof(LookupToolNotMineHoles))]
+    LookupToolNotMine,
 
     [Description(
-        "Error: no stronger model is left for the '{Role}' minion (its list: {Models}). Treat the answer as " +
+        "Error: no model is configured for the '{Role}' lookup agent (LOOKUP_LLMS names neither it nor *). Do the " +
+        "task yourself.")]
+    [Holes(typeof(LookupNoLlmHoles))]
+    LookupNoLlm,
+
+    [Description(
+        "Error: no stronger model is left for the '{Role}' lookup agent (its list: {Models}). Treat the answer as " +
         "unconfirmed, or do the task yourself.")]
-    MinionNoStronger,
+    [Holes(typeof(LookupNoStrongerHoles))]
+    LookupNoStronger,
 
     [Description(
-        "Error: this user turn has already used {Max} minions, the most one turn may across every agent. " +
+        "Error: this user turn has already used {Max} lookup agents, the most one turn may across every agent. " +
         "Finish with what you have.")]
-    MinionLimit,
+    [Holes(typeof(LookupLimitHoles))]
+    LookupLimit,
 
-    [Description("{Answer}\n\n[Minion {Role} on {Llm} with {Tool}]")]
-    MinionAnswer,
+    [Description("{Answer}\n\n[Lookup {Role} on {Llm} with {Tool}]")]
+    [Holes(typeof(LookupAnswerHoles))]
+    LookupAnswer,
 
     [Description(
         "You stopped without writing an answer (usually: all your tool rounds were used). Don't call any more " +
@@ -123,14 +134,15 @@ public enum SubSessionToolMessage
     [Holes(typeof(AddressUnknownRoleHoles))]
     AddressUnknownRole,
 
-    [Description("Error: {Identity} has no minion '{Role}'. Its minions: {Minions}.")]
-    [Holes(typeof(AddressUnknownMinionHoles))]
-    AddressUnknownMinion,
+    [Description("Error: {Identity} has no lookup agent '{Role}'. Its lookup agents: {Lookups}.")]
+    [Holes(typeof(AddressUnknownLookupHoles))]
+    AddressUnknownLookup,
 
     [Description(
-        "Error: '{Address}' names another server, and only a minion takes a tool, which runs on this instance only. " +
-        "Give a minion's address without the server, or ask the agent there without a tool.")]
-    MinionOnAnotherServer,
+        "Error: '{Address}' names another server, and only a lookup agent takes a tool, which runs on this " +
+        "instance only. Give a lookup agent's address without the server, or ask the agent there without a tool.")]
+    [Holes(typeof(AddressHoles))]
+    LookupOnAnotherServer,
 
     [Description(
         "Error: {Address} is already working on this, higher up the chain of asks ({Chain}), so asking it would go " +
@@ -148,17 +160,20 @@ public enum SubSessionToolMessage
     [Description(
         "Error: '{Address}' is no agent's address. Write the agent's name, or its name and a role after a dot " +
         "(acme.cook), in lowercase letters, digits and dashes.")]
+    [Holes(typeof(AddressHoles))]
     AddressInvalid,
 
     [Description("Error: this chat speaks for no agent, so it may ask none.")]
     AskerNone,
 
     [Description("{Answer}\n\n[Answered by {Address}, did: {Did}]")]
+    [Holes(typeof(AgentAnswerHoles))]
     AgentAnswer,
 
     [Description(
         "{Answer}\n\n[Answered by {Address}, did: {Did}. A new conversation: the earlier one had closed, so it " +
         "remembers none of it]")]
+    [Holes(typeof(AgentAnswerHoles))]
     AgentAnswerAnew,
 
     [Description("no tools")] AgentDidNothing,

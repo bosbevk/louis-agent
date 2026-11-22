@@ -83,7 +83,7 @@ public sealed partial record Delegation(
 
         string? answer = null, llm = null;
         bool failed = block.ToolResult?.StartsWith("Error:", StringComparison.Ordinal) == true;
-        if (block.ToolResult is { } result && !failed && MinionFooter().Match(result) is { Success: true } match)
+        if (block.ToolResult is { } result && !failed && LookupFooter().Match(result) is { Success: true } match)
         {
             answer = result[..match.Index].TrimEnd();
             llm = Blank(match.Groups["llm"].Value);
@@ -136,7 +136,10 @@ public sealed partial record Delegation(
     /// <summary>The text, trimmed, or none when it's empty.</summary>
     private static string? Blank(string? value) => string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 
-    /// <summary>A minion's footer at the end of its answer: <c>[Minion {role} on {llm} with {tool}]</c>.</summary>
-    [GeneratedRegex(@"\n\n\[Minion (?<role>\S+) on (?<llm>\S+) with (?<tool>\S+)\]\s*$")]
-    private static partial Regex MinionFooter();
+    /// <summary>
+    /// A lookup agent's footer at the end of its answer: matches <c>[Lookup acme.lookup on ollama with WebSearch]</c>,
+    /// not <c>[Answered by acme]</c>.
+    /// </summary>
+    [GeneratedRegex(@"\n\n\[Lookup (?<role>\S+) on (?<llm>\S+) with (?<tool>\S+)\]\s*$")]
+    private static partial Regex LookupFooter();
 }

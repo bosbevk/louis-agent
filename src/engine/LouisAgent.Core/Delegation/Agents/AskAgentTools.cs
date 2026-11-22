@@ -1,3 +1,5 @@
+using LouisAgent.Core.Delegation.Messages.Holes.Asks;
+using LouisAgent.Core.Delegation.Messages.Holes.Addresses;
 using System.ComponentModel;
 using LouisAgent.Composition.Agents;
 using LouisAgent.Composition.Messages;
@@ -193,7 +195,7 @@ public sealed class AskAgentTools(
         if (!AgentAddress.TryParse(address, out var parsed))
             return Refuse(SubSessionToolMessage.AddressInvalid, address, out refusal);
         if (withTool && parsed.Peer is not null)
-            return Refuse(SubSessionToolMessage.MinionOnAnotherServer, address, out refusal);
+            return Refuse(SubSessionToolMessage.LookupOnAnotherServer, address, out refusal);
         if (Asker() is not { } asker)
         {
             refusal = MessageText.Format(SubSessionToolMessage.AskerNone);
@@ -204,7 +206,7 @@ public sealed class AskAgentTools(
         // An address on another server is that server's to answer for: its identities are read before it is asked.
         if (parsed.Peer is not null) return AgentAddresses.OnAnotherServer(parsed);
         if (AgentAddresses.IsLookup(parsed)) return AgentAddresses.ResolveLookup(parsed, identities, out refusal);
-        if (withTool) return Refuse(SubSessionToolMessage.ToolOnlyForMinion, address, out refusal);
+        if (withTool) return Refuse(SubSessionToolMessage.ToolOnlyForLookup, address, out refusal);
         return AgentAddresses.Resolve(parsed, identities, out refusal);
     }
 
@@ -217,24 +219,21 @@ public sealed class AskAgentTools(
     {
         string address = agent.Address.ToString();
         if (TurnDepth.Current + 1 > maxDepth)
-            return MessageText.Format(SubSessionToolMessage.AskTooDeep, new
-            {
-                Address = address,
-                Max = maxDepth
-            });
+        {
+            var tooDeep = new AskTooDeepHoles(address, maxDepth);
+            return MessageText.Format(SubSessionToolMessage.AskTooDeep, tooDeep);
+        }
         var chain = TurnChain.Current;
         if (agent.Address.Peer is not null || !chain.Contains(AgentAddresses.ChainKeyOf(agent))) return null;
-        return MessageText.Format(SubSessionToolMessage.AskInChain, new
-        {
-            Address = address,
-            Chain = string.Join(" > ", chain)
-        });
+        var inChain = new AskInChainHoles(address, string.Join(" > ", chain));
+        return MessageText.Format(SubSessionToolMessage.AskInChain, inChain);
     }
 
     /// <summary>No agent, with the reason naming the address as the model wrote it.</summary>
     private static AddressedAgent? Refuse(SubSessionToolMessage message, string address, out string? refusal)
     {
-        refusal = MessageText.Format(message, new { Address = address });
+        var named = new AddressHoles(address);
+        refusal = MessageText.Format(message, named);
         return null;
     }
 
@@ -249,12 +248,8 @@ public sealed class AskAgentTools(
     /// </summary>
     private static string Answer(SubSessionToolMessage footer, string address,
         SubSessionMessenger.SubSessionReply reply) =>
-        MessageText.Format(footer, new
-        {
-            Answer = reply.Text,
-            Address = address,
-            Did = DidLine.Of(new AgentWork(reply.Events).Calls())
-        });
+        MessageText.Format(footer,
+            new AgentAnswerHoles(reply.Text, address, DidLine.Of(new AgentWork(reply.Events).Calls())));
 
     /// <summary>
     /// One ask as it was checked: who answers, what is sent, the turn it belongs to, and whether the asker relays the
