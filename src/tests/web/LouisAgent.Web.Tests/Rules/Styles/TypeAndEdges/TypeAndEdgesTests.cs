@@ -154,6 +154,15 @@ public class TypeAndEdgesTests
     }
 
     /// <summary>
+    /// F169.5: a code word in running words may break anywhere when it would not fit, so a long path never pushes a
+    /// narrow page wider than its screen. The framework's rule, for every site; a listing keeps its lines.
+    /// </summary>
+    [Test]
+    public void ACodeWord_MayBreakAnywhere() =>
+        Assert.That(File.ReadLines(Path.Combine(Web, "Styles/web/base/_elements.scss")),
+            Does.Contain(":not(pre) > code { @include surface.code-word(); overflow-wrap: anywhere; }"));
+
+    /// <summary>
     /// The lines of the rule a sheet opens with that exact line, up to the brace at the same indent that closes it.
     /// </summary>
     private static IEnumerable<string> RuleOpenedBy(string sheet, string opening)
