@@ -1,0 +1,145 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F171 the bill checker: the architecture",
+  "caption": "The phone app talks to the API in Azure; the API runs the bill checker on the engine with the bills pack; the pack reads through the model and the stores confirm the subscription.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "person",
+        "icon": "user",
+        "tone": "blue",
+        "label": "The resident",
+        "shape": "terminal"
+      },
+      {
+        "id": "app",
+        "icon": "folder",
+        "tone": "blue",
+        "label": "The bill checker's app\non LouisAgent.Web.App (F171.6)",
+        "group": "phone"
+      },
+      {
+        "id": "store",
+        "icon": "settings",
+        "tone": "blue",
+        "label": "Play and App Store\nsubscriptions (F171.5, F171.7)",
+        "group": "phone"
+      },
+      {
+        "id": "api",
+        "icon": "server",
+        "tone": "green",
+        "label": "The bill checker's API\naccounts, entitlement (F171.5)",
+        "group": "azure"
+      },
+      {
+        "id": "id",
+        "icon": "user",
+        "tone": "green",
+        "label": "The bill checker identity\nvoice and guard rails (F171.4)",
+        "group": "azure"
+      },
+      {
+        "id": "engine",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "The engine\n+ ISessionFiles, IDocumentReader (F171.1)",
+        "group": "azure"
+      },
+      {
+        "id": "pack",
+        "icon": "book",
+        "tone": "teal",
+        "label": "The municipal bills pack\nread, check, draft (F171.2, F171.3)",
+        "group": "azure"
+      },
+      {
+        "id": "mongo",
+        "icon": "folder",
+        "tone": "green",
+        "label": "MongoDB\nbills, checks, consent, tariffs",
+        "shape": "data",
+        "group": "azure"
+      },
+      {
+        "id": "model",
+        "icon": "message",
+        "tone": "violet",
+        "label": "Claude (Haiku 5.5)\nreads photos and PDFs"
+      },
+      {
+        "id": "admin",
+        "icon": "user",
+        "tone": "blue",
+        "label": "An admin\nuploads a tariff book",
+        "shape": "terminal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "person",
+        "to": "app"
+      },
+      {
+        "from": "app",
+        "to": "store",
+        "word": "buys",
+        "style": "dashed"
+      },
+      {
+        "from": "app",
+        "to": "api",
+        "word": "photo, chat"
+      },
+      {
+        "from": "api",
+        "to": "store",
+        "word": "checks receipt",
+        "style": "dashed"
+      },
+      {
+        "from": "api",
+        "to": "engine"
+      },
+      {
+        "from": "engine",
+        "to": "id"
+      },
+      {
+        "from": "engine",
+        "to": "pack"
+      },
+      {
+        "from": "api",
+        "to": "mongo"
+      },
+      {
+        "from": "engine",
+        "to": "model"
+      },
+      {
+        "from": "pack",
+        "to": "mongo",
+        "word": "tariff books"
+      },
+      {
+        "from": "admin",
+        "to": "api",
+        "word": "import",
+        "style": "dashed"
+      }
+    ],
+    "direction": "down",
+    "groups": [
+      {
+        "id": "phone",
+        "label": "on the phone"
+      },
+      {
+        "id": "azure",
+        "label": "our API in Azure"
+      }
+    ]
+  }
+}
