@@ -1,7 +1,7 @@
 # Test projects — design
 
 > **Kind:** test projects (NUnit, with bUnit for components) · **Paths:** the framework's in `src/tests/`, grouped
-> like `src/` (`engine/`, `hosts/`, `evals/`, `web/`, `site/`, `tools/`); each demo's in its own `tests/`
+> like `src/` (`engine/`, `hosts/`, `web/`, `site/`, `tools/`); each demo's in its own `tests/`
 > (`demos/louis-agent/tests/`, `demos/starter/tests/`); each pack's in `packs/tests/`; the
 > shared fakes in `src/tests/shared/LouisAgent.Testing/` and, for the web apps, `src/tests/web/LouisAgent.Web.Testing/`
 > (class libraries) · **Run:** `dotnet test louis-agent-solution.sln` (or each project)
@@ -221,25 +221,6 @@ preview. `PromptBuilder` checks text, an embedded resource, an attached file rea
 and an unmounted one reported. `ContainerPaths` checks a mapping, a root searched by the last parts of the path, and
 the drive letter. And there are `GitRoots` and `JsonRpcWriter`.
 
-### 12. The eval projects' tests
-
-`LouisAgent.Evals.Tests` tests the harness: the dataset loader (Inspect's Sample shape read strictly, the hash, an
-expected key no grader reads), the common graders, the model grader over Microsoft.Extensions.AI.Evaluation, the
-roll-up, the conformance cases, the label sheet and the calibration, and the protocol writer against its golden.
-`LouisAgent.Evals.Checks.Tests` tests the check contract.
-
-`LouisAgent.Evals.Protocol.Tests` checks that every event round-trips through `EvalProtocolJson`, with `event` first
-and the time written with a `Z`, and that a person's line or an unknown event reads as none.
-
-`LouisAgent.Evals.Runner.Tests` covers the arguments, the catalogue, the stub eval's run against its golden, the
-conformance of every eval folder, the data files copied beside the assembly, and the template folder
-(`src/evals/template/Example/`: it loads with the general checks alone, conforms, and is never listed).
-
-The runner end to end through the API is `StubCheckTests`, in `LouisAgent.Api.IntegrationTests`. A run that costs
-money is never a test: CI grades only recorded transcripts.
-
-*Decided in:* F18.
-
 ## Structure
 
 The folders of `src/tests/engine/LouisAgent.Core.Tests`, to look things up.
@@ -265,7 +246,7 @@ The folders of `src/tests/engine/LouisAgent.Core.Tests`, to look things up.
 | `Docs/` | The ratchets on the docs: the work log, the roadmap, the write-ups, the guides' listings, one seam for screens, and under `Instructions/` the size of what Claude loads and the skill files |
 | `Projects/` | Core's packages (`CorePackagesTests`) |
 | `Testing/`, `TestHttp/` | The tests of the shared `Outside` and `TestPaths`, and a header-echo handler |
-| The root | `ArchitectureTests`, `FileSizeTests`, `CodeLineCountTests`, `FolderSizeTests`, `SolutionLayoutTests`, `SiteBoundaryTests`, `PackWebBoundaryTests`, `ChoicesProjectTests`, `EvalProtocolProjectTests`, `DiagramsProjectTests`, `EngineAsksItsTypesTests`, `PromptFolderTests`, `SkillsLayoutTests` (part 5), and `TestPrompts`, the `[SetUpFixture]` that registers the tests' own prompts (`agents/` with a subagent and a lookup agent inside: a product, a subagent, a lookup agent and its base) before the first is read |
+| The root | `ArchitectureTests`, `FileSizeTests`, `CodeLineCountTests`, `FolderSizeTests`, `SolutionLayoutTests`, `SiteBoundaryTests`, `PackWebBoundaryTests`, `ChoicesProjectTests`, `DiagramsProjectTests`, `EngineAsksItsTypesTests`, `PromptFolderTests`, `SkillsLayoutTests` (part 5), and `TestPrompts`, the `[SetUpFixture]` that registers the tests' own prompts (`agents/` with a subagent and a lookup agent inside: a product, a subagent, a lookup agent and its base) before the first is read |
 
 ## Extending it
 
@@ -283,4 +264,4 @@ The orchestrator's whole loop, run against a scripted LouisAgent.Api, has no tes
 [Write and run tests](../guides/write-tests.md) · [Architecture § Testing](../architecture/08-crosscutting-concepts.md#testing)
 
 ---
-[Projects](README.md) · Previous: [LouisAgent.Evals.Runner](LouisAgent.Evals.Runner.md)
+[Projects](README.md) · Previous: [LouisAgent.UsageProbe](LouisAgent.UsageProbe.md)

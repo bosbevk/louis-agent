@@ -9,13 +9,13 @@
         "id": "Programs",
         "icon": "terminal",
         "tone": "blue",
-        "label": "The programs\ncoding-api, -cli, -acp, -mcp,\n-eval-runner, puls-api,\npuls-eval-runner, starter-api,\nsite-api, site-framework-api"
+        "label": "The programs\ncoding-api, -cli, -acp, -mcp,\nstarter-api, site-api,\nsite-framework-api"
       },
       {
         "id": "Hosts",
         "icon": "server",
         "tone": "blue",
-        "label": "What runs on core\ncli, acp-server, api,\nmcp-server, evals.runner\norchestrator, usage-probe"
+        "label": "What runs on core\ncli, acp-server, api,\nmcp-server, orchestrator,\nusage-probe"
       },
       {
         "id": "Catalogs",

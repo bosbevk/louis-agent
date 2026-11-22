@@ -28,11 +28,8 @@ public class RepeatedNameTests
         "src/engine/LouisAgent.Core/Agent/Toolsets/CoreToolset.cs",
         "src/engine/LouisAgent.Core/Skills/Languages/ScriptLanguage.cs",
         "packs/tools/LouisAgent.Packs.Calculator/CalculatorToolset.cs",
-        "src/evals/LouisAgent.Evals.Runner/Evals/Stub/StubToolset.cs",
         "src/web/LouisAgent.Web/Api/AskedToolset.cs",
         "src/web/LouisAgent.Web/Api/ScriptLanguage.cs",
-        "src/evals/LouisAgent.Evals.Runner/Evals/Stub/StubMode.cs",
-        "src/evals/LouisAgent.Evals.Runner/Evals/Stub/StubRole.cs",
         "src/hosts/LouisAgent.Api/Endpoints/ApiErrorKind.cs",
         "src/engine/LouisAgent.SessionStream/StreamErrorKind.cs"
     ];

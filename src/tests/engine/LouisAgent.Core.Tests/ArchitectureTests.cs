@@ -239,27 +239,6 @@ public partial class ArchitectureTests
     }
 
     /// <summary>
-    /// A pack's checks project leans on its own pack and the check contract, and on nothing else. None is here since
-    /// the packs that had one left with Puls (F166.4); the rule holds for the next.
-    /// </summary>
-    /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0073-packs-reference-no-evals.md">ADR 0073: packs reference no evals</seealso>
-    [Test]
-    public void APacksChecksProject_ReferencesOnlyItsPack_AndTheContract()
-    {
-        string evals = Path.Combine(TestPaths.RepoRoot, "packs/evals");
-        var projects = Directory.Exists(evals)
-            ? Directory.EnumerateFiles(evals, "*.Checks.csproj", SearchOption.AllDirectories).ToList()
-            : [];
-
-        foreach (string project in projects)
-        {
-            string pack = Path.GetFileName(project).Replace(".Checks.csproj", ".csproj");
-            Assert.That(ReferencesOf(File.ReadAllText(project)),
-                Is.SubsetOf(new[] { pack, "LouisAgent.Evals.Checks.csproj" }), project);
-        }
-    }
-
-    /// <summary>
     /// Every host loads the project that picks the packs, so it names no checks or evals project: those reach the
     /// runner alone, and a host carries none of them.
     /// </summary>
@@ -317,33 +296,8 @@ public partial class ArchitectureTests
         ProjectReference().Matches(csproj).Select(m => Path.GetFileName(m.Groups[1].Value.Replace('\\', '/')));
 
     /// <summary>
-    /// The check contract may lean only on what a pack leans on already: the engine, the session stream and the eval
-    /// protocol. That's why a checks project stays small, and why the contract never reaches back into the harness, a
-    /// pack or an identity.
-    /// </summary>
-    /// <remarks>
-    /// Separated Interface (Fowler, PoEAA): the contract sits in a small project its clients can reference, and the
-    /// checks live elsewhere. The references are the whole fence, so this test holds them by name.
-    /// </remarks>
-    /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0027-engine-identities-and-packs.md">ADR 0027: engine, identities and packs</seealso>
-    /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
-    [Test]
-    public void Checks_ReferencesOnlyTheEngineTheProtocolAndTheStream()
-    {
-        string csproj = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "src", "evals", "LouisAgent.Evals.Checks",
-            "LouisAgent.Evals.Checks.csproj"));
-
-        Assert.That(ReferencesOf(csproj),
-            Is.EquivalentTo(new[]
-            {
-                "LouisAgent.Core.csproj", "LouisAgent.SessionStream.csproj", "LouisAgent.Evals.Protocol.csproj"
-            }));
-        Assert.That(ForbiddenReferences(csproj), Is.Empty);
-    }
-
-    /// <summary>
-    /// A demo's identity, which its hosts load, leans only on the contracts. Its evals are a project of their own,
-    /// which only the runner references, so the identity can follow the engine into a package without them.
+    /// A demo's identity, which its hosts load, leans only on the contracts, so it can follow the engine into a
+    /// package with nothing else coming along.
     /// </summary>
     /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0027-engine-identities-and-packs.md">ADR 0027: engine, identities and packs</seealso>
     /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0073-packs-reference-no-evals.md">ADR 0073: packs reference no evals</seealso>

@@ -21,18 +21,12 @@ public class OldWordsTests
     private static readonly string[] SourceExtensions = [".cs", ".razor", ".scss", ".js", ".json", ".csproj"];
 
     /// <summary>
-    /// The places that keep the words on purpose: the eval code, left for its rework (Louis, 2026-11-22: "we are
-    /// going to scrap all about evals and redo it total rework"), with the run rows it shares with the API; Louis's
-    /// own CV, which says what the Puls specialists are; the coding agent's persona, whose name is his, with the golden
-    /// file that pins its prompt; and the tests whose job is the words: this one, the framework pages' check, and the
-    /// headers' check that the old levels are refused.
+    /// The places that keep the words on purpose: Louis's own CV, which says what the Puls specialists are; the coding
+    /// agent's persona, whose name is his, with the golden file that pins its prompt; and the tests whose job is the
+    /// words: this one, the framework pages' check, and the headers' check that the old levels are refused.
     /// </summary>
     private static readonly string[] Kept =
     [
-        "/evals/",
-        "Evals",
-        "src/hosts/LouisAgent.Api.Contracts/Admin/Runs/",
-        "src/tests/hosts/LouisAgent.Api.Testing/Contracts/Records/",
         "src/site/LouisAgent.Site/Content/cv.json",
         "demos/louis-agent/identity/LouisAgent.Identities.Coding/agents/louis-agent/voice.md",
         "src/tests/engine/LouisAgent.Core.Tests/Docs/OldWordsTests.cs",
@@ -67,8 +61,8 @@ public class OldWordsTests
     }
 
     /// <summary>A kept place keeps its words, and a file beside one is still read.</summary>
-    [TestCase("src/evals/LouisAgent.Evals/Protocol/ProtocolWriter.cs", true)]
-    [TestCase("src/web/LouisAgent.Web.Evals/Pages/Runs.razor", true)]
+    [TestCase("demos/louis-agent/identity/LouisAgent.Identities.Coding/agents/louis-agent/voice.md", true)]
+    [TestCase("src/evals/LouisAgent.Evals/Protocol/ProtocolWriter.cs", false)]
     [TestCase("src/site/LouisAgent.Site/Content/cv.json", true)]
     [TestCase("src/hosts/LouisAgent.Api.Contracts/Admin/Prompts/PromptRows.cs", false)]
     [TestCase("src/web/LouisAgent.Web/Chats/Delegation.cs", false)]

@@ -11,8 +11,7 @@ public class PackagesTests
     [
         "LouisAgent.Choices", "LouisAgent.Composition", "LouisAgent.Core", "LouisAgent.Core.Anthropic",
         "LouisAgent.Core.Ollama", "LouisAgent.Core.OpenAi", "LouisAgent.Core.Telemetry", "LouisAgent.Core.Web",
-        "LouisAgent.SessionStream", "LouisAgent.Evals", "LouisAgent.Evals.Checks", "LouisAgent.Evals.Protocol",
-        "LouisAgent.Evals.Runner", "LouisAgent.Accounts", "LouisAgent.Accounts.Contracts", "LouisAgent.Api",
+        "LouisAgent.SessionStream", "LouisAgent.Accounts", "LouisAgent.Accounts.Contracts", "LouisAgent.Api",
         "LouisAgent.Api.Contracts", "LouisAgent.Web", "LouisAgent.Web.Accounts",
         "LouisAgent.Diagrams", "LouisAgent.Diagrams.Engine", "LouisAgent.Packs.Calculator",
         "LouisAgent.Packs.DotNet", "LouisAgent.Packs.Files", "LouisAgent.Packs.Git", "LouisAgent.Packs.Shell",

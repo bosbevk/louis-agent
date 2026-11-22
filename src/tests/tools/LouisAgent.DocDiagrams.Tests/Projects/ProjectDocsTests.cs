@@ -151,5 +151,5 @@ public class ProjectDocsTests
 
     /// <summary>The docs are found at all, so the rules above can't pass on none.</summary>
     [Test]
-    public void TheProjectDocs_AreFound() => Assert.That(ProjectDoc.All().Count(), Is.GreaterThan(40));
+    public void TheProjectDocs_AreFound() => Assert.That(ProjectDoc.All(), Is.Not.Empty);
 }

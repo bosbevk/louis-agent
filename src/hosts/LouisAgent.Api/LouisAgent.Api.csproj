@@ -22,10 +22,6 @@
     <ProjectReference Include="..\LouisAgent.Accounts.Contracts\LouisAgent.Accounts.Contracts.csproj" />
     <!-- FX26: a failed turn's kind (StreamErrorKind), written by the stream as its readers read it. -->
     <ProjectReference Include="..\..\engine\LouisAgent.SessionStream\LouisAgent.SessionStream.csproj" />
-    <!-- F18 step 7c.3: the eval runner's protocol, read through the contract's own records (decision A). -->
-    <ProjectReference Include="..\..\evals\LouisAgent.Evals.Protocol\LouisAgent.Evals.Protocol.csproj" />
-    <!-- The kinds of reader the studio lists from the runner's catalogue; the check contract only, no check. -->
-    <ProjectReference Include="..\..\evals\LouisAgent.Evals.Checks\LouisAgent.Evals.Checks.csproj" />
   </ItemGroup>
 
   <ItemGroup>

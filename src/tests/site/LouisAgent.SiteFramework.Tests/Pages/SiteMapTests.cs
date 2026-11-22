@@ -60,7 +60,7 @@ public class SiteMapTests
         var projects = FrameworkProjects();
         string site = TheWholeSite();
 
-        Assert.That(projects, Has.Count.GreaterThanOrEqualTo(30), "the solution file was read");
+        Assert.That(projects, Is.Not.Empty, "the solution file was read");
         Assert.That(projects.Where(project => !site.Contains(project)), Is.Empty);
     }
 }

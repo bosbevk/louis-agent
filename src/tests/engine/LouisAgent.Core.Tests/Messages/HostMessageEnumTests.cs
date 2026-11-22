@@ -37,9 +37,7 @@ public partial class HostMessageEnumTests
             {
                 "AcpLogMessage", "AcpUserText", "AcpModelText", "ApiLogMessage", "McpLogMessage",
                 "CliUserText", "OrchestratorToolMessage", "OrchestratorErrorMessage", "OrchestratorLogMessage",
-                "ApiModelText", "ApiUserText", "McpText", "EvalLogMessage",
-                "EvalErrorMessage", "RunnerMessage", "StubMessage", "CommonGradeMessage",
-                "ConformanceMessage", "ApiErrorMessage"
+                "ApiModelText", "ApiUserText", "McpText", "ApiErrorMessage"
             }));
     }
 
