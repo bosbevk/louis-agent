@@ -112,11 +112,11 @@ public static class AgentAddresses
 
     /// <summary>A specialist's file named for the identity; a minion's is no role to ask (F127.5).</summary>
     private static AddressKind? KindOf(string file) =>
-        RoleCatalog.Available(RoleLevel.Specialist).Contains(file) ? AddressKind.Specialist : null;
+        RoleCatalog.Available(RoleLevel.Subagent).Contains(file) ? AddressKind.Specialist : null;
 
     /// <summary>The identity's specialists as the model writes them, <c>acme.cook</c>, or "(none)".</summary>
     private static string RolesOf(IAgentIdentity identity) =>
-        Addresses(RoleLevel.Specialist, $"{identity.Name}-", identity.Name);
+        Addresses(RoleLevel.Subagent, $"{identity.Name}-", identity.Name);
 
     /// <summary>The identity's minions as the model writes them, <c>acme.lookup</c>, or "(none)".</summary>
     private static string MinionsOf(IAgentIdentity identity) =>

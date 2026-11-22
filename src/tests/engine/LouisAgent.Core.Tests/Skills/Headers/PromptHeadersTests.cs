@@ -23,7 +23,7 @@ public class PromptHeadersTests
         name: {Name}
         description: Acme's local cook. A recipe for the people and town asked for.
         metadata:
-          level: {RoleLevel.Specialist.Wire()}
+          level: {RoleLevel.Subagent.Wire()}
           toolsets: {TestToolset.Web.Wire()}, shops?
         ---
         # Acme specialist: Local cook
@@ -37,7 +37,7 @@ public class PromptHeadersTests
         var file = PromptHeaders.Split(Path, Cook);
 
         Assert.That(file.Header, Is.EqualTo(new PromptHeader(Name,
-            "Acme's local cook. A recipe for the people and town asked for.", RoleLevel.Specialist,
+            "Acme's local cook. A recipe for the people and town asked for.", RoleLevel.Subagent,
             [TestToolset.Web.Wire(), "shops?"])).Using<PromptHeader>(SameHeader));
         Assert.That(file.Body, Is.EqualTo("# Acme specialist: Local cook\n"));
     }
@@ -49,6 +49,18 @@ public class PromptHeadersTests
         var file = PromptHeaders.Split(Path, Cook.ReplaceLineEndings("\r\n"));
 
         Assert.That((file.Header?.Name, file.Body), Is.EqualTo((Name, "# Acme specialist: Local cook\r\n")));
+    }
+
+    /// <summary>
+    /// The level below the agent is a subagent's (CL68.2, ADR 0133, Louis: "So it is actually a SubAgent"): a header
+    /// says <c>subagent</c>, and the old word <c>specialist</c> is refused.
+    /// </summary>
+    [Test]
+    public void ALevelOneHeader_SaysSubagent()
+    {
+        const string header = "---\nname: acme-cook\ndescription: A cook.\nmetadata:\n  level: subagent\n---\n# Cook\n";
+
+        Assert.That(PromptHeaders.Split(Path, header).Header!.Level, Is.EqualTo((RoleLevel)1));
     }
 
     /// <summary>A guide or the principles name no level and no toolsets of their own.</summary>
@@ -76,6 +88,8 @@ public class PromptHeadersTests
     [TestCase("---\nname: acme-cook\ndescription: A cook.\ntoolset: files\n---\n# Cook\n", "toolset")]
     [TestCase("---\nname: acme-baker\ndescription: A cook.\n---\n# Cook\n", "acme-baker")]
     [TestCase("---\nname: acme-cook\ndescription: A cook.\nmetadata:\n  level: chef\n---\n# Cook\n", "chef")]
+    [TestCase("---\nname: acme-cook\ndescription: A cook.\nmetadata:\n  level: specialist\n---\n# Cook\n",
+        "specialist")]
     [TestCase("---\nname: acme-cook\ndescription: A cook.\nmetadata:\n  load: sometimes\n---\n# Cook\n", "sometimes")]
     [TestCase("---\nname: acme-cook\n---\n# Cook\n", "description")]
     [TestCase("---\nname: acme-cook\ndescription: A cook.\n# Cook\n", "---")]

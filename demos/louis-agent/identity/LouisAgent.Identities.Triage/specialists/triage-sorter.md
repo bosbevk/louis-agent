@@ -2,7 +2,7 @@
 name: triage-sorter
 description: The triage team's sorter. Reads one error and says which department it belongs to, with the reason.
 metadata:
-  level: specialist
+  level: subagent
 ---
 # Triage specialist: Sorter
 

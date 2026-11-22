@@ -41,7 +41,7 @@ public static partial class RoleCatalog
     public static string FolderOf(RoleLevel level) => level switch
     {
         RoleLevel.Agent => AgentFolder,
-        RoleLevel.Specialist => SpecialistsFolder,
+        RoleLevel.Subagent => SpecialistsFolder,
         RoleLevel.Minion => MinionsFolder,
         _ => throw new ArgumentOutOfRangeException(nameof(level), level, null),
     };

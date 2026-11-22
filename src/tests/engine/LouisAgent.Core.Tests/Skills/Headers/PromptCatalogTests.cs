@@ -17,9 +17,10 @@ public class PromptCatalogTests
         var specialist = PromptCatalog.Get("specialists/testprod-specialist.md");
 
         Assert.That(PromptCatalog.All.Select(p => p.Path), Does.Contain("shared/principles.md"));
-        Assert.That(PromptCatalog.All.Select(p => p.Path), Has.None.EndsWith("README.md"), "a folder's README is no prompt");
+        Assert.That(PromptCatalog.All.Select(p => p.Path), Has.None.EndsWith("README.md"),
+            "a folder's README is no prompt");
         Assert.That((specialist?.Header?.Name, specialist?.Header?.Level),
-            Is.EqualTo(("testprod-specialist", (RoleLevel?)RoleLevel.Specialist)));
+            Is.EqualTo(("testprod-specialist", (RoleLevel?)RoleLevel.Subagent)));
         Assert.That(specialist!.Body, Does.StartWith("# Testprod specialist"));
     }
 }

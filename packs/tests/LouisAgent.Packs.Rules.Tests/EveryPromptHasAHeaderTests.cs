@@ -86,7 +86,7 @@ public class EveryPromptHasAHeaderTests
     private static RoleLevel? LevelOfFolder(string folder) => folder switch
     {
         RoleCatalog.AgentFolder => RoleLevel.Agent,
-        RoleCatalog.SpecialistsFolder => RoleLevel.Specialist,
+        RoleCatalog.SpecialistsFolder => RoleLevel.Subagent,
         RoleCatalog.MinionsFolder => RoleLevel.Minion,
         _ => null
     };

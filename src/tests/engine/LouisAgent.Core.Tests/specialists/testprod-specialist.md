@@ -2,7 +2,7 @@
 name: testprod-specialist
 description: The test product's specialist, which always loads the web where the instance has it.
 metadata:
-  level: specialist
+  level: subagent
   toolsets: web?
 ---
 # Testprod specialist

@@ -20,7 +20,9 @@ public class TriageRolesTests
         return reader.ReadToEnd();
     }
 
-    /// <summary>Each role names its toolsets on its first line of text and ends with its own tool, never another's.</summary>
+    /// <summary>
+    /// Each role names its toolsets on its first line of text and ends with its own tool, never another's.
+    /// </summary>
     [TestCase(TriageRole.Sorter, "toolsets: triage", "SortCase", "ReportInvestigation")]
     [TestCase(TriageRole.Investigator, "toolsets: triage, files, git, dotnet", "ReportInvestigation", "ReportReview")]
     [TestCase(TriageRole.Reviewer, "toolsets: triage, files, git", "ReportReview", "ReportInvestigation")]
@@ -31,7 +33,7 @@ public class TriageRolesTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(text, Does.Contain("level: specialist"));
+            Assert.That(text, Does.Contain("level: subagent"));
             Assert.That(text, Does.Contain($"({toolsets})"));
             Assert.That(text, Does.Contain($"`{tool}`"));
             Assert.That(text, Does.Not.Contain(notItsTool));

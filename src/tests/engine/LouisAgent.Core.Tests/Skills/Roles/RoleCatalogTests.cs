@@ -150,7 +150,7 @@ public class RoleCatalogTests
     public void EachLevel_ListsOnlyItsOwnRoles()
     {
         // CL8: the folders follow the levels; F30 step 4 fills minions/ (level 2) with its first role.
-        Assert.That(RoleCatalog.Available(RoleLevel.Specialist), Is.EqualTo(new[] { "testprod-specialist" }));
+        Assert.That(RoleCatalog.Available(RoleLevel.Subagent), Is.EqualTo(new[] { "testprod-specialist" }));
         Assert.That(RoleCatalog.Available(RoleLevel.Minion), Is.EqualTo(new[] { "testprod-minion-lookup" }));
     }
 
@@ -170,7 +170,7 @@ public class RoleCatalogTests
     {
         var ex = Assert.Throws<RoleException>(() =>
             SkillLoader.Load(new AgentOptions { DefaultVoice = "testprod/voice-en" }, [], "testprod/voice-af",
-                RoleLevel.Specialist));
+                RoleLevel.Subagent));
 
         Assert.That(ex!.Message, Does.Contain("Unknown role 'testprod/voice-af'").And.Contain("testprod-specialist"));
     }
@@ -185,7 +185,7 @@ public class RoleCatalogTests
                 .Documentation,
             Does.Contain("# Testprod - Routing"));
         Assert.That(
-            SkillLoader.Load(new AgentOptions { DefaultVoice = "testprod/voice-en" }, [], level: RoleLevel.Specialist)
+            SkillLoader.Load(new AgentOptions { DefaultVoice = "testprod/voice-en" }, [], level: RoleLevel.Subagent)
                 .Documentation,
             Does.Not.Contain("# Testprod - Routing"));
     }

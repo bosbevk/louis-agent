@@ -10,8 +10,9 @@ public static class RoleFiles
 {
     /// <summary>
     /// The skill file of <paramref name="role"/>: the default mode's when none is named, else its file in
-    /// <paramref name="level"/>'s folder, which must be built in. A name from another level is refused as an unknown one
-    /// (CL8), so a role never opens at the wrong level; at level 0 only a mode is a name (CL9), never a function skill.
+    /// <paramref name="level"/>'s folder, which must be built in. A name from another level is refused as an unknown
+    /// one (CL8), so a role never opens at the wrong level; at level 0 only a mode is a name (CL9), never a function
+    /// skill.
     /// </summary>
     internal static string? FileOf(AgentOptions agent, string? role, RoleLevel level)
     {
@@ -29,7 +30,7 @@ public static class RoleFiles
         string file = RoleCatalog.FileName(role, level);
         // A role that's off (F29) is refused as an unknown one: the list names what this instance may use. At level
         // 0 only a mode is a name (CL9); at level 2 a role on the base (F30), never the base itself.
-        bool offered = level == RoleLevel.Specialist || RoleCatalog.Available(level).Contains(role);
+        bool offered = level == RoleLevel.Subagent || RoleCatalog.Available(level).Contains(role);
         if (!offered || !IsEnabled(agent, role) || SkillFolder.Read(agent, file) is null)
             throw new RoleException(MessageText.Format(SkillErrorMessage.UnknownRole,
                 new { Name = role, Available = string.Join(", ", Enabled(agent, level)) }));
@@ -40,7 +41,8 @@ public static class RoleFiles
     /// Start-up's check of the roles (CL15): every <c>ROLES_ENABLED</c> name must be a role this instance has, at some
     /// level, and <paramref name="defaultMode"/>, the mode of a session that names none, must have its file. Before the
     /// cut an unknown name was dropped in silence (it simply never matched), and a session with no role was handed the
-    /// default before any check, so an identity missing from <c>IDENTITIES</c> would have shown as a 400 at the first chat.
+    /// default before any check, so an identity missing from <c>IDENTITIES</c> would have shown as a 400 at the first
+    /// chat.
     /// </summary>
     internal static void Check(AgentOptions agent, string? defaultMode)
     {

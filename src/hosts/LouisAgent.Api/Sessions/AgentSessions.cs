@@ -117,7 +117,7 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     {
         if (depth == 0) return RoleLevel.Agent;
         if (RoleCatalog.LevelOf(role) is { } level) return level;
-        return tool is null ? RoleLevel.Specialist : RoleLevel.Minion;
+        return tool is null ? RoleLevel.Subagent : RoleLevel.Minion;
     }
 
     /// <summary>

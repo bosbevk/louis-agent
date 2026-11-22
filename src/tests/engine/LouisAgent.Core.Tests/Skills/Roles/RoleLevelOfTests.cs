@@ -12,7 +12,7 @@ public class RoleLevelOfTests
 {
     /// <summary>Each role is at the level of its folder.</summary>
     [TestCase("testprod/voice-en", RoleLevel.Agent)]
-    [TestCase("testprod-specialist", RoleLevel.Specialist)]
+    [TestCase("testprod-specialist", RoleLevel.Subagent)]
     [TestCase("testprod-minion-lookup", RoleLevel.Minion)]
     public void ARole_IsAtItsFoldersLevel(string role, RoleLevel level) =>
         Assert.That(RoleCatalog.LevelOf(role), Is.EqualTo(level));

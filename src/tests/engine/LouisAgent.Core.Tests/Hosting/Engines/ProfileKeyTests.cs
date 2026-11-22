@@ -5,8 +5,9 @@ using LouisAgent.Core.Skills;
 
 namespace LouisAgent.Core.Tests.Hosting.Engines;
 
-// The factory's profile key as a value (ADR 0040): its Text is exactly the string the factory built inline before, because Profiles and the
-// drop log show it and the factory tests assert it. Written first: ProfileKey didn't exist on the red run.
+// The factory's profile key as a value (ADR 0040): its Text is exactly the string the factory built inline before,
+// because Profiles and the drop log show it and the factory tests assert it. Written first: ProfileKey didn't exist on
+// the red run.
 public class ProfileKeyTests
 {
     private static ToolsetDefinition[] Toolsets(params string[] names) =>
@@ -18,10 +19,10 @@ public class ProfileKeyTests
         SampleToolset.Delta + "," + SampleToolset.Epsilon)]
     [TestCase(new[] { SampleToolset.Delta }, "testprod/voice-af", RoleLevel.Agent, null, null,
         SampleToolset.Delta + "|testprod/voice-af")]
-    [TestCase(new[] { SampleToolset.Delta }, null, RoleLevel.Specialist, null, null,
-        SampleToolset.Delta + "|specialist")]
-    [TestCase(new[] { SampleToolset.Alpha }, "cook", RoleLevel.Specialist, null, null,
-        SampleToolset.Alpha + "|cook|specialist")]
+    [TestCase(new[] { SampleToolset.Delta }, null, RoleLevel.Subagent, null, null,
+        SampleToolset.Delta + "|subagent")]
+    [TestCase(new[] { SampleToolset.Alpha }, "cook", RoleLevel.Subagent, null, null,
+        SampleToolset.Alpha + "|cook|subagent")]
     [TestCase(new[] { SampleToolset.Alpha }, null, RoleLevel.Agent, "ollama-puls", null,
         SampleToolset.Alpha + "|llm:ollama-puls")]
     [TestCase(new[] { SampleToolset.Alpha }, "puls-minion-reader", RoleLevel.Minion, null, "ReadPage",
@@ -36,8 +37,8 @@ public class ProfileKeyTests
     {
         Assert.That(ProfileKey.Of(Toolsets(SampleToolset.Alpha), null, RoleLevel.Agent, null, null).Text,
             Is.EqualTo(SampleToolset.Alpha));
-        Assert.That(ProfileKey.Of(Toolsets(SampleToolset.Alpha), null, RoleLevel.Specialist, null, null).Text,
-            Is.EqualTo(SampleToolset.Alpha + "|specialist"));
+        Assert.That(ProfileKey.Of(Toolsets(SampleToolset.Alpha), null, RoleLevel.Subagent, null, null).Text,
+            Is.EqualTo(SampleToolset.Alpha + "|subagent"));
         Assert.That(ProfileKey.Of(Toolsets(SampleToolset.Alpha), null, RoleLevel.Minion, null, null).Text,
             Is.EqualTo(SampleToolset.Alpha + "|minion"));
     }
@@ -45,14 +46,15 @@ public class ProfileKeyTests
     [Test]
     public void EmptyMeansNone_ForTheRoleTheLlmAndTheTool_SoTwoSpellingsOfOneRequestAreOneKey()
     {
-        // The factory used to turn "" into null before building the key; the key states the rule once, and the factory reads its parts back.
-        var spelledOut = ProfileKey.Of(Toolsets(SampleToolset.Alpha), "", RoleLevel.Specialist, "", "   ");
-        var none = ProfileKey.Of(Toolsets(SampleToolset.Alpha), null, RoleLevel.Specialist, null, null);
+        // The factory used to turn "" into null before building the key; the key states the rule once, and the factory
+        // reads its parts back.
+        var spelledOut = ProfileKey.Of(Toolsets(SampleToolset.Alpha), "", RoleLevel.Subagent, "", "   ");
+        var none = ProfileKey.Of(Toolsets(SampleToolset.Alpha), null, RoleLevel.Subagent, null, null);
 
         Assert.That((spelledOut.Role, spelledOut.Llm, spelledOut.Tool),
             Is.EqualTo(((string?)null, (string?)null, (string?)null)));
         Assert.That(spelledOut, Is.EqualTo(none));
-        Assert.That(spelledOut.Text, Is.EqualTo(SampleToolset.Alpha + "|specialist"));
+        Assert.That(spelledOut.Text, Is.EqualTo(SampleToolset.Alpha + "|subagent"));
     }
 
     [Test]
@@ -67,9 +69,9 @@ public class ProfileKeyTests
     [Test]
     public void TwoKeysBuiltFromTheSameParts_AreEqual_AndWorkAsOneDictionaryKey()
     {
-        var a = ProfileKey.Of(Toolsets(SampleToolset.Delta, SampleToolset.Epsilon), "cook", RoleLevel.Specialist,
+        var a = ProfileKey.Of(Toolsets(SampleToolset.Delta, SampleToolset.Epsilon), "cook", RoleLevel.Subagent,
             "ollama-puls", "ReadPage");
-        var b = ProfileKey.Of(Toolsets(SampleToolset.Delta, SampleToolset.Epsilon), "cook", RoleLevel.Specialist,
+        var b = ProfileKey.Of(Toolsets(SampleToolset.Delta, SampleToolset.Epsilon), "cook", RoleLevel.Subagent,
             "ollama-puls", "ReadPage");
         var dictionary = new Dictionary<ProfileKey, int> { [a] = 1 };
 

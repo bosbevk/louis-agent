@@ -8,8 +8,8 @@ using LouisAgent.Core.Skills.Providers;
 
 namespace LouisAgent.Core.Tests.Hosting.Engines;
 
-// The factory's cache (F5), moved out of AgentEngineFactory: one engine per key, built once outside the lock, and past the capacity the
-// least recently used goes. Written first: EngineCache didn't exist on the red run.
+// The factory's cache (F5), moved out of AgentEngineFactory: one engine per key, built once outside the lock, and past
+// the capacity the least recently used goes. Written first: EngineCache didn't exist on the red run.
 public class EngineCacheTests
 {
     private static ProfileKey Key(string name) =>
@@ -76,11 +76,11 @@ public class EngineCacheTests
         [
             new ToolsetDefinition(TestToolset.Web.Wire(), "a toolset", GuideFile: null, MissingSettings: _ => [],
                 CreateTools: _ => [])
-        ], "cook", RoleLevel.Specialist, "ollama-puls", null);
+        ], "cook", RoleLevel.Subagent, "ollama-puls", null);
 
         cache.GetOrAdd(web, Engine);
 
-        Assert.That(cache.Keys, Is.EqualTo(new[] { "web|cook|specialist|llm:ollama-puls" }));
+        Assert.That(cache.Keys, Is.EqualTo(new[] { "web|cook|subagent|llm:ollama-puls" }));
         Assert.That(new EngineCache(16).Keys, Is.Empty);
     }
 }

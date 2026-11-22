@@ -71,11 +71,12 @@ public static class TestAgent
         {
             [$"agents/{Name}/voice.md"] = Prompt("voice", "agent", RoutingHeading, "How the test agent routes."),
             [$"agents/{Name}/voice-en.md"] = Prompt("voice-en", "agent", VoiceHeading, "The test agent in English."),
-            [$"agents/{Name}/voice-de.md"] = Prompt("voice-de", "agent", OtherVoiceHeading, "The test agent in German."),
-            [$"specialists/{Specialist}.md"] = Prompt(Specialist, "specialist", "# Test agent specialist",
+            [$"agents/{Name}/voice-de.md"] =
+                Prompt("voice-de", "agent", OtherVoiceHeading, "The test agent in German."),
+            [$"specialists/{Specialist}.md"] = Prompt(Specialist, "subagent", "# Test agent specialist",
                 "The test agent's specialist.", "web, calculator"),
             [$"specialists/{Reader}.md"] =
-                Prompt(Reader, "specialist", "# Test agent reader", "Works with the toolsets it is handed."),
+                Prompt(Reader, "subagent", "# Test agent reader", "Works with the toolsets it is handed."),
             [$"minions/{MinionBase}.md"] =
                 Prompt(MinionBase, "minion", "# Test agent minion", "One task, one tool, one answer."),
             [$"minions/{Minion}.md"] = Prompt(Minion, "minion", MinionHeading, "Looks one thing up."),

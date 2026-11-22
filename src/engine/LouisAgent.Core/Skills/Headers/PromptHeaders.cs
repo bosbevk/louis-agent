@@ -18,7 +18,7 @@ namespace LouisAgent.Core.Skills.Headers;
 /// name: acme-helper
 /// description: Acme's helper. What it does, and when it is loaded.
 /// metadata:
-///   level: specialist
+///   level: subagent
 ///   toolsets: files?
 /// ---
 /// </code>
