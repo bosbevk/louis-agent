@@ -97,4 +97,25 @@ public class DelegationCardTests
         Assert.That(cut.Find(".delegation-status").TextContent, Is.EqualTo("Failed"));
         Assert.That(cut.Find(".delegation-answer").TextContent, Does.Contain("Error: no peer named puls"));
     }
+
+    /// <summary>
+    /// A lookup agent's card (CL68.3, ADR 0021: was the minion's) is marked and labelled as one, with "l" in its
+    /// avatar.
+    /// </summary>
+    [Test]
+    public void ALookupAgentsCard_SaysLookupAgent()
+    {
+        using var ctx = new BunitContext();
+        ctx.Services.AddSingleton(new ChatText());
+        var lookup = new Delegation("sample", ["WebSearch"], "The price of rice", "R24,99", false, null,
+            "sample.lookup", Lookup: true, Llm: "ollama-puls");
+
+        var call = new Block { Kind = BlockKind.Tool, ToolName = Delegation.AskToolName, ToolResult = "R24,99" };
+
+        var cut = ctx.Render<DelegationCard>(p => p.Add(x => x.Delegation, lookup).Add(x => x.Block, call));
+
+        Assert.That(cut.Find("details.delegation").ClassList, Does.Contain("lookup"));
+        Assert.That(cut.Find(".delegation-agent").TextContent, Does.StartWith("Lookup agent"));
+        Assert.That(cut.Find(".delegation-avatar").TextContent.Trim(), Is.EqualTo("l"));
+    }
 }

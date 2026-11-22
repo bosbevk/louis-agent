@@ -76,10 +76,10 @@ public sealed record ChatText
 
     public string DelegatedTo { get; init; } = "Delegated to";
 
-    /// <summary>A minion's card and Werk line (F30): the subagent handed one page to a minion.</summary>
-    public string MinionLabel { get; init; } = "Minion";
+    /// <summary>A lookup agent's card and Werk line (F30, CL68.3): the subagent handed one page to it.</summary>
+    public string LookupLabel { get; init; } = "Lookup agent";
 
-    /// <summary>Between a minion's role and its model: "web-price-lookup on ollama".</summary>
+    /// <summary>Between a lookup agent's address and its model: "acme.lookup on ollama".</summary>
     public string OnModel { get; init; } = "on";
 
     public string Subagent { get; init; } = "subagent";

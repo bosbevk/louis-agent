@@ -13,30 +13,31 @@ public enum ApiErrorMessage
         "depth must be between 0 and {Max} (AGENT_MAX_DEPTH): each agent asked is one level below the one that asked.")]
     SessionDepthInvalid,
 
-    [Description("A minion can't load the '{Toolset}' toolset: a minion asks no one, it does its one task.")]
-    MinionCannotAsk,
+    [Description(
+        "A lookup agent can't load the '{Toolset}' toolset: a lookup agent asks no one, it does its one task.")]
+    LookupCannotAsk,
 
-    [Description("A minion ('{Role}') names the one tool it gets: 'tool' is required.")]
-    MinionNeedsTool,
+    [Description("A lookup agent ('{Role}') names the one tool it gets: 'tool' is required.")]
+    LookupNeedsTool,
 
-    [Description("'tool' is for a minion's role: '{Role}' loads toolsets.")]
-    ToolOnlyForMinions,
+    [Description("'tool' is for a lookup agent: '{Role}' loads toolsets.")]
+    ToolOnlyForLookups,
 
     [Description(
         "'{Agent}' is already in this chain of asks ({Chain}): an agent is never asked twice in one chain, so the " +
         "asks can't go round in a loop.")]
     AgentAlreadyInChain,
 
-    [Description("A minion needs its parent: 'parent' names the specialist's session and turn ({Example}).")]
-    MinionNeedsParent,
+    [Description("A lookup agent needs its parent: 'parent' names the subagent's session and turn ({Example}).")]
+    LookupNeedsParent,
 
-    [Description("Unknown parent session '{Session}': a minion runs on its specialist's own instance.")]
-    MinionParentUnknown,
+    [Description("Unknown parent session '{Session}': a lookup agent runs on its subagent's own instance.")]
+    LookupParentUnknown,
 
-    [Description("'{Tool}' is never handed to a minion.")]
+    [Description("'{Tool}' is never handed to a lookup agent.")]
     ToolNeverHandedDown,
 
-    [Description("The parent session has no '{Tool}' tool: a minion gets one of its specialist's own tools.")]
+    [Description("The parent session has no '{Tool}' tool: a lookup agent gets one of its subagent's own tools.")]
     ParentLacksTool,
 
     [Description("No toolset builds a '{Tool}' tool.")]

@@ -108,7 +108,7 @@ public sealed class LookupAsk
         if (TakeSlot(scope) is { } limit) return limit;
 
         // One level below the asker; no toolsets: the API loads the one that builds the minion's tool.
-        var createBody = new CreateSessionRequest($"minion:{role}", scope?.Tags.Run, scope?.Tags.Service,
+        var createBody = new CreateSessionRequest($"lookup:{role}", scope?.Tags.Run, scope?.Tags.Service,
             Depth: TurnDepth.Current + 1, Parent: CallSlots.ParentTag(scope), Location: UserPlace.Current?.Location,
             TimeZone: UserPlace.Current?.TimeZone, Llm: llm, Tool: tool, Role: role,
             Replay: SessionReplay.ForSubSession());
@@ -124,7 +124,7 @@ public sealed class LookupAsk
                 Llm = model
             });
 
-        var kind = new SubSessionKind(Kind, role, $"minion:{role}", (_, reply) => Answer(reply), Answer, Llm: model);
+        var kind = new SubSessionKind(Kind, role, $"lookup:{role}", (_, reply) => Answer(reply), Answer, Llm: model);
         // Never kept (F30, the fourth hand check): a chat keeps three children, and kept minions evicted its
         // specialists.
         return await _session.OpenAsync(peer, server, createBody, task, [tool], role, kind, toolUseId, scope,

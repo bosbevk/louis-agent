@@ -151,7 +151,7 @@ public class LookupAskTests
             "the cheapest model in the role's list first");
         Assert.That(body.GetProperty("parent").GetString(), Is.EqualTo("sess_cook#2"),
             "the specialist's turn, so the ledger chains Puls → cook → minion");
-        Assert.That(body.GetProperty("task").GetString(), Is.EqualTo($"minion:{Role}"));
+        Assert.That(body.GetProperty("task").GetString(), Is.EqualTo($"lookup:{Role}"));
         Assert.That(body.GetProperty("toolsets").ValueKind, Is.EqualTo(JsonValueKind.Null),
             "the peer derives the toolset from the tool");
 
@@ -160,7 +160,7 @@ public class LookupAskTests
                 .Contain($"[Minion {Role} on ollama-puls with FetchUrl"));
         UsageRecord row = sink.Records.Single();
         Assert.That((row.Purpose, row.Model, row.Session, row.Turn, row.Parent),
-            Is.EqualTo(("sub_session", $"minion:{Role}", "sess_cook", (int?)2, "sess_puls#1")));
+            Is.EqualTo(("sub_session", $"lookup:{Role}", "sess_cook", (int?)2, "sess_puls#1")));
         Assert.That(row.Cost, Is.EqualTo(new UsageCost("USD", 0m, null)),
             "the local model's cost, 0, is still a number: never unknown");
     }

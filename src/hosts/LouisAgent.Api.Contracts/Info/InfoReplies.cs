@@ -15,7 +15,7 @@ public sealed record RolesReply(
     string Default,
     IReadOnlyList<string> Agent,
     IReadOnlyList<string> Subagents,
-    IReadOnlyList<string> Minions);
+    IReadOnlyList<string> Lookups);
 
 /// <summary>
 /// The identities this instance runs (F109.3): a session opens as one of them by name, the first when it names none.

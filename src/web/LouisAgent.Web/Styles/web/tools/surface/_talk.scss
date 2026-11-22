@@ -51,7 +51,7 @@
 }
 
 /* A small helper's mark: the second colour of the brand run into its deeper shade. */
-@mixin minion() {
+@mixin lookup() {
     background: linear-gradient(135deg, var(--bs-success), var(--bs-success-text-emphasis));
 }
 

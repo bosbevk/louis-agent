@@ -25,7 +25,7 @@ public sealed record OpenSubSession(
     public string Handle { get; init; } = "";
 
     /// <summary>A minion's kind (F30): <c>AskAgent</c> never keeps one (F127.5), so nothing continues it.</summary>
-    public const string LookupKind = "minion";
+    public const string LookupKind = "lookup";
 
     /// <summary>An asked agent's kind (F127.3.1): what <c>AskAgent</c> keeps, by its address.</summary>
     public const string AgentKind = "agent";
