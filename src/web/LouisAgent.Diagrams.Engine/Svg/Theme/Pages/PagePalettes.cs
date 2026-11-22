@@ -61,6 +61,19 @@ internal static class PagePalettes
         ".crd-rail-glow, .seq-beam-glow, .mrq-light, .mrq-edge, .ticket-light", "display: none;");
 
     /// <summary>
+    /// On a flat page a picture is filled with colours only (F169.4, the same pick): a rail, a beam going or coming
+    /// back and a badge with no tone of its own in the picture's violet line, in place of their fades; a lifeline and
+    /// a title's rule in the picture's hairline at full strength; and a key's swatch filled as a card is. A badge with
+    /// a tone keeps it, since the six tones say what each box is.
+    /// </summary>
+    private static string FlatFills => string.Join("\n",
+        PageScheme.PartRule(PageScheme.Flat, ".crd-rail, .seq-beam, .crd-badge:not([class*=\"tone-\"])",
+            "fill: var(--violet-line);"),
+        PageScheme.PartRule(PageScheme.Flat, ".seq-life, .mrq-rule", "fill: var(--pic-hair); opacity: 1;"),
+        PageScheme.PartRule(PageScheme.Flat, ".seq-swatch",
+            "fill: var(--pic-body); fill-opacity: 1; stroke: var(--pic-hair); stroke-opacity: 1;"));
+
+    /// <summary>
     /// The rules a page's copy of a picture carries: each theme's colours, light and dark, its cards, and flat's
     /// parts.
     /// </summary>
@@ -70,5 +83,5 @@ internal static class PagePalettes
             SvgStyle.Variables(SvgTheme.Flat.Dark) + " " + FlatCardsDark + " " + Transparent) + "\n" +
         PageScheme.ThemeRules(PageScheme.Glass,
             SvgStyle.Variables(SvgTheme.Site.Light) + " " + PictureLook.Light + " " + SmokeWhite + " " + Transparent,
-            SvgStyle.Variables(SvgTheme.Site.Dark) + " " + PictureLook.Dark + " " + Transparent) + "\n" + Cards + "\n" + FlatLights;
+            SvgStyle.Variables(SvgTheme.Site.Dark) + " " + PictureLook.Dark + " " + Transparent) + "\n" + Cards + "\n" + FlatLights + "\n" + FlatFills;
 }
