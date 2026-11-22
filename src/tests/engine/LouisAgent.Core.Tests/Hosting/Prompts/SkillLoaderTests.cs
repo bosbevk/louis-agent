@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Prompts;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
 using System.Text.RegularExpressions;
@@ -77,7 +78,7 @@ public class SkillLoaderTests
         Assert.Multiple(() =>
         {
             Assert.That(ToolsetCatalog.Find(CoreToolset.Agents.Wire())?.GuideFile, Is.EqualTo("toolsets/agents.md"));
-            Assert.That(ToolsetCatalog.Find(RoleCatalog.SpecialistsFolder), Is.Null);
+            Assert.That(ToolsetCatalog.Find(PromptFolder.Subagents.Wire()), Is.Null);
         });
     }
 
@@ -87,8 +88,8 @@ public class SkillLoaderTests
     /// </summary>
     [TestCase(null, RoleLevel.Agent)]
     [TestCase("testprod/voice-af", RoleLevel.Agent)]
-    [TestCase("testprod-specialist", RoleLevel.Specialist)]
-    [TestCase(null, RoleLevel.Specialist)]
+    [TestCase("testprod.specialist", RoleLevel.Subagent)]
+    [TestCase(null, RoleLevel.Subagent)]
     [TestCase("testprod-minion-lookup", RoleLevel.Minion)] // F30: a minion always has a role
     public void EveryPrompt_StartsWithThePrinciples(string? role, RoleLevel level)
     {
@@ -131,8 +132,9 @@ public class SkillLoaderTests
         string skills = Directory.CreateTempSubdirectory("function-skills-").FullName;
         try
         {
-            Directory.CreateDirectory(Path.Combine(skills, RoleCatalog.AgentFolder, "functions"));
-            File.WriteAllText(Path.Combine(skills, RoleCatalog.AgentFolder, "functions", "greeting.md"),
+            Directory.CreateDirectory(Path.Combine(skills, PromptFolder.Agents.Wire(), PromptFolder.Functions.Wire()));
+            File.WriteAllText(
+                Path.Combine(skills, PromptFolder.Agents.Wire(), PromptFolder.Functions.Wire(), "greeting.md"),
                 "# Greeting Skills\n\nGreets people.");
             var options = new AgentOptions { SkillsDirectory = skills };
 

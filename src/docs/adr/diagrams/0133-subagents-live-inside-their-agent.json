@@ -1,0 +1,29 @@
+{
+  "kind": "cards",
+  "title": "ADR 0133 at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "agent", "icon": "users", "title": "Subagents inside their agent", "code": "agents/{identity}/subagents/{name}/",
+          "look": "highlight",
+          "text": "Everything one agent has, in its folder: package by feature." }
+      ] },
+      { "cards": [
+        { "id": "voice", "icon": "message", "title": "Its voice and skills",
+          "text": "voice.md at the agent's root, each skill a folder with its SKILL.md." },
+        { "id": "name", "icon": "exchange", "title": "One name, the address",
+          "text": "triage.sorter in a call, a session's role, the settings and the evals." },
+        { "id": "level", "icon": "tag", "title": "The level in the header",
+          "text": "agent or subagent, read from metadata.level, not the folder." },
+        { "id": "test", "icon": "checks", "title": "A test keeps 0017's guard",
+          "text": "A header whose level isn't its place's is refused." }
+      ] }
+    ],
+    "links": [
+      { "from": "agent", "to": "voice" },
+      { "from": "agent", "to": "name" },
+      { "from": "agent", "to": "level" },
+      { "from": "agent", "to": "test" }
+    ]
+  }
+}

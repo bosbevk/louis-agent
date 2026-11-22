@@ -21,7 +21,7 @@ project, for when you change that project's code.
 | [Get a site found](get-a-site-found.md) | Make a site show up in search: what the framework does, what a site adds, Search Console, the sitemap, links |
 | [Publish the framework](publish-the-framework.md) | Release a package of the framework to GitHub Packages with a tag, several together, what stops a release, and checking it from outside |
 | [Deploy the sites](deploy-the-sites.md) | Release louis-agent.dev and framework.louis-agent.dev to Azure: a merge's release, one from the PC, secrets, a domain, rolling back |
-| [Build an identity](build-an-identity.md) | Make a new agent: its voice and routing, its specialists, the packs it names, its tests, running it; the rules for modes, roles and minions |
+| [Build an identity](build-an-identity.md) | Make a new agent: its voice and routing, its subagents, the packs it names, its tests, running it; the rules for modes, roles and minions |
 | [Add an eval](add-an-eval.md) | Give an identity an eval: copy the template folder, write its `eval.json`, dataset, manual and transcripts, pick its checks, and list it with `EVALS=` |
 | [Run the evals](run-the-evals.md) | Run an eval from the command line or the portal: the flags, record and replay, dev and held-out, what a run costs |
 | [Write and run tests](write-tests.md) | Run the tests, write one first, use the shared fakes, regenerate a golden, add a test project |

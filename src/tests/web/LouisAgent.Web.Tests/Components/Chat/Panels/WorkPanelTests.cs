@@ -38,7 +38,9 @@ public class WorkPanelTests
         Assert.That(cut.Find(".work-empty img").GetAttribute("src"), Is.EqualTo("brand/mark.svg"));
     }
 
-    /// <summary>A finished delegation shows its steps and cost in English, with no avatar unless the site gives one.</summary>
+    /// <summary>
+    /// A finished delegation shows its steps and cost in English, with no avatar unless the site gives one.
+    /// </summary>
     [Test]
     public async Task AFinishedDelegation_ShowsItsStepsAndCost_InEnglish()
     {
@@ -54,7 +56,7 @@ public class WorkPanelTests
 
         Assert.That(cut.Find(".work-label").TextContent, Is.EqualTo("Steps"));
         Assert.That(cut.Find(".work-cost").TextContent, Does.Contain("Cost").And.Contain("requests"));
-        Assert.That(cut.Find(".work-foot").TextContent, Does.Contain("This chat").And.Contain("Specialists"));
+        Assert.That(cut.Find(".work-foot").TextContent, Does.Contain("This chat").And.Contain("Subagents"));
         Assert.That(cut.FindAll(".work-avatar"), Is.Empty);
     }
 }

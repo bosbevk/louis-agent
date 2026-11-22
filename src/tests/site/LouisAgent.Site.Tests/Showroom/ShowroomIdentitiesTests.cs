@@ -1,3 +1,5 @@
+using LouisAgent.Choices;
+using LouisAgent.Composition.Prompts;
 using LouisAgent.Composition.Packs;
 using LouisAgent.Core.Skills.Roles;
 using LouisAgent.Identities.Showroom;
@@ -40,7 +42,7 @@ public class ShowroomIdentitiesTests
             Assert.That(Businesses.Select(business => business.Prompts).Distinct().Count(), Is.EqualTo(1));
             foreach (var business in Businesses)
             {
-                string voice = Path.Combine(project, RoleCatalog.AgentFolder, business.Name, "voice.md");
+                string voice = Path.Combine(project, PromptFolder.Agents.Wire(), business.Name, "voice.md");
                 Assert.That(File.Exists(voice), business.Name);
                 Assert.That(Directory.Exists(Path.Combine(project, business.Name)), Is.False, business.Name);
             }

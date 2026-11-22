@@ -6,7 +6,7 @@ Does the sorter send an error to the department that owns the code that threw? O
 service (`demos/louis-agent/samples/order-service`): `order-total 1003` throws a `KeyNotFoundException` for the retired
 discount code `SUMMER25`, in the service's own code. Right is `SortCase` with `code`.
 
-The session opens as the sorter itself, at a specialist's level (`"depth": 1`), with only the `triage` toolset, as
+The session opens as the sorter itself, at a subagent's level (`"depth": 1`), by its address, with only the `triage` toolset, as
 the manager will open it. Its brief names the run id and the departments, as the manager's would.
 
 ## The checks

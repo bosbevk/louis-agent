@@ -1,3 +1,5 @@
+using LouisAgent.Choices;
+using LouisAgent.Composition.Prompts;
 using System.Reflection;
 using LouisAgent.Core.Skills;
 using LouisAgent.Identities.Guide;
@@ -22,7 +24,7 @@ public class GuideKnowsTheSiteTests
         var identity = new GuideIdentity();
         string folder = $"agents/{identity.Name}";
         var files = new[] { $"{folder}/voice.md" }.Concat(identity.Prompts.GetDirectoryContents($"{folder}/skills")
-            .Select(skill => $"{folder}/skills/{skill.Name}/{SkillFiles.SkillFile}"));
+            .Select(skill => $"{folder}/skills/{skill.Name}/{PromptFileName.Skill.Wire()}"));
         return string.Join('\n', files.Select(path =>
         {
             using var reader = new StreamReader(identity.Prompts.GetFileInfo(path).CreateReadStream());

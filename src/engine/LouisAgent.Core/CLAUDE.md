@@ -32,8 +32,9 @@ The steps are [Build a pack](../../docs/guides/build-a-pack.md). What holds for 
 
 ### Skill files we control are plain markdown, always
 
-- **That covers every file in a project's prompt folders** (`agents/`, `specialists/`, `minions/`, `toolsets/`,
-  `shared/`, at the project's root), and the function skills the agent writes into a demo's
+- **That covers every file in a project's prompt folders** (`agents/`, its subagents' `subagents/` inside it,
+  `minions/`, `toolsets/`, `shared/`, at the project's root; their names are `PromptFolder`), and the function
+  skills the agent writes into a demo's
   `skills/agents/functions/`. `SkillFilesTests` fails if a provider class for one of them appears.
 - **Every prompt opens with its front matter**: `name`, `description`, `metadata.level` and `toolsets`
   (ADR 0063). `PromptCatalog` reads it once and strips it before the model sees the file.
@@ -60,9 +61,10 @@ a change to one (a new provider, a new tool, a new guard) touches one folder.
    loop or a model. `Agent` never references a provider's SDK: provider differences stay in the
    provider's own library, as in *Changing the LLM*.
 3. **Prompts are content, not code.** The system prompt's text and procedures stay in the prompt folders at a
-   project's root, the folder of the level that reads them: `agents/`, `specialists/`, `minions/`, and `toolsets/`
-   for what every level shares. They are embedded and read only from the assembly, and C# only loads them.
-   `SkillsLayoutTests` fails on a misplaced file.
+   project's root: `agents/{identity}/` with its voice, its skills and its subagents (`subagents/{name}/voice.md`,
+   ADR 0133), `minions/`, and `toolsets/` and `shared/` for what every level shares. They are embedded and read only
+   from the assembly, and C# only loads them. `SkillsLayoutTests` fails on a misplaced file, and
+   `EveryPromptHasAHeaderTests` on a header whose level isn't its place's.
 4. **Hosts stay thin.** A host project maps the agent's stream to its protocol and holds no agent behaviour. Its
    `Program.cs` is start-up only. Its routes are in `Endpoints/`, one file per group. The rest sits in a folder
    per concern (the API: `Sessions/`, `Admin/`, `Evals/`, `Config/`, `Messages/`), never a `Services/` folder,

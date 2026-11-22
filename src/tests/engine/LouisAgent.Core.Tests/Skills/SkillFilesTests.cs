@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Prompts;
 using LouisAgent.Choices;
 using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Agent.Toolsets;
@@ -40,7 +41,7 @@ public class SkillFilesTests
     [Test]
     public void TheFunctionSkills_AreLevelZeros() =>
         // CL13: written out in SkillFiles, so the top of Skills/ doesn't use Roles/; still the agent level's folder.
-        Assert.That(SkillFiles.FunctionsFolder, Does.StartWith(RoleCatalog.AgentFolder + "/"));
+        Assert.That(SkillFiles.FunctionsFolder, Does.StartWith(PromptFolder.Agents.Wire() + "/"));
 
     [Test]
     public void NoProviderClassPerSkillFile()
@@ -50,7 +51,8 @@ public class SkillFilesTests
             .Where(t => typeof(ISkillProvider).IsAssignableFrom(t) && t is { IsClass: true, IsAbstract: false })
             .ToList();
 
-        // CL13: PersonalitySkillsProvider went, unused since F5 step 4b; the providers sit in Providers/, as every seam's do.
+        // CL13: PersonalitySkillsProvider went, unused since F5 step 4b; the providers sit in Providers/, as every
+        // seam's do.
         Assert.That(providers.Select(t => t.Name),
             Is.EquivalentTo(new[] { nameof(CompositeSkillProvider), nameof(MarkdownSkillProvider) }));
         Assert.That(providers.Select(t => t.Namespace), Has.All.EqualTo("LouisAgent.Core.Skills.Providers"));

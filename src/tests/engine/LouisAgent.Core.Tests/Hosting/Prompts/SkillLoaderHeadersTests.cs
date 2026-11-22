@@ -17,12 +17,12 @@ public class SkillLoaderHeadersTests
     /// <summary>A role always loads the toolsets its header's metadata names, where this instance has them.</summary>
     [Test]
     public void ARole_AlwaysLoadsItsHeadersToolsets() =>
-        Assert.That(SkillLoader.ToolsetsOf("testprod-specialist", RoleLevel.Specialist), Is.EqualTo(new[] { "web?" }));
+        Assert.That(SkillLoader.ToolsetsOf("testprod.specialist", RoleLevel.Subagent), Is.EqualTo(new[] { "web?" }));
 
     /// <summary>A role whose header names none, or a name that isn't a role, loads none of its own.</summary>
     [TestCase("testprod/voice-af", RoleLevel.Agent)]
-    [TestCase("no-such-role", RoleLevel.Specialist)]
-    [TestCase("../shared/principles", RoleLevel.Specialist)]
+    [TestCase("no-such-role", RoleLevel.Subagent)]
+    [TestCase("../shared/principles", RoleLevel.Subagent)]
     public void ARoleThatNamesNone_LoadsNoneOfItsOwn(string role, RoleLevel level) =>
         Assert.That(SkillLoader.ToolsetsOf(role, level), Is.Empty);
 
@@ -37,12 +37,14 @@ public class SkillLoaderHeadersTests
                         $"{role} names '{toolset}'");
     }
 
-    /// <summary>No prompt the model gets carries a header: not a mode's, a role's, a guide's or the principles'.</summary>
+    /// <summary>
+    /// No prompt the model gets carries a header: not a mode's, a role's, a guide's or the principles'.
+    /// </summary>
     [Test]
     public void TheModel_NeverSeesAHeader()
     {
         var options = new AgentOptions { WorkspaceRoot = TestPaths.RepoRoot, RatesUrl = null };
-        string specialist = SkillLoader.Load(options, ToolsetCatalog.All, "testprod-specialist", RoleLevel.Specialist)
+        string specialist = SkillLoader.Load(options, ToolsetCatalog.All, "testprod.specialist", RoleLevel.Subagent)
             .Documentation;
         string mode = SkillLoader.Load(options, ToolsetCatalog.All, "testprod/voice-af").Documentation;
 

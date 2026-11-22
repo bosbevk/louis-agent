@@ -17,7 +17,7 @@ with a web app, a CLI, and an MCP server. How all of them connect, and what goes
 [AGENT_COMMUNICATION.md](../AGENT_COMMUNICATION.md).
 
 Four kinds of agent run on it today. The coding agent works on a repository. Puls is a general assistant in everyday
-South African Afrikaans, which hands each task to a specialist sub-session. The triage team sorts a service's errors.
+South African Afrikaans, which hands each task to a subagent sub-session. The triage team sorts a service's errors.
 And the guide answers visitors on [louis-agent.dev](https://louis-agent.dev), the framework's own website, beside the
 agents of three made-up businesses in its showroom. A second agent, the orchestrator (a proof of concept), is built on
 the same core and asks the coding agent for fixes through the HTTP API.

@@ -2,14 +2,15 @@ using LouisAgent.Composition.Agents;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Composition.Packs;
 using LouisAgent.Core.Delegation.Messages;
+using LouisAgent.Core.Delegation.Messages.Holes;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Roles;
 
 namespace LouisAgent.Core.Delegation.Addresses;
 
 /// <summary>
-/// Finds who an address reaches on this instance: the identity's voice, or a specialist's file named for it
-/// (<c>specialists/{identity}-{role}.md</c>), or for the minion tool a minion's
+/// Finds who an address reaches on this instance: the identity's voice, or one of its subagents, named by the address
+/// itself (<c>acme.cook</c>, ADR 0133), or for the minion tool a minion's file
 /// (<c>minions/{identity}-minion-{role}.md</c>, F127.5), or says why it reaches no one.
 /// </summary>
 /// <remarks>
@@ -27,40 +28,30 @@ public static class AgentAddresses
         var identity = identities.FirstOrDefault(i =>
             string.Equals(i.Name, address.Identity, StringComparison.OrdinalIgnoreCase));
         if (identity is null)
-            return Refuse(SubSessionToolMessage.AddressUnknownIdentity, new
-            {
-                address.Identity,
-                Identities = string.Join(", ", identities.Select(i => i.Name).Order(StringComparer.Ordinal))
-            }, out why);
+            return Refuse(SubSessionToolMessage.AddressUnknownIdentity, UnknownIdentity(address, identities), out why);
         if (address.Role is null && identity.DefaultVoice is { } voice)
             return Found(new AddressedAgent(address, AddressKind.Identity, voice), out why);
         if (address.Role is null)
-            return Refuse(SubSessionToolMessage.AddressNoVoice, new
-            {
-                address.Identity,
-                Roles = RolesOf(identity)
-            }, out why);
-
-        // A role belongs to the identity its file is named for: acme.cook is specialists/acme-cook.md.
-        string file = $"{identity.Name}-{address.Role}";
-        if (KindOf(file) is { } kind) return Found(new AddressedAgent(address, kind, file), out why);
-        return Refuse(SubSessionToolMessage.AddressUnknownRole, new
         {
-            address.Identity,
-            address.Role,
-            Roles = RolesOf(identity)
-        }, out why);
+            var noVoice = new AddressNoVoiceHoles(address.Identity, RolesOf(identity));
+            return Refuse(SubSessionToolMessage.AddressNoVoice, noVoice, out why);
+        }
+
+        // A subagent's name is its address, on the identity's own name: acme.cook (ADR 0133).
+        string subagent = $"{identity.Name}.{address.Role}";
+        if (KindOf(subagent) is { } kind) return Found(new AddressedAgent(address, kind, subagent), out why);
+        var unknownRole = new AddressUnknownRoleHoles(address.Identity, address.Role, RolesOf(identity));
+        return Refuse(SubSessionToolMessage.AddressUnknownRole, unknownRole, out why);
     }
 
-    /// <summary>Which level holds a role file by this name, if any; a minions' base is no role.</summary>
     /// <summary>
     /// An address on another server (F127.3.2): the server says whether it has the identity (its identities are read
-    /// before a session is opened there), so here it is only named: its voice that server's to pick, a role by the file
-    /// name the convention gives it.
+    /// before a session is opened there), so here it is only named: its voice that server's to pick, a subagent by its
+    /// address.
     /// </summary>
     public static AddressedAgent OnAnotherServer(AgentAddress address) => address.Role is null
         ? new AddressedAgent(address, AddressKind.Identity, null)
-        : new AddressedAgent(address, AddressKind.Specialist, $"{address.Identity}-{address.Role}");
+        : new AddressedAgent(address, AddressKind.Subagent, $"{address.Identity}.{address.Role}");
 
     /// <summary>
     /// The minion an address reaches (F127.5): <c>acme.lookup</c> is the file <c>minions/acme-minion-lookup.md</c>, its
@@ -76,20 +67,17 @@ public static class AgentAddresses
         var identity = identities.FirstOrDefault(i =>
             string.Equals(i.Name, address.Identity, StringComparison.OrdinalIgnoreCase));
         if (identity is null)
-            return Refuse(SubSessionToolMessage.AddressUnknownIdentity, new
-            {
-                address.Identity,
-                Identities = string.Join(", ", identities.Select(i => i.Name).Order(StringComparer.Ordinal))
-            }, out why);
+            return Refuse(SubSessionToolMessage.AddressUnknownIdentity, UnknownIdentity(address, identities), out why);
         if (IsMinion(address))
             return Found(new AddressedAgent(address, AddressKind.Minion, MinionFile(address)), out why);
-        return Refuse(SubSessionToolMessage.AddressUnknownMinion, new
-        {
-            address.Identity,
-            Role = address.Role ?? "",
-            Minions = MinionsOf(identity)
-        }, out why);
+        var unknownMinion = new AddressUnknownMinionHoles(address.Identity, address.Role ?? "", MinionsOf(identity));
+        return Refuse(SubSessionToolMessage.AddressUnknownMinion, unknownMinion, out why);
     }
+
+    /// <summary>The identity an address named that isn't here, with the ones that are, in order.</summary>
+    private static AddressUnknownIdentityHoles UnknownIdentity(AgentAddress address,
+        IReadOnlyList<IAgentIdentity> identities) =>
+        new(address.Identity, string.Join(", ", identities.Select(i => i.Name).Order(StringComparer.Ordinal)));
 
     /// <summary>
     /// How a chain of asks names an agent (F127.5): a voice by its identity's name, since an identity asked in any of
@@ -110,13 +98,13 @@ public static class AgentAddresses
     /// <summary>A minion's file: its identity, <c>minion</c>, and its function.</summary>
     private static string MinionFile(AgentAddress address) => $"{address.Identity}-minion-{address.Role}";
 
-    /// <summary>A specialist's file named for the identity; a minion's is no role to ask (F127.5).</summary>
-    private static AddressKind? KindOf(string file) =>
-        RoleCatalog.Available(RoleLevel.Specialist).Contains(file) ? AddressKind.Specialist : null;
+    /// <summary>One of this instance's subagents, by its address; a minion's is no role to ask (F127.5).</summary>
+    private static AddressKind? KindOf(string subagent) =>
+        RoleCatalog.Available(RoleLevel.Subagent).Contains(subagent) ? AddressKind.Subagent : null;
 
-    /// <summary>The identity's specialists as the model writes them, <c>acme.cook</c>, or "(none)".</summary>
+    /// <summary>The identity's subagents as the model writes them, <c>acme.cook</c>, or "(none)".</summary>
     private static string RolesOf(IAgentIdentity identity) =>
-        Addresses(RoleLevel.Specialist, $"{identity.Name}-", identity.Name);
+        Addresses(RoleLevel.Subagent, $"{identity.Name}.", identity.Name);
 
     /// <summary>The identity's minions as the model writes them, <c>acme.lookup</c>, or "(none)".</summary>
     private static string MinionsOf(IAgentIdentity identity) =>

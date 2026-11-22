@@ -71,7 +71,7 @@ public class AskAgentLimitsTests
         var handler = Peer();
 
         string again, back, other;
-        using (TurnChain.Use(["guide", "testprod-specialist"]))
+        using (TurnChain.Use(["guide", "testprod.specialist"]))
         {
             again = await AskAsync(Tools(handler), "testprod.specialist");
             other = await AskAsync(Tools(handler));

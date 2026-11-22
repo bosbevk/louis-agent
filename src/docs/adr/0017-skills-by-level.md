@@ -1,6 +1,6 @@
 # 0017. Skill files follow the levels: a folder per level, and a role opens only at its own
 
-**Status:** Accepted · **Date:** 2026-10-16 · **Recorded:** 2026-10-16
+**Status:** Superseded by [0133](0133-subagents-live-inside-their-agent.md) · **Date:** 2026-10-16 · **Recorded:** 2026-10-16
 
 ## Context
 

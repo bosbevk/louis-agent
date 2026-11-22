@@ -204,3 +204,14 @@ checked to be paths only.
   also lists its own manifest. A page's words come from a dictionary factory, `PartWords` in Composition (Louis:
   "put this in a dictionary factory and make it a rule", ADR 0132), converted when touched. The write-up is
   `learning/03-prompt-design.md`.
+- **2026-11-22, CL68.2 done**, its plan folded, on Louis's picks: one name, the address (`triage.sorter`) everywhere
+  (A of three, over keeping the dashed name or naming the folder with it); ADR 0133 (subagents inside their agent, the
+  level from the header, superseding ADR 0017); the renames before the move, with only `RoleCatalog` knowing the old
+  file for one step (A); the prompt folders and files as shared enums, `PromptFolder` and `PromptFileName` (Louis:
+  "should this not be shared enums?", A), in `LouisAgent.Composition.Prompts` (B, over a leaf folder in core's
+  `Skills/` or moving a file to make room); the level held to its place by widening the header rule test to core
+  and its tests (A); and "subagent" in the API's roles reply and the chat's words (A). The evals were left as they
+  are, since Louis will rebuild them ("we are going to scrap all about evals and redo it total rework"), and every
+  framework page was brought along (Louis: "we must make sure as last step to update all framework pages
+  affected"). The web library's own chat code keeps the old word for now, as CL69. The write-up is
+  `learning/10-multi-agent-orchestration.md`.

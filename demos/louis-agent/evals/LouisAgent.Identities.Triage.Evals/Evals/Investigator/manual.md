@@ -7,7 +7,7 @@ order service (`demos/louis-agent/samples/order-service`): `order-total 1003` th
 retired discount code `SUMMER25`. The runbook says a retired code should give no discount, so the lookup that throws
 is the cause, and a change in this repository fixes it: right is `ReportInvestigation` with the area `code`.
 
-The session opens as the investigator itself, at a specialist's level (`"depth": 1`), with `triage`, `files`, `git`
+The session opens as the investigator itself, at a subagent's level (`"depth": 1`), by its address, with `triage`, `files`, `git`
 and `dotnet`, read-only by its prompt. Its brief names the run id, the repository, the error and the method's
 runbook, as the manager's would.
 

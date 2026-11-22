@@ -52,8 +52,6 @@ public class RepeatedNameTests
     /// </summary>
     private static readonly (string File, string Line, string Reason)[] Exemptions =
     [
-        ("src/engine/LouisAgent.Core/Skills/Roles/RoleCatalog.cs", "AgentFolder = \"agents\"",
-            "the folder an agent's voice sits in (CL68.1), named once here; not the agents toolset"),
     ];
 
     /// <summary>Every source file the scan looks at.</summary>

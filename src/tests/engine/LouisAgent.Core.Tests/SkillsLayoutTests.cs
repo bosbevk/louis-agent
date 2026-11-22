@@ -1,3 +1,5 @@
+using LouisAgent.Choices;
+using LouisAgent.Composition.Prompts;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Headers;
@@ -16,9 +18,9 @@ public class SkillsLayoutTests
     /// </summary>
     private static readonly string[] PromptFolders =
     [
-        RoleCatalog.AgentFolder, SkillFiles.FunctionsFolder, RoleCatalog.SpecialistsFolder, RoleCatalog.MinionsFolder,
-        SkillFiles.ToolsetsFolder,
-        SkillFiles.SharedFolder
+        PromptFolder.Agents.Wire(), SkillFiles.FunctionsFolder, PromptFolder.Minions.Wire(),
+        PromptFolder.Toolsets.Wire(),
+        PromptFolder.Shared.Wire()
     ];
 
     private static readonly RoleLevel[] Levels = Enum.GetValues<RoleLevel>();
@@ -37,12 +39,12 @@ public class SkillsLayoutTests
             .Select(f => (File: f, Folder: Path.GetDirectoryName(f)!.Replace('\\', '/')))
             .Where(f => (!PromptFolders.Contains(f.Folder) &&
                          !System.Text.RegularExpressions.Regex.IsMatch(f.Folder,
-                             $"^{RoleCatalog.AgentFolder}/[a-z0-9-]+$"))
-                        || f.Folder == RoleCatalog.AgentFolder)
+                             $"^{PromptFolder.Agents.Wire()}/[a-z0-9-]+$"))
+                        || f.Folder == PromptFolder.Agents.Wire())
             .Select(f => f.File);
 
         Assert.That(misplaced, Is.Empty,
-            "core's prompts are agents/{product}/, agents/functions/, specialists/, minions/, toolsets/ and " +
+            "core's prompts are agents/{product}/, agents/functions/, minions/, toolsets/ and " +
             "shared/ only");
     }
 
@@ -86,8 +88,9 @@ public class SkillsLayoutTests
     {
         var guides = TestTools.Catalog.Toolsets.Select(t => t.GuideFile).ToList();
 
-        Assert.That(guides, Has.All.StartsWith(SkillFiles.ToolsetsFolder + "/"));
-        Assert.That(SkillFileSource.Files(SkillFiles.ToolsetsFolder).Select(f => $"{SkillFiles.ToolsetsFolder}/{f}"),
+        Assert.That(guides, Has.All.StartsWith(PromptFolder.Toolsets.Wire() + "/"));
+        Assert.That(
+            SkillFileSource.Files(PromptFolder.Toolsets.Wire()).Select(f => $"{PromptFolder.Toolsets.Wire()}/{f}"),
             Is.EquivalentTo(guides), "no guide without its toolset");
     }
 

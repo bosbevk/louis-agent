@@ -16,7 +16,7 @@
         { "id": "run", "icon": "message", "title": "How it runs",
           "text": "Host, engine, session, turn, prefix, ledger." },
         { "id": "ask", "icon": "users", "title": "How agents ask each other",
-          "text": "Address, calls, peer, sub-session, specialist, minion." }
+          "text": "Address, calls, peer, sub-session, subagent, minion." }
       ] }
     ],
     "links": [

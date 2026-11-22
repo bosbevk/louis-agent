@@ -1,3 +1,5 @@
+using LouisAgent.Choices;
+using LouisAgent.Composition.Prompts;
 using LouisAgent.Core.Skills;
 using LouisAgent.Identities.Guide;
 
@@ -17,7 +19,7 @@ public class OrbiVoiceTests
     private static string Voice() => Flat("voice.md");
 
     /// <summary>One of Orbi's skills, read the same way as the voice.</summary>
-    private static string Skill(string name) => Flat($"skills/{name}/{SkillFiles.SkillFile}");
+    private static string Skill(string name) => Flat($"skills/{name}/{PromptFileName.Skill.Wire()}");
 
     /// <summary>A prompt file of Orbi's, its lines joined, so a rule is found whatever its line breaks.</summary>
     private static string Flat(string path)

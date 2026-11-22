@@ -111,17 +111,17 @@ in them. They sit in `src/tests/hosts/` beside the other hosts' tests, and a rul
 reads each of their project files and fails on a reference to a demo or to a pack that belongs to one.
 
 The agent they talk to is made up. `TestAgent`, in `LouisAgent.Api.Testing`, is an identity called `testagent`
-with the shape a real one has: two language voices that share a routing voice, a specialist whose role adds the web
+with the shape a real one has: two language voices that share a routing voice, a subagent whose role adds the web
 and the calculator, a reader that adds nothing of its own, and two minions on a shared base. Its prompts are held in
 memory, each with the header the engine reads from a real file. Its packs are fakes under the real packs' names,
 `TestTools.WebPack` and `TestTools.CalculatorPack`, because nothing under `src/` may reference a real pack. The
 in-memory host, `ApiTestHost`, builds the API on this agent and the tests' own fake tools.
 
 `AgentSessionsTests` covers how a session gets its toolsets and tools: the `skills` default, an empty list, unknown
-names, the depth and the `specialists` rule, and sessions that share an engine but not a history. It needs no web
+names, the depth and the minion's toolsets, and sessions that share an engine but not a history. It needs no web
 host, no network and no model. The sessions are built on an `AgentEngineFactory` with a chat client that throws if
-it's ever called. `AskDepthTests` uses the same agent for who may ask whom: a specialist under itself, or the agent
-under the specialist it asked, is refused.
+it's ever called. `AskDepthTests` uses the same agent for who may ask whom: a subagent under itself, or the agent
+under the subagent it asked, is refused.
 
 Some API tests start a real child process where the eval runner would be. Two programs are built for that, each with
 a project reference that brings no assembly. `src/tests/hosts/LouisAgent.Api.StandIn` stands in for the runner. It's
@@ -277,7 +277,7 @@ The folders of `src/tests/engine/LouisAgent.Core.Tests`, to look things up.
 | `Docs/` | The ratchets on the docs: the work log, the roadmap, the write-ups, the guides' listings, one seam for screens, and under `Instructions/` the size of what Claude loads and the skill files |
 | `Projects/` | Core's packages (`CorePackagesTests`) |
 | `Testing/`, `TestHttp/` | The tests of the shared `Outside` and `TestPaths`, and a header-echo handler |
-| The root | `ArchitectureTests`, `FileSizeTests`, `CodeLineCountTests`, `FolderSizeTests`, `SolutionLayoutTests`, `SiteBoundaryTests`, `PackWebBoundaryTests`, `ChoicesProjectTests`, `EvalProtocolProjectTests`, `DiagramsProjectTests`, `EngineAsksItsTypesTests`, `PromptFolderTests`, `SkillsLayoutTests` (part 5), and `TestPrompts`, the `[SetUpFixture]` that registers the tests' own prompts (`agents/`, `specialists/`, `minions/`: a product, a specialist, a minion) before the first is read |
+| The root | `ArchitectureTests`, `FileSizeTests`, `CodeLineCountTests`, `FolderSizeTests`, `SolutionLayoutTests`, `SiteBoundaryTests`, `PackWebBoundaryTests`, `ChoicesProjectTests`, `EvalProtocolProjectTests`, `DiagramsProjectTests`, `EngineAsksItsTypesTests`, `PromptFolderTests`, `SkillsLayoutTests` (part 5), and `TestPrompts`, the `[SetUpFixture]` that registers the tests' own prompts (`agents/` with a subagent inside, `minions/`: a product, a subagent, a minion) before the first is read |
 
 ## Extending it
 

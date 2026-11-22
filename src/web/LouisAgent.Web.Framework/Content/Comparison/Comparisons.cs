@@ -38,10 +38,11 @@ public static class Comparisons
             "src/docs/adr/0002-messages-api-tier-with-our-own-loop.md", NotStated, NotStated),
         new("Tools", "Packs of tools, served to any client over MCP", "src/hosts/LouisAgent.Mcp/McpHost.cs",
             "Tools and MCP servers", "Plugins, OpenAPI and MCP"),
-        new("Several agents", "Agents ask agents by their address, an identity or one of its roles, and a " +
-            "specialist remembers the chat for a follow-up",
+        new("Several agents", "Agents ask agents by their address, an identity or one of its subagents, and a " +
+            "subagent remembers the chat for a follow-up",
             "src/engine/LouisAgent.Core/Delegation/Agents/AskAgentTools.cs",
-            "Graph-based workflows, sequential, concurrent, handoff and group", "Collaborating agents, Process Framework"),
+            "Graph-based workflows, sequential, concurrent, handoff and group",
+            "Collaborating agents, Process Framework"),
         new("Local models", "Ollama", "src/engine/LouisAgent.Core.Ollama/LouisAgent.Core.Ollama.csproj",
             "Ollama among its providers", "Ollama, LMStudio or ONNX"),
         new("Tracing", "OpenTelemetry", "src/engine/LouisAgent.Core.Telemetry/OtlpTelemetry.cs",

@@ -26,9 +26,10 @@ The design decisions every change keeps, one line each: the *why* is its ADR in 
 - **Toolsets per session** — a session names its toolsets when it opens and keeps them; an engine per toolset list; a
   role's file may add its own, `?` only where the instance has it. [ADR 0006](../../src/docs/adr/0006-toolsets-per-session.md),
   [ADR 0025](../../src/docs/adr/0025-a-role-declares-its-toolsets.md).
-- **Skill files follow the levels, a level-0 session is a mode, every agent loads the principles first** — prompts
-  are embedded content, by level, one mode file per product, `principles.md` opening every prompt.
-  [ADR 0011](../../src/docs/adr/0011-prompts-are-content.md), [0017](../../src/docs/adr/0017-skills-by-level.md), [0018](../../src/docs/adr/0018-built-in-prompts-embedded.md),
+- **An agent's subagents live inside it, a level-0 session is a mode, every agent loads the principles first** —
+  prompts are embedded content, `agents/{identity}/` holding its voice, its skills and its subagents, a subagent named
+  by its address everywhere, a prompt's level in its header; one mode file per product, `principles.md` opening every
+  prompt. [ADR 0011](../../src/docs/adr/0011-prompts-are-content.md), [0133](../../src/docs/adr/0133-subagents-live-inside-their-agent.md), [0018](../../src/docs/adr/0018-built-in-prompts-embedded.md),
   [0019](../../src/docs/adr/0019-modes-one-file-per-product.md), [0020](../../src/docs/adr/0020-principles-for-every-agent.md).
 - **Orchestration is an engine function** — agents as tools, typed results checked in code, one policy per turn
   tree; the orchestrator is an identity on core. [ADR 0031](../../src/docs/adr/0031-orchestration-is-an-engine-function.md).

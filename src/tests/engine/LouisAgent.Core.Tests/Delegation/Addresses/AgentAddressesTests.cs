@@ -6,7 +6,7 @@ namespace LouisAgent.Core.Tests.Delegation.Addresses;
 
 /// <summary>
 /// Who an address reaches on this instance (F127.3.1 step 4), on the tests' own prompts: <c>testprod</c> has a voice,
-/// a specialist (<c>testprod-specialist</c>), a minion role (<c>testprod-minion-lookup</c>) and the minions' base
+/// a subagent (<c>testprod.specialist</c>), a minion role (<c>testprod-minion-lookup</c>) and the minions' base
 /// (<c>testprod-minion</c>), which is no role; <c>other</c> has no voice and no roles.
 /// </summary>
 public class AgentAddressesTests
@@ -29,12 +29,15 @@ public class AgentAddressesTests
             Is.EqualTo(new AddressedAgent(new AgentAddress("testprod", null), AddressKind.Identity,
                 "testprod/voice-en")));
 
-    /// <summary>A role reaches the specialist whose file is named for the identity.</summary>
+    /// <summary>
+    /// A role reaches the identity's subagent, named by the address itself (CL68.2, ADR 0133): one name, no second
+    /// spelling made from it.
+    /// </summary>
     [Test]
-    public void ARole_ReachesItsFile() =>
+    public void ARole_ReachesItsSubagent_NamedByTheAddress() =>
         Assert.That(Resolve("testprod", "specialist").Agent,
-            Is.EqualTo(new AddressedAgent(new AgentAddress("testprod", "specialist"), AddressKind.Specialist,
-                "testprod-specialist")));
+            Is.EqualTo(new AddressedAgent(new AgentAddress("testprod", "specialist"), AddressKind.Subagent,
+                "testprod.specialist")));
 
     /// <summary>
     /// A minion is no agent to ask (F127.5): its file's name written as a role reaches no one here, whatever it names.

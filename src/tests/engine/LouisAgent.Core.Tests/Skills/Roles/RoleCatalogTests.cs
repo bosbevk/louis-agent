@@ -1,3 +1,5 @@
+using LouisAgent.Choices;
+using LouisAgent.Composition.Prompts;
 using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Skills;
@@ -21,8 +23,8 @@ public class RoleCatalogTests
     public void SetUp()
     {
         _skills = Path.Combine(Path.GetTempPath(), "roles-" + Guid.NewGuid().ToString("N"));
-        Directory.CreateDirectory(Path.Combine(_skills, RoleCatalog.AgentFolder));
-        File.WriteAllText(Path.Combine(_skills, RoleCatalog.AgentFolder, "test-voice.md"),
+        Directory.CreateDirectory(Path.Combine(_skills, PromptFolder.Agents.Wire()));
+        File.WriteAllText(Path.Combine(_skills, PromptFolder.Agents.Wire(), "test-voice.md"),
             "# Test Voice\n\nKort en kragtig.\n");
     }
 
@@ -74,7 +76,7 @@ public class RoleCatalogTests
     [TestCase("../personality")]
     [TestCase("Testprod")]
     [TestCase("a/b/c")]
-    [TestCase("voice.md")]
+    [TestCase("a.b.c")]
     [TestCase("-voice")]
     public void ANameThatIsntValid_IsRefused(string name)
     {
@@ -150,8 +152,22 @@ public class RoleCatalogTests
     public void EachLevel_ListsOnlyItsOwnRoles()
     {
         // CL8: the folders follow the levels; F30 step 4 fills minions/ (level 2) with its first role.
-        Assert.That(RoleCatalog.Available(RoleLevel.Specialist), Is.EqualTo(new[] { "testprod-specialist" }));
+        Assert.That(RoleCatalog.Available(RoleLevel.Subagent), Is.EqualTo(new[] { "testprod.specialist" }));
         Assert.That(RoleCatalog.Available(RoleLevel.Minion), Is.EqualTo(new[] { "testprod-minion-lookup" }));
+    }
+
+    /// <summary>
+    /// A subagent's name is its address, one dot between its identity and itself (CL68.2, ADR 0133), and only the
+    /// catalogue knows which file holds it; a second dot, or a dot beside a slash, names nothing.
+    /// </summary>
+    [Test]
+    public void ASubagentsName_IsItsAddress_AndTheCatalogueFindsItsFile()
+    {
+        Assert.That(new[] { "testprod.specialist", "acme.cook", "acme/voice-en" }.All(RoleCatalog.IsValidName));
+        Assert.That(new[] { "a.b.c", "a.b/c", ".cook", "acme." }.Any(RoleCatalog.IsValidName), Is.False);
+
+        Assert.That(RoleCatalog.FileName("testprod.specialist", RoleLevel.Subagent),
+            Is.EqualTo("agents/testprod/subagents/specialist/voice.md"));
     }
 
     [Test]
@@ -159,10 +175,10 @@ public class RoleCatalogTests
     {
         // CL8: a role opens only at its own level, so a chat can't take a specialist's role as its voice.
         var ex = Assert.Throws<RoleException>(() =>
-            SkillLoader.Load(new AgentOptions { DefaultVoice = "testprod/voice-en" }, [], "testprod-specialist"));
+            SkillLoader.Load(new AgentOptions { DefaultVoice = "testprod/voice-en" }, [], "testprod.specialist"));
 
         Assert.That(ex!.Message,
-            Does.Contain("Unknown role 'testprod-specialist'").And.EndWith($"Available: {Modes}."));
+            Does.Contain("Unknown role 'testprod.specialist'").And.EndWith($"Available: {Modes}."));
     }
 
     [Test]
@@ -170,9 +186,9 @@ public class RoleCatalogTests
     {
         var ex = Assert.Throws<RoleException>(() =>
             SkillLoader.Load(new AgentOptions { DefaultVoice = "testprod/voice-en" }, [], "testprod/voice-af",
-                RoleLevel.Specialist));
+                RoleLevel.Subagent));
 
-        Assert.That(ex!.Message, Does.Contain("Unknown role 'testprod/voice-af'").And.Contain("testprod-specialist"));
+        Assert.That(ex!.Message, Does.Contain("Unknown role 'testprod/voice-af'").And.Contain("testprod.specialist"));
     }
 
     [Test]
@@ -185,7 +201,7 @@ public class RoleCatalogTests
                 .Documentation,
             Does.Contain("# Testprod - Routing"));
         Assert.That(
-            SkillLoader.Load(new AgentOptions { DefaultVoice = "testprod/voice-en" }, [], level: RoleLevel.Specialist)
+            SkillLoader.Load(new AgentOptions { DefaultVoice = "testprod/voice-en" }, [], level: RoleLevel.Subagent)
                 .Documentation,
             Does.Not.Contain("# Testprod - Routing"));
     }

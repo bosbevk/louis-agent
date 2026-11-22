@@ -31,7 +31,7 @@ internal static class InfoReplyFactories
         public static RolesReply Of(AgentEngineFactory engines) => new(
             engines.DefaultVoice ?? "",
             engines.AvailableRoles(RoleLevel.Agent),
-            engines.AvailableRoles(RoleLevel.Specialist),
+            engines.AvailableRoles(RoleLevel.Subagent),
             engines.AvailableRoles(RoleLevel.Minion));
     }
 

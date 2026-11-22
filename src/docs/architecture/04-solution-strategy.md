@@ -39,7 +39,7 @@ change to cost is proven on an eval run ([0007](../adr/0007-measure-every-reques
 stay inside the workspace and away from secrets. On a PC everything listens on `127.0.0.1`, and a host on the network
 refuses to start without its key, unless `AGENT_AUTH=off` says it's open on purpose.
 
-**Agents that delegate.** A general agent (Puls) hands a task to a specialist sub-session on a peer, with only the
+**Agents that delegate.** A general agent (Puls) hands a task to a subagent sub-session on a peer, with only the
 toolsets it needs. An orchestrator per service asks the coding agent for fixes and verifies them
 ([0012](../../../demos/louis-agent/docs/adr/0012-one-orchestrator-per-microservice.md)).
 

@@ -293,7 +293,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M7 8l0 .01" />
         <path d="M7 16l0 .01" />
       </g>
-      <text class="pic-name" x="1070" y="475" text-anchor="start">Specialist API</text>
+      <text class="pic-name" x="1070" y="475" text-anchor="start">Subagent API</text>
       <text class="pic-name" x="1070" y="491" text-anchor="start">[the HTTP API, as a peer]</text>
       <rect class="pic-panel" x="342.8" y="580" width="286.4" height="84" rx="10" />
       <rect class="pic-fill tone-teal" x="358.8" y="608" width="28" height="28" rx="9" />

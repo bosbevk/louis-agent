@@ -357,7 +357,7 @@ public class AgentSessionsTests
         string roles = System.Text.Json.JsonSerializer.Serialize(RolesReply.Of(engines), InfoJson.SnakeCase);
 
         Assert.That(roles,
-            Does.Contain($"\"default\":\"{TestAgent.Voice}\"").And.Contain("\"specialists\":[").And
+            Does.Contain($"\"default\":\"{TestAgent.Voice}\"").And.Contain("\"subagents\":[").And
                 .Contain(TestAgent.Specialist));
     }
 

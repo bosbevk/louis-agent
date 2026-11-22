@@ -1,3 +1,5 @@
+using LouisAgent.Choices;
+using LouisAgent.Composition.Prompts;
 using LouisAgent.Core.Skills;
 
 namespace LouisAgent.Identities.Framework.Tests;
@@ -28,7 +30,7 @@ public class FrameworkSkillsTests
         new FrameworkIdentity().Prompts.GetDirectoryContents(SkillsFolder).Select(folder => folder.Name);
 
     /// <summary>One skill's text, from the <c>SKILL.md</c> in its folder.</summary>
-    private static string Skill(string name) => Read($"skills/{name}/{SkillFiles.SkillFile}");
+    private static string Skill(string name) => Read($"skills/{name}/{PromptFileName.Skill.Wire()}");
 
     /// <summary>How many numbered rules stand under a section, up to the next one.</summary>
     private static int Rules(string text, int section)

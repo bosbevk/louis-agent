@@ -74,7 +74,7 @@ packs, every check a C# eval on one harness. Since then (2026-10-30 to 2026-11-1
 - **A site's areas in the framework** (F127, F144): a showroom of three made-up businesses whose agents a visitor
   tries live; a site names its areas with one builder and wires nothing by hand (ADR 0120); the admin is a frame its
   areas plug into, with an overview of the talks and what they cost.
-- **One address for every agent call** (F127.3, F127.5, ADR 0117): `AskAgent("puls.cook", …)` asks a specialist, a
+- **One address for every agent call** (F127.3, F127.5, ADR 0117): `AskAgent("puls.cook", …)` asks a subagent, a
   one-task minion on a cheap model, or an agent on another server, and an identity lists in code whom it may ask.
 - **A triage team, the example outside Puls** (F106.3.1, F106.3.2, F106.3.4): a manager with a sorter, an
   investigator and a reviewer on a triage pack, each ending its work with a typed tool checked in code; one real

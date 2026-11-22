@@ -53,7 +53,7 @@ public class SkillLoaderSkillsTests
     /// <summary>Below level 0 a role is no identity's voice, so no identity's skill comes with it.</summary>
     [Test]
     public void ASpecialist_GetsNoIdentitysSkill() =>
-        Assert.That(PromptOf("testprod-specialist", RoleLevel.Specialist),
+        Assert.That(PromptOf("testprod.specialist", RoleLevel.Subagent),
             Does.Not.Contain("# Testprod - House rules").And.Not.Contain("testprod/price-list"));
 
     /// <summary>A file in an identity's skills that doesn't say how it loads refuses, naming the file.</summary>

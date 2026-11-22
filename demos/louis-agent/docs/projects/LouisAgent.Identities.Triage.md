@@ -13,7 +13,8 @@
 A team that triages a service's errors: the **manager** decides what each case gets and checks everyone's work; the
 **sorter**, the **investigator** and the **reviewer** work for it; the **coder** is the coding identity on a peer.
 One identity with roles (F106.3.2, Louis's pick), because the three only ever work for the manager: the manager's
-voice is the mode, the three are `specialists/triage-*.md`, and the packs are names.
+voice is the mode, the three are its subagents, `agents/triage/subagents/{name}/voice.md`, each named by its address
+(`triage.sorter`), and the packs are names.
 
 ## How it works
 
@@ -55,7 +56,7 @@ different: an unknown run starts with its first step instead, since a trial's fr
 
 `demos/louis-agent/evals/LouisAgent.Identities.Triage.Evals`: one eval per role, folders of files the coding demo's
 runner lists (`triage-sorter`, `triage-investigator`, `triage-reviewer`). Each opens its session as the role itself,
-at a specialist's level (`"depth": 1` in its mode, the harness's way to reach a role, Louis's pick), with the role's
+at a subagent's level as its address, `triage.sorter` and the others (`"depth": 1` in its mode, the harness's way to reach a role, Louis's pick), with the role's
 toolsets, on the order service's `order-total 1003` error for the retired code `SUMMER25`. The checks are the
 harness's general ones: no error, the role's tool called, and called with the choice expected (the sorter `code`,
 the investigator the area `code`, the reviewer `happy` false on a fix that charges a retired code nothing).

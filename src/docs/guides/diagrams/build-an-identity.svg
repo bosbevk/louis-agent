@@ -252,9 +252,9 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M16 3.13a4 4 0 0 1 0 7.75" />
         <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
       </g>
-      <text class="crd-name" x="293.5" y="263" text-anchor="start">Specialists</text>
-      <rect class="mrq-pill" x="247.5" y="280" width="101.6" height="22" rx="11" />
-      <text class="mrq-code" x="257.5" y="295" text-anchor="start">specialists/</text>
+      <text class="crd-name" x="293.5" y="263" text-anchor="start">Subagents</text>
+      <rect class="mrq-pill" x="247.5" y="280" width="183.2" height="22" rx="11" />
+      <text class="mrq-code" x="257.5" y="295" text-anchor="start">agents/{name}/subagents/</text>
       <text class="pic-text" x="247.5" y="326" text-anchor="start">Work handed over, with their</text>
       <text class="pic-text" x="247.5" y="344" text-anchor="start">toolsets.</text>
       <rect class="mrq-glass" x="459" y="222" width="207.5" height="142" rx="14" />

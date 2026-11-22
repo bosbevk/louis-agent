@@ -119,7 +119,7 @@ public class AskAgentToolsTests
 
         var opening = Opening(handler);
         Assert.That((opening.GetProperty("identity").GetString(), opening.GetProperty("role").GetString()),
-            Is.EqualTo(("testprod", "testprod-specialist")));
+            Is.EqualTo(("testprod", "testprod.specialist")));
     }
 
     /// <summary>

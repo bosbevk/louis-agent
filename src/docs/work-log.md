@@ -14,11 +14,11 @@
 |---|---|---|
 | Features (`F`) | 152 | 77 |
 | Fixes (`FX`) | 213 | 4 |
-| Cleanups (`CL`) | 42 | 27 |
+| Cleanups (`CL`) | 43 | 28 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (108 in the TODO)
+## Open (109 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
@@ -130,6 +130,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups |
 | CL61 | `ToolCallGuards` past 200 lines once laid out: split it, holes into records (ADR 0119), and end the turn through `TurnEnding.Ends` | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
+| CL69 | The framework's web library still names its chat code with the old word (`SpecialistAnswer` and its tests, and about 20 files' summaries): rename it to subagent through Rider (found in CL68.2, ADR 0133) | Cleanups |
 
 ## Features (152 done)
 
@@ -506,10 +507,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | FX2 | 2026-10-10 | The usage probe says which model to pull on an Ollama 404 |
 | FX1 | 2026-10-10 | Keep the tools on the request after the 10-round limit |
 
-## Cleanups (42 done)
+## Cleanups (43 done)
 
 | Id | When | What |
 |---|---|---|
+| CL68.2 | 2026-11-22 | Subagents inside their agent (ADR 0133, supersedes 0017): a specialist is a subagent at agents/{identity}/subagents/{name}/voice.md, its address (triage.sorter) its one name everywhere, its level from its header held to its place by a test; the prompt folders and files are shared enums (PromptFolder, PromptFileName); the API, the chat, the framework pages and the docs say subagent |
 | CL68.1 | 2026-11-22 | No prompts/ folder: every project's prompt folders at its root, agent/ is agents/, the showroom's businesses named once on one provider, each skill a folder with its SKILL.md; a page's words from a dictionary factory, PartWords (ADR 0132) |
 | CL64 | 2026-11-18 | Orbi's prompts in the skill shape (narrowed by Louis to the guide alone): the voice is an index, its seven rules first and a table of on-demand skills, 4,356 words to about 3,100; five procedures became skills; every skill, Orbi's and Claude Code's, has its rules first, an example and its references, held by tests |
 | CL67 | 2026-11-17 | The feeds' MCP scheme is `feeds://` (Louis: "A feed must change to Feeds"), plural like `/v1/feeds` and the docs' coming `docs://`; no alias for `feed://` (ADR 0049); ADR 0072's line changed with it |

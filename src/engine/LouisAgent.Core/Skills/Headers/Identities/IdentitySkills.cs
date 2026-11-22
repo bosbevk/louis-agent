@@ -1,3 +1,6 @@
+using LouisAgent.Choices;
+using LouisAgent.Composition.Prompts;
+
 namespace LouisAgent.Core.Skills.Headers.Identities;
 
 /// <summary>
@@ -31,5 +34,5 @@ public static class IdentitySkills
 
     /// <summary>Whether a path in a skills folder is one skill's file: <c>{name}/SKILL.md</c>, a folder down.</summary>
     private static bool IsASkillsFile(string inFolder) =>
-        inFolder.Split('/') is [_, SkillFiles.SkillFile];
+        inFolder.Split('/') is [_, var file] && file == PromptFileName.Skill.Wire();
 }

@@ -15,15 +15,18 @@ namespace LouisAgent.Identities.Triage.Tests;
 /// </summary>
 public class TriageEvalsTests
 {
-    /// <summary>Each role's eval: its folder, the role, its toolsets, its tool and the field it ends with.</summary>
+    /// <summary>
+    /// Each subagent's eval: its folder, the subagent it opens as by its address (ADR 0133), its toolsets, its tool
+    /// and the field it ends with.
+    /// </summary>
     private static readonly object[] Roles =
     [
-        new object[] { "Sorter", TriageRole.Sorter, "triage", "SortCase", "department" },
+        new object[] { "Sorter", TriageCall.Sorter, "triage", "SortCase", "department" },
         new object[]
         {
-            "Investigator", TriageRole.Investigator, "triage,files,git,dotnet", "ReportInvestigation", "area"
+            "Investigator", TriageCall.Investigator, "triage,files,git,dotnet", "ReportInvestigation", "area"
         },
-        new object[] { "Reviewer", TriageRole.Reviewer, "triage,files,git", "ReportReview", "happy" },
+        new object[] { "Reviewer", TriageCall.Reviewer, "triage,files,git", "ReportReview", "happy" },
     ];
 
     /// <summary>
@@ -31,8 +34,8 @@ public class TriageEvalsTests
     /// error, the tool and the tool with the expected choice.
     /// </summary>
     [TestCaseSource(nameof(Roles))]
-    public async Task ARolesEval_OpensAsTheRole_AndChecksItsEnding(string folder, TriageRole role, string toolsets,
-        string tool, string field)
+    public async Task ARolesEval_OpensAsTheRole_AndChecksItsEnding(string folder, TriageCall subagent,
+        string toolsets, string tool, string field)
     {
         var eval = Load(folder);
         var modes = await eval.ModesAsync(null!, CancellationToken.None);
@@ -40,9 +43,9 @@ public class TriageEvalsTests
         Assert.Multiple(() =>
         {
             Assert.That(eval.Identity, Is.EqualTo(TriageIdentityName.Triage.Wire()));
-            Assert.That(eval.Name, Is.EqualTo(role.Wire()));
+            Assert.That(eval.Name, Is.EqualTo($"triage-{folder.ToLowerInvariant()}"));
             Assert.That(modes.Select(mode => (mode.Role, mode.Depth, string.Join(",", mode.Toolsets))),
-                Is.EqualTo(new[] { (role.Wire(), 1, toolsets) }));
+                Is.EqualTo(new[] { (subagent.Wire(), 1, toolsets) }));
             Assert.That(eval.Checks.Select(check => check.Name),
                 Is.EqualTo(new[] { $"{folder.ToLowerInvariant()}-no-error", "tool-used", "tool-used-with" }));
             Assert.That(eval.Scenarios, Has.Count.EqualTo(1));

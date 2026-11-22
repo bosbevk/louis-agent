@@ -4,14 +4,15 @@ using System.ComponentModel;
 
 namespace LouisAgent.Core.Skills.Messages;
 // The message enums (src/docs/CLAUDE.md, *Messages and logging*). Each member is named for what happened, and its
-// [Description] is the text, with named holes filled by MessageText.Format (or by the structured logger). Members are added
-// as code is written or moved; the refactor after F4 moves the existing messages here.
+// [Description] is the text, with named holes filled by MessageText.Format (or by the structured logger). Members are
+// added as code is written or moved; the refactor after F4 moves the existing messages here.
 
 /// <summary>Exception texts for the skills and roles area: what is wrong and how to fix it.</summary>
 public enum SkillErrorMessage
 {
     [Description(
-        "'{Name}' isn't a role name: use lowercase letters, digits and dashes, and one / between a product and its mode.")]
+        "'{Name}' isn't a role name: use lowercase letters, digits and dashes, with one / between a product and its " +
+        "mode or one . between an identity and its subagent.")]
     RoleNameInvalid,
 
     [Description("Unknown role '{Name}'. Available: {Available}.")]

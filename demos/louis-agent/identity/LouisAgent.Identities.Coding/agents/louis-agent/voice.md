@@ -79,6 +79,6 @@ file's history: `files` and `git`); pick every one it needs, and no more.
 - A session's toolsets are fixed when it starts. Only call tools the session has loaded.
 - **A code review:** read the diff with `git`, then each changed file with `files`; say what's wrong and what to
   change, by file and line, the most serious first.
-- No specialist has passed its check for this work yet, so never hand it to one: if you have the toolset, do the work
+- No subagent has passed its check for this work yet, so never hand it to one: if you have the toolset, do the work
   yourself; if you don't, say which toolset you'd need.
 - Ask the user only when the request itself is unclear (for example, they say "this file" and name none).
