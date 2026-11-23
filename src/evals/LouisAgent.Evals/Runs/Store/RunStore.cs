@@ -67,6 +67,23 @@ public sealed class RunStore(string folder)
         }
     }
 
+    /// <summary>
+    /// The id a run of this eval starting now takes: the time to the second, UTC, and the eval's name. A run already
+    /// kept in that second moves it on a second, so an id names one run, whether a start or a re-grade makes it.
+    /// </summary>
+    public RunId NextId(string eval, DateTimeOffset at)
+    {
+        var utc = at.ToUniversalTime();
+        var second = new DateTimeOffset(utc.Year, utc.Month, utc.Day, utc.Hour, utc.Minute, utc.Second,
+            TimeSpan.Zero);
+        lock (_gate)
+        {
+            while (File.Exists(PathOf(new RunId(second, eval).Text))) second = second.AddSeconds(1);
+        }
+
+        return new RunId(second, eval);
+    }
+
     /// <summary>The eval's runs, the newest first.</summary>
     public IReadOnlyList<EvalRun> Of(string eval)
     {

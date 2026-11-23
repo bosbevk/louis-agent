@@ -74,6 +74,7 @@ public static class EvalsStartup
         admin.MapGet("/evals/runs/{id}", handlers.Find);
         admin.MapDelete("/evals/runs/{id}", handlers.Stop);
         admin.MapGet("/evals/{name}/runs", handlers.RunsOf);
+        admin.MapPost("/evals/runs/{id}/regrade", handlers.Regrade);
         var conversations = v1.ServiceProvider.GetRequiredService<ConversationHandlers>();
         admin.MapPut(FlipRoute, conversations.FlipAsync);
         admin.MapDelete(FlipRoute, conversations.UndoFlip);

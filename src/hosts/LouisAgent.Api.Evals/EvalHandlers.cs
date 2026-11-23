@@ -29,9 +29,9 @@ using StartAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
 namespace LouisAgent.Api.Evals;
 
 /// <summary>
-/// The five eval routes' answers: the host's evals, a run started, a run read at its own address, a run stopped,
-/// and an eval's runs. A start is refused with its reason before anything runs. What is sent is what is kept, in
-/// the run's own JSON.
+/// The eval routes' answers: the host's evals, a run started, a run read at its own address, a run stopped or
+/// re-graded, and an eval's runs. A start is refused with its reason before anything runs. What is sent is what is
+/// kept, in the run's own JSON.
 /// </summary>
 /// <remarks>
 /// Named handlers returning typed results, their checks first as guard clauses (ADR 0051). A start answers 202 with
@@ -125,6 +125,40 @@ public sealed class EvalHandlers(
         return ApiErrors.Conflict(MessageText.Format(EvalsApiMessage.RunNotGoing, notGoing));
     }
 
+    /// <summary>
+    /// <c>POST /v1/admin/evals/runs/{id}/regrade</c>: grades the kept run's answers again against its eval file as it
+    /// is now, as a run of its own that names the run it re-graded and the live run behind it. It starts at once, with
+    /// no ask (Louis's pick, 2026-11-23, "No ask, the run shows it after").
+    /// </summary>
+    public StartAnswer Regrade(string id)
+    {
+        if (work is null)
+        {
+            var setting = new NowhereToKeepHoles(EvalsOptions.DataFolderSetting);
+            return ApiErrors.BadRequest(MessageText.Format(EvalsApiMessage.NowhereToKeep, setting));
+        }
+
+        if (!RunId.TryParse(id, out _) || work.Store.Find(id) is not { } kept) return NoSuchRun(id);
+        if (catalog.Find(kept.Eval) is not { } file) return Unknown(kept.Eval);
+
+        var graded = desk.Read(kept);
+        var at = work.Store.NextId(graded.Eval, clock.GetUtcNow());
+        var started = new EvalRun(at.Text, graded.Eval, file.Agent.ToString(), RunKind.Regrade, graded.Repeats,
+            at.StartedAt, [])
+        {
+            RegradeOf = graded.Id,
+            // The live run whose answers these are: a re-grade of a re-grade or of a replay names the same one.
+            ReplayOf = graded.ReplayOf ?? graded.Id
+        };
+        if (!desk.TryStart(started, work.ForRegrade(started, graded, file)))
+        {
+            var going = new RunGoingHoles(desk.Current?.Id ?? "");
+            return ApiErrors.Conflict(MessageText.Format(EvalsApiMessage.RunGoing, going));
+        }
+
+        return TypedResults.Accepted(RunAddress + started.Id);
+    }
+
     /// <summary>The eval's runs in short, the newest first.</summary>
     public FoundRuns RunsOf(string name)
     {
@@ -162,17 +196,13 @@ public sealed class EvalHandlers(
     /// <summary>The eval's runs as they really are, the newest first; none without a data folder.</summary>
     private IEnumerable<EvalRun> RunsIn(string name) => (work?.Store.Of(name) ?? []).Select(desk.Read);
 
-    /// <summary>The run as it starts: its id from the time to the second and the eval's name.</summary>
+    /// <summary>The run as it starts: its id the store's next for the eval, from the time to the second.</summary>
     private EvalRun Started(string name, EvalFile file, StartRunRequest request, EvalRun? replayed, RunStore store)
     {
-        var now = clock.GetUtcNow();
-        var at = new DateTimeOffset(now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second, TimeSpan.Zero);
-        // An id names one run: a start in a second another run started in takes the next second.
-        while (store.Find(new RunId(at, name).Text) is not null) at = at.AddSeconds(1);
-
+        var at = store.NextId(name, clock.GetUtcNow());
         // A replay plays the live run's repeats back, as many as it recorded.
         int repeats = replayed?.Repeats ?? request.Repeats;
-        return new EvalRun(new RunId(at, name).Text, name, file.Agent.ToString(), request.Kind, repeats, at, [])
+        return new EvalRun(at.Text, name, file.Agent.ToString(), request.Kind, repeats, at.StartedAt, [])
         {
             ReplayOf = replayed?.Id
         };
