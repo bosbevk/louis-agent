@@ -109,6 +109,13 @@ criterion in words with the judge's line of why. The repeat's own figures close 
 their cost, and its facts and criteria met. A run, a conversation or a repeat the host doesn't have is one line
 that names it.
 
+Two links beside Reload walk the run in its page's order, failed first: Previous opens the conversation before, and
+Next failed the next one that failed, each asked of the run (`FindPrevious`, `FindNextFailed`) and each left out
+where there is none. Under the turns, one link opens the same conversation in the run before: the newest of this
+eval's runs that started earlier, read with the page. A row of the runs list doesn't say which conversations a run
+holds, so the link isn't checked ahead; a run that lacks the conversation says so in its one line. On the eval's
+first run there is no such link.
+
 ### 6. The words
 
 The words the code picks are `EvalsWords`, one entry for each part of `EvalsPart`, as every page's words are
@@ -145,15 +152,13 @@ None of its own. It reads with the site's API client and the admin's key, and li
 
 `LouisAgent.Web.Evals.Tests` holds the client over a stub of the API (`EvalsApiTests`), the addresses
 (`EvalAddressTests`), the evals' page and a run's page with bUnit (`EvalsPageTests`, `RunPageTests`,
-`RunPageStatesTests`), a conversation's page (`ConversationPageTests`), all over `EvalPagesHost`, a stub of every
+`RunPageStatesTests`), a conversation's page and its walk (`ConversationPageTests`, `ConversationWalkTests`), all over `EvalPagesHost`, a stub of every
 route the pages read,, the runs list (`RunRowsTests`), a mark (`MarkDotTests`), the words
 (`EvalsWordsTests`), the area (`EvalsAreaTests`) and the admin's link and card (`EvalsLinksTests`,
 `EvalsCardTests`). louis-agent.dev's own tests hold that its admin draws the evals' link and card.
 
 ## Limits and plans
 
-A conversation's page has no way yet to walk to the next failed conversation, or to the same conversation in the
-run before.
 It is not a package ([ADR 0130](../adr/0130-the-framework-is-published-as-packages-one-tag-each.md)).
 
 ## Related docs

@@ -1,4 +1,5 @@
 using System.Net;
+using LouisAgent.Evals.Contracts.Api;
 using LouisAgent.Evals.Contracts.Runs;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Evals.Client;
@@ -23,6 +24,7 @@ namespace LouisAgent.Web.Evals.Pages;
 public partial class ConversationPage
 {
     private EvalRun? _run;
+    private IReadOnlyList<RunRow> _runs = [];
     private string? _read, _error;
     private bool _needsKey, _loading, _missing;
 
@@ -51,7 +53,25 @@ public partial class ConversationPage
     /// <summary>The repeat on show.</summary>
     private RepeatRun? Open => Held?.FindRepeat(Repeat);
 
+    /// <summary>The next failed conversation, in the run page's order, failed first.</summary>
+    private ConversationRun? Next => _run?.FindNextFailed(Conversation);
+
+    /// <summary>The conversation before this one, in the same order.</summary>
+    private ConversationRun? Previous => _run?.FindPrevious(Conversation);
+
+    /// <summary>
+    /// The run before this one: the newest of this eval's runs started earlier. The list doesn't say which
+    /// conversations a run holds, so the link isn't checked ahead; that run's page says so when it lacks this one.
+    /// </summary>
+    private RunRow? Before => _run is { } read
+        ? _runs.Where(row => row.StartedAt < read.StartedAt).MaxBy(row => row.StartedAt)
+        : null;
+
     private string RunPage => EvalAddress.RunPageOf(Eval, Run);
+
+    private string PageOf(ConversationRun conversation) => EvalAddress.ConversationPageOf(Eval, Run, conversation.Id);
+
+    private string BeforePageOf(RunRow before) => EvalAddress.ConversationPageOf(Eval, before.Id, Conversation);
 
     private string Repeats =>
         EvalsWords.Count(Held?.Asked ?? 0, EvalsPart.Repeat, EvalsPart.Repeats);
@@ -69,8 +89,8 @@ public partial class ConversationPage
     }
 
     /// <summary>
-    /// Reads the run. A run the host doesn't have is one line; a refused key shows the frame's key box, and a host
-    /// that can't be reached says so in a line.
+    /// Reads the run and the eval's runs. A run the host doesn't have is one line; a refused key shows the frame's
+    /// key box, and a host that can't be reached says so in a line.
     /// </summary>
     private async Task LoadAsync()
     {
@@ -80,6 +100,7 @@ public partial class ConversationPage
         {
             _run = await Api.FindRunAsync(Run);
             _missing = _run is null;
+            _runs = await Api.ListRunsAsync(Eval);
             _read = Run;
         }
         catch (AgentApiException ex)

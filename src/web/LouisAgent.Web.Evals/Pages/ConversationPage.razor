@@ -3,7 +3,8 @@
 @layout AdminFrame
 
 @* A conversation's page (F126.3.2): one repeat at a time, turn by turn, with a switch to pick the repeat and the
-   repeat's own figures under its turns. A run or a conversation the host doesn't have is one line. *@
+   repeat's own figures under its turns. Previous and Next failed walk the run in its page's order, and one link opens
+   the same conversation in the run before. A run or a conversation the host doesn't have is one line. *@
 
 <PageTitle>@Conversation · Admin</PageTitle>
 
@@ -25,6 +26,14 @@
         }
     </div>
     <div class="page-actions">
+        @if (Previous is { } previous)
+        {
+            <a class="header-button conversation-previous" href="@PageOf(previous)">‹ Previous</a>
+        }
+        @if (Next is { } next)
+        {
+            <a class="header-button conversation-next" href="@PageOf(next)">Next failed ›</a>
+        }
         <button class="header-button conversation-reload" type="button" @onclick="LoadAsync" disabled="@_loading"><span class="ic i-refresh" aria-hidden="true"></span>Reload</button>
     </div>
 </div>
@@ -60,6 +69,11 @@ else if (Held is { } conversation && Open is { } repeat)
     @foreach (var (turn, number) in repeat.Turns.Select((turn, at) => (turn, at + 1)))
     {
         <TurnCard @key="number" Number="number" Turn="turn"/>
+    }
+
+    @if (Before is { } before)
+    {
+        <p class="mb-3"><a class="conversation-before" href="@BeforePageOf(before)">Open this conversation in the run before</a></p>
     }
 
     <section class="card-p conversation-repeat">

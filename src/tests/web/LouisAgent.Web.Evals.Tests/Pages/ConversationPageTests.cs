@@ -47,7 +47,7 @@ public class ConversationPageTests
         Assert.That(passed.Find(".repeat-switch [aria-current=page]").TextContent, Does.Contain("Repeat 1"));
     }
 
-    /// <summary>A turn shows its ask, its answer, and a fold naming its tool calls with each input and result.</summary>
+    /// <summary>A turn shows its ask, its answer, and a fold naming its calls with each input and result.</summary>
     [Test]
     public void ATurn_ShowsItsAskAnswer_AndAFoldOfItsCalls()
     {
