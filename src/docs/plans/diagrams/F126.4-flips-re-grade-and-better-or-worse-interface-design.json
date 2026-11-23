@@ -1,0 +1,42 @@
+{
+  "kind": "classes",
+  "title": "F126.4 flips, re-grade and better or worse: the interface design",
+  "caption": "A flip sits on its mark, and every sum on the run asks the mark which answer counts. One rule says when a mark carries over, for a re-grade and a replay. The re-grader makes a new run from a graded one. A run compares itself with another, and the eval's run list says which run is the run before. The number is the step; violet is there already and unchanged.",
+  "classes": {
+    "types": [
+      { "id": "flip", "name": "Flip", "kind": "record, step 2", "members": ["DateTimeOffset At", "string? Note"] },
+      { "id": "mark", "name": "Mark", "kind": "record, changed in step 2", "members": ["Flip? Flip { get; init; }", "bool CountsAsMet()"] },
+      { "id": "run", "name": "EvalRun", "kind": "record, changed in steps 2, 6 and 8", "members": ["int CountFlips()", "EvalRun? WithFlip(conversation, repeat,", "  turn, criterion, Flip? flip)", "string? RegradeOf { get; init; }", "RunChange CompareWith(EvalRun before)", "IReadOnlyList<CriterionTally> TallyCriteria()"] },
+      { "id": "conv", "name": "ConversationRun", "kind": "record, changed in step 2", "members": ["bool PassedAfterAFlip()"] },
+      { "id": "transcript", "name": "TurnTranscript", "kind": "record, changed in step 5", "members": ["bool SaysTheSameAs(TurnTranscript other)"] },
+      { "id": "reuse", "name": "MarkReuse", "kind": "static, step 5", "members": ["Mark? FindReusable(before, now, criterion)", "RepeatRun CarryFlips(played, live)"] },
+      { "id": "regrader", "name": "Regrader", "kind": "step 6", "members": ["Task<EvalRun> RegradeAsync(started, graded,", "  file, kept, ct)"] },
+      { "id": "judge", "name": "Judge", "kind": "there already", "tone": "violet", "members": ["Task<JudgedMark> MarkAsync(criterion,", "  conversation, ct)"] },
+      { "id": "change", "name": "RunChange", "kind": "record, step 8", "members": ["PassedBefore, PassedNow", "NowPass, NowFail, LeftOut", "Criteria, CriteriaKept"] },
+      { "id": "tally", "name": "CriterionTally", "kind": "record, step 8", "members": ["string Text", "int Missed, int Flipped"] },
+      { "id": "history", "name": "RunHistory", "kind": "record, step 8", "members": ["RunRow? FindBefore(RunRow run)", "FindLastFinished(int count)", "TallyMissedMost(int count)"] },
+      { "id": "row", "name": "RunRow", "kind": "record, changed in step 8", "members": ["string? RegradeOf", "IReadOnlyList<CriterionTally> Criteria"] },
+      { "id": "handlers", "name": "ConversationHandlers", "kind": "steps 3 and 11", "members": ["Flip, UndoFlip", "AsFile"] },
+      { "id": "api", "name": "EvalsApi", "kind": "changed in steps 4, 9 and 11", "members": ["FlipAsync, UndoFlipAsync", "RegradeAsync, CopyAsync"] },
+      { "id": "box", "name": "FlipBox", "kind": "component, step 4", "members": ["the note, Flip to met, Don't flip"] },
+      { "id": "trend", "name": "RunTrend", "kind": "component, step 10", "members": ["the last 8 runs, missed most"] }
+    ],
+    "relations": [
+      { "from": "mark", "to": "flip", "kind": "holds" },
+      { "from": "run", "to": "conv", "kind": "holds" },
+      { "from": "conv", "to": "mark", "kind": "uses" },
+      { "from": "reuse", "to": "transcript", "kind": "uses" },
+      { "from": "reuse", "to": "mark", "kind": "creates" },
+      { "from": "regrader", "to": "reuse", "kind": "uses" },
+      { "from": "regrader", "to": "judge", "kind": "holds" },
+      { "from": "regrader", "to": "run", "kind": "creates" },
+      { "from": "run", "to": "change", "kind": "creates" },
+      { "from": "run", "to": "tally", "kind": "creates" },
+      { "from": "row", "to": "tally", "kind": "holds" },
+      { "from": "history", "to": "row", "kind": "holds" },
+      { "from": "handlers", "to": "run", "kind": "uses" },
+      { "from": "box", "to": "api", "kind": "uses" },
+      { "from": "trend", "to": "history", "kind": "uses" }
+    ]
+  }
+}

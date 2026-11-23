@@ -1,0 +1,23 @@
+{
+  "kind": "cards",
+  "title": "F126.4 flips, re-grade and better or worse: the overview",
+  "caption": "Five parts: a flip on a mark with its note, the same answer keeping the same mark, a re-grade that makes a new run from stored answers, a run against the run before, and a conversation copied for the file.",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "top", "icon": "checks", "title": "F126.4 Correct the judge, grade again, compare", "code": "flips, re-grade, better or worse", "look": "highlight",
+          "text": "A person says where the judge was wrong, grades a run again after changing the file, and sees whether the agent got better or worse." }
+      ] },
+      { "cards": [
+        { "id": "flip", "icon": "user", "title": "A flip", "code": "Mark.Flip", "text": "On a criterion's mark, with a one-line note. Your answer counts from then on, and Undo puts it back." },
+        { "id": "same", "icon": "scales", "title": "Same answer, same mark", "code": "MarkReuse", "text": "Where the answer and the criterion are word for word the same, the mark and its flip carry over." },
+        { "id": "regrade", "icon": "play", "title": "Re-grade", "code": "Regrader", "text": "A new run from a run's answers. The judge is asked only for what changed, into the live run's recording." },
+        { "id": "compare", "icon": "branch", "title": "Better or worse", "code": "CompareWith", "text": "Every run against the run before: more or fewer passed, what now passes, the last 8 runs." },
+        { "id": "copy", "icon": "file", "title": "Copy as conversation", "code": "as-file", "text": "A conversation of a run, copied as a block the eval file reads, to paste and change." }
+      ] }
+    ],
+    "links": [
+      { "from": "top", "to": "flip" }, { "from": "top", "to": "same" }, { "from": "top", "to": "regrade" }, { "from": "top", "to": "compare" }, { "from": "top", "to": "copy" }
+    ]
+  }
+}

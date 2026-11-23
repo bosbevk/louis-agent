@@ -284,6 +284,18 @@ Skill 4, Tool use: a follow-up proved to reach the same specialist (`continued`)
   [LouisAgent.Evals.Contracts](../projects/LouisAgent.Evals.Contracts.md), and with it F126.3 is whole: runs, the
   run pages, the page a conversation names, and starting, following and stopping a run. F126.4, flips and
   re-grade, is next.
+- **2026-11-23, what F126.4 settles.** Planning flips, re-grade and better or worse, Louis picked nine things, each
+  on a card. "One child, about eleven steps": F126.4 is one plan, one branch and one pull request. "On the mark
+  itself": a flip is kept on the mark it corrects, and the mark says which answer counts. "An optional one-line
+  note": a flip may carry why. "No ask, the run shows it after": a re-grade starts at once, and the re-graded run
+  says what it asked the judge and what it cost. "Into the live run's recording": a re-grade's judge answers are
+  added to the recording of the live run its answers came from, so Replay free plays them. "It carries them, same
+  answer only": a replay keeps the live run's flips where the criterion and the answer are the same. "Run before;
+  re-grade vs its own": a run is compared with the newest earlier run that finished, and a re-grade with the run it
+  re-graded. "On each run's row in the list": each run's row carries its missed and flipped criteria, and the last
+  eight runs are summed from the rows. "In F126.4, a twelfth step": Copy as conversation is built in this child.
+  The new states were drawn on the real admin before the plan, in [F126.4-screens/](F126.4-screens/). Its plan is
+  [F126.4](F126.4-flips-re-grade-and-better-or-worse.md).
 
 ---
 [Plans](README.md) · Related: [ADR 0029](../adr/0029-simulations-in-csharp.md) · [ADR 0058](../adr/0058-an-eval-is-a-folder-of-files.md) · [ADR 0104](../adr/0104-a-message-may-carry-the-page.md)
