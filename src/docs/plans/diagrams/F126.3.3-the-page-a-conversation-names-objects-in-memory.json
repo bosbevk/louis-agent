@@ -1,0 +1,32 @@
+{
+  "kind": "flow",
+  "type": "object",
+  "title": "F126.3.3 the page a conversation names: objects in memory",
+  "caption": "One live play of the guide's conversation, just before its first ask. The player holds the two clients and the page it got. The page holds what the first message will carry, and a copy is kept under the trial.",
+  "flow": {
+    "nodes": [
+      { "id": "player", "icon": "play", "tone": "green", "label": "ConversationPlayer\nguide-what-is · repeat 1" },
+      { "id": "conv", "icon": "file", "tone": "teal", "label": "Conversation\npage \"/\" · 1 turn" },
+      { "id": "pages", "icon": "search", "tone": "green", "label": "PageClient\nover the run's HTTP client" },
+      { "id": "sessions", "icon": "chip", "tone": "green", "label": "SessionClient\nover the same HTTP client" },
+      { "id": "page", "icon": "book", "tone": "teal", "label": "PageRequest\n\"/\" · its title · its words" },
+      { "id": "areas", "icon": "folder", "tone": "teal", "label": "Areas\nthe page's sections, cards and pieces" },
+      { "id": "links", "icon": "branch", "tone": "teal", "label": "Links\nup to 40, within the site" },
+      { "id": "focus", "icon": "search", "tone": "teal", "label": "Focus\nselling, the site's default" },
+      { "id": "kept", "icon": "database", "tone": "amber", "label": "The trial {run id}/guide-what-is.1\nthe page, kept for a replay", "shape": "data" },
+      { "id": "send", "icon": "message", "tone": "violet", "label": "SendMessageRequest\nthe first ask and the page" }
+    ],
+    "edges": [
+      { "from": "player", "to": "conv" },
+      { "from": "player", "to": "pages" },
+      { "from": "player", "to": "sessions" },
+      { "from": "pages", "to": "page", "word": "gave" },
+      { "from": "page", "to": "areas" },
+      { "from": "page", "to": "links" },
+      { "from": "page", "to": "focus" },
+      { "from": "pages", "to": "kept", "word": "kept as", "style": "dashed" },
+      { "from": "sessions", "to": "send", "word": "sends" }
+    ],
+    "direction": "down"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F126.3.3 the page a conversation names: the architecture",
+  "caption": "The eval library asks the site's API for a page over HTTP, as it asks the agent. The API renders the page with what serves it to search engines. A live play keeps the page in the replay folder. The number in brackets is the step.",
+  "flow": {
+    "nodes": [
+      { "id": "file", "icon": "file", "tone": "amber", "label": "guide.eval.json\na conversation names its page, as /", "shape": "data" },
+      { "id": "evals", "icon": "checks", "tone": "green", "label": "LouisAgent.Evals\nthe page client (5), the player sends the page (6)" },
+      { "id": "route", "icon": "server", "tone": "green", "label": "LouisAgent.Api, the site's pages\nthe page reader (3), GET /v1/site/page (4)" },
+      { "id": "render", "icon": "code", "tone": "violet", "label": "The page renderer and the places reader\nwhat search engines and the site's index use" },
+      { "id": "contract", "icon": "code", "tone": "teal", "label": "LouisAgent.Composition\nthe focus rule, moved here (2)" },
+      { "id": "sessions", "icon": "chip", "tone": "violet", "label": "The sessions API\nthe first message carries the page" },
+      { "id": "recordings", "icon": "database", "tone": "amber", "label": "The replay folder\nthe page, under the play's trial (5)", "shape": "data" },
+      { "id": "git", "icon": "branch", "tone": "amber", "label": "src/site/recordings/evals/\nthe guide's, recorded again (7)", "shape": "data" }
+    ],
+    "edges": [
+      { "from": "file", "to": "evals", "word": "is played" },
+      { "from": "evals", "to": "route", "word": "asks for the page" },
+      { "from": "route", "to": "render", "word": "renders once, reads" },
+      { "from": "route", "to": "contract", "word": "asks the focus" },
+      { "from": "evals", "to": "sessions", "word": "sends it, first ask" },
+      { "from": "evals", "to": "recordings", "word": "keeps, or plays back" },
+      { "from": "recordings", "to": "git", "word": "copied once", "style": "dashed" }
+    ],
+    "direction": "down"
+  }
+}

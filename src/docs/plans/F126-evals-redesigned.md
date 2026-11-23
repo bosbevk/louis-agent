@@ -263,6 +263,15 @@ Skill 4, Tool use: a follow-up proved to reach the same specialist (`continued`)
   comparison stays F126.4's. "Yes, as drawn". "Methods on the run's records": a page's sums and orderings are
   asked of the records, as `Passed` is. It is done, its design in [LouisAgent.Web.Evals](../projects/LouisAgent.Web.Evals.md);
   F126.3.3, the page a conversation names, and F126.3.4, starting a run from the admin, are next.
+- **2026-11-23, what F126.3.3 settles.** Planning the page a conversation names, Louis picked six things, each on
+  a card. "F126.3.3, the page a conversation names": it comes before F126.3.4. "Render it on the server": the run
+  gets the page from the site's own renderer, and no browser runs. "All a render can know": the address, the
+  title, the words, the named places, the links and the focus are sent, and what needs a screen is not. "A route
+  the run calls": the site's API answers a page at `GET /v1/site/page`, and the run asks it over HTTP as it asks
+  the agent. "Kept with the run's recordings": a live play keeps the page it sent under its trial, and a replay
+  sends that one. "Move the rule to the shared contract": the focus rule moves from the web to
+  `LouisAgent.Composition`, so the API can ask it. Its plan is
+  [F126.3.3](F126.3.3-the-page-a-conversation-names.md).
 
 ---
 [Plans](README.md) · Related: [ADR 0029](../adr/0029-simulations-in-csharp.md) · [ADR 0058](../adr/0058-an-eval-is-a-folder-of-files.md) · [ADR 0104](../adr/0104-a-message-may-carry-the-page.md)
