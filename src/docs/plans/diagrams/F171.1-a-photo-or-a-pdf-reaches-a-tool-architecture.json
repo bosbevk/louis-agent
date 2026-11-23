@@ -2,25 +2,28 @@
   "kind": "flow",
   "type": "component",
   "title": "F171.1 a photo or a PDF reaches a tool: the architecture",
-  "caption": "All four projects are the framework's, in this repository. The wire carries the bytes, the API keeps them with the session, the contracts say what a pack may ask, and the engine's reader sends the file to the model and writes the ledger. The number in brackets is the step.",
+  "caption": "All four framework projects are in this repository. The wire carries the bytes, the API keeps them with the session, the contracts say what a pack may ask about files, and core wraps the models and hands them to the program's catalogue. The pack's tool calls the model it was given. The number in brackets is the step.",
   "flow": {
     "nodes": [
       { "id": "caller", "icon": "user", "tone": "blue", "label": "A caller of the API\na photo or a PDF", "shape": "terminal" },
       { "id": "wire", "icon": "message", "tone": "green", "label": "LouisAgent.SessionStream\nAttachmentRequest + bytes (3)" },
       { "id": "api", "icon": "server", "tone": "green", "label": "LouisAgent.Api\nkeeps the file, names it (5, 6)" },
-      { "id": "contracts", "icon": "book", "tone": "teal", "label": "LouisAgent.Composition\nISessionFiles, IDocumentReader (4)" },
-      { "id": "core", "icon": "chip", "tone": "violet", "label": "LouisAgent.Core\nModelDocumentReader (7, 8, 9)" },
+      { "id": "contracts", "icon": "book", "tone": "teal", "label": "LouisAgent.Composition\nISessionFiles (4)" },
+      { "id": "core", "icon": "chip", "tone": "violet", "label": "LouisAgent.Core\nToolModels, the turn's files (6, 7, 8, 9)" },
+      { "id": "program", "icon": "settings", "tone": "green", "label": "A program's catalogue\npicks a model per pack (8)" },
       { "id": "pack", "icon": "folder", "tone": "teal", "label": "A pack's tool\nits record, its instructions" },
-      { "id": "ledger", "icon": "folder", "tone": "green", "label": "The usage ledger\na row per reading (7)", "shape": "data" },
-      { "id": "model", "icon": "message", "tone": "violet", "label": "Claude\nthrough LouisAgent.Core.Anthropic (2)" }
+      { "id": "ledger", "icon": "folder", "tone": "amber", "label": "The usage ledger\na tool row per call (7)", "shape": "data" },
+      { "id": "model", "icon": "message", "tone": "red", "label": "Claude\nthrough LouisAgent.Core.Anthropic (2)" }
     ],
     "edges": [
       { "from": "caller", "to": "wire" },
       { "from": "wire", "to": "api" },
       { "from": "api", "to": "core", "word": "this turn's files" },
-      { "from": "pack", "to": "contracts", "word": "asks" },
+      { "from": "core", "to": "program", "word": "the models" },
+      { "from": "program", "to": "pack", "word": "a model" },
+      { "from": "pack", "to": "contracts", "word": "asks for a file" },
       { "from": "core", "to": "contracts", "word": "implements", "style": "dashed" },
-      { "from": "core", "to": "model", "word": "file + schema" },
+      { "from": "pack", "to": "model", "word": "file + schema" },
       { "from": "core", "to": "ledger" }
     ],
     "direction": "down"

@@ -1,4 +1,4 @@
-<svg viewBox="-24 -24 944 637" width="944" height="637" role="img" aria-label="F171.1 a photo or a PDF reaches a tool: the overview" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 944 658" width="944" height="658" role="img" aria-label="F171.1 a photo or a PDF reaches a tool: the overview" xmlns="http://www.w3.org/2000/svg">
   <title>F171.1 a photo or a PDF reaches a tool: the overview</title>
   <style>svg {
   --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #e2dfff; --violet-line: #6b4dff; --violet-ink: #3a22c4; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
@@ -198,7 +198,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <stop class="mrq-glass-1" offset="1" />
     </linearGradient>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="944" height="637" rx="14" />
+  <rect class="ground" x="-24" y="-24" width="944" height="658" rx="14" />
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-22 126a470 210 0 1 0 940 0a470 210 0 1 0 -940 0Z" />
     <text class="mrq-title" x="16" y="14" text-anchor="start">F171.1 a photo or a PDF reaches a tool: the overview</text>
@@ -236,10 +236,10 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M10 21v-2" />
       </g>
       <text class="crd-headline" x="448" y="92" text-anchor="middle">F171.1 A photo or a PDF reaches a tool</text>
-      <rect class="mrq-pill" x="337.4" y="108" width="221.2" height="24" rx="12" />
-      <text class="mrq-code" x="448" y="124" text-anchor="middle">engine work, no bill in sight</text>
-      <text class="crd-summary" x="448" y="160" text-anchor="middle">A pack's tool can ask the engine to read an uploaded photo or PDF into a record of the pack's own.</text>
-      <rect class="mrq-glass" x="0" y="222" width="207.5" height="199" rx="14" />
+      <rect class="mrq-pill" x="327.2" y="108" width="241.6" height="24" rx="12" />
+      <text class="mrq-code" x="448" y="124" text-anchor="middle">framework work, no bill in sight</text>
+      <text class="crd-summary" x="448" y="160" text-anchor="middle">A pack's tool, given a model in its constructor, reads an uploaded photo or PDF into a record of the pack's own.</text>
+      <rect class="mrq-glass" x="0" y="222" width="207.5" height="220" rx="14" />
       <rect class="mrq-edge" x="28" y="221.5" width="151.5" height="1.6" rx="0" />
       <rect class="crd-tint" x="18" y="240" width="34" height="34" rx="10" />
       <g class="crd-icon" transform="translate(26 248) scale(0.75)">
@@ -254,7 +254,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="pic-text" x="18" y="347" text-anchor="start">An attachment carries its</text>
       <text class="pic-text" x="18" y="365" text-anchor="start">bytes and its type beside</text>
       <text class="pic-text" x="18" y="383" text-anchor="start">the text it carries today.</text>
-      <rect class="mrq-glass" x="229.5" y="222" width="207.5" height="199" rx="14" />
+      <rect class="mrq-glass" x="229.5" y="222" width="207.5" height="220" rx="14" />
       <rect class="mrq-edge" x="257.5" y="221.5" width="151.5" height="1.6" rx="0" />
       <rect class="crd-tint" x="247.5" y="240" width="34" height="34" rx="10" />
       <g class="crd-icon" transform="translate(255.5 248) scale(0.75)">
@@ -267,53 +267,52 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="pic-text" x="247.5" y="365" text-anchor="start">session, capped, and named</text>
       <text class="pic-text" x="247.5" y="383" text-anchor="start">to the model, never pasted</text>
       <text class="pic-text" x="247.5" y="401" text-anchor="start">into the prompt.</text>
-      <rect class="mrq-glass" x="459" y="222" width="207.5" height="199" rx="14" />
+      <rect class="mrq-glass" x="459" y="222" width="207.5" height="220" rx="14" />
       <rect class="mrq-edge" x="487" y="221.5" width="151.5" height="1.6" rx="0" />
       <rect class="crd-tint" x="477" y="240" width="34" height="34" rx="10" />
       <g class="crd-icon" transform="translate(485 248) scale(0.75)">
-        <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
-        <path d="M21 21l-6 -6" />
+        <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
+        <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
       </g>
-      <text class="crd-name" x="477" y="298" text-anchor="start">The reader reads it</text>
-      <rect class="mrq-pill" x="477" y="301" width="122" height="22" rx="11" />
-      <text class="mrq-code" x="487" y="316" text-anchor="start">IDocumentReader</text>
-      <text class="pic-text" x="477" y="347" text-anchor="start">A file, instructions and a</text>
-      <text class="pic-text" x="477" y="365" text-anchor="start">record type in, the filled</text>
-      <text class="pic-text" x="477" y="383" text-anchor="start">record out, in one model</text>
-      <text class="pic-text" x="477" y="401" text-anchor="start">call.</text>
-      <rect class="mrq-glass" x="688.5" y="222" width="207.5" height="199" rx="14" />
+      <text class="crd-name" x="477" y="298" text-anchor="start">The catalogue picks</text>
+      <text class="crd-name" x="477" y="319" text-anchor="start">the model</text>
+      <rect class="mrq-pill" x="477" y="322" width="88" height="22" rx="11" />
+      <text class="mrq-code" x="487" y="337" text-anchor="start">ToolModels</text>
+      <text class="pic-text" x="477" y="368" text-anchor="start">The host wraps each model</text>
+      <text class="pic-text" x="477" y="386" text-anchor="start">once and hands them to the</text>
+      <text class="pic-text" x="477" y="404" text-anchor="start">program's catalogue, which</text>
+      <text class="pic-text" x="477" y="422" text-anchor="start">gives each pack one.</text>
+      <rect class="mrq-glass" x="688.5" y="222" width="207.5" height="220" rx="14" />
       <rect class="mrq-edge" x="716.5" y="221.5" width="151.5" height="1.6" rx="0" />
       <rect class="crd-tint" x="706.5" y="240" width="34" height="34" rx="10" />
       <g class="crd-icon" transform="translate(714.5 248) scale(0.75)">
-        <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
-        <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
-        <path d="M3 6l0 13" />
-        <path d="M12 6l0 13" />
-        <path d="M21 6l0 13" />
+        <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+        <path d="M21 21l-6 -6" />
       </g>
-      <text class="crd-name" x="706.5" y="298" text-anchor="start">The cost is counted</text>
-      <rect class="mrq-pill" x="706.5" y="301" width="156" height="22" rx="11" />
-      <text class="mrq-code" x="716.5" y="316" text-anchor="start">UsagePurpose.Reading</text>
-      <text class="pic-text" x="706.5" y="347" text-anchor="start">Each reading is its own row</text>
-      <text class="pic-text" x="706.5" y="365" text-anchor="start">in the usage ledger, and it</text>
-      <text class="pic-text" x="706.5" y="383" text-anchor="start">replays in an eval.</text>
+      <text class="crd-name" x="706.5" y="298" text-anchor="start">The tool reads it</text>
+      <rect class="mrq-pill" x="706.5" y="301" width="94.8" height="22" rx="11" />
+      <text class="mrq-code" x="716.5" y="316" text-anchor="start">IChatClient</text>
+      <text class="pic-text" x="706.5" y="347" text-anchor="start">Instructions and the file</text>
+      <text class="pic-text" x="706.5" y="365" text-anchor="start">in, the filled record out,</text>
+      <text class="pic-text" x="706.5" y="383" text-anchor="start">one call, its own row in the</text>
+      <text class="pic-text" x="706.5" y="401" text-anchor="start">ledger.</text>
     </g>
-    <rect class="mrq-rule" x="0" y="485" width="896" height="1" rx="0" />
+    <rect class="mrq-rule" x="0" y="506" width="896" height="1" rx="0" />
     <g class="pic-brand" transform="translate(0 0)">
-      <text class="pic-name" x="880" y="507" text-anchor="end" aria-label="louis-agent">l<tspan class="pic-mark" dy="1.5">•</tspan><tspan dy="-1.5">uis-agent</tspan></text>
+      <text class="pic-name" x="880" y="528" text-anchor="end" aria-label="louis-agent">l<tspan class="pic-mark" dy="1.5">•</tspan><tspan dy="-1.5">uis-agent</tspan></text>
     </g>
   </g>
-  <rect class="notebar" x="0" y="535" width="896" height="54" rx="8" />
-  <g class="note-icon" transform="translate(12 545) scale(0.6667)">
+  <rect class="notebar" x="0" y="556" width="896" height="54" rx="8" />
+  <g class="note-icon" transform="translate(12 566) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />
     <path d="M11 12h1v4h1" />
   </g>
-  <text class="notes" x="38" y="557">
+  <text class="notes" x="38" y="578">
     <tspan class="note-head">Four parts:</tspan>
-    <tspan class="note-rest">the API takes a file as bytes, the session keeps it, a tool finds it by name, and the engine's reader has</tspan>
+    <tspan class="note-rest">the API takes a file as bytes, the session keeps it, the program's catalogue hands each pack the model it</tspan>
   </text>
-  <text class="notes" x="38" y="574">
-    <tspan class="note-rest">a model read it into the record the tool asks for, with the cost in the ledger.</tspan>
+  <text class="notes" x="38" y="595">
+    <tspan class="note-rest">picks, and the tool has that model read the file into its record, with the cost in the ledger.</tspan>
   </text>
 </svg>
