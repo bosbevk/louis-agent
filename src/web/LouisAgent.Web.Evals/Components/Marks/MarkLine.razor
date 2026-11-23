@@ -1,18 +1,36 @@
-@* One mark of a turn, with its tick or cross: a fact in code type, checked in code, or a criterion in words with the
-   judge's line of why. *@
+@* One mark of a turn, with its tick or cross for the answer that counts: a fact in code type, checked in code, or a
+   criterion in words with the judge's line of why, its Flip, and once flipped, what the judge said and your note. *@
 
-<div class="mark-line d-flex gap-3 @KindClass @(Mark.Met ? "mark-line-met" : "mark-line-not-met")">
-    <MarkDot Met="@Mark.Met"/>
+<div class="mark-line d-flex gap-3 @KindClass @MetClass @(Flipped ? "mark-line-flipped" : "")">
+    <MarkDot Met="@Mark.CountsAsMet()"/>
     <div>
         @if (Kind == MarkKind.Fact)
         {
             <code class="mark-line-text">@Mark.Text</code>
-            <div class="mark-line-why">Fact, checked in code</div>
+            <div class="mark-line-why">@FactInCode</div>
+        }
+        else if (Mark.Flip is { } flip)
+        {
+            <div class="mark-line-text">@Mark.Text</div>
+            <div class="mark-line-why"><span class="mark-line-flipped-to">@FlippedTo</span> @JudgeSaid</div>
+            @if (flip.Note is { } note)
+            {
+                <div class="mark-line-note">@NoteOf(note)</div>
+            }
+            <button type="button" class="header-button mark-undo mt-2" @onclick="UndoAsync">@UndoTheFlip</button>
         }
         else
         {
             <div class="mark-line-text">@Mark.Text</div>
-            <div class="mark-line-why">The judge: @Mark.Reason</div>
+            <div class="mark-line-why">@TheJudge</div>
+            @if (_asking)
+            {
+                <FlipBox ToMet="!Mark.Met" OnFlip="FlipAsync" OnClose="Close"/>
+            }
+            else if (Place is not null)
+            {
+                <button type="button" class="header-button mark-flip mt-2" @onclick="Open">@FlipWord</button>
+            }
         }
     </div>
 </div>

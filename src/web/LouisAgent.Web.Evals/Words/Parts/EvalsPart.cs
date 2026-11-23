@@ -118,5 +118,89 @@ public enum EvalsPart
     StoppedByAPerson,
 
     /// <summary>How many conversations did not run, in a run's ending.</summary>
-    DidNotRun
+    DidNotRun,
+
+    /// <summary>The button on a criterion that opens its flip (F126.4).</summary>
+    Flip,
+
+    /// <summary>The flip box's button, and its question, for a mark the judge said was not met.</summary>
+    FlipToMet,
+
+    /// <summary>The same for a mark the judge said was met.</summary>
+    FlipToNotMet,
+
+    /// <summary>What a flip does, said beside its question.</summary>
+    FlipCounts,
+
+    /// <summary>The label of the flip's note.</summary>
+    FlipNoteLabel,
+
+    /// <summary>The flip box's button that closes it and sends nothing.</summary>
+    DontFlip,
+
+    /// <summary>What a flipped mark was flipped to: met or not met.</summary>
+    FlippedTo,
+
+    /// <summary>What the judge said of a flipped mark, and why.</summary>
+    JudgeSaid,
+
+    /// <summary>The note a person left with a flip.</summary>
+    YourNote,
+
+    /// <summary>The button that puts the judge's answer back.</summary>
+    UndoTheFlip,
+
+    /// <summary>A conversation that passed only because of a person's flip.</summary>
+    PassedAfterYourFlip,
+
+    /// <summary>A conversation that passed.</summary>
+    Passed,
+
+    /// <summary>A conversation that failed.</summary>
+    Failed,
+
+    /// <summary>The line under a conversation's heading: how it went, its repeats, the one on show.</summary>
+    ConversationHead,
+
+    /// <summary>The name of how many marks of a repeat a person flipped.</summary>
+    YourFlips,
+
+    /// <summary>Under a fact's mark: who checked it.</summary>
+    FactInCode,
+
+    /// <summary>Under a criterion's mark: the judge's line of why.</summary>
+    TheJudge,
+
+    /// <summary>The title of a repeat's own figures.</summary>
+    ThisRepeat,
+
+    /// <summary>The name of how many facts were met.</summary>
+    FactsMet,
+
+    /// <summary>The name of how many criteria were met.</summary>
+    CriteriaMet,
+
+    /// <summary>How many of how many: "3 of 5".</summary>
+    MetOf,
+
+    /// <summary>The link to the conversation before, in the run's order.</summary>
+    Previous,
+
+    /// <summary>The link to the next conversation that failed.</summary>
+    NextFailed,
+
+    /// <summary>The button that reads the page's run again.</summary>
+    Reload,
+
+    /// <summary>The link to the same conversation in the run before.</summary>
+    InTheRunBefore,
+
+    /// <summary>A run the host doesn't have.</summary>
+    NoRun,
+
+    /// <summary>A conversation the run doesn't hold.</summary>
+    NoConversation,
+
+    /// <summary>A repeat the conversation doesn't hold.</summary>
+    NoRepeat
 }

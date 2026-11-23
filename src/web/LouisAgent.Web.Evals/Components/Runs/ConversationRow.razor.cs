@@ -37,5 +37,7 @@ public partial class ConversationRow
     private string MissWords =>
         EvalsWords.Words[FirstMiss?.Kind == MarkKind.Fact ? EvalsPart.FactNotMet : EvalsPart.NotMet];
 
+    private static string PassedAfterYourFlip => EvalsWords.Words[EvalsPart.PassedAfterYourFlip];
+
     private string Repeats => EvalsWords.Count(Conversation.Asked, EvalsPart.Repeat, EvalsPart.Repeats);
 }

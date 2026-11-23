@@ -146,6 +146,45 @@ public class EvalsApiTests
         Assert.ThrowsAsync<AgentApiException>(() => api.StopAsync("20261123-063633-guide"));
     }
 
+    /// <summary>
+    /// F126.4: a flip puts the note to the mark's own address, written as the routes read it, and an undo deletes
+    /// there; both answer no refusal when the API says yes.
+    /// </summary>
+    [Test]
+    public async Task AFlipAndAnUndo_CallTheMarksAddress()
+    {
+        var (api, stub) = Api(_ => Status(HttpStatusCode.NoContent));
+        var place = new MarkPlace("20261123-063633-guide", "guide-what-is", 2, 1, 3);
+
+        var flipped = await api.FlipAsync(place, "It does say so.");
+        var undone = await api.UndoFlipAsync(place);
+
+        const string address =
+            "http://localhost/v1/admin/evals/runs/20261123-063633-guide/guide-what-is/2/1/criteria/3/flip";
+        Assert.That(stub.Requests.Select(request => (request.Method, request.Url)),
+            Is.EqualTo(new[] { (HttpMethod.Put, address), (HttpMethod.Delete, address) }));
+        Assert.That(JsonDocument.Parse(stub.Requests[0].Body!).RootElement.GetProperty("note").GetString(),
+            Is.EqualTo("It does say so."));
+        Assert.That((flipped, undone), Is.EqualTo(((string?)null, (string?)null)));
+    }
+
+    /// <summary>A flip or an undo the API refuses answers the API's own reason, word for word.</summary>
+    [TestCase(HttpStatusCode.BadRequest)]
+    [TestCase(HttpStatusCode.Conflict)]
+    [TestCase(HttpStatusCode.NotFound)]
+    public async Task ARefusedFlip_AnswersTheApisReason(HttpStatusCode status)
+    {
+        var refusal = new ApiError("error", new ApiErrorDetail("a-refusal", "The run is going."));
+        var (api, _) = Api(_ => new HttpResponseMessage(status)
+        {
+            Content = JsonContent.Create(refusal, options: JsonSerializerOptions.Web)
+        });
+        var place = new MarkPlace("20261123-063633-guide", "guide-what-is", 1, 1, 1);
+
+        Assert.That(await api.FlipAsync(place, null), Is.EqualTo("The run is going."));
+        Assert.That(await api.UndoFlipAsync(place), Is.EqualTo("The run is going."));
+    }
+
     /// <summary>The client over a stub of the API.</summary>
     private static (EvalsApi Api, StubHandler Stub) Api(Func<HttpRequestMessage, HttpResponseMessage> answer)
     {

@@ -8,8 +8,9 @@ using LouisAgent.Web.Api;
 namespace LouisAgent.Web.Evals.Client;
 
 /// <summary>
-/// Reads the eval routes for the pages: the host's evals, one run whole, and an eval's runs. It reads with the run's
-/// own JSON options, the ones the store wrote it with, strict as every reader of ours.
+/// Reads the eval routes for the pages: the host's evals, one run whole, and an eval's runs; and calls them, to
+/// start or stop a run and to flip a mark. It reads with the run's own JSON options, the ones the store wrote it
+/// with, strict as every reader of ours.
 /// </summary>
 /// <remarks>
 /// A thin client over the site's API client, as the accounts' is. A run the host doesn't have is none, since a page
@@ -36,7 +37,6 @@ public sealed class EvalsApi(AgentApi api)
         }
     }
 
-    /// <summary>The eval's runs in short, the newest first, as the API sends them.</summary>
     /// <summary>
     /// Starts a run of the eval: its kind and its repeats posted to the eval's runs, written as the routes read them.
     /// Answers the run's id from the address the API gave, or, when the API said no, its own reason word for word. A
@@ -75,10 +75,42 @@ public sealed class EvalsApi(AgentApi api)
         }
     }
 
-    /// <summary>A start the API turned down for a reason it says, as against a key it refused.</summary>
+    /// <summary>
+    /// Flips a criterion's mark, with a note or none (F126.4). Answers none when the API took it, or its own reason,
+    /// word for word, when it refused; a refused key throws.
+    /// </summary>
+    public Task<string?> FlipAsync(MarkPlace place, string? note)
+    {
+        var flip = new HttpRequestMessage(HttpMethod.Put, EvalAddress.FlipRouteOf(place));
+        var body = new FlipBody(note);
+        flip.Content = JsonContent.Create(body, options: RunJson.Options);
+        return SendFlipAsync(flip);
+    }
+
+    /// <summary>Puts the judge's answer back on a flipped mark, answering as a flip does.</summary>
+    public Task<string?> UndoFlipAsync(MarkPlace place) =>
+        SendFlipAsync(new HttpRequestMessage(HttpMethod.Delete, EvalAddress.FlipRouteOf(place)));
+
+    /// <summary>Sends a flip or its undo: none when it was taken, or the API's reason when it was refused.</summary>
+    private async Task<string?> SendFlipAsync(HttpRequestMessage flip)
+    {
+        using var sent = flip;
+        try
+        {
+            using var _ = await api.SendAsync(sent);
+            return null;
+        }
+        catch (AgentApiException refused) when (IsARefusal(refused.Status))
+        {
+            return refused.Message;
+        }
+    }
+
+    /// <summary>A start or a flip the API turned down for a reason it says, as against a key it refused.</summary>
     private static bool IsARefusal(HttpStatusCode status) =>
         status is HttpStatusCode.BadRequest or HttpStatusCode.NotFound or HttpStatusCode.Conflict;
 
+    /// <summary>The eval's runs in short, the newest first, as the API sends them.</summary>
     public Task<IReadOnlyList<RunRow>> ListRunsAsync(string eval) =>
         api.GetAsync<IReadOnlyList<RunRow>>(EvalAddress.RunsRouteOf(eval), RunJson.Options);
 }

@@ -1,9 +1,9 @@
 namespace LouisAgent.Web.Evals.Client;
 
 /// <summary>
-/// Every address of the eval pages and every eval route the pages read, in one place, each name escaped, so no page
-/// joins an address by hand. A repeat is part of a conversation's address, never a <c>#</c>, so it can be linked
-/// and the browser's Back works.
+/// Every address of the eval pages and every eval route the pages read and call, in one place, each name escaped, so
+/// no page joins an address by hand. A repeat is part of a conversation's address, never a <c>#</c>, so it can be
+/// linked and the browser's Back works.
 /// </summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0107-every-section-has-an-address.md">ADR 0107: every section has an address</seealso>
 public static class EvalAddress
@@ -29,7 +29,13 @@ public static class EvalAddress
     /// <summary>The route that lists an eval's runs, the newest first.</summary>
     public static string RunsRouteOf(string eval) => $"{EvalsRoute}/{Escaped(eval)}/runs";
 
-    /// <summary>One part of an address, escaped so a name can't change the address's shape.</summary>
+    /// <summary>
+    /// The route of a criterion's flip, at the mark's own address: a PUT flips it, a DELETE puts it back (F126.4).
+    /// </summary>
+    public static string FlipRouteOf(MarkPlace place) =>
+        $"{RunRouteOf(place.Run)}/{Escaped(place.Conversation)}/{place.Repeat}/{place.Turn}/criteria/" +
+        $"{place.Criterion}/flip";
+
     /// <summary>
     /// The run's id in the address a start answers, <c>/v1/admin/evals/runs/{id}</c>; none for any other address.
     /// </summary>
@@ -43,5 +49,6 @@ public static class EvalAddress
         return id.Length == 0 || id.Contains('/') ? null : Uri.UnescapeDataString(id);
     }
 
+    /// <summary>One part of an address, escaped so a name can't change the address's shape.</summary>
     private static string Escaped(string part) => Uri.EscapeDataString(part);
 }

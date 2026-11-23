@@ -1,8 +1,10 @@
 using System.Net;
 using LouisAgent.Evals.Contracts.Api;
 using LouisAgent.Evals.Contracts.Runs;
+using LouisAgent.Evals.Contracts.Runs.Answers;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Evals.Client;
+using LouisAgent.Web.Evals.Components.Marks;
 using LouisAgent.Web.Evals.Words;
 using LouisAgent.Web.Evals.Words.Parts;
 using LouisAgent.Web.Storage;
@@ -14,7 +16,7 @@ namespace LouisAgent.Web.Evals.Pages;
 /// <summary>
 /// A conversation's page. It reads the run whole, picks the conversation and the repeat from the address, and draws
 /// that repeat turn by turn. Moving to another repeat of the same run changes only the address, so it reads again
-/// only when the run changes, or on Reload.
+/// only when the run changes, on Reload, or after a person flips a mark.
 /// </summary>
 /// <remarks>
 /// Which repeat opens is the conversation's own answer (<see cref="ConversationRun.FindRepeat" />, ADR 0123), so a
@@ -25,7 +27,7 @@ public partial class ConversationPage
 {
     private EvalRun? _run;
     private IReadOnlyList<RunRow> _runs = [];
-    private string? _read, _error;
+    private string? _read, _error, _refused;
     private bool _needsKey, _loading, _missing;
 
     /// <summary>The eval the run belongs to, from the address.</summary>
@@ -75,6 +77,49 @@ public partial class ConversationPage
 
     private string Repeats =>
         EvalsWords.Count(Held?.Asked ?? 0, EvalsPart.Repeat, EvalsPart.Repeats);
+
+    private static string Word(EvalsPart part) => EvalsWords.Words[part];
+
+    private static string MetOf(MarkCount count) => EvalsWords.Fill(EvalsPart.MetOf, count.Met, count.Of);
+
+    /// <summary>"Passed after your flip. 3 of 3 repeats passed. This is repeat 1.", asked of its records.</summary>
+    private string HeadOf(ConversationRun held, RepeatRun open)
+    {
+        var verdict = held switch
+        {
+            _ when held.PassedAfterAFlip() => EvalsPart.PassedAfterYourFlip,
+            { Passed: true } => EvalsPart.Passed,
+            _ => EvalsPart.Failed
+        };
+        return EvalsWords.Fill(EvalsPart.ConversationHead, Word(verdict), held.CountPassedRepeats(), Repeats,
+            open.Number);
+    }
+
+    /// <summary>Sends a person's flip of a criterion, then reads the run again; a refusal is a line.</summary>
+    private Task FlipAsync(FlipAsk ask) => ChangeAsync(() => Api.FlipAsync(ask.Place, ask.Note));
+
+    /// <summary>Puts the judge's answer back on a flipped mark, then reads the run again.</summary>
+    private Task UndoFlipAsync(MarkPlace place) => ChangeAsync(() => Api.UndoFlipAsync(place));
+
+    /// <summary>
+    /// A change to the run: sent, then the run read again, so the page shows what the run keeps (ADR 0042). A refusal
+    /// is a line in the API's words, and a refused key shows the frame's key box, as a read does.
+    /// </summary>
+    private async Task ChangeAsync(Func<Task<string?>> change)
+    {
+        try
+        {
+            _refused = await change();
+        }
+        catch (AgentApiException ex)
+        {
+            _needsKey = ex.Status is HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden;
+            _error = ex.Message;
+            return;
+        }
+
+        await LoadAsync();
+    }
 
     /// <summary>What this repeat's turns cost the agent, or unknown when none was priced, never 0 (ADR 0007).</summary>
     private string Cost => Open?.SumCost() is { } cost
