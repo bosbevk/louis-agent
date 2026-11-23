@@ -266,6 +266,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "answer-a-message", "answer-
 		.claude\skills\answer-a-message\SKILL.md = .claude\skills\answer-a-message\SKILL.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "plan-the-marketing", "plan-the-marketing", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C7B}"
+	ProjectSection(SolutionItems) = preProject
+		.claude\skills\plan-the-marketing\channels.md = .claude\skills\plan-the-marketing\channels.md
+		.claude\skills\plan-the-marketing\SKILL.md = .claude\skills\plan-the-marketing\SKILL.md
+		.claude\skills\plan-the-marketing\tests.md = .claude\skills\plan-the-marketing\tests.md
+	EndProjectSection
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0100}"
 	ProjectSection(SolutionItems) = preProject
 		src\docs\AGENT_COMMUNICATION.md = src\docs\AGENT_COMMUNICATION.md
@@ -2265,6 +2272,7 @@ Global
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C75} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C65}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C76} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C65}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C77} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C65}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C7B} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C65}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0100} = {DCC1CE0E-F809-478D-B076-F2C64A71CDFB}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0101} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0100}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0102} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0100}
