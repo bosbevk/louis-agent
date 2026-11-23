@@ -28,6 +28,8 @@
     <InternalsVisibleTo Include="LouisAgent.Api.IntegrationTests" />
     <!-- F126.3.1: the eval routes' tests run on the API in memory too. -->
     <InternalsVisibleTo Include="LouisAgent.Api.Evals.Tests" />
+    <!-- F126.3.1: an eval replayed from its recordings, on the API in memory. -->
+    <InternalsVisibleTo Include="LouisAgent.Api.Evals.Testing" />
   </ItemGroup>
 
   <ItemGroup>

@@ -10,3 +10,6 @@ benchmarks/fixtures/*.sse -text
 
 # The stream golden is written by the endpoint's SseFormatter and compared byte for byte (F18 step 1e).
 src/tests/hosts/LouisAgent.Api.Tests/Sessions/StreamGolden.sse -text
+
+# An eval's recordings are read back byte for byte (F126.3.1): a replay finds each answer by what was asked.
+src/site/recordings/evals/** -text

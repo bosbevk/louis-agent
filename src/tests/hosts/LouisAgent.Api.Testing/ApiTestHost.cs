@@ -46,10 +46,11 @@ internal static class ApiTestHost
         IReadOnlyList<IAgentIdentity>? moreIdentities = null, OpenDoorOptions? openDoor = null,
         IReadOnlyDictionary<string, Uri>? agentPeers = null, bool streamPace = false,
         Action<WebApplicationBuilder, AgentHostContext>? services = null, Action<IEndpointRouteBuilder>? routes = null,
-        string? replayDirectory = null)
+        string? replayDirectory = null, AgentHostContext? host = null)
     {
-        // The same services as ApiStartup, on an in-memory test server instead of a port.
-        var host = HostContext(workspaceRoot ?? RepoRoot, model ?? new NoModel(), morePacks, moreIdentities,
+        // The same services as ApiStartup, on an in-memory test server instead of a port; a test that built its
+        // own host, a product's catalogue on its own settings, gives it whole.
+        host ??= HostContext(workspaceRoot ?? RepoRoot, model ?? new NoModel(), morePacks, moreIdentities,
             agentPeers, streamPace, replayDirectory);
         var builder = WebApplication.CreateBuilder();
         builder.WebHost.UseTestServer();
