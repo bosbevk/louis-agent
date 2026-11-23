@@ -91,7 +91,7 @@ public sealed class EvalHandlers(
             return ApiErrors.BadRequest(MessageText.Format(EvalsApiMessage.NoLiveRunToReplay));
 
         var started = Started(name, file, request, replayed, work.Store);
-        if (!desk.TryStart(started, work.For(started, file)))
+        if (!desk.TryStart(started, work.For(started, file, replayed)))
         {
             var going = new RunGoingHoles(desk.Current?.Id ?? "");
             return ApiErrors.Conflict(MessageText.Format(EvalsApiMessage.RunGoing, going));

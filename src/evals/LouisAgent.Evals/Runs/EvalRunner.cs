@@ -29,20 +29,22 @@ public sealed class EvalRunner(ConversationPlayer player, TimeProvider clock)
 {
     /// <summary>
     /// The run played to its end from how it started, each conversation in the file's order, handed to
-    /// <paramref name="kept"/> after each one and as it ends.
+    /// <paramref name="kept"/> after each one and as it ends. A replay is handed the live run it plays, whose flips
+    /// it keeps where the agent answered the same; a live run is handed none.
     /// </summary>
     public async Task<EvalRun> RunAsync(
-        EvalRun started, EvalFile file, Func<EvalRun, Task> kept, CancellationToken cancellationToken = default)
+        EvalRun started, EvalFile file, Func<EvalRun, Task> kept, EvalRun? played = null,
+        CancellationToken cancellationToken = default)
     {
         var graded = new List<ConversationRun>();
         foreach (var conversation in file.Conversations)
         {
-            var played = await PlayAsync(started, file, conversation, cancellationToken);
+            var playedNow = await PlayAsync(started, file, conversation, played, cancellationToken);
             // A page went with the conversation once one of its repeats was played.
-            if (conversation.Page is not null && played.Run.Repeats.Count > 0)
+            if (conversation.Page is not null && playedNow.Run.Repeats.Count > 0)
                 started = started with { PageSent = true };
-            if (played.Run.Repeats.Count > 0) graded.Add(played.Run);
-            if (played.StoppedBecause is { } reason)
+            if (playedNow.Run.Repeats.Count > 0) graded.Add(playedNow.Run);
+            if (playedNow.StoppedBecause is { } reason)
                 return await EndAsync(started, graded, RunStatus.CouldNotFinish, reason, kept);
 
             await kept(started with { Conversations = [.. graded] });
@@ -56,15 +58,19 @@ public sealed class EvalRunner(ConversationPlayer player, TimeProvider clock)
     /// the repeats played so far, and why it stopped.
     /// </summary>
     private async Task<PlayedConversation> PlayAsync(
-        EvalRun started, EvalFile file, Conversation conversation, CancellationToken cancellationToken)
+        EvalRun started, EvalFile file, Conversation conversation, EvalRun? played,
+        CancellationToken cancellationToken)
     {
         var repeats = new List<RepeatRun>();
+        var live = played?.Conversations.FirstOrDefault(kept => kept.Id == conversation.Id);
         try
         {
             for (int repeat = 1; repeat <= started.Repeats; repeat++)
             {
                 var trial = new RunTrial(started.Id, conversation.Id, repeat, started.ReplayOf);
-                repeats.Add(await player.PlayAsync(file.Agent, conversation, trial, cancellationToken));
+                var graded = await player.PlayAsync(file.Agent, conversation, trial, cancellationToken);
+                // A replay keeps the live run's flips where the agent answered the same (F126.4).
+                repeats.Add(MarkReuse.CarryFlips(graded, live?.FindRepeat(repeat)));
             }
 
             return new PlayedConversation(new ConversationRun(conversation.Id, started.Repeats, repeats), null);

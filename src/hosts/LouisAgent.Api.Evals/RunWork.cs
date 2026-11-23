@@ -35,15 +35,18 @@ public sealed class RunWork(
     /// <summary>Where this host keeps its runs.</summary>
     public RunStore Store => store;
 
-    /// <summary>The work that plays this run of this eval file to its end.</summary>
-    public Func<RunSignals, Task> For(EvalRun started, EvalFile file) =>
-        signals => PlayAsync(started, file, signals);
+    /// <summary>
+    /// The work that plays this run of this eval file to its end; a replay with the live run it plays, whose flips it
+    /// keeps where the agent answered the same.
+    /// </summary>
+    public Func<RunSignals, Task> For(EvalRun started, EvalFile file, EvalRun? replayed = null) =>
+        signals => PlayAsync(started, file, replayed, signals);
 
     /// <summary>
     /// The run played and kept: as stopped when a person stopped it, as could not finish when something failed, and
     /// left as it was when the host shut down, so it then reads as cut off.
     /// </summary>
-    private async Task PlayAsync(EvalRun started, EvalFile file, RunSignals signals)
+    private async Task PlayAsync(EvalRun started, EvalFile file, EvalRun? replayed, RunSignals signals)
     {
         // The run as last kept, so a failure keeps what was graded before it.
         var last = started;
@@ -60,7 +63,7 @@ public sealed class RunWork(
                 last = run;
                 store.Save(run);
                 return Task.CompletedTask;
-            }, signals.Playing);
+            }, replayed, signals.Playing);
         }
         catch (OperationCanceledException) when (signals.Stopped.IsCancellationRequested)
         {
