@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Packs.Sequences;
 using Microsoft.Extensions.FileProviders;
 
 namespace LouisAgent.Composition.Packs;
@@ -41,6 +42,12 @@ public interface IAgentIdentity
     /// <c>acme.cook</c> for one of its roles. None, unless it says so: an identity calls only whom it names.
     /// </summary>
     IReadOnlyList<string> Calls => [];
+
+    /// <summary>
+    /// The fixed orders of agents it runs, each built from addresses in its own <see cref="Calls"/>. None, unless it
+    /// says so: an agent that declares none decides whom to ask, as before.
+    /// </summary>
+    IReadOnlyList<AgentSequence> Sequences => [];
 
     /// <summary>
     /// Whether an asked agent's answer goes to the user as it is, ending the turn there (F127.3.1, from ADR 0079's
