@@ -194,6 +194,24 @@ public class ConversationPlayerTests
         Assert.That(costs, Has.All.GreaterThan(0m));
     }
 
+    /// <summary>
+    /// F126.3.4, step 8's finding: the judge's calls are recorded under the play's run and task, as the agent's are,
+    /// so the ledger ties what judging a run cost to that run.
+    /// </summary>
+    [Test]
+    public async Task TheJudgesCalls_AreRecordedUnderThePlaysRunAndTask()
+    {
+        var api = new FakeSessionsApi(Answered("A framework."), Answered("Yes."));
+        var ledger = new ListUsageSink();
+        using var judgeModel = new UsageRecordingChatClient(PricedMet(), ledger, "judge");
+
+        await new ConversationPlayer(api.Client(), api.Pages(), new Judge(judgeModel))
+            .PlayAsync(Guide, TwoTurns, Trial);
+
+        Assert.That(ledger.Records.Select(record => (record.Run, record.Task)),
+            Has.All.EqualTo((Trial.Run, Trial.Task)));
+    }
+
     /// <summary>A turn judged with no ledger has no known judge cost, nor does a turn with no criteria.</summary>
     [Test]
     public async Task ATurnsJudgeCost_IsNoneWhenNotKnown_OrWithNoCriteria()

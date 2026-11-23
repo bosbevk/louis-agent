@@ -1,6 +1,7 @@
 using LouisAgent.Choices;
 using LouisAgent.Composition.Agents;
 using LouisAgent.Core.Sessions.Replay;
+using LouisAgent.Core.Usage.Records;
 using LouisAgent.Evals.Contracts.Grading;
 using LouisAgent.Evals.Contracts.Runs;
 using LouisAgent.Evals.Contracts.Runs.Answers;
@@ -44,8 +45,11 @@ public sealed class ConversationPlayer(
     {
         var asked = await AskAllAsync(agent, conversation, trial, cancellationToken);
 
-        // The judge's answers are kept in the play's trial beside the agent's, or played back from it.
+        // The judge's answers are kept in the play's trial beside the agent's, or played back from it, and its calls
+        // are recorded under the play's run and task, so the ledger ties what judging cost to its run (F126.3.4).
         using var judging = JudgeReplay.Begin(trial);
+        var playTags = new UsageTags(trial.Task, trial.Run, null);
+        using var grading = UsageScope.Begin(UsagePurpose.Grading, tags: playTags);
         var transcripts = asked.Select(turn => turn.Transcript).ToList();
         var turns = new List<TurnRun>();
         for (int at = 0; at < asked.Count; at++)
