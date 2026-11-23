@@ -1,0 +1,4 @@
+/* A mark's tick or cross, in the theme's colours for met and not met. */
+.mark-dot { font-weight: 700; }
+.mark-met { color: var(--bs-success); }
+.mark-not-met { color: var(--bs-danger); }

@@ -1,0 +1,48 @@
+{
+  "kind": "nested",
+  "title": "The evals' page: what it is made of",
+  "caption": "The page reads the host's evals and hands each its card; with none it shows the one card that says where a file goes, and on a refused key the frame's key box.",
+  "nested": {
+    "subtitle": "LouisAgent.Web.Evals, Pages / EvalsPage",
+    "root": {
+      "id": "page",
+      "name": "EvalsPage",
+      "kind": "page",
+      "tone": "green",
+      "aside": "/admin/evals",
+      "holds": [
+        {
+          "id": "card",
+          "name": "EvalCard",
+          "kind": "a card",
+          "tone": "green",
+          "note": "one an eval, its last run first",
+          "in": [
+            "Row"
+          ]
+        },
+        {
+          "id": "none",
+          "name": "NoEvalsCard",
+          "kind": "a card",
+          "tone": "green",
+          "note": "where a file goes",
+          "in": [
+            "Guide"
+          ]
+        },
+        {
+          "id": "gate",
+          "name": "AdminGate",
+          "kind": "general part",
+          "tone": "violet",
+          "note": "the frame's key box",
+          "in": [
+            "Error",
+            "NeedsKey"
+          ]
+        }
+      ]
+    }
+  }
+}

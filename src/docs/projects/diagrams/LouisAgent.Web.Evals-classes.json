@@ -1,0 +1,122 @@
+{
+  "kind": "classes",
+  "title": "LouisAgent.Web.Evals: its classes",
+  "caption": "The page reads the host's evals through the client, which reads the routes the addresses name; each eval is a card, and the words come from one place.",
+  "classes": {
+    "types": [
+      {
+        "id": "page",
+        "name": "EvalsPage",
+        "kind": "page, /admin/evals",
+        "members": [
+          "reads the evals once, and on Reload",
+          "shows the key box on a refused key"
+        ]
+      },
+      {
+        "id": "card",
+        "name": "EvalCard",
+        "kind": "component",
+        "members": [
+          "EvalRow Row"
+        ]
+      },
+      {
+        "id": "none",
+        "name": "NoEvalsCard",
+        "kind": "component",
+        "members": [
+          "string? Guide"
+        ]
+      },
+      {
+        "id": "dot",
+        "name": "MarkDot",
+        "kind": "component",
+        "members": [
+          "bool Met"
+        ]
+      },
+      {
+        "id": "api",
+        "name": "EvalsApi",
+        "kind": "class",
+        "members": [
+          "Task<EvalsReply> ListAsync()",
+          "Task<EvalRun?> FindRunAsync(id)",
+          "Task<IReadOnlyList<RunRow>> ListRunsAsync(eval)"
+        ]
+      },
+      {
+        "id": "address",
+        "name": "EvalAddress",
+        "kind": "static",
+        "members": [
+          "EvalsPage, RunPageOf, ConversationPageOf",
+          "EvalsRoute, RunRouteOf, RunsRouteOf"
+        ]
+      },
+      {
+        "id": "words",
+        "name": "EvalsWords",
+        "kind": "static",
+        "members": [
+          "PartWords<EvalsPart, string> Words",
+          "string Count(count, one, many)",
+          "string FormatLocal(at)"
+        ]
+      },
+      {
+        "id": "agentapi",
+        "name": "AgentApi",
+        "kind": "LouisAgent.Web",
+        "tone": "violet",
+        "members": [
+          "GetAsync<T>(url, options)"
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "from": "page",
+        "to": "api",
+        "kind": "uses"
+      },
+      {
+        "from": "page",
+        "to": "card",
+        "kind": "creates"
+      },
+      {
+        "from": "page",
+        "to": "none",
+        "kind": "creates"
+      },
+      {
+        "from": "api",
+        "to": "agentapi",
+        "kind": "holds"
+      },
+      {
+        "from": "api",
+        "to": "address",
+        "kind": "uses"
+      },
+      {
+        "from": "card",
+        "to": "address",
+        "kind": "uses"
+      },
+      {
+        "from": "card",
+        "to": "words",
+        "kind": "uses"
+      },
+      {
+        "from": "dot",
+        "to": "words",
+        "kind": "uses"
+      }
+    ]
+  }
+}

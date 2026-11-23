@@ -1,0 +1,60 @@
+{
+  "kind": "cards",
+  "title": "LouisAgent.Web.Evals: the overview",
+  "caption": "The admin's eval pages: a client of the eval routes with every address in one place, the evals' page with a card an eval, and the words its code picks.",
+  "cards": {
+    "rows": [
+      {
+        "cards": [
+          {
+            "id": "top",
+            "icon": "checks",
+            "title": "LouisAgent.Web.Evals",
+            "code": "/admin/evals",
+            "text": "Where a person reads an eval's runs, in the admin.",
+            "look": "highlight"
+          }
+        ]
+      },
+      {
+        "cards": [
+          {
+            "id": "client",
+            "icon": "server",
+            "title": "The routes, read",
+            "code": "EvalsApi, EvalAddress",
+            "text": "The eval routes read with a run's own JSON options, and every address built in one place."
+          },
+          {
+            "id": "page",
+            "icon": "browser",
+            "title": "The evals' page",
+            "code": "EvalsPage, EvalCard",
+            "text": "One card an eval, its last run's number first, and one card when there is none."
+          },
+          {
+            "id": "words",
+            "icon": "book",
+            "title": "The words",
+            "code": "EvalsWords, MarkDot",
+            "text": "The words the code picks, and a mark a screen reader says in words."
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "from": "top",
+        "to": "client"
+      },
+      {
+        "from": "top",
+        "to": "page"
+      },
+      {
+        "from": "top",
+        "to": "words"
+      }
+    ]
+  }
+}

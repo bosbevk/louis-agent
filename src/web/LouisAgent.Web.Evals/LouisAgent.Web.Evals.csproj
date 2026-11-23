@@ -31,12 +31,16 @@
   <ItemGroup>
     <!-- The framework's web: the admin's frame the pages draw inside, the API client, the key box. -->
     <ProjectReference Include="..\LouisAgent.Web\LouisAgent.Web.csproj" />
+    <!-- F126.3.2: a guide is linked through the site's own docs address, when the site names one. -->
+    <ProjectReference Include="..\LouisAgent.Web.Docs\LouisAgent.Web.Docs.csproj" />
     <!-- A run's records and its JSON options, as the store wrote them and the eval routes send them. -->
     <ProjectReference Include="..\..\evals\LouisAgent.Evals.Contracts\LouisAgent.Evals.Contracts.csproj" />
 
     <!-- The Sass compiler's settings are read at build time only; published, the libraries' copies would land on one
          path and dotnet publish refuses (FX62). -->
     <Content Update="sasscompiler.json" CopyToOutputDirectory="Never" CopyToPublishDirectory="Never" Pack="false" />
+    <!-- This project's design doc, shown under docs/ in the IDE's solution explorer; nothing is built or copied. -->
+    <None Include="..\..\docs\projects\LouisAgent.Web.Evals.md" Link="docs\LouisAgent.Web.Evals.md" />
   </ItemGroup>
 
 </Project>
