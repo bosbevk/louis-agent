@@ -11,6 +11,7 @@ namespace LouisAgent.SessionStream.Wire.Requests;
 public sealed record SendMessageRequest(
     string? Message,
     List<AttachmentRequest>? Attachments,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     PageRequest? Page = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     List<WindowPageRequest>? Windows = null);

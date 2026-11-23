@@ -81,7 +81,7 @@ public sealed class ConversationPlayer(SessionClient sessions, Judge judge, Time
     {
         long started = _clock.GetTimestamp();
         var events = new List<SessionEvent>();
-        await foreach (var streamEvent in sessions.SendAsync(session, ask, cancellationToken))
+        await foreach (var streamEvent in sessions.SendAsync(session, ask, cancellationToken: cancellationToken))
             events.Add(streamEvent);
 
         // A recording that no longer answers is the harness failing, not the agent: it stops the run.
