@@ -20,6 +20,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\web\LouisAgent.Web\LouisAgent.Web.csproj" />
+    <!-- F126.3.2: the admin's eval pages, named among the site's areas. -->
+    <ProjectReference Include="..\..\web\LouisAgent.Web.Evals\LouisAgent.Web.Evals.csproj" />
     <ProjectReference Include="..\..\web\LouisAgent.Web.Themes\LouisAgent.Web.Themes.csproj" />
     <!-- Every place's own address, the area it names with .Places(). -->
     <ProjectReference Include="..\..\web\LouisAgent.Web.Places\LouisAgent.Web.Places.csproj" />

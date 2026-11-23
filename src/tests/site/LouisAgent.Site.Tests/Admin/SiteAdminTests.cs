@@ -1,5 +1,6 @@
 using System.Reflection;
 using LouisAgent.Site.Admin;
+using LouisAgent.Web.Evals.Admin;
 using LouisAgent.Web.Components.Admin.Overview;
 using LouisAgent.Web.Components.Areas;
 using LouisAgent.Web.Components.Areas.Overview;
@@ -27,26 +28,30 @@ public class SiteAdminTests
             Is.EqualTo(new[] { new CountedTool("SendLead", "leads") }));
 
     /// <summary>
-    /// F144, F142: the site's admin plugs in the overview and its own Resume area. Its packs offer no screen and it
-    /// runs no evals, so its home draws the overview's card, then the CV's, and nothing else.
+    /// F144, F142, F126.3.2: the site's admin plugs in the overview, its own Resume area and the evals' pages. Its
+    /// packs offer no screen, so its home draws the overview's card, the CV's and the evals', and nothing else.
     /// </summary>
     [Test]
-    public void TheAdminsHome_IsTheOverviewsCard_ThenTheResumes()
+    public void TheAdminsHome_IsTheOverviewsCard_TheResumes_ThenTheEvals()
     {
         var areas = Areas().GetRequiredService<SiteAreas>();
 
         Assert.Multiple(() =>
         {
-            Assert.That(areas.AdminCards, Is.EqualTo(new[] { typeof(OverviewCard), typeof(ResumeCard) }));
+            Assert.That(areas.AdminCards,
+                Is.EqualTo(new[] { typeof(OverviewCard), typeof(ResumeCard), typeof(EvalsCard) }));
             Assert.That(areas.PageAssemblies.SelectMany(page => page.GetTypes())
                     .SelectMany(type => type.GetCustomAttributes<RouteAttribute>()).Select(route => route.Template),
-                Does.Contain("/admin"), "the home opens");
+                Does.Contain("/admin").And.Contain("/admin/evals"), "the home opens, and the evals' page");
         });
     }
 
-    /// <summary>F142: the sidebar has the Resume area's link under the overview's, and it leads to the editor.</summary>
+    /// <summary>
+    /// F142, F126.3.2: the sidebar has the Resume area's link under the overview's, leading to the editor, then the
+    /// evals' link.
+    /// </summary>
     [Test]
-    public void TheSidebar_HasTheResume_UnderTheOverview()
+    public void TheSidebar_HasTheResume_UnderTheOverview_ThenTheEvals()
     {
         var areas = Areas().GetRequiredService<SiteAreas>();
         using var ctx = new BunitContext();
@@ -55,7 +60,8 @@ public class SiteAdminTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(areas.AdminLinks, Is.EqualTo(new[] { typeof(OverviewLinks), typeof(ResumeLinks) }));
+            Assert.That(areas.AdminLinks,
+                Is.EqualTo(new[] { typeof(OverviewLinks), typeof(ResumeLinks), typeof(EvalsLinks) }));
             Assert.That(link.GetAttribute("href"), Is.EqualTo("admin/resume"));
             Assert.That(link.TextContent.Trim(), Is.EqualTo("Resume"));
         });

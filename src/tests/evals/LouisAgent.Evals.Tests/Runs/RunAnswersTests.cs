@@ -1,4 +1,5 @@
 using System.Text.Json;
+using LouisAgent.Evals.Contracts.Api;
 using LouisAgent.Evals.Contracts.Grading;
 using LouisAgent.Evals.Contracts.Runs;
 using LouisAgent.Evals.Contracts.Runs.Answers;
@@ -190,6 +191,25 @@ public class RunAnswersTests
             "transcript",
             "turns"
         }));
+    }
+
+    /// <summary>
+    /// An eval's last run passed in full when it finished and every one of the eval's conversations passed; a run
+    /// that stopped part way, one with a failure, or no run at all did not.
+    /// </summary>
+    [Test]
+    public void AnEvalsLastRun_PassedInFull_OnlyWhenItFinishedWithEveryConversationPassed()
+    {
+        var finished = RunRow.Of(Run(new ConversationRun("a", 1, [Repeat(1, Turn())])) with
+        {
+            Status = RunStatus.Finished
+        });
+
+        Assert.That(new EvalRow("guide", "louis-agent-guide", 1, finished).LastRunPassedInFull(), Is.True);
+        Assert.That(new EvalRow("guide", "louis-agent-guide", 2, finished).LastRunPassedInFull(), Is.False);
+        Assert.That(new EvalRow("guide", "louis-agent-guide", 1, finished with { Status = RunStatus.CouldNotFinish })
+            .LastRunPassedInFull(), Is.False);
+        Assert.That(new EvalRow("guide", "louis-agent-guide", 1, null).LastRunPassedInFull(), Is.False);
     }
 
     /// <summary>Every property name in a JSON value, at any depth.</summary>
