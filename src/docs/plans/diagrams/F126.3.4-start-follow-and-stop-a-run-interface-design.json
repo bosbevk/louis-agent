@@ -1,0 +1,43 @@
+{
+  "kind": "classes",
+  "title": "F126.3.4 start, follow and stop a run: the interface design",
+  "caption": "The judge hands back a mark with its cost and a turn keeps it. The rows carry the costs and the estimate. The desk can stop the run it plays. The web's client starts and stops a run for the card and the page. The number is the step; violet is there already and unchanged.",
+  "classes": {
+    "types": [
+      { "id": "judge", "name": "Judge", "kind": "changed in step 2", "members": ["Task<JudgedMark> MarkAsync(criterion,", "  conversation, ct)"] },
+      { "id": "judged", "name": "JudgedMark", "kind": "record, step 2", "members": ["Mark Mark", "decimal? Cost"] },
+      { "id": "player", "name": "ConversationPlayer", "kind": "changed in step 2", "members": ["adds a turn's marks' costs"] },
+      { "id": "turn", "name": "TurnRun", "kind": "record, changed in step 2", "members": ["decimal? JudgeCost { get; init; }"] },
+      { "id": "run", "name": "EvalRun", "kind": "record, changed in step 2", "members": ["decimal? SumJudgeCost()", "Status: running, finished,", "  could-not-finish, stopped (4)"] },
+      { "id": "runrow", "name": "RunRow", "kind": "record, changed in step 3", "members": ["Cost, JudgeCost, Currency", "static RunRow Of(EvalRun run)"] },
+      { "id": "evalrow", "name": "EvalRow", "kind": "record, changed in step 3", "members": ["RunRow? LastLiveRun", "decimal? EstimateLive(int repeats)", "bool CanReplay()"] },
+      { "id": "handlers", "name": "EvalHandlers", "kind": "changed in steps 3 and 4", "members": ["List(), StartAsync(name, request)", "Stop(string id)"] },
+      { "id": "desk", "name": "RunDesk", "kind": "changed in step 4", "members": ["bool TryStart(started, work)", "bool TryStop(string id)"] },
+      { "id": "work", "name": "RunWork", "kind": "changed in step 4", "members": ["a person's stop keeps the run as stopped", "a shutdown leaves the file as it is"] },
+      { "id": "api", "name": "EvalsApi", "kind": "changed in step 5", "members": ["Task<RunStart> StartAsync(eval, kind, repeats)", "Task StopAsync(string run)"] },
+      { "id": "start", "name": "RunStart", "kind": "record, step 5", "members": ["string? Run", "string? Refused"] },
+      { "id": "card", "name": "EvalCard", "kind": "changed in step 6", "members": ["Replay free, Run live"] },
+      { "id": "ask", "name": "RunAsk", "kind": "component, step 6", "members": ["the repeats, the estimate", "Run live, about …  ·  Don't run"] },
+      { "id": "page", "name": "RunPage", "kind": "changed in step 7", "members": ["reads again every 3 s while running", "Stop the run"] },
+      { "id": "ending", "name": "RunEnding", "kind": "component, step 7", "members": ["stopped, or could not finish"] },
+      { "id": "scope", "name": "UsageScope", "kind": "the engine's", "tone": "violet", "members": ["Total().Cost"] }
+    ],
+    "relations": [
+      { "from": "judge", "to": "scope", "kind": "uses" },
+      { "from": "judge", "to": "judged", "kind": "creates" },
+      { "from": "player", "to": "judge", "kind": "holds" },
+      { "from": "player", "to": "turn", "kind": "creates" },
+      { "from": "run", "to": "turn", "kind": "holds" },
+      { "from": "runrow", "to": "run", "kind": "uses" },
+      { "from": "evalrow", "to": "runrow", "kind": "holds" },
+      { "from": "handlers", "to": "evalrow", "kind": "creates" },
+      { "from": "handlers", "to": "desk", "kind": "holds" },
+      { "from": "desk", "to": "work", "kind": "uses" },
+      { "from": "api", "to": "start", "kind": "creates" },
+      { "from": "card", "to": "ask", "kind": "holds" },
+      { "from": "card", "to": "api", "kind": "uses" },
+      { "from": "page", "to": "api", "kind": "uses" },
+      { "from": "page", "to": "ending", "kind": "holds" }
+    ]
+  }
+}

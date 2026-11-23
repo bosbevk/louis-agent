@@ -1,0 +1,30 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F126.3.4 start, follow and stop a run: the architecture",
+  "caption": "The web's pages call the eval routes through their client. The routes hand a run to the desk, which plays it with the eval library and can cancel it. The library's judge reads its own cost. The records both sides share are the contracts. The number in brackets is the step.",
+  "flow": {
+    "nodes": [
+      { "id": "web", "icon": "message", "tone": "green", "label": "LouisAgent.Web.Evals\nthe card and its ask (6), the page that follows (7)" },
+      { "id": "client", "icon": "code", "tone": "green", "label": "The pages' client\nstart and stop (5)" },
+      { "id": "routes", "icon": "server", "tone": "green", "label": "LouisAgent.Api.Evals\nthe rows (3), DELETE a run (4)" },
+      { "id": "desk", "icon": "play", "tone": "green", "label": "The desk and its work\none run, with its cancel signal (4)" },
+      { "id": "evals", "icon": "checks", "tone": "green", "label": "LouisAgent.Evals\nthe judge hands back its cost (2)" },
+      { "id": "ledger", "icon": "scales", "tone": "violet", "label": "The usage ledger\nprices the judge's calls" },
+      { "id": "contracts", "icon": "code", "tone": "teal", "label": "LouisAgent.Evals.Contracts\na turn's judge cost (2), the rows (3), stopped (4)" },
+      { "id": "file", "icon": "database", "tone": "amber", "label": "The run's file\nsaved after each conversation", "shape": "data" }
+    ],
+    "edges": [
+      { "from": "web", "to": "client", "word": "starts, reads, stops" },
+      { "from": "client", "to": "routes", "word": "over HTTP" },
+      { "from": "routes", "to": "desk", "word": "starts, stops" },
+      { "from": "desk", "to": "evals", "word": "plays the run" },
+      { "from": "evals", "to": "ledger", "word": "reads its cost" },
+      { "from": "desk", "to": "file", "word": "saves" },
+      { "from": "routes", "to": "file", "word": "reads" },
+      { "from": "routes", "to": "contracts", "word": "answers in" },
+      { "from": "web", "to": "contracts", "word": "reads", "style": "dashed" }
+    ],
+    "direction": "down"
+  }
+}
