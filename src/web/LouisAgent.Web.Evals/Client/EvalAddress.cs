@@ -29,6 +29,10 @@ public static class EvalAddress
     /// <summary>The route that lists an eval's runs, the newest first.</summary>
     public static string RunsRouteOf(string eval) => $"{EvalsRoute}/{Escaped(eval)}/runs";
 
+    /// <summary>The route that answers a run's conversation as a block for its eval file (F126.4).</summary>
+    public static string AsFileRouteOf(string run, string conversation) =>
+        $"{RunRouteOf(run)}/{Escaped(conversation)}/as-file";
+
     /// <summary>The route that re-grades a kept run (F126.4).</summary>
     public static string RegradeRouteOf(string run) => $"{RunRouteOf(run)}/regrade";
 

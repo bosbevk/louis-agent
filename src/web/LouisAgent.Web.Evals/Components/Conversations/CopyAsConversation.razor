@@ -1,0 +1,8 @@
+@* Copy as conversation (F126.4): the conversation as a block for the eval file, copied with the framework's own
+   copy, then said so, or said plainly that the browser didn't allow it. *@
+
+<button class="header-button conversation-copy" type="button" @onclick="CopyAsync" disabled="@_copying">@Word</button>
+@if (Said is { } said)
+{
+    <p class="conversation-copied w-100 mb-0">@said</p>
+}

@@ -27,6 +27,7 @@
         }
     </div>
     <div class="page-actions">
+        <CopyAsConversation Eval="@Eval" Run="@Run" Conversation="@Conversation"/>
         @if (Previous is { } previous)
         {
             <a class="header-button conversation-previous" href="@PageOf(previous)">@Word(EvalsPart.Previous)</a>

@@ -301,5 +301,17 @@ public enum EvalsPart
     KeepFlipping,
 
     /// <summary>On a flipped mark: how often its criterion was flipped lately.</summary>
-    FlippedLately
+    FlippedLately,
+
+    /// <summary>The button that copies a conversation for the eval file (F126.4).</summary>
+    CopyAsConversation,
+
+    /// <summary>The button once the copy was made.</summary>
+    CopiedMark,
+
+    /// <summary>What was copied, and where it goes.</summary>
+    Copied,
+
+    /// <summary>A copy the browser didn't allow.</summary>
+    CopyRefused
 }

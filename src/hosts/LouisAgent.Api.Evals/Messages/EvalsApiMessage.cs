@@ -57,6 +57,10 @@ public enum EvalsApiMessage
     [Holes(typeof(NoSuchMarkHoles))]
     NoSuchMark,
 
+    [Description("The run {Id} has no conversation '{Conversation}'.")]
+    [Holes(typeof(NoSuchConversationHoles))]
+    NoSuchConversation,
+
     [Description("A flip's note is one line of at most {Most} characters.")]
     [Holes(typeof(NoteNotOneLineHoles))]
     NoteNotOneLine,

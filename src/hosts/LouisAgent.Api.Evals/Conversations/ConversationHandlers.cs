@@ -7,9 +7,13 @@ using LouisAgent.Api.Evals.Messages.Holes.Runs;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Evals.Contracts.Grading;
 using LouisAgent.Evals.Contracts.Runs.Json;
+using LouisAgent.Evals.Files;
 using LouisAgent.Evals.Runs.Store;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
+using AsFileAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
+    Microsoft.AspNetCore.Http.HttpResults.ContentHttpResult,
+    Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.ApiError>>;
 using FlipAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
     Microsoft.AspNetCore.Http.HttpResults.NoContent,
     Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.ApiError>>;
@@ -18,7 +22,8 @@ namespace LouisAgent.Api.Evals.Conversations;
 
 /// <summary>
 /// The routes of one conversation of a kept run: a person flips a criterion's mark at the mark's own address, with a
-/// note if they want one, and puts it back with a DELETE there. A run that is going is refused, since its file is
+/// note if they want one, and puts it back with a DELETE there; and the conversation is answered as a block for its
+/// eval file, to copy. A run that is going is refused, since its file is
 /// still being written.
 /// </summary>
 /// <remarks>
@@ -29,9 +34,10 @@ namespace LouisAgent.Api.Evals.Conversations;
 /// </remarks>
 /// <param name="desk">The one run going, which can't be flipped.</param>
 /// <param name="work">How a run is kept, or none on a host with no data folder.</param>
+/// <param name="catalog">The host's evals, whose files give a copied conversation its page.</param>
 /// <param name="clock">The time a flip is made at.</param>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0051-flat-conditionals-and-named-endpoints.md">ADR 0051: flat conditionals and named endpoints</seealso>
-public sealed class ConversationHandlers(RunDesk desk, RunWork? work, TimeProvider clock)
+public sealed class ConversationHandlers(RunDesk desk, RunWork? work, EvalCatalog catalog, TimeProvider clock)
 {
     /// <summary>The longest note a flip keeps, on its one line.</summary>
     public const int NoteLength = 200;
@@ -66,6 +72,24 @@ public sealed class ConversationHandlers(RunDesk desk, RunWork? work, TimeProvid
         if (Refused(id) is { } refused) return refused;
 
         return Change(new MarkAt(id, conversation, repeat, turn, criterion), null);
+    }
+
+    /// <summary>
+    /// <c>GET …/runs/{id}/{conversation}/as-file</c>: the run's conversation as a block for its eval file, to copy and
+    /// change (F126.4), with the page the file still gives it. A run or a conversation the host doesn't have is 404.
+    /// </summary>
+    public AsFileAnswer AsFile(string id, string conversation)
+    {
+        if (!RunId.TryParse(id, out _) || work?.Store.Find(id) is not { } run) return EvalHandlers.NoSuchRun(id);
+        if (run.Conversations.FirstOrDefault(kept => kept.Id == conversation) is not { } played)
+        {
+            var none = new NoSuchConversationHoles(id, conversation);
+            return ApiErrors.NotFound(MessageText.Format(EvalsApiMessage.NoSuchConversation, none));
+        }
+
+        // The page is the eval file's, when the file still has the conversation: the run doesn't keep it.
+        string? page = catalog.Find(run.Eval)?.Conversations.FirstOrDefault(c => c.Id == conversation)?.Page;
+        return TypedResults.Text(Conversation.Of(played, page).ToJson(), "application/json");
     }
 
     /// <summary>

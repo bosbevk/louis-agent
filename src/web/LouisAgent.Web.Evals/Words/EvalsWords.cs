@@ -117,6 +117,10 @@ public static class EvalsWords
         EvalsPart.FlippedIn => "you flipped it in {0} of {1}",
         EvalsPart.KeepFlipping => "A criterion you keep flipping wants rewording, or to be a fact.",
         EvalsPart.FlippedLately => "You flipped this criterion in {0} of the last {1} runs.",
+        EvalsPart.CopyAsConversation => "Copy as conversation",
+        EvalsPart.CopiedMark => "Copied ✓",
+        EvalsPart.Copied => "Copied: this conversation as a block for {0}.eval.json, ready to paste and change.",
+        EvalsPart.CopyRefused => "The browser didn't allow the copy. Allow the clipboard for this site and try again.",
         _ => throw new ArgumentOutOfRangeException(nameof(part), part, null)
     });
 

@@ -57,13 +57,13 @@ public static class EvalsStartup
         });
         // A conversation's routes change a kept run through the same store the eval routes keep it in.
         builder.Services.AddSingleton(provider => new ConversationHandlers(provider.GetRequiredService<RunDesk>(),
-            provider.GetRequiredService<EvalHandlers>().Work, TimeProvider.System));
+            provider.GetRequiredService<EvalHandlers>().Work, catalog, TimeProvider.System));
         return builder;
     }
 
     /// <summary>
-    /// The routes, on the API's group, behind the admin key: the five of the evals and their runs, and a kept run's
-    /// two of a criterion's flip.
+    /// The routes, on the API's group, behind the admin key: the evals and their runs, a run stopped or re-graded, a
+    /// criterion's flip and its undo, and a conversation as a block for its eval file.
     /// </summary>
     public static IEndpointRouteBuilder MapLouisAgentEvals(this IEndpointRouteBuilder v1, string? adminKey)
     {
@@ -78,6 +78,7 @@ public static class EvalsStartup
         var conversations = v1.ServiceProvider.GetRequiredService<ConversationHandlers>();
         admin.MapPut(FlipRoute, conversations.FlipAsync);
         admin.MapDelete(FlipRoute, conversations.UndoFlip);
+        admin.MapGet("/evals/runs/{id}/{conversation}/as-file", conversations.AsFile);
         return v1;
     }
 

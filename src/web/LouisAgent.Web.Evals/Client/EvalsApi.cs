@@ -73,6 +73,13 @@ public sealed class EvalsApi(AgentApi api)
     }
 
     /// <summary>
+    /// A run's conversation as a block for its eval file, to copy and change (F126.4); a run or a conversation the
+    /// host doesn't have, or a refused key, throws.
+    /// </summary>
+    public Task<string> FindAsFileAsync(string run, string conversation) =>
+        api.GetTextAsync(EvalAddress.AsFileRouteOf(run, conversation));
+
+    /// <summary>
     /// Stops the run. A run the host doesn't have, or one that has already ended, needs no stop, so neither throws;
     /// a refused key does.
     /// </summary>
