@@ -187,6 +187,32 @@ public class EvalsApiTests
         Assert.That(await api.UndoFlipAsync(place), Is.EqualTo("The run is going."));
     }
 
+    /// <summary>
+    /// F126.4: a re-grade posts to the run's re-grade address and answers the new run's id, or the API's reason when
+    /// it refused.
+    /// </summary>
+    [Test]
+    public async Task ARegrade_PostsToTheRunsRegradeAddress_AndAnswersTheNewRun_OrTheRefusal()
+    {
+        var (api, stub) = Api(_ => new HttpResponseMessage(HttpStatusCode.Accepted)
+        {
+            Headers = { Location = new Uri("/v1/admin/evals/runs/20261123-170000-guide", UriKind.Relative) }
+        });
+        var refusal = new ApiError("error", new ApiErrorDetail("a-refusal", "A run is already going."));
+        var (refusing, _) = Api(_ => new HttpResponseMessage(HttpStatusCode.Conflict)
+        {
+            Content = JsonContent.Create(refusal, options: JsonSerializerOptions.Web)
+        });
+
+        var started = await api.RegradeAsync("20261123-063633-guide");
+        var refused = await refusing.RegradeAsync("20261123-063633-guide");
+
+        Assert.That((stub.Requests.Single().Method, stub.Requests.Single().Url), Is.EqualTo((HttpMethod.Post,
+            "http://localhost/v1/admin/evals/runs/20261123-063633-guide/regrade")));
+        Assert.That(started, Is.EqualTo(new RunStart("20261123-170000-guide", null)));
+        Assert.That(refused, Is.EqualTo(new RunStart(null, "A run is already going.")));
+    }
+
     /// <summary>The client over a stub of the API.</summary>
     private static (EvalsApi Api, StubHandler Stub) Api(Func<HttpRequestMessage, HttpResponseMessage> answer)
     {

@@ -42,14 +42,28 @@ public sealed class EvalsApi(AgentApi api)
     /// Answers the run's id from the address the API gave, or, when the API said no, its own reason word for word. A
     /// refused key throws, as every call here does.
     /// </summary>
-    public async Task<RunStart> StartAsync(string eval, RunKind kind, int repeats)
+    public Task<RunStart> StartAsync(string eval, RunKind kind, int repeats)
     {
         var asked = new StartRunRequest(kind, repeats);
-        using var start = new HttpRequestMessage(HttpMethod.Post, EvalAddress.RunsRouteOf(eval));
+        var start = new HttpRequestMessage(HttpMethod.Post, EvalAddress.RunsRouteOf(eval));
         start.Content = JsonContent.Create(asked, options: RunJson.Options);
+        return SendStartAsync(start);
+    }
+
+    /// <summary>
+    /// Re-grades a kept run (F126.4), answering as a start does: the new run's id, or the API's reason when it
+    /// refused; a refused key throws.
+    /// </summary>
+    public Task<RunStart> RegradeAsync(string run) =>
+        SendStartAsync(new HttpRequestMessage(HttpMethod.Post, EvalAddress.RegradeRouteOf(run)));
+
+    /// <summary>Sends a start or a re-grade: the run's id from the address the API gave, or its reason.</summary>
+    private async Task<RunStart> SendStartAsync(HttpRequestMessage start)
+    {
+        using var sent = start;
         try
         {
-            using var started = await api.SendAsync(start);
+            using var started = await api.SendAsync(sent);
             return new RunStart(EvalAddress.FindRunId(started.Headers.Location?.OriginalString ?? ""), null);
         }
         catch (AgentApiException refused) when (IsARefusal(refused.Status))

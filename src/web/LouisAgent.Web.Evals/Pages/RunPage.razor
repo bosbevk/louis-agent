@@ -4,7 +4,8 @@
 
 @* A run's page (F126.3.2): the number first, then what the run ran with, then its conversations, the failed ones
    first, and the eval's other runs at the foot. A run that ended early says how first; a going run is read again
-   every few seconds and can be stopped (F126.3.4); a run the host doesn't have is one line. *@
+   every few seconds and can be stopped (F126.3.4); one that has ended can be re-graded, and a re-grade says what it
+   did (F126.4); a run the host doesn't have is one line. *@
 
 <PageTitle>@Eval · Run · Admin</PageTitle>
 
@@ -39,6 +40,7 @@
         }
         else
         {
+            <RegradeButton Eval="@Eval" Run="@Run"/>
             <button class="header-button run-reload" type="button" @onclick="LoadAsync" disabled="@_loading"><span class="ic i-refresh" aria-hidden="true"></span>Reload</button>
         }
     </div>
@@ -60,6 +62,10 @@ else if (_loading && _run is null)
 else if (_run is { } run)
 {
     <RunEnding Run="run" NotRun="@NotRun"/>
+    @if (run.Kind == RunKind.Regrade && _before is { } graded)
+    {
+        <RegradeChanges Eval="@Eval" Run="run" Graded="graded"/>
+    }
 
     <section class="card-p run-this">
         <h2>This run</h2>

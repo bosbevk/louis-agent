@@ -29,6 +29,9 @@ public static class EvalAddress
     /// <summary>The route that lists an eval's runs, the newest first.</summary>
     public static string RunsRouteOf(string eval) => $"{EvalsRoute}/{Escaped(eval)}/runs";
 
+    /// <summary>The route that re-grades a kept run (F126.4).</summary>
+    public static string RegradeRouteOf(string run) => $"{RunRouteOf(run)}/regrade";
+
     /// <summary>
     /// The route of a criterion's flip, at the mark's own address: a PUT flips it, a DELETE puts it back (F126.4).
     /// </summary>

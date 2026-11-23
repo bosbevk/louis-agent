@@ -11,6 +11,7 @@ namespace LouisAgent.Evals.Contracts.Runs.Answers;
 /// <param name="NowFail">Those that passed before and fail now.</param>
 /// <param name="Criteria">Each criterion added to a turn or taken out of one, in this run's order.</param>
 /// <param name="CriteriaKept">How many criterion marks, over every repeat, are the same as before.</param>
+/// <param name="CriteriaJudged">How many are not: for a re-grade, the judge's calls it made.</param>
 /// <param name="LeftOut">The conversations the run before held that this run doesn't.</param>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0123-ask-the-type.md">ADR 0123: ask the type</seealso>
 public sealed record RunChange(
@@ -20,6 +21,7 @@ public sealed record RunChange(
     IReadOnlyList<string> NowFail,
     IReadOnlyList<CriterionChange> Criteria,
     int CriteriaKept,
+    int CriteriaJudged,
     IReadOnlyList<string> LeftOut)
 {
     /// <summary>This run against the one before it, conversation by conversation where both hold one.</summary>
@@ -32,13 +34,15 @@ public sealed record RunChange(
             .Select(pair => (pair.Now, Before: pair.Before!))
             .ToList();
         var held = now.Conversations.Select(conversation => conversation.Id).ToHashSet();
+        int kept = both.Sum(pair => CountKept(pair.Now, pair.Before));
         return new RunChange(
             before.Passed,
             now.Passed,
             [.. both.Where(pair => pair.Now.Passed && !pair.Before.Passed).Select(pair => pair.Now.Id)],
             [.. both.Where(pair => !pair.Now.Passed && pair.Before.Passed).Select(pair => pair.Now.Id)],
             [.. both.SelectMany(pair => CriteriaChanged(pair.Now, pair.Before))],
-            both.Sum(pair => CountKept(pair.Now, pair.Before)),
+            kept,
+            now.CountCriteria().Of - kept,
             [.. before.Conversations.Select(conversation => conversation.Id).Where(id => !held.Contains(id))]);
     }
 

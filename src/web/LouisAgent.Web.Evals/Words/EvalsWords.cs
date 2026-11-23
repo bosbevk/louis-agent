@@ -81,6 +81,27 @@ public static class EvalsWords
         EvalsPart.NoRun => "This host has no run {0}.",
         EvalsPart.NoConversation => "This run has no conversation {0}.",
         EvalsPart.NoRepeat => "This conversation has no repeat {0}.",
+        EvalsPart.Regrade => "Re-grade",
+        EvalsPart.RegradeTitle => "What changed in the file, and what it did",
+        EvalsPart.RegradeSaid => "No agent was asked: these are the answers of",
+        EvalsPart.RegradeOfRun => "the run of {0}",
+        EvalsPart.RegradeNow => ", graded with the eval file as it is now.",
+        EvalsPart.JudgeCalls => "Judge calls",
+        EvalsPart.MarksKept => "Marks kept",
+        EvalsPart.CriterionAdded => "{0} · turn {1} · a new criterion, \"{2}\"",
+        EvalsPart.CriterionJudged => "Judged in each of {0}: met in {1}.",
+        EvalsPart.CriterionTakenOut => "{0} · turn {1} · \"{2}\" was taken out",
+        EvalsPart.CriterionTakenOutWhy => "Your flips on it stay with the run it re-graded.",
+        EvalsPart.MarksKeptLine => "{0} marks kept, and your {1} flips with them",
+        EvalsPart.MarksKeptWhy =>
+            "Same criterion, same answer: the judge's mark and your flip carry over, free. A reworded criterion is " +
+            "judged again.",
+        EvalsPart.FactsAgain => "{0} facts checked again",
+        EvalsPart.FactsAgainWhy => "Facts are code: always checked again, always free.",
+        EvalsPart.LeftOut => "{0} was left out",
+        EvalsPart.LeftOutWhy => "The run it re-graded has no answer to it as the file asks it now.",
+        EvalsPart.RegradeReplay =>
+            "Replay free plays this again: the judge's new answers were added to the recording of the live run.",
         _ => throw new ArgumentOutOfRangeException(nameof(part), part, null)
     });
 

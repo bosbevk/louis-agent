@@ -1,4 +1,5 @@
 using LouisAgent.Evals.Contracts.Grading;
+using LouisAgent.Evals.Contracts.Runs.Answers;
 
 namespace LouisAgent.Evals.Contracts.Runs;
 
@@ -48,6 +49,17 @@ public sealed record ConversationRun(string Id, int Asked, IReadOnlyList<RepeatR
         int at = Repeats.ToList().FindIndex(played => played.Number == repeat);
         if (at < 0 || Repeats[at].WithFlip(turn, criterion, flip) is not { } flipped) return null;
         return this with { Repeats = TurnRun.Replace(Repeats, at, flipped) };
+    }
+
+    /// <summary>
+    /// How one criterion of one turn, from 1, went over its repeats: met, as the answer counts, of how many repeats had
+    /// it (F126.4).
+    /// </summary>
+    public MarkCount CountCriterion(int turn, string criterion)
+    {
+        var marks = Repeats.Where(repeat => turn <= repeat.Turns.Count)
+            .SelectMany(repeat => repeat.Turns[turn - 1].Criteria.Where(mark => mark.Text == criterion)).ToList();
+        return new MarkCount(marks.Count(mark => mark.CountsAsMet()), marks.Count);
     }
 
     /// <summary>What its first turn asked, from its first repeat; none when it holds no turn.</summary>

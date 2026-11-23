@@ -202,5 +202,59 @@ public enum EvalsPart
     NoConversation,
 
     /// <summary>A repeat the conversation doesn't hold.</summary>
-    NoRepeat
+    NoRepeat,
+
+    /// <summary>The button that re-grades a run that has ended (F126.4).</summary>
+    Regrade,
+
+    /// <summary>The title of a re-graded run's changes.</summary>
+    RegradeTitle,
+
+    /// <summary>What a re-graded run is, before the link to the run it re-graded.</summary>
+    RegradeSaid,
+
+    /// <summary>The link to the run it re-graded.</summary>
+    RegradeOfRun,
+
+    /// <summary>After the link: what they were graded with.</summary>
+    RegradeNow,
+
+    /// <summary>The name of how many judge calls a re-grade made.</summary>
+    JudgeCalls,
+
+    /// <summary>The name of how many marks a re-grade kept.</summary>
+    MarksKept,
+
+    /// <summary>A criterion added to a turn.</summary>
+    CriterionAdded,
+
+    /// <summary>How an added criterion was judged.</summary>
+    CriterionJudged,
+
+    /// <summary>A criterion taken out of a turn.</summary>
+    CriterionTakenOut,
+
+    /// <summary>What a criterion taken out leaves.</summary>
+    CriterionTakenOutWhy,
+
+    /// <summary>The marks a re-grade kept, and the flips with them.</summary>
+    MarksKeptLine,
+
+    /// <summary>Why a mark is kept.</summary>
+    MarksKeptWhy,
+
+    /// <summary>The facts a re-grade checked again.</summary>
+    FactsAgain,
+
+    /// <summary>Why facts are checked again.</summary>
+    FactsAgainWhy,
+
+    /// <summary>A conversation a re-grade left out.</summary>
+    LeftOut,
+
+    /// <summary>Why it was left out.</summary>
+    LeftOutWhy,
+
+    /// <summary>What a re-grade leaves for a replay.</summary>
+    RegradeReplay
 }
