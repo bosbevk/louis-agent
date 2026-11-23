@@ -3,6 +3,7 @@ using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Delegation.Messages.Holes.Addresses;
 using LouisAgent.Core.Delegation.Messages.Holes.Asks;
 using LouisAgent.Core.Delegation.Messages.Holes.Lookups;
+using LouisAgent.Core.Delegation.Messages.Holes.Sequences;
 
 namespace LouisAgent.Core.Delegation.Messages;
 
@@ -218,5 +219,21 @@ public enum SubSessionToolMessage
     [Description("These are the addresses you may pass to `AskAgent`. Any other is refused.")]
     AgentsYouMayAskIntro,
 
-    [Description("- `{Address}`")] AgentYouMayAsk
+    [Description("- `{Address}`")] AgentYouMayAsk,
+
+    // A sequence: agents asked one after the other, in an order code holds.
+    [Description("{FirstMessage}\n\nThe step before you, {Address}, answered:\n\n{Answer}")]
+    [Holes(typeof(SequenceStepInputHoles))]
+    SequenceStepInput,
+    [Description("({Number}) {Address} did: {Did}")]
+    [Holes(typeof(SequenceStepDidHoles))]
+    SequenceStepDid,
+    [Description("{Answer}\n\n[Answered by the sequence {Sequence}, in this order: {Steps}]")]
+    [Holes(typeof(SequenceAnswerHoles))]
+    SequenceAnswer,
+    [Description(
+        "Error: the sequence {Sequence} stopped at step {Number} of {Count}, {Address}: {Reason} Finished before " +
+        "it: {Finished}.")]
+    [Holes(typeof(SequenceStoppedHoles))]
+    SequenceStopped
 }
