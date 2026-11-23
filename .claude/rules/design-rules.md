@@ -20,7 +20,7 @@ The design decisions every change keeps, one line each: the *why* is its ADR in 
   the engine split; a shared contract is a shared project or a tested duplicate. [ADR 0027](../../src/docs/adr/0027-engine-identities-and-packs.md), [0134](../../src/docs/adr/0134-an-eval-is-one-file-of-conversations.md).
 - **Packs stay convertible to MCP** (`PackConvertibilityTests` holds the shapes) and **MCP exposes tools, not a
   model**: `LouisAgent.Mcp` hands an external client the raw tools; to have the agent do a whole task, call
-  the API's sessions. [ADR 0028](../../src/docs/adr/0028-packs-stay-convertible-to-mcp.md), [AGENT_COMMUNICATION.md](../../src/docs/AGENT_COMMUNICATION.md).
+  the API's sessions; a tool that needs a model takes Microsoft's `IChatClient`, never a provider of ours. [ADR 0028](../../src/docs/adr/0028-packs-stay-convertible-to-mcp.md), [AGENT_COMMUNICATION.md](../../src/docs/AGENT_COMMUNICATION.md).
 - **Provider strategies** — where providers differ, one interface with an implementation per provider, picked in
   `LlmClientFactory`; never branch on the provider's name elsewhere. [ADR 0003](../../src/docs/adr/0003-provider-strategies.md).
 - **Toolsets per session** — a session names its toolsets when it opens and keeps them; an engine per toolset list; a

@@ -32,6 +32,10 @@ when a session opens; doing nothing.
   session also arrives as a parameter; no description names an identity. A pack frames the outside data it returns,
   bounds its own output, keeps its guides as prose, reads its own settings and core's shared services, and names other
   packs instead of referencing them.
+- **A tool that needs a model takes `IChatClient`** (Microsoft.Extensions.AI) in its constructor, never a provider
+  of ours, so someone using the tool on its own hands in their own model and our hosts hand in theirs. No pack
+  references `LouisAgent.Core` or a provider (`.Anthropic`, `.Ollama`, `.OpenAi`); the pack that needs a model takes
+  `Microsoft.Extensions.AI.Abstractions`, which the engine already uses.
 - **Tool names** are unique across the catalogue, MCP-safe, and come from one function, `AgentCatalog.NamesOf`.
 - **A server is pinned** by its version when it reports one, and always by a hash of the listed tools; an allowlisted
   tool missing from the list counts as drift. The `ReadOnly` hint comes from a tool's declared effect (`ToolEffect`),
@@ -40,7 +44,8 @@ when a session opens; doing nothing.
 ## Consequences
 
 - `PackConvertibilityTests` holds the shapes, through the SDK's own `McpServerTool.Create` (a test-only
-  `ModelContextProtocol.Core`); a review checklist holds the behaviour the test can't see.
+  `ModelContextProtocol.Core`), and that no pack's project reaches our engine or a provider; a review checklist holds
+  the behaviour the test can't see.
 - A server that is down when the host starts stays off until a refresh or a restart, with its reason shown.
 - An orange pack's guide is configuration read once at start-up, which refines [0018](0018-built-in-prompts-embedded.md)
   for packs that are configuration.

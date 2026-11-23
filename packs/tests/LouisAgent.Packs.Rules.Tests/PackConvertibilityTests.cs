@@ -1,3 +1,4 @@
+using System.Xml.Linq;
 using LouisAgent.Composition.Packs;
 using LouisAgent.Testing.Packs;
 using Microsoft.Extensions.FileProviders;
@@ -42,6 +43,61 @@ public class PackConvertibilityTests
     /// <summary>The identities were found, so the check above has names to refuse.</summary>
     [Test]
     public void TheIdentities_AreFound() => Assert.That(Identities(), Has.Count.GreaterThanOrEqualTo(4));
+
+    /// <summary>
+    /// Our engine and its model providers, which no pack may reference: a tool that needs a model takes Microsoft's
+    /// <c>IChatClient</c> instead, so anyone can use the tool with their own model (ADR 0028, Louis's pick of three,
+    /// 2026-11-23, over an interface of our own and over waiting until a tool needs one).
+    /// </summary>
+    private static readonly string[] EngineProjects =
+        ["LouisAgent.Core", "LouisAgent.Core.Anthropic", "LouisAgent.Core.Ollama", "LouisAgent.Core.OpenAi"];
+
+    /// <summary>Every pack's project file, by the pack's folder under <c>packs/tools</c>.</summary>
+    private static IEnumerable<string> EveryPackProject() =>
+        Directory.EnumerateFiles(Path.Combine(TestPaths.RepoRoot, "packs", "tools"), "*.csproj",
+            SearchOption.AllDirectories).Select(Path.GetFileNameWithoutExtension).OfType<string>().Order();
+
+    /// <summary>The references in a pack's project file that reach our engine or a model provider of ours.</summary>
+    internal static IReadOnlyList<string> ModelProblems(string project, string projectFile) =>
+    [
+        .. XDocument.Parse(projectFile).Descendants("ProjectReference")
+            .Select(reference => (string?)reference.Attribute("Include") ?? "")
+            .Select(include => Path.GetFileNameWithoutExtension(include.Replace('\\', '/')))
+            .Where(EngineProjects.Contains)
+            .Select(name => $"{project}: references {name}; a tool that needs a model takes IChatClient")
+    ];
+
+    /// <summary>No pack reaches our engine or a provider, so its tools work with anyone's model.</summary>
+    [TestCaseSource(nameof(EveryPackProject))]
+    public void EveryPack_TakesItsModelFromOutside(string project)
+    {
+        var file = Path.Combine(TestPaths.RepoRoot, "packs", "tools", project, project + ".csproj");
+
+        Assert.That(ModelProblems(project, File.ReadAllText(file)), Is.Empty);
+    }
+
+    /// <summary>A pack that references a provider of ours and our engine is reported with exactly those two.</summary>
+    [Test]
+    public void APackThatReachesOurProviders_IsReported()
+    {
+        const string projectFile =
+            """
+            <Project Sdk="Microsoft.NET.Sdk">
+              <ItemGroup>
+                <PackageReference Include="Microsoft.Extensions.AI.Abstractions" Version="10.0.0" />
+                <ProjectReference Include="..\..\..\src\engine\LouisAgent.Composition\LouisAgent.Composition.csproj" />
+                <ProjectReference Include="..\..\..\src\engine\LouisAgent.Core\LouisAgent.Core.csproj" />
+                <ProjectReference Include="..\..\..\src\engine\LouisAgent.Core.Anthropic\LouisAgent.Core.Anthropic.csproj" />
+              </ItemGroup>
+            </Project>
+            """;
+
+        Assert.That(ModelProblems("LouisAgent.Packs.Fake", projectFile), Is.EqualTo(new[]
+        {
+            "LouisAgent.Packs.Fake: references LouisAgent.Core; a tool that needs a model takes IChatClient",
+            "LouisAgent.Packs.Fake: references LouisAgent.Core.Anthropic; a tool that needs a model takes IChatClient"
+        }));
+    }
 
     /// <summary>A pack that breaks every rule once is reported with exactly its problems.</summary>
     [Test]
