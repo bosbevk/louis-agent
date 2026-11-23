@@ -41,11 +41,15 @@ An eval is one file of conversations, and the old evals are gone.
 - **The file's shape is said once, in its records:** the schema is generated from them, and the reader refuses a
   wrong file at its first fault. What code can't tell for certain is a criterion, so closeness of meaning is never a
   fact.
+- **A run is kept as one file in the site's data folder, behind a repository,** and what is kept is what the API sends
+  and the page draws.
+- **A live run records as it goes, the judge's answers too,** so a replay is a whole run that costs nothing, and a
+  recording that no longer answers stops the replay.
 
 ## Consequences
 
-- Until the runs come back in F126.3, the repository can run no eval, and the admin has no Evals area. The first
-  new evals are written in F126.5.
+- A site's API runs its agents' evals through `LouisAgent.Api.Evals` (F126.3.1); the admin has no Evals page until
+  F126.3.2. The first new evals are written in F126.5.
 - The framework's site keeps the evals family in its place among the five, with no project under it, and says the
   evals are being rebuilt.
 - What the old shape held is in git, so a later child copies back what it needs, such as the session client, with
@@ -54,7 +58,7 @@ An eval is one file of conversations, and the old evals are gone.
 
 ## Links
 
-- F126, F126.1; [ADR 0049](0049-nothing-is-compatible-before-a-sale.md), nothing is compatible before a sale;
+- F126, F126.1, F126.2, F126.3.1; [ADR 0049](0049-nothing-is-compatible-before-a-sale.md), nothing is compatible before a sale;
   [ADR 0011](0011-prompts-are-content.md), prompts are content
 - Michael Nygard, [Documenting Architecture Decisions](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions):
   a decision that is replaced stays, marked superseded

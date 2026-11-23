@@ -1,0 +1,160 @@
+{
+  "kind": "classes",
+  "title": "LouisAgent.Evals.Contracts: a run's records",
+  "caption": "A run holds its conversations, a conversation its repeats, a repeat its turns, and a turn its transcript and its marks. Whether each passed is asked of the record.",
+  "classes": {
+    "types": [
+      {
+        "id": "run",
+        "name": "EvalRun",
+        "kind": "record",
+        "members": [
+          "string Id, Eval, Agent",
+          "RunKind Kind",
+          "int Repeats",
+          "RunStatus Status",
+          "string? StoppedBecause, ReplayOf",
+          "bool PageSent",
+          "int Passed"
+        ]
+      },
+      {
+        "id": "conv",
+        "name": "ConversationRun",
+        "kind": "record",
+        "members": [
+          "string Id",
+          "int Asked",
+          "IReadOnlyList<RepeatRun> Repeats",
+          "bool Passed"
+        ]
+      },
+      {
+        "id": "repeat",
+        "name": "RepeatRun",
+        "kind": "record",
+        "members": [
+          "int Number",
+          "IReadOnlyList<TurnRun> Turns",
+          "bool Passed"
+        ]
+      },
+      {
+        "id": "turn",
+        "name": "TurnRun",
+        "kind": "record",
+        "members": [
+          "TurnTranscript Transcript",
+          "IReadOnlyList<Mark> Facts, Criteria",
+          "decimal? Cost",
+          "string? Currency"
+        ]
+      },
+      {
+        "id": "tt",
+        "name": "TurnTranscript",
+        "kind": "record",
+        "members": [
+          "string Ask, Answer",
+          "IReadOnlyList<ToolCallTranscript> Calls",
+          "TimeSpan Took",
+          "string? Error"
+        ]
+      },
+      {
+        "id": "call",
+        "name": "ToolCallTranscript",
+        "kind": "record",
+        "members": [
+          "string Tool, Input, Result",
+          "bool Failed"
+        ]
+      },
+      {
+        "id": "mark",
+        "name": "Mark",
+        "kind": "record",
+        "members": [
+          "string Text",
+          "bool Met",
+          "string Reason"
+        ]
+      },
+      {
+        "id": "kind",
+        "name": "RunKind",
+        "kind": "enum",
+        "members": [
+          "Live",
+          "Replay"
+        ]
+      },
+      {
+        "id": "status",
+        "name": "RunStatus",
+        "kind": "enum",
+        "members": [
+          "Running",
+          "Finished",
+          "CouldNotFinish"
+        ]
+      },
+      {
+        "id": "row",
+        "name": "RunRow",
+        "kind": "record",
+        "members": [
+          "a run in short",
+          "RunRow Of(EvalRun run)"
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "from": "run",
+        "to": "conv",
+        "kind": "holds"
+      },
+      {
+        "from": "conv",
+        "to": "repeat",
+        "kind": "holds"
+      },
+      {
+        "from": "repeat",
+        "to": "turn",
+        "kind": "holds"
+      },
+      {
+        "from": "turn",
+        "to": "tt",
+        "kind": "holds"
+      },
+      {
+        "from": "tt",
+        "to": "call",
+        "kind": "holds"
+      },
+      {
+        "from": "turn",
+        "to": "mark",
+        "kind": "holds"
+      },
+      {
+        "from": "run",
+        "to": "kind",
+        "kind": "uses"
+      },
+      {
+        "from": "run",
+        "to": "status",
+        "kind": "uses"
+      },
+      {
+        "from": "row",
+        "to": "run",
+        "kind": "uses"
+      }
+    ]
+  }
+}

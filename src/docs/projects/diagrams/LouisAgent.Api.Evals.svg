@@ -1,5 +1,5 @@
-<svg viewBox="-24 -24 944 676" width="944" height="676" role="img" aria-label="F126.3.1 runs: the overview" xmlns="http://www.w3.org/2000/svg">
-  <title>F126.3.1 runs: the overview</title>
+<svg viewBox="-24 -24 944 637" width="944" height="637" role="img" aria-label="LouisAgent.Api.Evals: the overview" xmlns="http://www.w3.org/2000/svg">
+  <title>LouisAgent.Api.Evals: the overview</title>
   <style>svg {
   --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #e2dfff; --violet-line: #6b4dff; --violet-ink: #3a22c4; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
   --mono: var(--bs-font-monospace, "Geist Mono", ui-monospace, Menlo, Consolas, monospace);
@@ -198,141 +198,121 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <stop class="mrq-glass-1" offset="1" />
     </linearGradient>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="944" height="676" rx="14" />
+  <rect class="ground" x="-24" y="-24" width="944" height="637" rx="14" />
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-22 126a470 210 0 1 0 940 0a470 210 0 1 0 -940 0Z" />
-    <text class="mrq-title" x="16" y="14" text-anchor="start">F126.3.1 runs: the overview</text>
+    <text class="mrq-title" x="16" y="14" text-anchor="start">LouisAgent.Api.Evals: the overview</text>
     <text class="pic-group" x="880" y="14" text-anchor="end">Overview</text>
     <rect class="mrq-rule" x="0" y="26" width="896" height="1" rx="0" />
     <g class="crd-cards" transform="translate(0 38)">
-      <rect class="crd-rail-glow" x="-3.2" y="186" width="902.4" height="8" rx="0" />
-      <rect class="crd-rail" x="-3.2" y="189.3" width="902.4" height="1.5" rx="0" />
+      <rect class="crd-rail-glow" x="19.8" y="186" width="856.5" height="8" rx="0" />
+      <rect class="crd-rail" x="19.8" y="189.3" width="856.5" height="1.5" rx="0" />
       <path class="crd-line" d="M448 174V190" />
       <path class="pic-march" d="M448 174V190" />
-      <path class="crd-line" d="M80.8 190V222" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M80.8 190V222" />
-      <path class="crd-line" d="M264.4 190V222" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M264.4 190V222" />
-      <path class="crd-line" d="M448 190V222" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M448 190V222" />
-      <path class="crd-line" d="M631.6 190V222" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M631.6 190V222" />
-      <path class="crd-line" d="M815.2 190V222" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M815.2 190V222" />
+      <path class="crd-line" d="M103.8 190V222" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M103.8 190V222" />
+      <path class="crd-line" d="M333.3 190V222" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M333.3 190V222" />
+      <path class="crd-line" d="M562.8 190V222" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M562.8 190V222" />
+      <path class="crd-line" d="M792.3 190V222" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M792.3 190V222" />
       <circle class="mrq-node" cx="448" cy="190" r="4.5" />
-      <circle class="mrq-node" cx="80.8" cy="190" r="4.5" />
-      <circle class="mrq-node" cx="264.4" cy="190" r="4.5" />
-      <circle class="mrq-node" cx="448" cy="190" r="4.5" />
-      <circle class="mrq-node" cx="631.6" cy="190" r="4.5" />
-      <circle class="mrq-node" cx="815.2" cy="190" r="4.5" />
+      <circle class="mrq-node" cx="103.8" cy="190" r="4.5" />
+      <circle class="mrq-node" cx="333.3" cy="190" r="4.5" />
+      <circle class="mrq-node" cx="562.8" cy="190" r="4.5" />
+      <circle class="mrq-node" cx="792.3" cy="190" r="4.5" />
       <rect class="crd-badge" x="424" y="0" width="48" height="48" rx="14" />
       <g class="crd-badge-icon" transform="translate(436 12) scale(1)">
-        <path d="M7 4v16l13 -8l-13 -8" />
-      </g>
-      <text class="crd-headline" x="448" y="92" text-anchor="middle">F126.3.1 Runs</text>
-      <rect class="mrq-pill" x="347.6" y="108" width="200.8" height="24" rx="12" />
-      <text class="mrq-code" x="448" y="124" text-anchor="middle">an eval meets a live agent</text>
-      <text class="crd-summary" x="448" y="160" text-anchor="middle">An eval file is played against the agent it names, graded, kept, followed, and replayed for free.</text>
-      <rect class="mrq-glass" x="0" y="222" width="161.6" height="238" rx="14" />
-      <rect class="mrq-edge" x="28" y="221.5" width="105.6" height="1.6" rx="0" />
-      <rect class="crd-tint" x="18" y="240" width="34" height="34" rx="10" />
-      <g class="crd-icon" transform="translate(26 248) scale(0.75)">
-        <path d="M8 9h8" />
-        <path d="M8 13h6" />
-        <path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z" />
-      </g>
-      <text class="crd-name" x="18" y="298" text-anchor="start">A conversation</text>
-      <text class="crd-name" x="18" y="319" text-anchor="start">is played</text>
-      <rect class="mrq-pill" x="18" y="322" width="142.4" height="22" rx="11" />
-      <text class="mrq-code" x="28" y="337" text-anchor="start">ConversationPlayer</text>
-      <text class="pic-text" x="18" y="368" text-anchor="start">One session, each</text>
-      <text class="pic-text" x="18" y="386" text-anchor="start">turn asked in it and</text>
-      <text class="pic-text" x="18" y="404" text-anchor="start">written down, then</text>
-      <text class="pic-text" x="18" y="422" text-anchor="start">the facts and the</text>
-      <text class="pic-text" x="18" y="440" text-anchor="start">judge's marks.</text>
-      <rect class="mrq-glass" x="183.6" y="222" width="161.6" height="238" rx="14" />
-      <rect class="mrq-edge" x="211.6" y="221.5" width="105.6" height="1.6" rx="0" />
-      <rect class="crd-tint" x="201.6" y="240" width="34" height="34" rx="10" />
-      <g class="crd-icon" transform="translate(209.6 248) scale(0.75)">
-        <path d="M7 12l5 5l10 -10" />
-        <path d="M2 12l5 5m5 -5l5 -5" />
-      </g>
-      <text class="crd-name" x="201.6" y="298" text-anchor="start">Repeats decide</text>
-      <text class="crd-name" x="201.6" y="319" text-anchor="start">a pass</text>
-      <rect class="mrq-pill" x="201.6" y="322" width="88" height="22" rx="11" />
-      <text class="mrq-code" x="211.6" y="337" text-anchor="start">EvalRunner</text>
-      <text class="pic-text" x="201.6" y="368" text-anchor="start">One repeat or three.</text>
-      <text class="pic-text" x="201.6" y="386" text-anchor="start">A conversation</text>
-      <text class="pic-text" x="201.6" y="404" text-anchor="start">passes only when</text>
-      <text class="pic-text" x="201.6" y="422" text-anchor="start">every repeat does.</text>
-      <rect class="mrq-glass" x="367.2" y="222" width="161.6" height="238" rx="14" />
-      <rect class="mrq-edge" x="395.2" y="221.5" width="105.6" height="1.6" rx="0" />
-      <rect class="crd-tint" x="385.2" y="240" width="34" height="34" rx="10" />
-      <g class="crd-icon" transform="translate(393.2 248) scale(0.75)">
-        <path d="M14 3v4a1 1 0 0 0 1 1h4" />
-        <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
-        <path d="M9 9l1 0" />
-        <path d="M9 13l6 0" />
-        <path d="M9 17l6 0" />
-      </g>
-      <text class="crd-name" x="385.2" y="298" text-anchor="start">A run is one</text>
-      <text class="crd-name" x="385.2" y="319" text-anchor="start">file</text>
-      <rect class="mrq-pill" x="385.2" y="322" width="74.4" height="22" rx="11" />
-      <text class="mrq-code" x="395.2" y="337" text-anchor="start">RunStore</text>
-      <text class="pic-text" x="385.2" y="368" text-anchor="start">Written again after</text>
-      <text class="pic-text" x="385.2" y="386" text-anchor="start">each conversation,</text>
-      <text class="pic-text" x="385.2" y="404" text-anchor="start">so the file is the</text>
-      <text class="pic-text" x="385.2" y="422" text-anchor="start">progress too.</text>
-      <rect class="mrq-glass" x="550.8" y="222" width="161.6" height="238" rx="14" />
-      <rect class="mrq-edge" x="578.8" y="221.5" width="105.6" height="1.6" rx="0" />
-      <rect class="crd-tint" x="568.8" y="240" width="34" height="34" rx="10" />
-      <g class="crd-icon" transform="translate(576.8 248) scale(0.75)">
         <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
         <path d="M3 12m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
         <path d="M7 8l0 .01" />
         <path d="M7 16l0 .01" />
       </g>
-      <text class="crd-name" x="568.8" y="298" text-anchor="start">Started and</text>
-      <text class="crd-name" x="568.8" y="319" text-anchor="start">followed</text>
-      <rect class="mrq-pill" x="568.8" y="322" width="142.4" height="22" rx="11" />
-      <text class="mrq-code" x="578.8" y="337" text-anchor="start">MapLouisAgentEvals</text>
-      <text class="pic-text" x="568.8" y="368" text-anchor="start">The site's own API</text>
-      <text class="pic-text" x="568.8" y="386" text-anchor="start">answers 202 and a</text>
-      <text class="pic-text" x="568.8" y="404" text-anchor="start">reader asks the run</text>
-      <text class="pic-text" x="568.8" y="422" text-anchor="start">how it goes.</text>
-      <rect class="mrq-glass" x="734.4" y="222" width="161.6" height="238" rx="14" />
-      <rect class="mrq-edge" x="762.4" y="221.5" width="105.6" height="1.6" rx="0" />
-      <rect class="crd-tint" x="752.4" y="240" width="34" height="34" rx="10" />
-      <g class="crd-icon" transform="translate(760.4 248) scale(0.75)">
-        <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
-        <path d="M12 7v5l3 3" />
+      <text class="crd-headline" x="448" y="92" text-anchor="middle">LouisAgent.Api.Evals</text>
+      <rect class="mrq-pill" x="306.8" y="108" width="282.4" height="24" rx="12" />
+      <text class="mrq-code" x="448" y="124" text-anchor="middle">AddLouisAgentEvals, MapLouisAgentEvals</text>
+      <text class="crd-summary" x="448" y="160" text-anchor="middle">A site's evals, started and followed over its own API.</text>
+      <rect class="mrq-glass" x="0" y="222" width="207.5" height="199" rx="14" />
+      <rect class="mrq-edge" x="28" y="221.5" width="151.5" height="1.6" rx="0" />
+      <rect class="crd-tint" x="18" y="240" width="34" height="34" rx="10" />
+      <g class="crd-icon" transform="translate(26 248) scale(0.75)">
+        <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
+        <path d="M3 12m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
+        <path d="M7 8l0 .01" />
+        <path d="M7 16l0 .01" />
       </g>
-      <text class="crd-name" x="752.4" y="298" text-anchor="start">A replay is</text>
-      <text class="crd-name" x="752.4" y="319" text-anchor="start">free</text>
-      <rect class="mrq-pill" x="752.4" y="322" width="94.8" height="22" rx="11" />
-      <text class="mrq-code" x="762.4" y="337" text-anchor="start">ReplayStore</text>
-      <text class="pic-text" x="752.4" y="368" text-anchor="start">A live run records</text>
-      <text class="pic-text" x="752.4" y="386" text-anchor="start">the agent's and the</text>
-      <text class="pic-text" x="752.4" y="404" text-anchor="start">judge's answers. A</text>
-      <text class="pic-text" x="752.4" y="422" text-anchor="start">replay calls no</text>
-      <text class="pic-text" x="752.4" y="440" text-anchor="start">model.</text>
+      <text class="crd-name" x="64" y="263" text-anchor="start">The four routes</text>
+      <rect class="mrq-pill" x="18" y="280" width="101.6" height="22" rx="11" />
+      <text class="mrq-code" x="28" y="295" text-anchor="start">EvalHandlers</text>
+      <text class="pic-text" x="18" y="326" text-anchor="start">The host's evals, a run</text>
+      <text class="pic-text" x="18" y="344" text-anchor="start">started, a run read at its</text>
+      <text class="pic-text" x="18" y="362" text-anchor="start">address, an eval's runs.</text>
+      <rect class="mrq-glass" x="229.5" y="222" width="207.5" height="199" rx="14" />
+      <rect class="mrq-edge" x="257.5" y="221.5" width="151.5" height="1.6" rx="0" />
+      <rect class="crd-tint" x="247.5" y="240" width="34" height="34" rx="10" />
+      <g class="crd-icon" transform="translate(255.5 248) scale(0.75)">
+        <path d="M7 4v16l13 -8l-13 -8" />
+      </g>
+      <text class="crd-name" x="247.5" y="298" text-anchor="start">One run at a time</text>
+      <rect class="mrq-pill" x="247.5" y="301" width="67.6" height="22" rx="11" />
+      <text class="mrq-code" x="257.5" y="316" text-anchor="start">RunDesk</text>
+      <text class="pic-text" x="247.5" y="347" text-anchor="start">A hosted service: a start</text>
+      <text class="pic-text" x="247.5" y="365" text-anchor="start">takes its one slot, and the</text>
+      <text class="pic-text" x="247.5" y="383" text-anchor="start">host waits for the run when</text>
+      <text class="pic-text" x="247.5" y="401" text-anchor="start">it stops.</text>
+      <rect class="mrq-glass" x="459" y="222" width="207.5" height="199" rx="14" />
+      <rect class="mrq-edge" x="487" y="221.5" width="151.5" height="1.6" rx="0" />
+      <rect class="crd-tint" x="477" y="240" width="34" height="34" rx="10" />
+      <g class="crd-icon" transform="translate(485 248) scale(0.75)">
+        <path d="M7 12l5 5l10 -10" />
+        <path d="M2 12l5 5m5 -5l5 -5" />
+      </g>
+      <text class="crd-name" x="477" y="298" text-anchor="start">A run played and kept</text>
+      <rect class="mrq-pill" x="477" y="301" width="67.6" height="22" rx="11" />
+      <text class="mrq-code" x="487" y="316" text-anchor="start">RunWork</text>
+      <text class="pic-text" x="477" y="347" text-anchor="start">The agent asked at the</text>
+      <text class="pic-text" x="477" y="365" text-anchor="start">program's own address with</text>
+      <text class="pic-text" x="477" y="383" text-anchor="start">its key, the run kept after</text>
+      <text class="pic-text" x="477" y="401" text-anchor="start">every conversation.</text>
+      <rect class="mrq-glass" x="688.5" y="222" width="207.5" height="199" rx="14" />
+      <rect class="mrq-edge" x="716.5" y="221.5" width="151.5" height="1.6" rx="0" />
+      <rect class="crd-tint" x="706.5" y="240" width="34" height="34" rx="10" />
+      <g class="crd-icon" transform="translate(714.5 248) scale(0.75)">
+        <path d="M5 5m0 1a1 1 0 0 1 1 -1h12a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-12a1 1 0 0 1 -1 -1z" />
+        <path d="M9 9h6v6h-6z" />
+        <path d="M3 10h2" />
+        <path d="M3 14h2" />
+        <path d="M10 3v2" />
+        <path d="M14 3v2" />
+        <path d="M21 10h-2" />
+        <path d="M21 14h-2" />
+        <path d="M14 21v-2" />
+        <path d="M10 21v-2" />
+      </g>
+      <text class="crd-name" x="752.5" y="263" text-anchor="start">Its settings</text>
+      <rect class="mrq-pill" x="706.5" y="280" width="101.6" height="22" rx="11" />
+      <text class="mrq-code" x="716.5" y="295" text-anchor="start">EvalsOptions</text>
+      <text class="pic-text" x="706.5" y="326" text-anchor="start">Where runs are kept, which</text>
+      <text class="pic-text" x="706.5" y="344" text-anchor="start">model judges, and where the</text>
+      <text class="pic-text" x="706.5" y="362" text-anchor="start">agent is asked.</text>
     </g>
-    <rect class="mrq-rule" x="0" y="524" width="896" height="1" rx="0" />
+    <rect class="mrq-rule" x="0" y="485" width="896" height="1" rx="0" />
     <g class="pic-brand" transform="translate(0 0)">
-      <text class="pic-name" x="880" y="546" text-anchor="end" aria-label="louis-agent">l<tspan class="pic-mark" dy="1.5">•</tspan><tspan dy="-1.5">uis-agent</tspan></text>
+      <text class="pic-name" x="880" y="507" text-anchor="end" aria-label="louis-agent">l<tspan class="pic-mark" dy="1.5">•</tspan><tspan dy="-1.5">uis-agent</tspan></text>
     </g>
   </g>
-  <rect class="notebar" x="0" y="574" width="896" height="54" rx="8" />
-  <g class="note-icon" transform="translate(12 584) scale(0.6667)">
+  <rect class="notebar" x="0" y="535" width="896" height="54" rx="8" />
+  <g class="note-icon" transform="translate(12 545) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />
     <path d="M11 12h1v4h1" />
   </g>
-  <text class="notes" x="38" y="596">
-    <tspan class="note-head">Five parts:</tspan>
-    <tspan class="note-rest">a conversation is played over the sessions API and graded, repeats decide a pass, a run is kept as one</tspan>
+  <text class="notes" x="38" y="557">
+    <tspan class="note-head">What a site's API program takes for its agents' evals:</tspan>
+    <tspan class="note-rest">four routes behind the admin key, a desk that runs one run at</tspan>
   </text>
-  <text class="notes" x="38" y="613">
-    <tspan class="note-rest">file, a site's API starts and follows a run, and a replay costs nothing. No page yet: the screens are F126.3.2's.</tspan>
+  <text class="notes" x="38" y="574">
+    <tspan class="note-rest">a time in the background, and the work that plays a run over the sessions API.</tspan>
   </text>
 </svg>

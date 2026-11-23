@@ -1,0 +1,71 @@
+{
+  "kind": "cards",
+  "title": "Run an eval: the overview",
+  "caption": "Start a run through the site's API, follow it at its address, read its file, replay it for free, and record again when the replay says its recording is out of date.",
+  "cards": {
+    "rows": [
+      {
+        "cards": [
+          {
+            "id": "top",
+            "icon": "checks",
+            "title": "Run an eval",
+            "code": "/v1/admin/evals",
+            "text": "An eval of a site's agent, run over the site's own API with the admin key.",
+            "look": "highlight"
+          }
+        ]
+      },
+      {
+        "cards": [
+          {
+            "id": "start",
+            "icon": "play",
+            "title": "Start it",
+            "code": "POST …/{name}/runs",
+            "text": "Live with one repeat or three; it spends money on the agent's model and the judge's."
+          },
+          {
+            "id": "follow",
+            "icon": "search",
+            "title": "Follow it",
+            "code": "GET …/runs/{id}",
+            "text": "Its address answers the run as it goes, and once it has ended."
+          },
+          {
+            "id": "read",
+            "icon": "file",
+            "title": "Read its file",
+            "code": "evals/runs/{id}.json",
+            "text": "One JSON file per run in the data folder, the same record the API sends."
+          },
+          {
+            "id": "replay",
+            "icon": "database",
+            "title": "Replay it",
+            "code": "kind: replay",
+            "text": "The last live run played back from its recording, with no model called."
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "from": "top",
+        "to": "start"
+      },
+      {
+        "from": "top",
+        "to": "follow"
+      },
+      {
+        "from": "top",
+        "to": "read"
+      },
+      {
+        "from": "top",
+        "to": "replay"
+      }
+    ]
+  }
+}

@@ -13,4 +13,9 @@
        and a page in the browser reads. It references no project and no package, so a browser project takes it
        without the engine. -->
 
+  <ItemGroup>
+    <!-- This project's design doc, shown under docs/ in the IDE's solution explorer; nothing is built or copied. -->
+    <None Include="..\..\docs\projects\LouisAgent.Evals.Contracts.md" Link="docs\LouisAgent.Evals.Contracts.md" />
+  </ItemGroup>
+
 </Project>

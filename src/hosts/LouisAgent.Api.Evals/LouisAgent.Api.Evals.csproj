@@ -24,4 +24,9 @@
     <ProjectReference Include="..\LouisAgent.Api\LouisAgent.Api.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- This project's design doc, shown under docs/ in the IDE's solution explorer; nothing is built or copied. -->
+    <None Include="..\..\docs\projects\LouisAgent.Api.Evals.md" Link="docs\LouisAgent.Api.Evals.md" />
+  </ItemGroup>
+
 </Project>

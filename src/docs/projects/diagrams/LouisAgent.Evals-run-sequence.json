@@ -1,0 +1,109 @@
+{
+  "kind": "sequence",
+  "title": "LouisAgent.Evals: one conversation of a live run",
+  "caption": "A conversation played once: a session opened with the run's tag and asked to record, each turn asked and written down, the session closed, the facts told in code, the criteria marked by the judge, and the run kept again.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "R",
+        "icon": "play",
+        "tone": "green",
+        "label": "The runner and player"
+      },
+      {
+        "id": "A",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "The sessions API"
+      },
+      {
+        "id": "J",
+        "icon": "scales",
+        "tone": "green",
+        "label": "The judge"
+      },
+      {
+        "id": "S",
+        "icon": "file",
+        "tone": "amber",
+        "label": "The run store"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "R",
+        "to": "A",
+        "text": "POST /v1/sessions { identity, run tag, task, replay: record }"
+      },
+      {
+        "step": "reply",
+        "from": "A",
+        "to": "R",
+        "text": "the session's id"
+      },
+      {
+        "step": "message",
+        "from": "R",
+        "to": "A",
+        "text": "POST …/messages { the first turn's ask }"
+      },
+      {
+        "step": "reply",
+        "from": "A",
+        "to": "R",
+        "text": "the stream: text, tool calls and results, the cost"
+      },
+      {
+        "step": "note",
+        "over": [
+          "R"
+        ],
+        "text": "the turn's transcript is written down from the events"
+      },
+      {
+        "step": "message",
+        "from": "R",
+        "to": "A",
+        "text": "POST …/messages { the follow-up }, same session"
+      },
+      {
+        "step": "reply",
+        "from": "A",
+        "to": "R",
+        "text": "the stream of the second turn"
+      },
+      {
+        "step": "message",
+        "from": "R",
+        "to": "A",
+        "text": "DELETE the session"
+      },
+      {
+        "step": "note",
+        "over": [
+          "R"
+        ],
+        "text": "Facts.Tell for each fact of each turn, in code"
+      },
+      {
+        "step": "message",
+        "from": "R",
+        "to": "J",
+        "text": "MarkAsync(a criterion, the turns up to this one)"
+      },
+      {
+        "step": "reply",
+        "from": "J",
+        "to": "R",
+        "text": "a Mark, or it throws and the run stops with the reason"
+      },
+      {
+        "step": "message",
+        "from": "R",
+        "to": "S",
+        "text": "kept: Save(the run, with this conversation's repeats)"
+      }
+    ]
+  }
+}

@@ -228,9 +228,9 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M2 12l5 5m5 -5l5 -5" />
       </g>
       <text class="crd-headline" x="448" y="92" text-anchor="middle">LouisAgent.Evals</text>
-      <rect class="mrq-pill" x="334" y="108" width="228" height="24" rx="12" />
-      <text class="mrq-code" x="448" y="124" text-anchor="middle">no API, no page, no stored run</text>
-      <text class="crd-summary" x="448" y="160" text-anchor="middle">The first new code of the evals: what an eval file holds, and how one turn of a conversation gets its marks.</text>
+      <rect class="mrq-pill" x="344.2" y="108" width="207.6" height="24" rx="12" />
+      <text class="mrq-code" x="448" y="124" text-anchor="middle">reads, plays, grades, keeps</text>
+      <text class="crd-summary" x="448" y="160" text-anchor="middle">How an agent is measured: an eval file of conversations, played and graded, kept as a run.</text>
       <rect class="mrq-glass" x="0" y="222" width="207.5" height="220" rx="14" />
       <rect class="mrq-edge" x="28" y="221.5" width="151.5" height="1.6" rx="0" />
       <rect class="crd-tint" x="18" y="240" width="34" height="34" rx="10" />
@@ -242,59 +242,56 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M9 17l6 0" />
       </g>
       <text class="crd-name" x="64" y="263" text-anchor="start">The file is read</text>
-      <rect class="mrq-pill" x="18" y="280" width="115.2" height="22" rx="11" />
-      <text class="mrq-code" x="28" y="295" text-anchor="start">EvalFileReader</text>
+      <rect class="mrq-pill" x="18" y="280" width="203.6" height="22" rx="11" />
+      <text class="mrq-code" x="28" y="295" text-anchor="start">EvalFileReader, EvalCatalog</text>
       <text class="pic-text" x="18" y="326" text-anchor="start">One .eval.json becomes</text>
-      <text class="pic-text" x="18" y="344" text-anchor="start">records. A wrong file is</text>
-      <text class="pic-text" x="18" y="362" text-anchor="start">refused at its first fault,</text>
-      <text class="pic-text" x="18" y="380" text-anchor="start">with its place.</text>
+      <text class="pic-text" x="18" y="344" text-anchor="start">records, found beside its</text>
+      <text class="pic-text" x="18" y="362" text-anchor="start">agent's prompts. A wrong one</text>
+      <text class="pic-text" x="18" y="380" text-anchor="start">is refused at its first</text>
+      <text class="pic-text" x="18" y="398" text-anchor="start">fault.</text>
       <rect class="mrq-glass" x="229.5" y="222" width="207.5" height="220" rx="14" />
       <rect class="mrq-edge" x="257.5" y="221.5" width="151.5" height="1.6" rx="0" />
       <rect class="crd-tint" x="247.5" y="240" width="34" height="34" rx="10" />
       <g class="crd-icon" transform="translate(255.5 248) scale(0.75)">
-        <path d="M7 8l-4 4l4 4" />
-        <path d="M17 8l4 4l-4 4" />
-        <path d="M14 4l-4 16" />
+        <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+        <path d="M21 21l-6 -6" />
       </g>
-      <text class="crd-name" x="247.5" y="298" text-anchor="start">The schema is made</text>
-      <rect class="mrq-pill" x="247.5" y="301" width="128.8" height="22" rx="11" />
-      <text class="mrq-code" x="257.5" y="316" text-anchor="start">eval.schema.json</text>
-      <text class="pic-text" x="247.5" y="347" text-anchor="start">Made from the records and</text>
-      <text class="pic-text" x="247.5" y="365" text-anchor="start">kept as a golden file, so</text>
-      <text class="pic-text" x="247.5" y="383" text-anchor="start">Rider helps while you write</text>
-      <text class="pic-text" x="247.5" y="401" text-anchor="start">an eval.</text>
+      <text class="crd-name" x="293.5" y="263" text-anchor="start">A turn is graded</text>
+      <rect class="mrq-pill" x="247.5" y="280" width="101.6" height="22" rx="11" />
+      <text class="mrq-code" x="257.5" y="295" text-anchor="start">Facts, Judge</text>
+      <text class="pic-text" x="247.5" y="326" text-anchor="start">Code tells seven facts from</text>
+      <text class="pic-text" x="247.5" y="344" text-anchor="start">what happened, and a judge</text>
+      <text class="pic-text" x="247.5" y="362" text-anchor="start">marks each criterion with</text>
+      <text class="pic-text" x="247.5" y="380" text-anchor="start">its reason.</text>
       <rect class="mrq-glass" x="459" y="222" width="207.5" height="220" rx="14" />
       <rect class="mrq-edge" x="487" y="221.5" width="151.5" height="1.6" rx="0" />
       <rect class="crd-tint" x="477" y="240" width="34" height="34" rx="10" />
       <g class="crd-icon" transform="translate(485 248) scale(0.75)">
-        <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
-        <path d="M21 21l-6 -6" />
+        <path d="M7 4v16l13 -8l-13 -8" />
       </g>
-      <text class="crd-name" x="477" y="298" text-anchor="start">Code tells the facts</text>
-      <rect class="mrq-pill" x="477" y="301" width="54" height="22" rx="11" />
-      <text class="mrq-code" x="487" y="316" text-anchor="start">Facts</text>
-      <text class="pic-text" x="477" y="347" text-anchor="start">Seven things a transcript</text>
-      <text class="pic-text" x="477" y="365" text-anchor="start">shows for certain and for</text>
-      <text class="pic-text" x="477" y="383" text-anchor="start">free, such as which tool was</text>
-      <text class="pic-text" x="477" y="401" text-anchor="start">called.</text>
+      <text class="crd-name" x="523" y="263" text-anchor="start">A run is played</text>
+      <rect class="mrq-pill" x="477" y="280" width="224" height="22" rx="11" />
+      <text class="mrq-code" x="487" y="295" text-anchor="start">ConversationPlayer, EvalRunner</text>
+      <text class="pic-text" x="477" y="326" text-anchor="start">Each conversation in a</text>
+      <text class="pic-text" x="477" y="344" text-anchor="start">session of its own, as many</text>
+      <text class="pic-text" x="477" y="362" text-anchor="start">repeats as asked; it stops</text>
+      <text class="pic-text" x="477" y="380" text-anchor="start">when the harness fails.</text>
       <rect class="mrq-glass" x="688.5" y="222" width="207.5" height="220" rx="14" />
       <rect class="mrq-edge" x="716.5" y="221.5" width="151.5" height="1.6" rx="0" />
       <rect class="crd-tint" x="706.5" y="240" width="34" height="34" rx="10" />
       <g class="crd-icon" transform="translate(714.5 248) scale(0.75)">
-        <path d="M7 20l10 0" />
-        <path d="M6 6l6 -1l6 1" />
-        <path d="M12 3l0 17" />
-        <path d="M9 12l-3 -6l-3 6a3 3 0 0 0 6 0" />
-        <path d="M21 12l-3 -6l-3 6a3 3 0 0 0 6 0" />
+        <path d="M12 6m-8 0a8 3 0 1 0 16 0a8 3 0 1 0 -16 0" />
+        <path d="M4 6v6a8 3 0 0 0 16 0v-6" />
+        <path d="M4 12v6a8 3 0 0 0 16 0v-6" />
       </g>
-      <text class="crd-name" x="706.5" y="298" text-anchor="start">A judge marks the</text>
-      <text class="crd-name" x="706.5" y="319" text-anchor="start">rest</text>
-      <rect class="mrq-pill" x="706.5" y="322" width="54" height="22" rx="11" />
-      <text class="mrq-code" x="716.5" y="337" text-anchor="start">Judge</text>
-      <text class="pic-text" x="706.5" y="368" text-anchor="start">One model call for one</text>
-      <text class="pic-text" x="706.5" y="386" text-anchor="start">criterion: yes or no, with</text>
-      <text class="pic-text" x="706.5" y="404" text-anchor="start">the reason, as a typed</text>
-      <text class="pic-text" x="706.5" y="422" text-anchor="start">record.</text>
+      <text class="crd-name" x="706.5" y="298" text-anchor="start">A run is kept and</text>
+      <text class="crd-name" x="706.5" y="319" text-anchor="start">replayed</text>
+      <rect class="mrq-pill" x="706.5" y="322" width="162.8" height="22" rx="11" />
+      <text class="mrq-code" x="716.5" y="337" text-anchor="start">RunStore, JudgeReplay</text>
+      <text class="pic-text" x="706.5" y="368" text-anchor="start">One file per run. A live run</text>
+      <text class="pic-text" x="706.5" y="386" text-anchor="start">records the agent's and the</text>
+      <text class="pic-text" x="706.5" y="404" text-anchor="start">judge's answers, so a replay</text>
+      <text class="pic-text" x="706.5" y="422" text-anchor="start">costs nothing.</text>
     </g>
     <rect class="mrq-rule" x="0" y="506" width="896" height="1" rx="0" />
     <g class="pic-brand" transform="translate(0 0)">
@@ -308,10 +305,9 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <path d="M11 12h1v4h1" />
   </g>
   <text class="notes" x="38" y="578">
-    <tspan class="note-head">Four parts and nothing else:</tspan>
-    <tspan class="note-rest">a reader that takes one eval file into records, a schema made from those records, seven</tspan>
+    <tspan class="note-rest">An eval file is read and its turns graded, and a run plays it against the agent over the sessions API, keeps itself</tspan>
   </text>
   <text class="notes" x="38" y="595">
-    <tspan class="note-rest">facts that code tells from a transcript, and one judge that marks a criterion. No API, no page and no stored run.</tspan>
+    <tspan class="note-rest">as one file, and replays from its recording for free.</tspan>
   </text>
 </svg>

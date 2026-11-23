@@ -49,8 +49,8 @@ The design decisions every change keeps, one line each: the *why* is its ADR in 
   verified modules, pinned, every name a parameter, the infrastructure and its rights but never the apps; proved by
   `what-if` against what runs, deployed with `deploy.ps1 infra` on a yes, never by CI. [ADR 0131](../../src/docs/adr/0131-the-sites-azure-is-one-bicep-file-a-person-deploys.md).
 - **An eval is one file of conversations** — `{name}.eval.json` beside the identity it proves, facts in code,
-  criteria a judge marks, a person's flip; being rebuilt, none runs today; a pack or an identity references no eval
-  project, and a live run waits for Louis's go. [ADR 0134](../../src/docs/adr/0134-an-eval-is-one-file-of-conversations.md).
+  criteria a judge marks, a person's flip; a run is one file, recorded so its replay costs nothing; a pack or
+  an identity references no eval project, and a live run waits for Louis's go. [ADR 0134](../../src/docs/adr/0134-an-eval-is-one-file-of-conversations.md).
 - **Nothing is backward compatible until something is sold** — no migration, alias, lenient reader or second parser
   for what we store or send between our own parts. [ADR 0049](../../src/docs/adr/0049-nothing-is-compatible-before-a-sale.md).
 

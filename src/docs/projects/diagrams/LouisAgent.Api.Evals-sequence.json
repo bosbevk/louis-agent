@@ -1,0 +1,96 @@
+{
+  "kind": "sequence",
+  "title": "LouisAgent.Api.Evals: a run started and followed",
+  "caption": "The start is answered at once; the run goes on in the background, kept after each conversation, and its address answers it as it goes and once it has ended.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "P",
+        "icon": "user",
+        "tone": "blue",
+        "label": "Someone with the admin key"
+      },
+      {
+        "id": "H",
+        "icon": "server",
+        "tone": "green",
+        "label": "The eval routes"
+      },
+      {
+        "id": "D",
+        "icon": "play",
+        "tone": "green",
+        "label": "The run desk"
+      },
+      {
+        "id": "W",
+        "icon": "checks",
+        "tone": "green",
+        "label": "The run's work"
+      },
+      {
+        "id": "S",
+        "icon": "file",
+        "tone": "amber",
+        "label": "The run store"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "P",
+        "to": "H",
+        "text": "POST /v1/admin/evals/guide/runs { live, 3 }"
+      },
+      {
+        "step": "message",
+        "from": "H",
+        "to": "D",
+        "text": "TryStart(the run, its work)"
+      },
+      {
+        "step": "reply",
+        "from": "H",
+        "to": "P",
+        "text": "202, Location: /v1/admin/evals/runs/{id}"
+      },
+      {
+        "step": "message",
+        "from": "D",
+        "to": "W",
+        "text": "the work, in the background"
+      },
+      {
+        "step": "message",
+        "from": "W",
+        "to": "S",
+        "text": "Save(the run, running)"
+      },
+      {
+        "step": "note",
+        "over": [
+          "W"
+        ],
+        "text": "each conversation played over the sessions API and graded"
+      },
+      {
+        "step": "message",
+        "from": "W",
+        "to": "S",
+        "text": "Save(the run, after each conversation)"
+      },
+      {
+        "step": "message",
+        "from": "P",
+        "to": "H",
+        "text": "GET /v1/admin/evals/runs/{id}"
+      },
+      {
+        "step": "reply",
+        "from": "H",
+        "to": "P",
+        "text": "the run as it is kept: running, then finished"
+      }
+    ]
+  }
+}
