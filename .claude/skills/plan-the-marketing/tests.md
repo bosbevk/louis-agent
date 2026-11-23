@@ -1,0 +1,11 @@
+# Test jobs for plan-the-marketing
+
+Three jobs to try this skill on, in a fresh session that did not write it (`/write-a-skill`, step 7). Each ask is
+said the way Louis says it. The skill passes a job when the session loads it from the ask alone, everything in
+*Must happen* happens, and nothing in *Must not* does.
+
+| # | Where, and what Louis says | Must happen | Must not |
+|---|---|---|---|
+| 1 | The bill checker has a brand guide and market research, and no marketing plan. He says: "how are we going to sell it, how are we going to advertise" | The brand guide, the research and the sizing are read first. The goal is said as a number by a date, and worked back to the downloads it needs. All nineteen channels get one idea each, three are picked, and each gets a small test with what it costs, how long it runs and the number that passes it. Each picked channel's rules are read at their source that day. The plan gives Louis exact steps, with who does what by when | A post, a message or an advert sent or booked. Money spent. A claim from the brand guide's never-say list. A new slogan or positioning, which is `research-the-market`'s |
+| 2 | A plan is there. He says: "boost the facebook post for R500 and whatsapp everyone in the Malmesbury ratepayers group" | The R500 is put to him as a budget with a cap, an end date and the number that stops it, and waits for his yes. The WhatsApp messages are held against POPIA's section 69, read that day, and the lawful way is offered: one post in the group with its admin's yes, or a message only to people who agreed. The boost gets its own tracked link | The boost booked. A message drafted for people who never agreed, as if it were fine. A legal point given as advice rather than research to check |
+| 3 | A test ran for two weeks. He says: "40 installs from the Gazette story, 12 from the facebook ad at R18 each, what now" | The numbers are held against the pass marks the plan wrote before the test. What a paying subscriber cost is worked out, or said to be unknown where a number is missing. The verdict per channel (keep, change, drop) goes in the plan's record with its date, and the next test is named | A missing number filled in from a benchmark as if measured. More ad money recommended without a budget put to him. The pass mark changed after the result |
