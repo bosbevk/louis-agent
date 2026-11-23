@@ -102,12 +102,39 @@ public static class EvalsWords
         EvalsPart.LeftOutWhy => "The run it re-graded has no answer to it as the file asks it now.",
         EvalsPart.RegradeReplay =>
             "Replay free plays this again: the judge's new answers were added to the recording of the live run.",
+        EvalsPart.ChangeMore => "▲ {0} more than the run before",
+        EvalsPart.ChangeFewer => "▼ {0} fewer than the run before",
+        EvalsPart.ChangeSame => "the same as the run before",
+        EvalsPart.NowPasses => "{0} now passes",
+        EvalsPart.NowFails => "{0} now fails",
+        EvalsPart.NowPassesTag => "now passes",
+        EvalsPart.NowFailsTag => "now fails",
+        EvalsPart.ConversationsTitle => "Conversations",
+        EvalsPart.LastRuns => "The last {0} runs",
+        EvalsPart.TrendNote => "Conversations passed, oldest first, finished runs only.",
+        EvalsPart.MissedMost => "The criteria missed most",
+        EvalsPart.MissedIn => "missed in {0} of {1}",
+        EvalsPart.FlippedIn => "you flipped it in {0} of {1}",
+        EvalsPart.KeepFlipping => "A criterion you keep flipping wants rewording, or to be a fact.",
+        EvalsPart.FlippedLately => "You flipped this criterion in {0} of the last {1} runs.",
         _ => throw new ArgumentOutOfRangeException(nameof(part), part, null)
     });
 
     /// <summary>A count in words, in the one's words for one and the many's for any other: "3 repeats".</summary>
     public static string Count(int count, EvalsPart one, EvalsPart many) =>
         $"{count} {Words[count == 1 ? one : many]}";
+
+    /// <summary>
+    /// A change against the run before in words, by its sign: "▲ 1 more than the run before", "▼ 2 fewer…", or "the
+    /// same as the run before" (F126.4).
+    /// </summary>
+    /// <remarks>A switch on the change's sign, one arm a case, read as a table (ADR 0051).</remarks>
+    public static string SayChange(int change) => change switch
+    {
+        > 0 => Fill(EvalsPart.ChangeMore, change),
+        < 0 => Fill(EvalsPart.ChangeFewer, -change),
+        _ => Words[EvalsPart.ChangeSame]
+    };
 
     /// <summary>A part's words with its holes filled, in order, the same in every culture.</summary>
     public static string Fill(EvalsPart part, params object[] holes) =>

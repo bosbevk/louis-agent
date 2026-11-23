@@ -17,6 +17,10 @@
             {
                 <div class="mark-line-note">@NoteOf(note)</div>
             }
+            @if (Lately is { } lately)
+            {
+                <div class="mark-line-lately">@lately</div>
+            }
             <button type="button" class="header-button mark-undo mt-2" @onclick="UndoAsync">@UndoTheFlip</button>
         }
         else

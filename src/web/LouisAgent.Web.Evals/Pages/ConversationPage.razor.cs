@@ -61,13 +61,15 @@ public partial class ConversationPage
     /// <summary>The conversation before this one, in the same order.</summary>
     private ConversationRun? Previous => _run?.FindPrevious(Conversation);
 
+    /// <summary>The eval's runs, asked which is the run before and how often a criterion was flipped lately.</summary>
+    private RunHistory History => new(_runs);
+
     /// <summary>
-    /// The run before this one: the newest of this eval's runs started earlier. The list doesn't say which
-    /// conversations a run holds, so the link isn't checked ahead; that run's page says so when it lacks this one.
+    /// The run before this one, by the comparison's rule (F126.4): the run a re-grade re-graded, else the newest
+    /// earlier run that finished. The list doesn't say which conversations a run holds, so the link isn't checked
+    /// ahead; that run's page says so when it lacks this one.
     /// </summary>
-    private RunRow? Before => _run is { } read
-        ? _runs.Where(row => row.StartedAt < read.StartedAt).MaxBy(row => row.StartedAt)
-        : null;
+    private RunRow? Before => _runs.FirstOrDefault(row => row.Id == Run) is { } row ? History.FindBefore(row) : null;
 
     private string RunPage => EvalAddress.RunPageOf(Eval, Run);
 

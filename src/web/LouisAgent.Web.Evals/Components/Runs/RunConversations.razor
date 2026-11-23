@@ -1,0 +1,10 @@
+@* A run's conversations, failed first, then those passed after a flip, then the rest, each a row that says whether it
+   now passes or now fails against the run before (F126.4). *@
+
+<section class="card-p run-conversations">
+    <h2>@Title</h2>
+    @foreach (var conversation in Run.OrderFailedFirst())
+    {
+        <ConversationRow @key="conversation.Id" Eval="@Eval" Run="@Run.Id" Conversation="conversation" Change="Change"/>
+    }
+</section>

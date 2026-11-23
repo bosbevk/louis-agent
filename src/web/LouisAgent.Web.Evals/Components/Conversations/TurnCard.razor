@@ -36,7 +36,7 @@
         }
         @foreach (var (criterion, number) in Turn.Criteria.Select((criterion, at) => (criterion, at + 1)))
         {
-            <div class="col-12 col-lg-6"><MarkLine Mark="criterion" Kind="MarkKind.Criterion" Place="PlaceOf(number)" OnFlip="OnFlip" OnUndo="OnUndo"/></div>
+            <div class="col-12 col-lg-6"><MarkLine Mark="criterion" Kind="MarkKind.Criterion" Place="PlaceOf(number)" OnFlip="OnFlip" OnUndo="OnUndo" History="History"/></div>
         }
     </div>
 </section>

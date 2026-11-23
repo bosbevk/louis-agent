@@ -20,7 +20,8 @@
         @switch (_run?.Status)
         {
             case RunStatus.Finished:
-                <p>@Passed of @Graded conversations passed. A conversation passes only when every one of its repeats does.</p>
+                <p class="mb-0">@Passed of @Graded conversations passed. A conversation passes only when every one of its repeats does.</p>
+                <RunChangeLine Eval="@Eval" Change="Change" Before="_before"/>
                 break;
             case RunStatus.CouldNotFinish:
                 <p>@Graded of @Held conversations were graded, then the run could not go on.</p>
@@ -89,13 +90,8 @@ else if (_run is { } run)
         }
     </section>
 
-    <section class="card-p run-conversations">
-        <h2>Conversations</h2>
-        @foreach (var conversation in run.OrderFailedFirst())
-        {
-            <ConversationRow @key="conversation.Id" Eval="@Eval" Run="@run.Id" Conversation="conversation"/>
-        }
-    </section>
+    <RunConversations Eval="@Eval" Run="run" Change="Change"/>
+    <RunTrend Eval="@Eval" Rows="_runs" Current="@run.Id"/>
 
     <RunRows Eval="@Eval" Rows="_runs" Open="@run.Id"/>
 }

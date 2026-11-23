@@ -256,5 +256,50 @@ public enum EvalsPart
     LeftOutWhy,
 
     /// <summary>What a re-grade leaves for a replay.</summary>
-    RegradeReplay
+    RegradeReplay,
+
+    /// <summary>A run that passed more than the run before (F126.4).</summary>
+    ChangeMore,
+
+    /// <summary>A run that passed fewer.</summary>
+    ChangeFewer,
+
+    /// <summary>A run that passed as many.</summary>
+    ChangeSame,
+
+    /// <summary>The conversations that now pass, named.</summary>
+    NowPasses,
+
+    /// <summary>The conversations that now fail, named.</summary>
+    NowFails,
+
+    /// <summary>The tag on a row that now passes.</summary>
+    NowPassesTag,
+
+    /// <summary>The tag on a row that now fails.</summary>
+    NowFailsTag,
+
+    /// <summary>The title of a run's conversations.</summary>
+    ConversationsTitle,
+
+    /// <summary>The title of the last runs' trend.</summary>
+    LastRuns,
+
+    /// <summary>What the trend's bars are.</summary>
+    TrendNote,
+
+    /// <summary>The title of the criteria missed most.</summary>
+    MissedMost,
+
+    /// <summary>How often a criterion was missed lately.</summary>
+    MissedIn,
+
+    /// <summary>How often a person flipped it lately.</summary>
+    FlippedIn,
+
+    /// <summary>What a criterion flipped again and again asks for.</summary>
+    KeepFlipping,
+
+    /// <summary>On a flipped mark: how often its criterion was flipped lately.</summary>
+    FlippedLately
 }

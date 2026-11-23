@@ -1,0 +1,28 @@
+@* The last eight runs (F126.4): a bar a finished run, how many conversations passed, this run marked; then the
+   criteria missed most, with how often a person flipped each. A plain bar in markup, no chart library. *@
+
+@if (Last.Count > 0)
+{
+    <section class="card-p run-trend">
+        <h2>@Title</h2>
+        <div class="run-trend-bars d-flex align-items-end gap-2" role="img" aria-label="@Note">
+            @foreach (var row in Last)
+            {
+                <div class="d-flex flex-column align-items-center gap-1">
+                    <span class="run-trend-count">@row.Passed</span>
+                    <a class="run-trend-bar @(row.Id == Current ? "is-this" : "")" href="@EvalAddress.RunPageOf(Eval, row.Id)" style="height: @(HeightOf(row))px" aria-label="@EvalsWords.FormatLocal(row.StartedAt)"></a>
+                </div>
+            }
+        </div>
+        <p class="run-trend-note mt-2">@Note</p>
+        @if (Missed.Count > 0)
+        {
+            <h3 class="run-trend-title">@MissedMost</h3>
+            @foreach (var tally in Missed)
+            {
+                <div class="run-trend-criterion d-flex justify-content-between gap-3"><span>@tally.Text</span><span class="run-trend-how">@HowOf(tally)</span></div>
+            }
+            <p class="run-trend-note mt-2 mb-0">@KeepFlipping</p>
+        }
+    </section>
+}

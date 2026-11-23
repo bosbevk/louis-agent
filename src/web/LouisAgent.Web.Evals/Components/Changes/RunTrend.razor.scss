@@ -1,0 +1,9 @@
+/* The trend: each bar a box in the body's border, this run's filled; the counts in the monospace face; the
+   flipped words in the theme's blue. */
+.run-trend { margin-bottom: 16px; }
+.run-trend-bar { display: block; width: 48px; border: 1px solid var(--bs-border-color); border-radius: 6px; }
+.run-trend-bar.is-this { background: var(--bs-body-color); border-color: var(--bs-body-color); }
+.run-trend-count, .run-trend-how { font-family: var(--bs-font-monospace); font-size: 13px; }
+.run-trend-note { font-size: 13px; color: var(--bs-secondary-color); }
+.run-trend-title { font-size: 16px; font-weight: 600; margin-top: 16px; }
+.run-trend-criterion { padding: 10px 0; border-top: 1px solid var(--bs-border-color); }

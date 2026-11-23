@@ -1,3 +1,4 @@
+using LouisAgent.Evals.Contracts.Api;
 using LouisAgent.Evals.Contracts.Runs;
 using LouisAgent.Web.Evals.Client;
 using LouisAgent.Web.Evals.Components.Marks;
@@ -41,6 +42,10 @@ public partial class TurnCard
     /// <summary>Hands up an undo of one of its criteria's flip.</summary>
     [Parameter]
     public EventCallback<MarkPlace> OnUndo { get; set; }
+
+    /// <summary>The eval's runs, so a flipped mark says how often it was flipped lately (F126.4); or none.</summary>
+    [Parameter]
+    public RunHistory? History { get; set; }
 
     /// <summary>Where its criterion, counted from 1, is in the run.</summary>
     private MarkPlace PlaceOf(int criterion) => new(Run, Conversation, Repeat, Number, criterion);

@@ -2,6 +2,7 @@ using System.Net;
 using LouisAgent.Choices;
 using LouisAgent.Evals.Contracts.Api;
 using LouisAgent.Evals.Contracts.Runs;
+using LouisAgent.Evals.Contracts.Runs.Answers;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Evals.Client;
 using LouisAgent.Web.Evals.Words;
@@ -54,6 +55,9 @@ public partial class RunPage
     private bool Going => _run is { Status: RunStatus.Running };
 
     private int Passed => _run?.Passed ?? 0;
+
+    /// <summary>The run against the run before, asked of the run (F126.4); none with no run before.</summary>
+    private RunChange? Change => _run is { } run && _before is { } before ? run.CompareWith(before) : null;
 
     /// <summary>How many conversations the run has graded.</summary>
     private int Graded => _run?.Conversations.Count ?? 0;

@@ -16,6 +16,9 @@ namespace LouisAgent.Evals.Contracts.Api;
 /// <seealso href="https://www.braintrust.dev/docs/evaluate/compare-experiments">Braintrust: compare experiments</seealso>
 public sealed record RunHistory(IReadOnlyList<RunRow> Rows)
 {
+    /// <summary>How many of the last finished runs a page looks back over: the last eight.</summary>
+    public const int Recent = 8;
+
     /// <summary>
     /// The run this one is compared with: the run a re-grade re-graded, or the newest earlier run that finished; none
     /// for a run that didn't finish, or with no such run.

@@ -16,3 +16,12 @@
 .conversation-row-repeats { font-family: var(--bs-font-monospace); font-size: 14px; white-space: nowrap; }
 .conversation-row-failed { color: var(--bs-danger); }
 .conversation-row-flipped { font-size: 14px; font-weight: 600; color: var(--bs-info); margin-top: 2px; }
+.conversation-row-now-passes, .conversation-row-now-fails {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 1px 8px;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+}
+.conversation-row-now-passes { color: var(--web-ok); }
+.conversation-row-now-fails { color: var(--bs-danger); }

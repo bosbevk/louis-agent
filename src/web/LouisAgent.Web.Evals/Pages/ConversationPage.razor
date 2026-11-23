@@ -74,7 +74,7 @@ else if (Held is { } conversation && Open is { } repeat)
 
     @foreach (var (turn, number) in repeat.Turns.Select((turn, at) => (turn, at + 1)))
     {
-        <TurnCard @key="number" Number="number" Turn="turn" Run="@Run" Conversation="@Conversation" Repeat="repeat.Number" OnFlip="FlipAsync" OnUndo="UndoFlipAsync"/>
+        <TurnCard @key="number" Number="number" Turn="turn" Run="@Run" Conversation="@Conversation" Repeat="repeat.Number" OnFlip="FlipAsync" OnUndo="UndoFlipAsync" History="History"/>
     }
 
     @if (Before is { } before)

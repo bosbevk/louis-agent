@@ -1,0 +1,10 @@
+@* A run against the run before (F126.4), said where a person looks first: more, fewer or the same, the run before
+   named and linked, and what now passes and now fails. Nothing with no run before. *@
+
+@if (Change is { } change && Before is { } before)
+{
+    <p class="run-change mb-0">
+        <span class="run-change-count @CountClass(change)">@EvalsWords.SayChange(change.PassedNow - change.PassedBefore)</span>
+        (<a href="@EvalAddress.RunPageOf(Eval, before.Id)">@EvalsWords.FormatLocal(before.StartedAt)</a>)@Named(change)
+    </p>
+}

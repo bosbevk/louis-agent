@@ -1,3 +1,4 @@
+using LouisAgent.Evals.Contracts.Api;
 using LouisAgent.Evals.Contracts.Grading;
 using LouisAgent.Evals.Contracts.Runs.Answers;
 using LouisAgent.Web.Evals.Client;
@@ -41,6 +42,28 @@ public partial class MarkLine
     /// <summary>Hands up an undo of this mark's flip.</summary>
     [Parameter]
     public EventCallback<MarkPlace> OnUndo { get; set; }
+
+    /// <summary>The eval's runs, so a flipped mark says how often it was flipped lately (F126.4); or none.</summary>
+    [Parameter]
+    public RunHistory? History { get; set; }
+
+    /// <summary>
+    /// "You flipped this criterion in 2 of the last 8 runs. A criterion you keep flipping…": its runs' own tallies,
+    /// said only once it was flipped in one.
+    /// </summary>
+    private string? Lately
+    {
+        get
+        {
+            if (History is null) return null;
+            if (History.TallyMissedMost(RunHistory.Recent).FirstOrDefault(tally => tally.Text == Mark.Text) is not
+                { Flipped: > 0 } tally) return null;
+
+            int runs = History.FindLastFinished(RunHistory.Recent).Count;
+            return EvalsWords.Fill(EvalsPart.FlippedLately, tally.Flipped, runs) + " " +
+                   EvalsWords.Words[EvalsPart.KeepFlipping];
+        }
+    }
 
     private string KindClass => Kind == MarkKind.Fact ? "mark-line-fact" : "mark-line-criterion";
 

@@ -16,6 +16,11 @@
         <p class="eval-card-score"><span class="eval-card-passed">@last.Passed</span> <span class="eval-card-of">of @last.Conversations passed</span></p>
     }
 
+    @if (Row.CountChange() is { } change)
+    {
+        <p class="eval-card-change mb-0">@EvalsWords.SayChange(change)</p>
+    }
+
     @if (CouldNotFinishThen)
     {
         <p class="eval-card-stopped">@CouldNotFinish: @Row.LastRun?.Conversations of @Row.Conversations graded</p>
