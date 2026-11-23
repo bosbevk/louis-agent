@@ -1,14 +1,14 @@
 # LouisAgent.Evals.Contracts — design
 
 > **Kind:** library (`net10.0`) · **Path:** `src/evals/LouisAgent.Evals.Contracts/` · **References:** none ·
-> **Used by:** LouisAgent.Evals, LouisAgent.Api.Evals
+> **Used by:** LouisAgent.Evals, LouisAgent.Api.Evals, LouisAgent.Web.Evals
 
 ![The records a run is made of: what happened in a turn, its marks, the run with its conversations and repeats, and the API's rows of them](diagrams/LouisAgent.Evals.Contracts.svg)
 
 ## Purpose
 
-This project is the shape of a run of an eval. The evals write a run, the eval routes send it, and a page in the
-browser will draw it, and all three compile against these records. So a field renamed here breaks every reader at
+This project is the shape of a run of an eval. The evals write a run, the eval routes send it, and the admin's pages in
+the browser draw it, and all three compile against these records. So a field renamed here breaks every reader at
 build time, instead of a page quietly showing nothing. It is the shared contract the API and the accounts already
 have ([ADR 0045](../adr/0045-typed-answers-and-a-shared-contract.md)).
 
@@ -46,6 +46,17 @@ passed when it holds every repeat the run asked for and each one passed, so a ru
 it. The run's `Passed` is how many of its conversations passed. Each is a property, so it is written into the run's
 file and a page reads it with no sum of its own.
 
+A page asks more of a run than whether it passed, and the records answer that too, as methods, so the run's file
+gains no field. A repeat counts its facts and its criteria as a `MarkCount`, met of how many, adds its turns'
+costs and times, and finds its first miss: the first mark not met, turns in order and a turn's facts before its
+criteria, as a `Miss` that says the turn, whether it is a fact or a criterion (`MarkKind`), and the mark. A
+conversation counts its passed repeats, finds its first failed one and its first ask, and picks the repeat a page
+opens: the one asked for, else its first failed one, else its first. The run adds its repeats' counts with `+`,
+sums its known costs with `KnownCost` (none priced is null, never 0), names its currency, measures its time from
+start to end, and orders its conversations failed first, with the next failed one after a conversation and the one
+before it. An `EvalRow` says whether its last run passed in full, and how many conversations a run of it didn't
+reach.
+
 `RunKind` says live or replay, and `RunStatus` running, finished or could not finish. Their wire names, `live`,
 `replay`, `running`, `finished` and `could-not-finish`, are .NET's own `JsonStringEnumMemberName`, which `[WireName]`
 is underneath. So the project still references nothing, and `.Wire()` and `SettingChoice` read the same names
@@ -62,7 +73,9 @@ three.
 ### 4. One record, from its file to a page
 
 The runner fills a run, the store writes it as the run's file, and the eval routes send what was kept, in the same
-JSON. So the file is the record, and what a person opens in Rider is what the API answers.
+JSON. So the file is the record, and what a person opens in Rider is what the API answers. Every one of them reads
+and writes with `RunJson`'s options, which live here so the admin's pages in the browser read a run as strictly as
+the store does: an unknown field, a missing one or a wrong null is refused.
 
 ![A run's record, from its file to a page: the runner fills it, the store writes it, the API sends what was kept, and a page reads the same shape](diagrams/LouisAgent.Evals.Contracts-flow.svg)
 
@@ -78,24 +91,26 @@ src/evals/LouisAgent.Evals.Contracts/
 ├── Grading/        # Mark: a fact's or a criterion's mark
 ├── Transcripts/    # TurnTranscript and ToolCallTranscript: what happened in a turn
 ├── Runs/           # EvalRun, ConversationRun, RepeatRun, TurnRun; RunKind and RunStatus
+│   ├── Answers/    # MarkCount, Miss, MarkKind, KnownCost: what a page asks of a run
+│   └── Json/       # RunJson: the options every reader and writer of a run uses
 └── Api/            # EvalRow, RunRow, EvalsReply, StartRunRequest: what the eval routes send and read
 ```
 
 ## Configuration
 
-None. A run's JSON options are the evals' `RunJson`, in [LouisAgent.Evals](LouisAgent.Evals.md).
+None. A run's JSON options are `RunJson`, here.
 
 ## Tests
 
 It has no test project of its own: its records are held where they are used. The pass rule is
-`RunRecordsTests` and a run's file read back whole is `RunStoreTests`, both in `LouisAgent.Evals.Tests`; the routes'
+`RunRecordsTests`, a run's file read back whole is `RunStoreTests`, and what a page asks of a run is
+`RunAnswersTests`, which also holds that the run's JSON gains no field, all in `LouisAgent.Evals.Tests`; the routes'
 rows are `EvalRoutesTests` in `LouisAgent.Api.Evals.Tests`.
 
 ## Limits and plans
 
-No page reads these records yet, and the project is not a package
-([ADR 0130](../adr/0130-the-framework-is-published-as-packages-one-tag-each.md)): no product outside this repository
-runs an eval yet.
+The project is not a package ([ADR 0130](../adr/0130-the-framework-is-published-as-packages-one-tag-each.md)): no
+product outside this repository runs an eval yet.
 
 ## Related docs
 

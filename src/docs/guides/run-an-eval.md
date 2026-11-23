@@ -57,7 +57,13 @@ KEY=$(grep -E '^ADMIN_API_KEY=' src/site/config/.env.secrets | cut -d= -f2-)
    each repeat its turns, and each turn what was asked, the answer, every tool call, its cost, and a mark with its
    reason for each fact and each criterion. `passed` on a conversation is true only when every repeat passed.
 
-5. Replay it. The replay plays the eval's last live run that finished, as many repeats as it recorded, and ends as
+5. Or read it in the admin, on a site that names `.Evals()` among its areas, as louis-agent.dev does. Open
+   **Evals** in the admin's sidebar at `/admin/evals`: one card an eval, its last run's number first. A card opens
+   the last run, its conversations failed first with the first miss of each, and the eval's other runs at its foot.
+   A conversation opens at its first failed repeat, turn by turn, with every tool call, answer and mark, and walks to
+   the next failed one or to the same conversation in the run before. The pages read; nothing on them starts a run.
+
+6. Replay it. The replay plays the eval's last live run that finished, as many repeats as it recorded, and ends as
    a run of its own with `replayOf` naming the live one:
 
    ```bash
@@ -87,4 +93,4 @@ old run's files, read every new file before you stage it, since the repository i
 
 ---
 [Guides](README.md) · [Docs index](../README.md) · Related: [LouisAgent.Api.Evals](../projects/LouisAgent.Api.Evals.md) ·
-[LouisAgent.Evals](../projects/LouisAgent.Evals.md)
+[LouisAgent.Evals](../projects/LouisAgent.Evals.md) · [LouisAgent.Web.Evals](../projects/LouisAgent.Web.Evals.md)
