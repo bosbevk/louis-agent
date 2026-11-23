@@ -39,6 +39,13 @@ public static class Comparisons
                 "On your own hardware. Docker on your own machine or server, no cloud agent service in between, " +
                 "and a local model through Ollama keeps every word on it", "demos/louis-agent/docker/docker-compose.yml",
                 "Quickstarts on Microsoft Foundry, Foundry hosted agents", "Local deployment"),
+            // What it takes to start comes second: its ease of use is the framework's core (Louis, 2026-11-23), told
+            // as what each one's first sample needs, over a row on switching models and a count of Foundry's steps.
+            ComparisonTopic.WhatTheFirstAnswerNeeds => new ComparisonClaim("What the first answer needs",
+                "One provider's key in a settings file, or no key at all with a local model. No cloud account, no " +
+                "model deployment, no role to assign", "demos/louis-agent/config/.env.ollama",
+                "Its first C# sample signs in to Azure OpenAI with the Azure CLI",
+                "Its first .NET sample reads an Azure OpenAI deployment, endpoint and key"),
             ComparisonTopic.Languages => new ComparisonClaim("Languages", "C#, end to end, with its websites in Blazor",
                 "louis-agent-solution.sln", "Python and C#/.NET, Go in a repo of its own", "C#, Python and Java"),
             ComparisonTopic.BuiltOn => new ComparisonClaim("Built on",

@@ -73,6 +73,27 @@ public class ComparisonPageTests
         });
     }
 
+    /// <summary>
+    /// The second row says what the first answer needs: one key or none for louis-agent, held to the settings file
+    /// that says so, beside what the others' first samples start with (Louis, 2026-11-23: "this is the core of my
+    /// framework it's ease of use").
+    /// </summary>
+    [Test]
+    public void TheSecondRow_SaysWhatTheFirstAnswerNeeds()
+    {
+        var second = Comparisons.All[1];
+        var settings = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, second.Proof));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(second.Topic, Is.EqualTo("What the first answer needs"));
+            Assert.That(second.Ours, Does.Contain("no key at all with a local model"));
+            Assert.That(settings, Does.Contain("no API key"));
+            Assert.That(second.AgentFramework, Does.Contain("Azure"));
+            Assert.That(second.SemanticKernel, Does.Contain("Azure"));
+        });
+    }
+
     /// <summary>The others' pages are linked, with the date they were read on, shown on the page.</summary>
     [Test]
     public void TheOthersPages_AreLinked_WithTheDayTheyWereRead()

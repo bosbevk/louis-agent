@@ -4,6 +4,7 @@ namespace LouisAgent.Web.Framework.Content.Comparison.Parts;
 public enum ComparisonTopic
 {
     WhereItRuns,
+    WhatTheFirstAnswerNeeds,
     Languages,
     BuiltOn,
     HowYouExtendIt,
