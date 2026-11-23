@@ -30,6 +30,21 @@ public class PageReaderTests
         Assert.That(page.Text, Is.EqualTo("Prices Fish & chips for two."));
     }
 
+    /// <summary>
+    /// An element the markup marks hidden, or hidden from a screen reader, is no words and no link, as a visitor never
+    /// reads it; the words around it stay.
+    /// </summary>
+    [Test]
+    public void AnElementMarkedHidden_IsNoWords_AndNoLink()
+    {
+        var page = Read("<main><p>Shown.</p><div hidden><p>Page 1 of 2</p><a href=\"/next\">Next</a></div>" +
+                        "<span aria-hidden=\"true\">Resting</span><div aria-hidden=\"false\">Read.</div>" +
+                        "<p>End.</p></main>");
+
+        Assert.That(page.Text, Is.EqualTo("Shown. Read. End."));
+        Assert.That(page.Links, Is.Empty);
+    }
+
     /// <summary>A page with no main gives the words of its whole body.</summary>
     [Test]
     public void APageWithNoMain_GivesTheWordsOfItsWholeBody() =>
