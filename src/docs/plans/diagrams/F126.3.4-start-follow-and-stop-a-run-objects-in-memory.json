@@ -1,0 +1,34 @@
+{
+  "kind": "flow",
+  "type": "object",
+  "title": "F126.3.4 start, follow and stop a run: objects in memory",
+  "caption": "One live run of an eval of six conversations, going. In the API the desk holds the run and a cancel signal joined with the host's own, and the work plays under it. In the browser's circuit the page holds its timer and the run it last read.",
+  "flow": {
+    "nodes": [
+      { "id": "desk", "icon": "server", "tone": "green", "label": "RunDesk\none slot, taken" },
+      { "id": "going", "icon": "play", "tone": "green", "label": "The run going\nlive · 3 repeats" },
+      { "id": "run", "icon": "file", "tone": "teal", "label": "EvalRun\nrunning · 2 of 6 conversations" },
+      { "id": "person", "icon": "user", "tone": "amber", "label": "The person's signal\nnot cancelled yet" },
+      { "id": "host", "icon": "server", "tone": "violet", "label": "The host's signal\nshutdown" },
+      { "id": "linked", "icon": "branch", "tone": "amber", "label": "The linked signal\ncancelled when either is" },
+      { "id": "work", "icon": "checks", "tone": "green", "label": "RunWork\nplaying conversation 3" },
+      { "id": "turn", "icon": "scales", "tone": "teal", "label": "TurnRun\ncost 0.004 · judge cost 0.002" },
+      { "id": "page", "icon": "message", "tone": "green", "label": "RunPage\nin the person's browser circuit" },
+      { "id": "timer", "icon": "clock", "tone": "amber", "label": "Its timer\nevery 3 seconds" },
+      { "id": "read", "icon": "file", "tone": "teal", "label": "The run it last read\nrunning · so far 0:41" }
+    ],
+    "edges": [
+      { "from": "desk", "to": "going" },
+      { "from": "going", "to": "run" },
+      { "from": "going", "to": "person" },
+      { "from": "person", "to": "linked", "word": "joined" },
+      { "from": "host", "to": "linked", "word": "joined" },
+      { "from": "going", "to": "work" },
+      { "from": "work", "to": "linked", "word": "plays under" },
+      { "from": "run", "to": "turn" },
+      { "from": "page", "to": "timer" },
+      { "from": "page", "to": "read" }
+    ],
+    "direction": "down"
+  }
+}

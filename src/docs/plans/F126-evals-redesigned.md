@@ -273,6 +273,14 @@ Skill 4, Tool use: a follow-up proved to reach the same specialist (`continued`)
   `LouisAgent.Composition`, so the API can ask it. Its plan is
   F126.3.3. It is done, its design in [LouisAgent.Api](../projects/LouisAgent.Api.md) and
   [LouisAgent.Evals](../projects/LouisAgent.Evals.md); F126.3.4, starting a run from the admin, is next.
+- **2026-11-23, what F126.3.4 settles.** Planning the start of a run from the admin, Louis picked four things,
+  each on a card. "Per conversation, as kept today": the run's page follows a run by the conversations graded so
+  far, and the runner and the run's file stay as they are. "At once": a Stop cancels the conversation in play, and
+  the run ends as stopped with what it had graded. "On each turn, beside the agent's": a turn keeps what judging
+  it cost, and a run adds its turns'. "Inline, on the eval's card": the ask before a live run opens in the card,
+  with no dialog and no page of its own. The four new states were drawn on the real admin before the plan, in
+  [F126.3.4-screens/](F126.3.4-screens/). Its plan is
+  [F126.3.4](F126.3.4-start-follow-and-stop-a-run.md).
 
 ---
 [Plans](README.md) · Related: [ADR 0029](../adr/0029-simulations-in-csharp.md) · [ADR 0058](../adr/0058-an-eval-is-a-folder-of-files.md) · [ADR 0104](../adr/0104-a-message-may-carry-the-page.md)
