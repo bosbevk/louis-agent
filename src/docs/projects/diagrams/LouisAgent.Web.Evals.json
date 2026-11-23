@@ -1,7 +1,7 @@
 {
   "kind": "cards",
   "title": "LouisAgent.Web.Evals: the overview",
-  "caption": "The admin's eval pages: a client of the eval routes with every address in one place, the evals' page with a card an eval, and the words its code picks.",
+  "caption": "The admin's eval pages: a client of the eval routes with every address in one place, the evals' page with a card an eval that starts its next run, and the words its code picks.",
   "cards": {
     "rows": [
       {
@@ -11,7 +11,7 @@
             "icon": "checks",
             "title": "LouisAgent.Web.Evals",
             "code": "/admin/evals",
-            "text": "Where a person reads an eval's runs, in the admin.",
+            "text": "Where a person starts, follows and reads an eval's runs, in the admin.",
             "look": "highlight"
           }
         ]
@@ -23,14 +23,14 @@
             "icon": "server",
             "title": "The routes, read",
             "code": "EvalsApi, EvalAddress",
-            "text": "The eval routes read with a run's own JSON options, and every address built in one place."
+            "text": "The eval routes read, a run started and stopped, with a run's own JSON options and every address built in one place."
           },
           {
             "id": "page",
             "icon": "browser",
             "title": "The pages",
             "code": "EvalsPage, RunPage",
-            "text": "One card an eval, then a run with its number first and its conversations failed first."
+            "text": "One card an eval that starts a run, then a run followed as it goes, its number first and its conversations failed first."
           },
           {
             "id": "words",

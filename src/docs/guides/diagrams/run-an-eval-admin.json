@@ -1,0 +1,103 @@
+{
+  "kind": "flow",
+  "type": "activity",
+  "title": "Run an eval in the admin: the steps",
+  "caption": "From an eval's card: a replay starts at once, a live run after its ask; either opens the run's page, which follows the run until it ends or is stopped.",
+  "flow": {
+    "direction": "down",
+    "nodes": [
+      {
+        "id": "card",
+        "label": "The eval's card,\nat /admin/evals",
+        "icon": "server",
+        "tone": "blue",
+        "shape": "terminal"
+      },
+      {
+        "id": "kind",
+        "label": "Free, or live?",
+        "icon": "branch",
+        "tone": "green",
+        "shape": "decision"
+      },
+      {
+        "id": "replay",
+        "label": "Replay free",
+        "icon": "database",
+        "tone": "green"
+      },
+      {
+        "id": "ask",
+        "label": "Run live…, then\npick the repeats and\nread the estimate",
+        "icon": "play",
+        "tone": "amber"
+      },
+      {
+        "id": "page",
+        "label": "The run's page reads it\nevery few seconds",
+        "icon": "search",
+        "tone": "green"
+      },
+      {
+        "id": "stop",
+        "label": "Stop it now?",
+        "icon": "branch",
+        "tone": "green",
+        "shape": "decision"
+      },
+      {
+        "id": "stopped",
+        "label": "Stopped, with what\nit graded kept",
+        "icon": "shield",
+        "tone": "red",
+        "shape": "terminal"
+      },
+      {
+        "id": "ended",
+        "label": "Ended, read conversation\nby conversation",
+        "icon": "checks",
+        "tone": "green",
+        "shape": "terminal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "card",
+        "to": "kind"
+      },
+      {
+        "from": "kind",
+        "to": "replay",
+        "word": "free"
+      },
+      {
+        "from": "kind",
+        "to": "ask",
+        "word": "live"
+      },
+      {
+        "from": "replay",
+        "to": "page"
+      },
+      {
+        "from": "ask",
+        "to": "page",
+        "word": "Run live, about $…"
+      },
+      {
+        "from": "page",
+        "to": "stop"
+      },
+      {
+        "from": "stop",
+        "to": "stopped",
+        "word": "Stop the run"
+      },
+      {
+        "from": "stop",
+        "to": "ended",
+        "word": "let it end"
+      }
+    ]
+  }
+}

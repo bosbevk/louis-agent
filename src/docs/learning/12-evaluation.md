@@ -485,6 +485,76 @@ tool that hands the model a file must hand it the same bytes on every machine.
 **In the field's words:** the *harness* against *production*, *train/serve skew* in its eval form, a *self-initializing
 fake* that now records the page too, and Fowler's *Remote Facade* for the route.
 
+## Start, follow and stop a run (F126.3.4)
+
+Until this child, a run was started with `curl` and the admin only read what came back. Now a person does it all from
+an eval's card: a replay for free, at once, or a live run after an ask that says about what it will cost. The run's
+page follows the run without a reload and stops it at once, and every run shows two bills, the agent's and the
+judge's.
+
+**An eval has two bills.** The agent's turns were always priced. The judge's calls landed in the ledger under their
+own purpose, but no run said what they cost. Each criterion's mark now comes back with what its one call cost, read
+from the judge's own usage scope, and a turn keeps the sum beside the agent's cost. A replayed mark is a known $0,
+and a mark nobody priced is null, never $0, as ADR 0007 asks. A run in short carries both costs, so a card can price
+the next run with no second read.
+
+**An estimate is only as good as the last real spend.** The ask's figure is the eval row's own answer: what its last
+finished live run spent, a repeat, times the repeats picked. It comes from a run that happened, not from a price
+table, because a table can't know how many tool calls the agent will make or how long its answers will be. When only
+one bill was priced, as for a run made before the judge's cost was kept, the estimate is that one. When neither was,
+the ask says the cost isn't known, and the button says "Run live" with no figure. A wrong $0 would invite the very
+spend the ask is there to guard.
+
+**A guard before spending.** A replay starts on one press because it costs nothing. A live run opens an ask inside
+its card, which names what it plays, offers one repeat or three, says the estimate, and has buttons named for what
+they do: "Run live, about $0.011" and "Don't run". The page holds which card's ask is open, so only one is. The
+buttons go off from a press until the host answers, so a double press starts one run, and the host's `409` stays the
+guard for a run started somewhere else. This is the human in the loop at its smallest: one clear question, asked at
+the moment money is about to be spent, with what it will cost in the question.
+
+**Cooperative cancellation, and telling a stop from a shutdown.** In .NET a long job is stopped by asking, not by
+force: it is handed a `CancellationToken`, and it checks it at the points where stopping is safe. The run's work now
+gets two. One is a person's stop alone. The other joins that with the host shutting down, and the play runs under
+it. So when the play is cancelled, the work knows why. A person's stop keeps the run as stopped, with everything
+graded before it and the reason. A shutdown leaves the file saying running, which the desk reads as could not finish
+when the host comes back. The desk cancels under the same lock a start takes, so a stop can't land between one run
+ending and the next one starting.
+
+**Start, then ask how it goes.** The start still answers `202` at once with the run's address. The run's page now
+asks that address again every three seconds while the run goes, on a timer from the page's clock, and stops asking
+once it reads a run that has ended, or once the person leaves the page. The clock is the one the evals' area
+registers, `TimeProvider.System`, so the tests use Microsoft's fake clock and move time by hand: a test that waited
+three real seconds would be slow and flaky. The page shows only what it read, never a guess (ADR 0042), so its
+figures move once a conversation, as often as the run's file is kept.
+
+**Measuring what a stop really saves.** Two live runs of the guide's eval at one repeat, on your go, in the site's
+container. The first finished in 11 seconds: the ask said "About $0.0035 for 1 repeat", the page showed the agent's
+$0.0035 and the judge's $0.00063, and the ledger held $0.003484 and $0.000625. The second was stopped while it
+played. Its page showed it stopped 217 ms after the press, with nothing graded and one conversation not run. The
+ledger held one agent call of $0.000319, which had ended 8 ms before the stop, then one call marked cancelled, 3 ms
+long and costing nothing. So the stop saved the rest of that conversation's calls, about $0.0038 here. The API logged
+the run's own `DELETE` of its session after the stop's `204`, so no session was left open. Both runs together cost
+about $0.0044. The second ask already said $0.0041, both bills of the first run.
+
+**What the ledger said that the code didn't.** The first run's judge rows were in the ledger, priced, but with no run
+tag, while the agent's rows named their run. The run's page was right, since it reads the run's own scope, but the
+ledger alone couldn't say what judging one run cost. You picked tagging them: the player now grades under the play's
+run and task, which the judge's own scope takes on. Reading the ledger, not the code, found it, and that is the
+point of measuring: the code looked done.
+
+**What didn't work at first.** A stop that lands just as a session is created could leave that session open: the
+read of the created reply was cancelled too, so its id was never known and never deleted. It now reads that reply
+whatever the stop says. The tests' wire-name rule refused a made-up refusal type that looked like a provider's, and
+the test now uses one of its own. And a note in the plan said the site's container keeps no usage ledger. It keeps
+one, in its logs folder rather than its data folder, which the live runs showed. The note was corrected. The pages
+were checked through the browser's script, since this browser took no screenshots, so there are no pictures of the
+new states.
+
+**In the field's words:** *cooperative cancellation* and *linked cancellation tokens* in .NET; Microsoft's
+*Asynchronous Request-Reply* with the client *polling* its status address; a *confirmation step* with *specific
+button labels*, the human-in-the-loop guard before an action that costs; and the *test double for time*, the fake
+clock.
+
 ## The limits, said plainly
 
 36 labels, one judge, one person. Nine fails is "few labels" by the card's own rule. A pass at 100% on nine is weaker

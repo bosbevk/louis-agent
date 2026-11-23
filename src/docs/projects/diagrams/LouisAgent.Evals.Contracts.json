@@ -30,7 +30,7 @@
             "icon": "checks",
             "title": "Its marks",
             "code": "Mark, TurnRun",
-            "text": "A fact's or a criterion's mark with its reason, and a turn with all of them and its cost."
+            "text": "A fact's or a criterion's mark with its reason, and a turn with all of them, the agent's cost and the judge's."
           },
           {
             "id": "run",
@@ -44,7 +44,7 @@
             "icon": "server",
             "title": "The API's rows",
             "code": "EvalRow, RunRow, EvalsReply, StartRunRequest",
-            "text": "What the eval routes list and what a start asks for."
+            "text": "What the eval routes list, with each run's two costs and a live run's estimate, and what a start asks for."
           }
         ]
       }

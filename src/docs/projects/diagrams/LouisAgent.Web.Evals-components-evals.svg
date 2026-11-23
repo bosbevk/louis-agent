@@ -1,4 +1,4 @@
-<svg viewBox="-24 -24 845.2 772" width="845.2" height="772" role="img" aria-label="The evals' page: what it is made of" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 845.2 930" width="845.2" height="930" role="img" aria-label="The evals' page: what it is made of" xmlns="http://www.w3.org/2000/svg">
   <title>The evals' page: what it is made of</title>
   <style>svg {
   --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #e2dfff; --violet-line: #6b4dff; --violet-ink: #3a22c4; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
@@ -141,69 +141,100 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <stop class="mrq-light-2" offset="1" />
     </radialGradient>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="845.2" height="772" rx="14" />
+  <rect class="ground" x="-24" y="-24" width="845.2" height="930" rx="14" />
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a422.6 190 0 1 0 845.2 0a422.6 190 0 1 0 -845.2 0Z" />
     <text class="mrq-title" x="16" y="14" text-anchor="start">The evals' page: what it is made of: LouisAgent.Web.Evals, Pages / EvalsPage</text>
     <text class="pic-group" x="781.2" y="14" text-anchor="end">Composite structure diagram</text>
     <rect class="mrq-rule" x="0" y="26" width="797.2" height="1" rx="0" />
-    <rect class="pic-panel" x="0" y="44" width="276.9" height="368" rx="14" />
+    <rect class="pic-panel" x="0" y="44" width="519.6" height="498" rx="14" />
     <text class="pic-name" x="22" y="73" text-anchor="start">EvalsPage</text>
     <rect class="pic-tint tone-green" x="111" y="60" width="40.4" height="18" rx="9" />
     <text class="cmp-chip-text pic-ink tone-green" x="119" y="72.5" text-anchor="start">page</text>
-    <text class="pic-note" x="260.9" y="73" text-anchor="end">/admin/evals</text>
-    <rect class="pic-panel" x="24" y="114" width="228.9" height="74" rx="14" />
+    <text class="pic-note" x="503.6" y="73" text-anchor="end">/admin/evals</text>
+    <rect class="pic-panel" x="24" y="114" width="471.6" height="204" rx="14" />
     <text class="pic-name" x="46" y="143" text-anchor="start">EvalCard</text>
     <rect class="pic-tint tone-green" x="126" y="130" width="52.6" height="18" rx="9" />
     <text class="cmp-chip-text pic-ink tone-green" x="134" y="142.5" text-anchor="start">a card</text>
-    <text class="pic-note" x="46" y="164" text-anchor="start">one an eval, its last run first</text>
-    <rect class="pic-panel" x="24" y="214" width="228.9" height="74" rx="14" />
-    <text class="pic-name" x="46" y="243" text-anchor="start">NoEvalsCard</text>
-    <rect class="pic-tint tone-green" x="153" y="230" width="52.6" height="18" rx="9" />
-    <text class="cmp-chip-text pic-ink tone-green" x="161" y="242.5" text-anchor="start">a card</text>
-    <text class="pic-note" x="46" y="264" text-anchor="start">where a file goes</text>
-    <rect class="pic-panel" x="24" y="314" width="228.9" height="74" rx="14" />
-    <text class="pic-name" x="46" y="343" text-anchor="start">AdminGate</text>
-    <rect class="pic-tint tone-violet" x="135" y="330" width="89.2" height="18" rx="9" />
-    <text class="cmp-chip-text pic-ink tone-violet" x="143" y="342.5" text-anchor="start">general part</text>
-    <text class="pic-note" x="46" y="364" text-anchor="start">the frame's key box</text>
-    <rect class="cmp-pin pic-edge pic-tint tone-green" x="180.6" y="105" width="48.3" height="18" rx="9" />
-    <path class="pic-fill tone-green" d="M188.6 111L192.6 117L196.6 111Z" />
-    <text class="cmp-pin-text pic-ink tone-green" x="201.6" y="117.5" text-anchor="start">Row</text>
-    <rect class="cmp-pin pic-edge pic-tint tone-green" x="168.4" y="205" width="60.5" height="18" rx="9" />
-    <path class="pic-fill tone-green" d="M176.4 211L180.4 217L184.4 211Z" />
-    <text class="cmp-pin-text pic-ink tone-green" x="189.4" y="217.5" text-anchor="start">Guide</text>
-    <rect class="cmp-pin pic-edge pic-tint tone-violet" x="81.6" y="305" width="60.5" height="18" rx="9" />
-    <path class="pic-fill tone-violet" d="M89.6 311L93.6 317L97.6 311Z" />
-    <text class="cmp-pin-text pic-ink tone-violet" x="102.6" y="317.5" text-anchor="start">Error</text>
-    <rect class="cmp-pin pic-edge pic-tint tone-violet" x="150.1" y="305" width="78.8" height="18" rx="9" />
-    <path class="pic-fill tone-violet" d="M158.1 311L162.1 317L166.1 311Z" />
-    <text class="cmp-pin-text pic-ink tone-violet" x="171.1" y="317.5" text-anchor="start">NeedsKey</text>
-    <text class="pic-group" x="0" y="462" text-anchor="start">How to read it</text>
-    <rect class="pic-fill tone-green" x="0" y="487" width="18" height="18" rx="6" />
-    <text class="pic-means" x="28" y="500.5" text-anchor="start">this project</text>
-    <rect class="pic-fill tone-violet" x="0" y="515" width="18" height="18" rx="6" />
-    <text class="pic-means" x="28" y="528.5" text-anchor="start">the framework</text>
-    <rect class="cmp-key cmp-pin pic-edge pic-tint tone-green" x="0" y="543" width="97.1" height="18" rx="9" />
-    <path class="pic-fill tone-green" d="M8 549L12 555L16 549Z" />
-    <text class="cmp-pin-text pic-ink tone-green" x="21" y="555.5" text-anchor="start">handed down</text>
-    <text class="pic-means" x="109.1" y="556.5" text-anchor="start">a parameter</text>
-    <text class="pic-means" x="0" y="584.5" text-anchor="start">A box inside a box is held by it.</text>
-    <rect class="mrq-rule" x="0" y="620" width="797.2" height="1" rx="0" />
+    <text class="pic-note" x="46" y="164" text-anchor="start">one an eval, its last run first, then a replay or a live run</text>
+    <rect class="pic-panel" x="48" y="202" width="423.6" height="92" rx="14" />
+    <text class="pic-name" x="70" y="231" text-anchor="start">RunAsk</text>
+    <rect class="pic-tint tone-green" x="132" y="218" width="95.3" height="18" rx="9" />
+    <text class="cmp-chip-text pic-ink tone-green" x="140" y="230.5" text-anchor="start">a card's part</text>
+    <text class="pic-note" x="70" y="252" text-anchor="start">the ask before a live run: one repeat or three, and what it will</text>
+    <text class="pic-note" x="70" y="270" text-anchor="start">likely cost</text>
+    <rect class="pic-panel" x="24" y="344" width="471.6" height="74" rx="14" />
+    <text class="pic-name" x="46" y="373" text-anchor="start">NoEvalsCard</text>
+    <rect class="pic-tint tone-green" x="153" y="360" width="52.6" height="18" rx="9" />
+    <text class="cmp-chip-text pic-ink tone-green" x="161" y="372.5" text-anchor="start">a card</text>
+    <text class="pic-note" x="46" y="394" text-anchor="start">where a file goes</text>
+    <rect class="pic-panel" x="24" y="444" width="471.6" height="74" rx="14" />
+    <text class="pic-name" x="46" y="473" text-anchor="start">AdminGate</text>
+    <rect class="pic-tint tone-violet" x="135" y="460" width="89.2" height="18" rx="9" />
+    <text class="cmp-chip-text pic-ink tone-violet" x="143" y="472.5" text-anchor="start">general part</text>
+    <text class="pic-note" x="46" y="494" text-anchor="start">the frame's key box</text>
+    <rect class="cmp-pin pic-edge pic-tint tone-green" x="193.4" y="105" width="48.3" height="18" rx="9" />
+    <path class="pic-fill tone-green" d="M201.4 111L205.4 117L209.4 111Z" />
+    <text class="cmp-pin-text pic-ink tone-green" x="214.4" y="117.5" text-anchor="start">Row</text>
+    <rect class="cmp-pin pic-edge pic-tint tone-green" x="249.7" y="105" width="72.7" height="18" rx="9" />
+    <path class="pic-fill tone-green" d="M257.7 111L261.7 117L265.7 111Z" />
+    <text class="cmp-pin-text pic-ink tone-green" x="270.7" y="117.5" text-anchor="start">AskOpen</text>
+    <rect class="cmp-pin pic-edge pic-tint tone-green" x="330.4" y="105" width="72.7" height="18" rx="9" />
+    <path class="pic-fill tone-green" d="M338.4 111L342.4 117L346.4 111Z" />
+    <text class="cmp-pin-text pic-ink tone-green" x="351.4" y="117.5" text-anchor="start">Waiting</text>
+    <rect class="cmp-pin pic-edge tone-green up" x="411.1" y="105" width="60.5" height="18" rx="9" />
+    <path class="pic-fill tone-green" d="M419.1 116.5L423.1 110.5L427.1 116.5Z" />
+    <text class="cmp-pin-text pic-ink tone-green" x="432.1" y="117.5" text-anchor="start">OnAsk</text>
+    <rect class="cmp-pin pic-edge pic-tint tone-green" x="163.3" y="193" width="48.3" height="18" rx="9" />
+    <path class="pic-fill tone-green" d="M171.3 199L175.3 205L179.3 199Z" />
+    <text class="cmp-pin-text pic-ink tone-green" x="184.3" y="205.5" text-anchor="start">Row</text>
+    <rect class="cmp-pin pic-edge pic-tint tone-green" x="219.6" y="193" width="78.8" height="18" rx="9" />
+    <path class="pic-fill tone-green" d="M227.6 199L231.6 205L235.6 199Z" />
+    <text class="cmp-pin-text pic-ink tone-green" x="240.6" y="205.5" text-anchor="start">Starting</text>
+    <rect class="cmp-pin pic-edge tone-green up" x="306.4" y="193" width="60.5" height="18" rx="9" />
+    <path class="pic-fill tone-green" d="M314.4 204.5L318.4 198.5L322.4 204.5Z" />
+    <text class="cmp-pin-text pic-ink tone-green" x="327.4" y="205.5" text-anchor="start">OnRun</text>
+    <rect class="cmp-pin pic-edge tone-green up" x="374.9" y="193" width="72.7" height="18" rx="9" />
+    <path class="pic-fill tone-green" d="M382.9 204.5L386.9 198.5L390.9 204.5Z" />
+    <text class="cmp-pin-text pic-ink tone-green" x="395.9" y="205.5" text-anchor="start">OnClose</text>
+    <rect class="cmp-pin pic-edge pic-tint tone-green" x="411.1" y="335" width="60.5" height="18" rx="9" />
+    <path class="pic-fill tone-green" d="M419.1 341L423.1 347L427.1 341Z" />
+    <text class="cmp-pin-text pic-ink tone-green" x="432.1" y="347.5" text-anchor="start">Guide</text>
+    <rect class="cmp-pin pic-edge pic-tint tone-violet" x="324.3" y="435" width="60.5" height="18" rx="9" />
+    <path class="pic-fill tone-violet" d="M332.3 441L336.3 447L340.3 441Z" />
+    <text class="cmp-pin-text pic-ink tone-violet" x="345.3" y="447.5" text-anchor="start">Error</text>
+    <rect class="cmp-pin pic-edge pic-tint tone-violet" x="392.8" y="435" width="78.8" height="18" rx="9" />
+    <path class="pic-fill tone-violet" d="M400.8 441L404.8 447L408.8 441Z" />
+    <text class="cmp-pin-text pic-ink tone-violet" x="413.8" y="447.5" text-anchor="start">NeedsKey</text>
+    <text class="pic-group" x="0" y="592" text-anchor="start">How to read it</text>
+    <rect class="pic-fill tone-green" x="0" y="617" width="18" height="18" rx="6" />
+    <text class="pic-means" x="28" y="630.5" text-anchor="start">this project</text>
+    <rect class="pic-fill tone-violet" x="0" y="645" width="18" height="18" rx="6" />
+    <text class="pic-means" x="28" y="658.5" text-anchor="start">the framework</text>
+    <rect class="cmp-key cmp-pin pic-edge pic-tint tone-green" x="0" y="673" width="97.1" height="18" rx="9" />
+    <path class="pic-fill tone-green" d="M8 679L12 685L16 679Z" />
+    <text class="cmp-pin-text pic-ink tone-green" x="21" y="685.5" text-anchor="start">handed down</text>
+    <text class="pic-means" x="109.1" y="686.5" text-anchor="start">a parameter</text>
+    <rect class="cmp-key cmp-pin pic-edge tone-green up" x="0" y="701" width="103.2" height="18" rx="9" />
+    <path class="pic-fill tone-green" d="M8 712.5L12 706.5L16 712.5Z" />
+    <text class="cmp-pin-text pic-ink tone-green" x="21" y="713.5" text-anchor="start">said back up</text>
+    <text class="pic-means" x="115.2" y="714.5" text-anchor="start">a callback</text>
+    <text class="pic-means" x="0" y="742.5" text-anchor="start">A box inside a box is held by it.</text>
+    <rect class="mrq-rule" x="0" y="778" width="797.2" height="1" rx="0" />
     <g class="pic-brand" transform="translate(0 0)">
-      <text class="pic-name" x="781.2" y="642" text-anchor="end" aria-label="louis-agent">l<tspan class="pic-mark" dy="1.5">•</tspan><tspan dy="-1.5">uis-agent</tspan></text>
+      <text class="pic-name" x="781.2" y="800" text-anchor="end" aria-label="louis-agent">l<tspan class="pic-mark" dy="1.5">•</tspan><tspan dy="-1.5">uis-agent</tspan></text>
     </g>
   </g>
-  <rect class="notebar" x="0" y="670" width="797.2" height="54" rx="8" />
-  <g class="note-icon" transform="translate(12 680) scale(0.6667)">
+  <rect class="notebar" x="0" y="828" width="797.2" height="54" rx="8" />
+  <g class="note-icon" transform="translate(12 838) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />
     <path d="M11 12h1v4h1" />
   </g>
-  <text class="notes" x="38" y="692">
-    <tspan class="note-rest">The page reads the host's evals and hands each its card; with none it shows the one card that says where</tspan>
+  <text class="notes" x="38" y="850">
+    <tspan class="note-rest">The page reads the host's evals and hands each its card, and holds which card's ask is open; with none</tspan>
   </text>
-  <text class="notes" x="38" y="709">
-    <tspan class="note-rest">a file goes, and on a refused key the frame's key box.</tspan>
+  <text class="notes" x="38" y="867">
+    <tspan class="note-rest">it shows the one card that says where a file goes, and on a refused key the frame's key box.</tspan>
   </text>
 </svg>

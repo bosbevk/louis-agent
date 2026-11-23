@@ -231,20 +231,21 @@ as a typed record and to have the judge mark two criteria. It asks for the key w
 one, in CI too. The design is in [LouisAgent.Evals](LouisAgent.Evals.md).
 
 The same project holds a run's tests: a turn's stream written down, the session client over a handler that answers,
-one conversation played over a fake sessions API, the pass rule, a run's repeats and its stops, the run's store over
+one conversation played over a fake sessions API with what judging it cost, the pass rule, a run's repeats and its stops, the run's store over
 a folder of its own, and the evals found in file providers built in memory.
 
 `LouisAgent.Api.Evals.Tests` runs the API in memory with the evals mapped, a test identity whose folder holds an
-eval, a fake model for the agent and one for the judge. It holds the four routes and every refusal of a start, the
-desk reading a cut-off run, the proof that the engine's replay client serves the judge, and a live run recording and
+eval, a fake model for the agent and one for the judge. It holds the five routes and every refusal of a start, a
+going run stopped and one that isn't going refused, the desk reading a cut-off run and stopping a going one, the proof that the engine's replay client serves the judge, and a live run recording and
 its replay. `LouisAgent.Api.Evals.Testing` is a class library, not a test project: `EvalReplay` replays an eval from
 recordings kept in git on a product's own API, facts only and with no key, and the site's tests use it for the
 guide. The design is in [LouisAgent.Api.Evals](LouisAgent.Api.Evals.md).
 
 What a page asks of a run, its counts, cost, time, first miss and order, is `RunAnswersTests` in
 `LouisAgent.Evals.Tests`. The admin's eval pages are `LouisAgent.Web.Evals.Tests`, in `src/tests/web/`: the client
-over a stub of the API, the addresses, and each page with bUnit over `EvalPagesHost`, a stub of every route the pages
-read. The design is in [LouisAgent.Web.Evals](LouisAgent.Web.Evals.md).
+over a stub of the API, its starts and stops, the addresses, and each page with bUnit over `EvalPagesHost`, a stub of
+every route the pages read and call, with a fake clock the tests move, so a going run is followed and stopped
+without waiting. The design is in [LouisAgent.Web.Evals](LouisAgent.Web.Evals.md).
 
 ## Structure
 

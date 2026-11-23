@@ -1,7 +1,7 @@
 {
   "kind": "cards",
   "title": "LouisAgent.Api.Evals: the overview",
-  "caption": "What a site's API program takes for its agents' evals: four routes behind the admin key, a desk that runs one run at a time in the background, and the work that plays a run over the sessions API.",
+  "caption": "What a site's API program takes for its agents' evals: five routes behind the admin key, a desk that runs one run at a time in the background and stops it on a person's word, and the work that plays a run over the sessions API.",
   "cards": {
     "rows": [
       {
@@ -11,7 +11,7 @@
             "icon": "server",
             "title": "LouisAgent.Api.Evals",
             "code": "AddLouisAgentEvals, MapLouisAgentEvals",
-            "text": "A site's evals, started and followed over its own API.",
+            "text": "A site's evals, started, followed and stopped over its own API.",
             "look": "highlight"
           }
         ]
@@ -21,16 +21,16 @@
           {
             "id": "routes",
             "icon": "server",
-            "title": "The four routes",
+            "title": "The five routes",
             "code": "EvalHandlers",
-            "text": "The host's evals, a run started, a run read at its address, an eval's runs."
+            "text": "The host's evals, a run started, read and stopped at its address, an eval's runs."
           },
           {
             "id": "desk",
             "icon": "play",
             "title": "One run at a time",
             "code": "RunDesk",
-            "text": "A hosted service: a start takes its one slot, and the host waits for the run when it stops."
+            "text": "A hosted service: a start takes its one slot, a stop cancels the run in it, and the host waits for the run when it stops."
           },
           {
             "id": "work",
