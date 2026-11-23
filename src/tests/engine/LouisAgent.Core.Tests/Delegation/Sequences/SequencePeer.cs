@@ -8,7 +8,7 @@ namespace LouisAgent.Core.Tests.Delegation.Sequences;
 /// <summary>
 /// This instance and a partner's server in one pretend handler, for a sequence's tests: each session gets its own
 /// number (sess_1, sess_2, …) and answers "Answer N", unless the test says that session fails; the partner lists a
-/// shop. What each session was opened as and sent is kept, so a test reads which step got what.
+/// shop and a bakery. What each session was opened as and sent is kept, so a test reads which step got what.
 /// </summary>
 internal sealed class SequencePeer
 {
@@ -49,7 +49,8 @@ internal sealed class SequencePeer
     private HttpResponseMessage Respond(HttpRequestMessage request)
     {
         string path = request.RequestUri!.AbsolutePath;
-        if (path == "/v1/identities") return Json(HttpStatusCode.OK, """{"identities":[{"name":"shop"}]}""");
+        if (path == "/v1/identities")
+            return Json(HttpStatusCode.OK, """{"identities":[{"name":"shop"},{"name":"bakery"}]}""");
         if (request.Method == HttpMethod.Delete) return Json(HttpStatusCode.OK, """{"deleted":true}""");
         if (path == "/v1/sessions")
             return Json(HttpStatusCode.Created, $$"""{"session_id":"sess_{{++_created}}"}""");

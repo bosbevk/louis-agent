@@ -82,4 +82,17 @@ public enum SequenceToolMessage
         "identity's voice or one of its subagents.")]
     [Holes(typeof(SequenceStepHoles))]
     SequenceStepIsLookup,
+
+    // An ask that can't go as the model wrote it.
+    [Description(
+        "Error: {Address} is step {Number} of the sequence {Sequence}, so it is never asked on its own. Ask " +
+        "{First}, which runs the whole sequence in order.")]
+    [Holes(typeof(SequenceLaterStepHoles))]
+    SequenceLaterStep,
+
+    [Description(
+        "Error: {Address} starts the sequence {Sequence}, which takes neither a tool nor a stronger model. Ask it " +
+        "without them.")]
+    [Holes(typeof(SequenceTakesNoToolHoles))]
+    SequenceTakesNoTool,
 }

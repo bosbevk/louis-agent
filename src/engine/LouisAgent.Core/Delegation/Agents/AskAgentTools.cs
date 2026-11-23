@@ -8,6 +8,7 @@ using LouisAgent.Composition.Packs;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Delegation.Addresses;
 using LouisAgent.Core.Delegation.Messages;
+using LouisAgent.Core.Delegation.Sequences;
 using LouisAgent.Core.Delegation.SubSessions;
 using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Sessions.SubSessions;
@@ -28,7 +29,9 @@ namespace LouisAgent.Core.Delegation.Agents;
 /// (<see cref="AgentAddresses"/>). The child opens one level down, on the same path as a subagent
 /// (<see cref="PeerSession"/>): the key from AGENT_API_KEY, the limit of three a turn, the timeout, the roll-up and the
 /// live events. A lookup agent's address takes one of the asker's tools and goes to <see cref="LookupAsk"/>, on its own
-/// limits (F127.5: one tool for every call an agent makes).
+/// limits (F127.5: one tool for every call an agent makes). The first step of one of the asker's sequences runs the
+/// whole sequence through <see cref="SequenceRunner"/>, for one ask; a later step is refused
+/// (<see cref="IdentitySequences"/>).
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0117-one-address-for-every-agent-call.md">ADR 0117: one address for every agent call</seealso>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0031-orchestration-is-an-engine-function.md">ADR 0031: orchestration is an engine function</seealso>
@@ -62,6 +65,12 @@ public sealed class AskAgentTools(
     /// </summary>
     private readonly LookupAsk _lookups = new(SessionOf(http, apiKey, usageSink, time, peers, peerKeys),
         lookupLlms ?? new Dictionary<string, IReadOnlyList<string>>(), lookupTimeout);
+
+    /// <summary>
+    /// The address that starts one of the asker's sequences goes here, on the same peers, keys, clock and limits.
+    /// </summary>
+    private readonly SequenceRunner _sequences = new(peers, identities, apiKey, http, timeout, time, usageSink,
+        peerKeys, maxDepth);
 
     /// <summary>The name this instance goes by among its peers, when the host names more than one (F127.3.1).</summary>
     public const string Self = "self";
@@ -114,6 +123,9 @@ public sealed class AskAgentTools(
         bool stronger = false,
         CancellationToken cancellationToken = default)
     {
+        bool extras = !string.IsNullOrWhiteSpace(tool) || stronger;
+        if (await SequenceAsync(address, message, attachments, extras, cancellationToken) is { } sequenced)
+            return sequenced;
         if (Reach(address, tool, out string? refusal) is not { } agent) return refusal!;
         if (AgentAsks.OutOfBounds(agent, TurnChain.Current, maxDepth) is { } bound) return bound;
         if (ForwardedAttachments.Take(attachments, out var forwarded) is { } unknownAttachment)
@@ -139,6 +151,25 @@ public sealed class AskAgentTools(
         return await _session.ContinueAsync(kept, open, ask.Message, KindOf(ask, SubSessionToolMessage.AgentAnswer),
             ask.ToolUseId, ask.Scope, _timeout, cancellationToken,
             () => StartAsync(ask, peer, name, parent, SubSessionToolMessage.AgentAnswerAnew, cancellationToken));
+    }
+
+    /// <summary>
+    /// An ask of an address in one of the asker's sequences: the first step runs the whole sequence, for one of the
+    /// turn's asks, and a later step is refused. Nothing for an address in no sequence, which is asked as one agent.
+    /// </summary>
+    /// <remarks>
+    /// Guard clauses (Fowler): an asker and an address, the sequence's rules, the files, the turn's ask.
+    /// </remarks>
+    private async Task<string?> SequenceAsync(string address, string message, string[]? attachments, bool extras,
+        CancellationToken cancellationToken)
+    {
+        if (Asker() is not { } asker || !AgentAddress.TryParse(address, out var parsed)) return null;
+        var sequences = IdentitySequences.Of(asker);
+        if (sequences.AskRefusal(parsed, extras) is { } refused) return refused;
+        if (sequences.StartedBy(parsed) is not { } sequence) return null;
+        if (ForwardedAttachments.Take(attachments, out var forwarded) is { } unknown) return unknown;
+        if (_slots.Take(UsageScope.Current, out _) is { } limit) return limit;
+        return await _sequences.RunAsync(sequence, message, cancellationToken, forwarded);
     }
 
     /// <summary>

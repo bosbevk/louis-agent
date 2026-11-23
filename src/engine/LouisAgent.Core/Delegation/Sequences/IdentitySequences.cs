@@ -9,8 +9,8 @@ using LouisAgent.Core.Delegation.Messages.Holes.Sequences.Rules;
 namespace LouisAgent.Core.Delegation.Sequences;
 
 /// <summary>
-/// An identity's sequences as the engine reads them: whether one keeps the rules a sequence must, and the reason the
-/// model reads when it doesn't.
+/// An identity's sequences as the engine reads them: whether one keeps the rules a sequence must, which sequence an
+/// ask starts, and the reason the model reads when a sequence or an ask breaks a rule.
 /// </summary>
 /// <remarks>
 /// Ask the type (ADR 0123): what is known about an identity's sequences lives here, so the runner and the ask tool
@@ -59,6 +59,31 @@ internal sealed class IdentitySequences(IAgentIdentity identity)
 
         var shared = new SequenceStepSharedHoles(sequence.Name, step, other.Name);
         return MessageText.Format(SequenceToolMessage.SequenceStepShared, shared);
+    }
+
+    /// <summary>The sequence an ask of this address starts: the one whose first step it is.</summary>
+    public AgentSequence? StartedBy(AgentAddress address) =>
+        identity.Sequences.FirstOrDefault(sequence => IndexIn(sequence, address) == 0);
+
+    /// <summary>
+    /// Why an ask of this address can't go as written: it is a later step of a sequence, which is never asked on its
+    /// own, or it starts one and brings a tool or a stronger model, which a sequence doesn't take.
+    /// </summary>
+    /// <remarks>
+    /// Guard clauses (Fowler): a later step first, then the extras on a start, then nothing to refuse.
+    /// </remarks>
+    public string? AskRefusal(AgentAddress address, bool withExtras)
+    {
+        if (identity.Sequences.FirstOrDefault(sequence => IndexIn(sequence, address) > 0) is { } holding)
+        {
+            var later = new SequenceLaterStepHoles(address.ToString(), IndexIn(holding, address) + 1, holding.Name,
+                holding.Steps[0]);
+            return MessageText.Format(SequenceToolMessage.SequenceLaterStep, later);
+        }
+
+        if (!withExtras || StartedBy(address) is not { } started) return null;
+        var extras = new SequenceTakesNoToolHoles(address.ToString(), started.Name);
+        return MessageText.Format(SequenceToolMessage.SequenceTakesNoTool, extras);
     }
 
     /// <summary>Another of the identity's sequences that also asks this address, if one does.</summary>
