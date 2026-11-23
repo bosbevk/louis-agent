@@ -50,6 +50,18 @@ public class DocsToolsTests
     public void ADoc_IsReadWhole() =>
         Assert.That(_tools.ReadDoc("adr/0001-first.md"), Does.StartWith("# 0001.").And.Contain("convertible"));
 
+    /// <summary>
+    /// A doc reads the same on every machine: a Windows checkout's CRLF endings reach the model as LF, as a Linux one's
+    /// do, so a recorded request still answers.
+    /// </summary>
+    [Test]
+    public void ADocWithWindowsLineEndings_IsReadWithLf()
+    {
+        File.WriteAllText(Path.Combine(_root, "windows.md"), "# Windows\r\n\r\nOne line.\r\n");
+
+        Assert.That(_tools.ReadDoc("windows.md"), Is.EqualTo("# Windows\n\nOne line.\n"));
+    }
+
     /// <summary>A path outside the root, a picture, a missing doc and a huge doc are each refused with their reason.</summary>
     [Test]
     public void WhatIsNotADocToRead_IsRefusedWithItsReason()
