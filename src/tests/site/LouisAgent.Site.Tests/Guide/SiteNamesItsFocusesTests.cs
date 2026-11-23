@@ -1,10 +1,10 @@
 using System.Reflection;
 using LouisAgent.Choices;
+using LouisAgent.Composition.Sites;
 using LouisAgent.Identities.Guide;
 using LouisAgent.Site.Components.Showroom;
 using LouisAgent.Site.Pages;
 using LouisAgent.Web.Components.Areas;
-using LouisAgent.Web.Components.Areas.Focuses;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -21,7 +21,9 @@ public class SiteNamesItsFocusesTests
     private static SiteFocuses Focuses() => new ServiceCollection().AddSiteAreas(LouisAgentDevAreas.Name)
         .BuildServiceProvider().GetRequiredService<SiteFocuses>();
 
-    /// <summary>Each part where Louis put it: the demos and every demo, and selling elsewhere, the framework's pages included.</summary>
+    /// <summary>
+    /// Each part where Louis put it: the demos and every demo, and selling elsewhere, the framework's pages included.
+    /// </summary>
     [TestCase("/", GuideFocus.Selling)]
     [TestCase("/contact", GuideFocus.Selling)]
     [TestCase("/home/what-it-does", GuideFocus.Selling)]

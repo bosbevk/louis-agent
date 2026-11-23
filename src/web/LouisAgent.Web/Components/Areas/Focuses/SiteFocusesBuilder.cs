@@ -1,3 +1,5 @@
+using LouisAgent.Composition.Sites;
+
 namespace LouisAgent.Web.Components.Areas.Focuses;
 
 /// <summary>

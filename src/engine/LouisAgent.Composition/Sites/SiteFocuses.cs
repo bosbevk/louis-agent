@@ -1,4 +1,4 @@
-namespace LouisAgent.Web.Components.Areas.Focuses;
+namespace LouisAgent.Composition.Sites;
 
 /// <summary>
 /// The focus of each part of a site (F127.7): what its agent concentrates on, by where the visitor is. A page takes the
