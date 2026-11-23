@@ -2,7 +2,7 @@
   "kind": "flow",
   "type": "component",
   "title": "LouisAgent.Evals: the architecture",
-  "caption": "The evals' library, with its two test projects. It stands on the engine for the model client, the address and the usage ledger's scope, and the framework's site names it. No host serves it, and no page shows it.",
+  "caption": "The evals' library stands on the engine for the model client, the address and the replay store, on its contracts for a run's records, and on the shared wire records to ask the agent over HTTP. A site's API maps it through LouisAgent.Api.Evals.",
   "flow": {
     "nodes": [
       {
@@ -23,37 +23,37 @@
         "id": "files",
         "icon": "file",
         "tone": "green",
-        "label": "LouisAgent.Evals, Files\nthe records and the reader (4, 5, 6)"
+        "label": "Files\nthe records, the reader, the catalogue"
       },
       {
         "id": "grading",
         "icon": "checks",
         "tone": "green",
-        "label": "LouisAgent.Evals, Grading\nFacts (8, 9) and Judge"
+        "label": "Grading\nFacts and Judge"
       },
       {
-        "id": "tests",
-        "icon": "terminal",
-        "tone": "plain",
-        "label": "LouisAgent.Evals.Tests\nand .IntegrationTests"
+        "id": "runs",
+        "icon": "play",
+        "tone": "green",
+        "label": "Sessions, Transcripts, Runs\nasked, written down, played, kept"
+      },
+      {
+        "id": "contracts",
+        "icon": "code",
+        "tone": "teal",
+        "label": "LouisAgent.Evals.Contracts\na run's records"
       },
       {
         "id": "core",
         "icon": "chip",
         "tone": "violet",
-        "label": "LouisAgent.Core\nIChatClient, AgentAddress, UsageScope"
+        "label": "LouisAgent.Core\nIChatClient, AgentAddress, the replay store"
       },
       {
-        "id": "model",
-        "icon": "message",
-        "tone": "violet",
-        "label": "Claude\nthrough LouisAgent.Core.Anthropic"
-      },
-      {
-        "id": "site",
-        "icon": "browser",
+        "id": "apihost",
+        "icon": "server",
         "tone": "blue",
-        "label": "The framework's site\nnames the project"
+        "label": "LouisAgent.Api.Evals\nmaps it on a site's API"
       }
     ],
     "edges": [
@@ -68,19 +68,19 @@
         "word": "makes"
       },
       {
-        "from": "tests",
+        "from": "runs",
         "to": "files",
-        "word": "a file's text"
+        "word": "plays"
       },
       {
-        "from": "tests",
+        "from": "runs",
         "to": "grading",
-        "word": "a transcript by hand"
+        "word": "grades"
       },
       {
-        "from": "files",
-        "to": "core",
-        "word": "the address"
+        "from": "runs",
+        "to": "contracts",
+        "word": "fills"
       },
       {
         "from": "grading",
@@ -88,15 +88,14 @@
         "word": "the model client"
       },
       {
-        "from": "core",
-        "to": "model",
-        "word": "a criterion + a schema"
+        "from": "runs",
+        "to": "core",
+        "word": "the replay store"
       },
       {
-        "from": "site",
-        "to": "files",
-        "word": "names",
-        "style": "dashed"
+        "from": "apihost",
+        "to": "runs",
+        "word": "runs"
       }
     ],
     "direction": "down"

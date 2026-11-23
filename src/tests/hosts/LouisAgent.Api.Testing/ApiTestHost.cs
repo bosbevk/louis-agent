@@ -38,24 +38,30 @@ internal static class ApiTestHost
     /// <summary>
     /// Starts the API in memory the way ApiStartup builds it, on a test server with no port. Give it an admin key to
     /// open the admin portal. A test that writes or commits gives its own workspace folder, and one that sends a
-    /// message gives the model that answers it.
+    /// message gives the model that answers it. A library a site's API maps beside the API's own adds its services
+    /// and its routes on the API's group, as the site's program does.
     /// </summary>
     public static WebApplication Build(string? apiKey = null, string? workspaceRoot = null, string? adminKey = null,
         IChatClient? model = null, IReadOnlyList<IAgentPack>? morePacks = null,
         IReadOnlyList<IAgentIdentity>? moreIdentities = null, OpenDoorOptions? openDoor = null,
-        IReadOnlyDictionary<string, Uri>? agentPeers = null, bool streamPace = false)
+        IReadOnlyDictionary<string, Uri>? agentPeers = null, bool streamPace = false,
+        Action<WebApplicationBuilder, AgentHostContext>? services = null, Action<IEndpointRouteBuilder>? routes = null,
+        string? replayDirectory = null, AgentHostContext? host = null)
     {
-        // The same services as ApiStartup, on an in-memory test server instead of a port.
-        var host = HostContext(workspaceRoot ?? RepoRoot, model ?? new NoModel(), morePacks, moreIdentities,
-            agentPeers, streamPace);
+        // The same services as ApiStartup, on an in-memory test server instead of a port; a test that built its
+        // own host, a product's catalogue on its own settings, gives it whole.
+        host ??= HostContext(workspaceRoot ?? RepoRoot, model ?? new NoModel(), morePacks, moreIdentities,
+            agentPeers, streamPace, replayDirectory);
         var builder = WebApplication.CreateBuilder();
         builder.WebHost.UseTestServer();
         builder.Services.AddApi(host, openDoor ?? OpenDoorOptions.Shut);
+        services?.Invoke(builder, host);
         var app = builder.Build();
 
         if (apiKey is not null) app.UseAgentKey(apiKey, app.Services.GetRequiredService<OpenDoor>());
         var api = app.MapApi(host);
         api.MapAdmin(adminKey);
+        routes?.Invoke(api);
         return app;
     }
 
@@ -96,11 +102,11 @@ internal static class ApiTestHost
     /// <summary>
     /// The agent the test API runs: the test agent and any identity a test adds (F166.1: no product), on the test
     /// agent's packs, the tests' own tools and any a test adds, with this workspace and model, the peers a test names
-    /// (none by default), and its words paced when a test says so (F156).
+    /// (none by default), its words paced when a test says so (F156), and its recordings kept where a test says.
     /// </summary>
     private static AgentHostContext HostContext(string workspaceRoot, IChatClient model,
         IReadOnlyList<IAgentPack>? morePacks = null, IReadOnlyList<IAgentIdentity>? moreIdentities = null,
-        IReadOnlyDictionary<string, Uri>? agentPeers = null, bool streamPace = false)
+        IReadOnlyDictionary<string, Uri>? agentPeers = null, bool streamPace = false, string? replayDirectory = null)
     {
         var options = new AgentOptions
         {
@@ -108,7 +114,8 @@ internal static class ApiTestHost
             SkillsDirectory = SkillsFolder,
             RatesUrl = null,
             AgentPeers = agentPeers ?? new Dictionary<string, Uri>(),
-            StreamPace = streamPace
+            StreamPace = streamPace,
+            ReplayDirectory = replayDirectory
         };
         // A test may add an identity beside the test agent (F109.3: a session names its identity), and its packs.
         var catalog = new AgentCatalog([TestAgent.Identity, .. moreIdentities ?? []],

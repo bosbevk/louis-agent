@@ -18,11 +18,11 @@ public class SolutionLayoutTests
         "LouisAgent.Composition", "LouisAgent.Core.Web", "LouisAgent.Core.Telemetry", "LouisAgent.Core.Anthropic",
         "LouisAgent.Core.Ollama", "LouisAgent.Core.OpenAi")]
     [TestCase("src/hosts", "LouisAgent.Acp", "LouisAgent.Api", "LouisAgent.Api.Contracts", "LouisAgent.Cli",
-        "LouisAgent.Mcp", "LouisAgent.Accounts", "LouisAgent.Accounts.Contracts")]
+        "LouisAgent.Mcp", "LouisAgent.Accounts", "LouisAgent.Accounts.Contracts", "LouisAgent.Api.Evals")]
     [TestCase("src/web", "LouisAgent.Web", "LouisAgent.Web.Accounts", "LouisAgent.Web.Themes",
         "LouisAgent.Web.Framework", "LouisAgent.Web.Docs", "LouisAgent.Web.Places",
         "LouisAgent.Diagrams", "LouisAgent.Diagrams.Engine")]
-    [TestCase("src/evals", "LouisAgent.Evals")]
+    [TestCase("src/evals", "LouisAgent.Evals", "LouisAgent.Evals.Contracts")]
     [TestCase("packs/tools", "LouisAgent.Packs.Web", "LouisAgent.Packs.Shell", "LouisAgent.Packs.Files",
         "LouisAgent.Packs.Git", "LouisAgent.Packs.DotNet", "LouisAgent.Packs.Calculator", "LouisAgent.Packs.Docs",
         "LouisAgent.Packs.Triage", "LouisAgent.Packs.Leads",
@@ -46,7 +46,8 @@ public class SolutionLayoutTests
         "LouisAgent.Core.OpenAi.Tests")]
     [TestCase("src/tests/hosts", "LouisAgent.Acp.Tests", "LouisAgent.Mcp.Tests",
         "LouisAgent.Accounts.Tests", "LouisAgent.Accounts.IntegrationTests", "LouisAgent.Api.Tests",
-        "LouisAgent.Api.IntegrationTests", "LouisAgent.Api.Testing")]
+        "LouisAgent.Api.IntegrationTests", "LouisAgent.Api.Testing", "LouisAgent.Api.Evals.Tests",
+        "LouisAgent.Api.Evals.Testing")]
     [TestCase("src/tests/web", "LouisAgent.Web.Tests", "LouisAgent.Web.Testing", "LouisAgent.Web.Accounts.Tests",
         "LouisAgent.Web.Themes.Tests", "LouisAgent.Web.Framework.Tests",
         "LouisAgent.Web.Docs.Tests", "LouisAgent.Web.Places.Tests", "LouisAgent.Diagrams.Tests")]

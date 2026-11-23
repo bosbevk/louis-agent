@@ -19,6 +19,7 @@ project, for when you change that project's code.
 | [Draw a diagram](draw-a-diagram.md) | Put a picture in a doc: its JSON beside the doc, the tool that draws the SVG, the link, the test that holds it |
 | [Spawn a site](spawn-a-site.md) | Make a new site with a chat and an admin from the starter, then make it yours |
 | [Get a site found](get-a-site-found.md) | Make a site show up in search: what the framework does, what a site adds, Search Console, the sitemap, links |
+| [Run an eval](run-an-eval.md) | Run a site's eval through its API: start a live run, follow it, read its file, replay it for free, and record again when it is out of date |
 | [Publish the framework](publish-the-framework.md) | Release a package of the framework to GitHub Packages with a tag, several together, what stops a release, and checking it from outside |
 | [Deploy the sites](deploy-the-sites.md) | Release louis-agent.dev and framework.louis-agent.dev to Azure: a merge's release, one from the PC, secrets, a domain, rolling back |
 | [Build an identity](build-an-identity.md) | Make a new agent: its voice and routing, its subagents, the packs it names, its tests, running it; the rules for modes, subagents and lookup agents |

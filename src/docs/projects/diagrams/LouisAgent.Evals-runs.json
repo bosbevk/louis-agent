@@ -1,0 +1,161 @@
+{
+  "kind": "classes",
+  "title": "LouisAgent.Evals: the classes of a run",
+  "caption": "The player asks the agent over the sessions API and grades what came back; the runner plays every conversation as many times as asked; the store keeps the run, by an id RunId reads; the judge's answers go through its replay.",
+  "classes": {
+    "types": [
+      {
+        "id": "client",
+        "name": "SessionClient",
+        "kind": "class",
+        "members": [
+          "OpenAsync(CreateSessionRequest)",
+          "SendAsync(session, message)",
+          "CloseAsync(session)"
+        ]
+      },
+      {
+        "id": "reader",
+        "name": "TurnTranscripts",
+        "kind": "static",
+        "members": [
+          "TurnTranscript Of(ask, events, took)",
+          "TurnCost CostOf(events)"
+        ]
+      },
+      {
+        "id": "trial",
+        "name": "RunTrial",
+        "kind": "record",
+        "members": [
+          "string Run, Conversation",
+          "int Repeat",
+          "string? ReplayOf",
+          "string Name, Replayed"
+        ]
+      },
+      {
+        "id": "player",
+        "name": "ConversationPlayer",
+        "kind": "class",
+        "members": [
+          "Task<RepeatRun> PlayAsync(agent,",
+          "  conversation, trial, ct)"
+        ]
+      },
+      {
+        "id": "runner",
+        "name": "EvalRunner",
+        "kind": "class",
+        "members": [
+          "Task<EvalRun> RunAsync(started,",
+          "  file, kept, ct)"
+        ]
+      },
+      {
+        "id": "replay",
+        "name": "JudgeReplay",
+        "kind": "decorator",
+        "members": [
+          "IDisposable Begin(RunTrial trial)"
+        ]
+      },
+      {
+        "id": "store",
+        "name": "RunStore",
+        "kind": "class",
+        "members": [
+          "Save(EvalRun run)",
+          "EvalRun? Find(string id)",
+          "IReadOnlyList<EvalRun> Of(string eval)"
+        ]
+      },
+      {
+        "id": "runid",
+        "name": "RunId",
+        "kind": "record",
+        "members": [
+          "DateTimeOffset StartedAt",
+          "string Eval",
+          "bool TryParse(text, out id)"
+        ]
+      },
+      {
+        "id": "catalog",
+        "name": "EvalCatalog",
+        "kind": "class",
+        "members": [
+          "EvalCatalog Read(AgentCatalog)",
+          "EvalFile? Find(string name)",
+          "IReadOnlyList<string> Names"
+        ]
+      },
+      {
+        "id": "judge",
+        "name": "Judge",
+        "kind": "class",
+        "tone": "violet",
+        "members": [
+          "Task<Mark> MarkAsync(criterion, conversation, ct)"
+        ]
+      },
+      {
+        "id": "facts",
+        "name": "Facts",
+        "kind": "static",
+        "tone": "violet",
+        "members": [
+          "Mark Tell(fact, turn, earlier)"
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "from": "player",
+        "to": "client",
+        "kind": "holds"
+      },
+      {
+        "from": "player",
+        "to": "judge",
+        "kind": "holds"
+      },
+      {
+        "from": "player",
+        "to": "reader",
+        "kind": "uses"
+      },
+      {
+        "from": "player",
+        "to": "facts",
+        "kind": "uses"
+      },
+      {
+        "from": "player",
+        "to": "trial",
+        "kind": "uses"
+      },
+      {
+        "from": "runner",
+        "to": "player",
+        "kind": "holds"
+      },
+      {
+        "from": "runner",
+        "to": "trial",
+        "kind": "creates"
+      },
+      {
+        "from": "judge",
+        "to": "replay",
+        "kind": "uses",
+        "word": "its client"
+      },
+      {
+        "from": "store",
+        "to": "runid",
+        "kind": "uses"
+      }
+    ]
+  }
+}

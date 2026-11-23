@@ -16,6 +16,8 @@
         <!-- The guide's model: Anthropic's, the one provider this program composes. -->
         <ProjectReference Include="..\..\engine\LouisAgent.Core.Anthropic\LouisAgent.Core.Anthropic.csproj" />
         <ProjectReference Include="..\..\hosts\LouisAgent.Api\LouisAgent.Api.csproj" />
+        <!-- F126.3.1: the evals of the site's agents, mapped beside the API's routes. -->
+        <ProjectReference Include="..\..\hosts\LouisAgent.Api.Evals\LouisAgent.Api.Evals.csproj" />
         <!-- The guide and the three packs it answers with. -->
         <ProjectReference Include="..\LouisAgent.Identities.Guide\LouisAgent.Identities.Guide.csproj" />
         <ProjectReference Include="..\LouisAgent.Identities.Showroom\LouisAgent.Identities.Showroom.csproj" />

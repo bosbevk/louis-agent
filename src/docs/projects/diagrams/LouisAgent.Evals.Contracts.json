@@ -1,0 +1,71 @@
+{
+  "kind": "cards",
+  "title": "LouisAgent.Evals.Contracts: the overview",
+  "caption": "The records a run is made of, and the API's rows of them, on nothing of ours, so the evals write them, the API sends them and a page in the browser reads them, one shape for all three.",
+  "cards": {
+    "rows": [
+      {
+        "cards": [
+          {
+            "id": "top",
+            "icon": "code",
+            "title": "LouisAgent.Evals.Contracts",
+            "code": "records only, no reference",
+            "text": "One shape for a run, from the file it is kept in to the page that draws it.",
+            "look": "highlight"
+          }
+        ]
+      },
+      {
+        "cards": [
+          {
+            "id": "turn",
+            "icon": "book",
+            "title": "What happened",
+            "code": "TurnTranscript, ToolCallTranscript",
+            "text": "A turn as the agent did it: the ask, the answer as sent, each tool call with its result."
+          },
+          {
+            "id": "marks",
+            "icon": "checks",
+            "title": "Its marks",
+            "code": "Mark, TurnRun",
+            "text": "A fact's or a criterion's mark with its reason, and a turn with all of them and its cost."
+          },
+          {
+            "id": "run",
+            "icon": "play",
+            "title": "The run",
+            "code": "EvalRun, ConversationRun, RepeatRun",
+            "text": "A run's conversations and repeats, each saying whether it passed."
+          },
+          {
+            "id": "api",
+            "icon": "server",
+            "title": "The API's rows",
+            "code": "EvalRow, RunRow, EvalsReply, StartRunRequest",
+            "text": "What the eval routes list and what a start asks for."
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "from": "top",
+        "to": "turn"
+      },
+      {
+        "from": "top",
+        "to": "marks"
+      },
+      {
+        "from": "top",
+        "to": "run"
+      },
+      {
+        "from": "top",
+        "to": "api"
+      }
+    ]
+  }
+}

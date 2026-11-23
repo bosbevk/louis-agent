@@ -1,7 +1,8 @@
 using LouisAgent.Core.Delegation.Agents;
+using LouisAgent.Evals.Contracts.Grading;
+using LouisAgent.Evals.Contracts.Transcripts;
 using LouisAgent.Evals.Files;
 using LouisAgent.Evals.Grading;
-using LouisAgent.Evals.Transcripts;
 
 namespace LouisAgent.Evals.Tests.Grading;
 

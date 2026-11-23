@@ -1,0 +1,62 @@
+{
+  "kind": "flow",
+  "type": "activity",
+  "title": "LouisAgent.Evals.Contracts: a run's record, from its file to a page",
+  "caption": "One record all the way: the runner fills it, the store writes it as the run's file, the API sends what was kept, and a page reads the same shape, so a renamed field breaks every reader at build time.",
+  "flow": {
+    "direction": "down",
+    "nodes": [
+      {
+        "id": "start",
+        "label": "A conversation graded",
+        "icon": "checks",
+        "tone": "blue",
+        "shape": "terminal"
+      },
+      {
+        "id": "fill",
+        "label": "The runner puts it on\nthe EvalRun",
+        "icon": "play",
+        "tone": "green"
+      },
+      {
+        "id": "file",
+        "label": "The store writes it as\nevals/runs/{id}.json",
+        "icon": "file",
+        "tone": "amber",
+        "shape": "data"
+      },
+      {
+        "id": "send",
+        "label": "The API sends what\nwas kept",
+        "icon": "server",
+        "tone": "violet"
+      },
+      {
+        "id": "page",
+        "label": "A page reads the\nsame record",
+        "icon": "browser",
+        "tone": "blue",
+        "shape": "terminal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "start",
+        "to": "fill"
+      },
+      {
+        "from": "fill",
+        "to": "file"
+      },
+      {
+        "from": "file",
+        "to": "send"
+      },
+      {
+        "from": "send",
+        "to": "page"
+      }
+    ]
+  }
+}

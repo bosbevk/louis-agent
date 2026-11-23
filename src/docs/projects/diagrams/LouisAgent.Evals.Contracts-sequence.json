@@ -1,0 +1,65 @@
+{
+  "kind": "sequence",
+  "title": "LouisAgent.Evals.Contracts: who writes and who reads a run",
+  "caption": "The evals write a run, the store keeps it in the run's own JSON, and the eval routes answer with it, so every side reads the records of this project.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "R",
+        "icon": "play",
+        "tone": "green",
+        "label": "The runner"
+      },
+      {
+        "id": "S",
+        "icon": "file",
+        "tone": "amber",
+        "label": "The run store"
+      },
+      {
+        "id": "A",
+        "icon": "server",
+        "tone": "violet",
+        "label": "The eval routes"
+      },
+      {
+        "id": "P",
+        "icon": "browser",
+        "tone": "blue",
+        "label": "A caller or a page"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "R",
+        "to": "S",
+        "text": "Save(EvalRun)"
+      },
+      {
+        "step": "message",
+        "from": "P",
+        "to": "A",
+        "text": "GET /v1/admin/evals/runs/{id}"
+      },
+      {
+        "step": "message",
+        "from": "A",
+        "to": "S",
+        "text": "Find(id)"
+      },
+      {
+        "step": "reply",
+        "from": "S",
+        "to": "A",
+        "text": "the EvalRun, read strictly"
+      },
+      {
+        "step": "reply",
+        "from": "A",
+        "to": "P",
+        "text": "the EvalRun, in the same JSON"
+      }
+    ]
+  }
+}

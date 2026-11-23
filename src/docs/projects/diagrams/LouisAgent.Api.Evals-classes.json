@@ -1,0 +1,129 @@
+{
+  "kind": "classes",
+  "title": "LouisAgent.Api.Evals: its classes",
+  "caption": "The startup registers the desk and the handlers; a handler checks a start and hands the desk the work, which plays the run with the evals' runner and keeps it in the store.",
+  "classes": {
+    "types": [
+      {
+        "id": "startup",
+        "name": "EvalsStartup",
+        "kind": "static",
+        "members": [
+          "AddLouisAgentEvals(builder, host,",
+          "  judgeModel, options, agentApi)",
+          "MapLouisAgentEvals(v1, adminKey)",
+          "IChatClient JudgeClient(host, clients, options)"
+        ]
+      },
+      {
+        "id": "handlers",
+        "name": "EvalHandlers",
+        "kind": "class",
+        "members": [
+          "List()",
+          "StartAsync(name, body)",
+          "Find(id)",
+          "RunsOf(name)"
+        ]
+      },
+      {
+        "id": "desk",
+        "name": "RunDesk",
+        "kind": "BackgroundService",
+        "members": [
+          "EvalRun? Current",
+          "bool TryStart(started, work)",
+          "EvalRun Read(stored)"
+        ]
+      },
+      {
+        "id": "work",
+        "name": "RunWork",
+        "kind": "class",
+        "members": [
+          "RunStore Store",
+          "Func<CancellationToken, Task> For(started, file)"
+        ]
+      },
+      {
+        "id": "options",
+        "name": "EvalsOptions",
+        "kind": "record",
+        "members": [
+          "string? DataFolder, JudgeModel, ApiKey",
+          "Uri? ApiUrl",
+          "string? RunsFolder"
+        ]
+      },
+      {
+        "id": "runner",
+        "name": "EvalRunner",
+        "kind": "LouisAgent.Evals",
+        "tone": "violet",
+        "members": [
+          "RunAsync(started, file, kept, ct)"
+        ]
+      },
+      {
+        "id": "store",
+        "name": "RunStore",
+        "kind": "LouisAgent.Evals",
+        "tone": "violet",
+        "members": [
+          "Save, Find, Of"
+        ]
+      },
+      {
+        "id": "catalog",
+        "name": "EvalCatalog",
+        "kind": "LouisAgent.Evals",
+        "tone": "violet",
+        "members": [
+          "Find(name), Names"
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "from": "startup",
+        "to": "handlers",
+        "kind": "creates"
+      },
+      {
+        "from": "startup",
+        "to": "desk",
+        "kind": "creates"
+      },
+      {
+        "from": "startup",
+        "to": "options",
+        "kind": "uses"
+      },
+      {
+        "from": "handlers",
+        "to": "desk",
+        "kind": "holds"
+      },
+      {
+        "from": "handlers",
+        "to": "work",
+        "kind": "holds"
+      },
+      {
+        "from": "handlers",
+        "to": "catalog",
+        "kind": "holds"
+      },
+      {
+        "from": "work",
+        "to": "runner",
+        "kind": "creates"
+      },
+      {
+        "from": "work",
+        "to": "store",
+        "kind": "holds"
+      }
+    ]
+  }
+}

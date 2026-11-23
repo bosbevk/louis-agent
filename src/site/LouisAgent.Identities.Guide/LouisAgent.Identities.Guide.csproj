@@ -18,6 +18,9 @@
 
   <ItemGroup>
     <EmbeddedResource Include="agents\**\*.md" />
+    <!-- F126.3.1: the guide's evals travel beside its voice; the prompt reader takes only markdown, so none is a
+         prompt (ADR 0134). -->
+    <EmbeddedResource Include="agents\**\*.eval.json" />
   </ItemGroup>
 
   <ItemGroup>

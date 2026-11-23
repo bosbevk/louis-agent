@@ -12,6 +12,9 @@ public class EvalMessagesTests
     /// <summary>Each of the evals' message enums, with its holes records.</summary>
     [Test]
     public void EveryMessage_NamesItsHolesRecord_AndItMatches() =>
-        Assert.That(MessageHoles.Problems([typeof(EvalFileMessage), typeof(FactMessage),
-            typeof(JudgeMessage)]), Is.Empty);
+        Assert.That(MessageHoles.Problems([
+            typeof(EvalFileMessage), typeof(FactMessage),
+            typeof(JudgeMessage), typeof(SessionMessage), typeof(RunMessage),
+            typeof(CatalogMessage)
+        ]), Is.Empty);
 }

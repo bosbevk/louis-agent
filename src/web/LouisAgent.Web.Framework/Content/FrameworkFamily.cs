@@ -68,12 +68,14 @@ public sealed record FrameworkFamily(
             new("LouisAgent.Diagrams.Engine", "What draws one, its layouts and drawings.")
         ]);
 
-    /// <summary>The evals, which measure an agent, being rebuilt from scratch from their first project.</summary>
+    /// <summary>The evals, which measure an agent: a file played against it, graded, kept and replayed.</summary>
     public static readonly FrameworkFamily Evals = new("the-evals", "The evals", "src/evals",
-        "Measure an agent. They are being rebuilt from scratch, starting with the eval file and how a turn is graded.",
+        "Measure an agent. An eval file is played against it over its API, graded, kept, and replayed for free.",
         DiagramIcon.Checks, DiagramTone.Green,
         [
-            new("LouisAgent.Evals", "The eval file and how a turn is graded.")
+            new("LouisAgent.Evals", "The eval file, how a turn is graded, and a run played and kept."),
+            new("LouisAgent.Evals.Contracts", "A run's records, from what happened in a turn to its marks."),
+            new("LouisAgent.Api.Evals", "The eval routes a site's API maps, behind the admin key.")
         ]);
 
     /// <summary>The tools, which draw the docs' pictures and read a provider's usage.</summary>

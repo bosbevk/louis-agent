@@ -250,8 +250,9 @@ Skill 4, Tool use: a follow-up proved to reach the same specialist (`continued`)
   judge's answers too": a replay calls no model at all, and a reworded criterion stops it. "1.
   src/site/recordings/evals/": where the guide's recordings for its replay test sit. The child also carries three
   picks of the review of 2026-11-22: the eval part is a library the site's API maps and no host of its own, a
-  conversation passes only when all three repeats do, and a replay is one test. Its plan is
-  [F126.3.1 Runs](F126.3.1-runs.md).
+  conversation passes only when all three repeats do, and a replay is one test. It is done, its design in
+  [LouisAgent.Evals](../projects/LouisAgent.Evals.md), [LouisAgent.Evals.Contracts](../projects/LouisAgent.Evals.Contracts.md) and
+  [LouisAgent.Api.Evals](../projects/LouisAgent.Api.Evals.md); F126.3.2, the run pages, is next.
 
 ---
 [Plans](README.md) · Related: [ADR 0029](../adr/0029-simulations-in-csharp.md) · [ADR 0058](../adr/0058-an-eval-is-a-folder-of-files.md) · [ADR 0104](../adr/0104-a-message-may-carry-the-page.md)

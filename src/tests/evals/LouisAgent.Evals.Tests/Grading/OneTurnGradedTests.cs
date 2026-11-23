@@ -1,6 +1,7 @@
+using LouisAgent.Evals.Contracts.Grading;
+using LouisAgent.Evals.Contracts.Transcripts;
 using LouisAgent.Evals.Files.Json;
 using LouisAgent.Evals.Grading;
-using LouisAgent.Evals.Transcripts;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Evals.Tests.Grading;

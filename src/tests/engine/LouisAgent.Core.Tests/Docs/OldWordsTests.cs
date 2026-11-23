@@ -97,10 +97,15 @@ public class OldWordsTests
             .Where(IsOurs)
             .Where(file => !IsKept(file));
 
-    /// <summary>A file we wrote by hand, in a kind we read: never build output, a package's files or a doc.</summary>
+    /// <summary>
+    /// A file we wrote by hand, in a kind we read: never build output, a package's files, a host's own data or a doc.
+    /// </summary>
     private static bool IsOurs(string file)
     {
         if (file.Contains("/bin/") || file.Contains("/obj/") || file.Contains("/node_modules/")) return false;
+        // What a host keeps as it runs (git-ignored), such as an eval's runs quoting the docs it read.
+        if (file.StartsWith("src/site/data/", StringComparison.Ordinal)) return false;
+        if (file.StartsWith("demos/", StringComparison.Ordinal) && file.Contains("/data/")) return false;
         if (file.Contains("/docs/")) return false;
         if (file.EndsWith(".md", StringComparison.Ordinal)) return file.Contains("/agents/");
         return SourceExtensions.Any(extension => file.EndsWith(extension, StringComparison.Ordinal));

@@ -1,0 +1,71 @@
+{
+  "kind": "cards",
+  "title": "LouisAgent.Api.Evals: the overview",
+  "caption": "What a site's API program takes for its agents' evals: four routes behind the admin key, a desk that runs one run at a time in the background, and the work that plays a run over the sessions API.",
+  "cards": {
+    "rows": [
+      {
+        "cards": [
+          {
+            "id": "top",
+            "icon": "server",
+            "title": "LouisAgent.Api.Evals",
+            "code": "AddLouisAgentEvals, MapLouisAgentEvals",
+            "text": "A site's evals, started and followed over its own API.",
+            "look": "highlight"
+          }
+        ]
+      },
+      {
+        "cards": [
+          {
+            "id": "routes",
+            "icon": "server",
+            "title": "The four routes",
+            "code": "EvalHandlers",
+            "text": "The host's evals, a run started, a run read at its address, an eval's runs."
+          },
+          {
+            "id": "desk",
+            "icon": "play",
+            "title": "One run at a time",
+            "code": "RunDesk",
+            "text": "A hosted service: a start takes its one slot, and the host waits for the run when it stops."
+          },
+          {
+            "id": "work",
+            "icon": "checks",
+            "title": "A run played and kept",
+            "code": "RunWork",
+            "text": "The agent asked at the program's own address with its key, the run kept after every conversation."
+          },
+          {
+            "id": "options",
+            "icon": "chip",
+            "title": "Its settings",
+            "code": "EvalsOptions",
+            "text": "Where runs are kept, which model judges, and where the agent is asked."
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "from": "top",
+        "to": "routes"
+      },
+      {
+        "from": "top",
+        "to": "desk"
+      },
+      {
+        "from": "top",
+        "to": "work"
+      },
+      {
+        "from": "top",
+        "to": "options"
+      }
+    ]
+  }
+}

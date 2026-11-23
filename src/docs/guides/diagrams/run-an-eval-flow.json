@@ -1,0 +1,96 @@
+{
+  "kind": "flow",
+  "type": "activity",
+  "title": "Run an eval: the steps",
+  "caption": "A live run, then its replay; a replay that says its recording is out of date needs a live run again, and a recording kept in git is copied from it.",
+  "flow": {
+    "direction": "down",
+    "nodes": [
+      {
+        "id": "start",
+        "label": "The site's API running,\nwith its data and replay folders",
+        "icon": "server",
+        "tone": "blue",
+        "shape": "terminal"
+      },
+      {
+        "id": "live",
+        "label": "Start a live run",
+        "icon": "play",
+        "tone": "green"
+      },
+      {
+        "id": "follow",
+        "label": "Read its address\nuntil it has ended",
+        "icon": "search",
+        "tone": "green"
+      },
+      {
+        "id": "read",
+        "label": "Read its file",
+        "icon": "file",
+        "tone": "amber",
+        "shape": "data"
+      },
+      {
+        "id": "replay",
+        "label": "Start a replay",
+        "icon": "database",
+        "tone": "green"
+      },
+      {
+        "id": "answers",
+        "label": "The recording\nstill answers?",
+        "icon": "branch",
+        "tone": "green",
+        "shape": "decision"
+      },
+      {
+        "id": "same",
+        "label": "The same marks,\nno model called",
+        "icon": "checks",
+        "tone": "green",
+        "shape": "terminal"
+      },
+      {
+        "id": "again",
+        "label": "A live run again,\nand its trial copied",
+        "icon": "shield",
+        "tone": "red",
+        "shape": "terminal"
+      }
+    ],
+    "edges": [
+      {
+        "from": "start",
+        "to": "live"
+      },
+      {
+        "from": "live",
+        "to": "follow"
+      },
+      {
+        "from": "follow",
+        "to": "read"
+      },
+      {
+        "from": "read",
+        "to": "replay"
+      },
+      {
+        "from": "replay",
+        "to": "answers"
+      },
+      {
+        "from": "answers",
+        "to": "same",
+        "word": "yes"
+      },
+      {
+        "from": "answers",
+        "to": "again",
+        "word": "no, out of date"
+      }
+    ]
+  }
+}

@@ -1,7 +1,7 @@
 {
   "kind": "cards",
   "title": "LouisAgent.Evals: the overview",
-  "caption": "Four parts and nothing else: a reader that takes one eval file into records, a schema made from those records, seven facts that code tells from a transcript, and one judge that marks a criterion. No API, no page and no stored run.",
+  "caption": "An eval file is read and its turns graded, and a run plays it against the agent over the sessions API, keeps itself as one file, and replays from its recording for free.",
   "cards": {
     "rows": [
       {
@@ -10,9 +10,9 @@
             "id": "top",
             "icon": "checks",
             "title": "LouisAgent.Evals",
-            "code": "no API, no page, no stored run",
-            "look": "highlight",
-            "text": "The first new code of the evals: what an eval file holds, and how one turn of a conversation gets its marks."
+            "code": "reads, plays, grades, keeps",
+            "text": "How an agent is measured: an eval file of conversations, played and graded, kept as a run.",
+            "look": "highlight"
           }
         ]
       },
@@ -22,29 +22,29 @@
             "id": "file",
             "icon": "file",
             "title": "The file is read",
-            "code": "EvalFileReader",
-            "text": "One .eval.json becomes records. A wrong file is refused at its first fault, with its place."
+            "code": "EvalFileReader, EvalCatalog",
+            "text": "One .eval.json becomes records, found beside its agent's prompts. A wrong one is refused at its first fault."
           },
           {
-            "id": "schema",
-            "icon": "code",
-            "title": "The schema is made",
-            "code": "eval.schema.json",
-            "text": "Made from the records and kept as a golden file, so Rider helps while you write an eval."
-          },
-          {
-            "id": "facts",
+            "id": "grade",
             "icon": "search",
-            "title": "Code tells the facts",
-            "code": "Facts",
-            "text": "Seven things a transcript shows for certain and for free, such as which tool was called."
+            "title": "A turn is graded",
+            "code": "Facts, Judge",
+            "text": "Code tells seven facts from what happened, and a judge marks each criterion with its reason."
           },
           {
-            "id": "judge",
-            "icon": "scales",
-            "title": "A judge marks the rest",
-            "code": "Judge",
-            "text": "One model call for one criterion: yes or no, with the reason, as a typed record."
+            "id": "run",
+            "icon": "play",
+            "title": "A run is played",
+            "code": "ConversationPlayer, EvalRunner",
+            "text": "Each conversation in a session of its own, as many repeats as asked; it stops when the harness fails."
+          },
+          {
+            "id": "keep",
+            "icon": "database",
+            "title": "A run is kept and replayed",
+            "code": "RunStore, JudgeReplay",
+            "text": "One file per run. A live run records the agent's and the judge's answers, so a replay costs nothing."
           }
         ]
       }
@@ -56,15 +56,15 @@
       },
       {
         "from": "top",
-        "to": "schema"
+        "to": "grade"
       },
       {
         "from": "top",
-        "to": "facts"
+        "to": "run"
       },
       {
         "from": "top",
-        "to": "judge"
+        "to": "keep"
       }
     ]
   }

@@ -27,8 +27,12 @@ internal static class AgentKeyGate
         app.Use(async (context, next) =>
         {
             // The guide's door first (F109.3): a visitor it admits passes, one past the day's cap hears so, and
-            // for anything else the key's rules stand as they were.
-            var answer = door is null ? OpenDoorAnswer.NotMine : await door.ConsiderAsync(context);
+            // for anything else the key's rules stand as they were. It is told whether the key came, so an
+            // operator's run is no visitor (F126.3.1).
+            string? presented = context.Request.Headers["x-api-key"].FirstOrDefault();
+            string? bearer = context.Request.Headers.Authorization.FirstOrDefault();
+            bool keyed = HostAuth.HasKey(presented, bearer, apiKey);
+            var answer = door is null ? OpenDoorAnswer.NotMine : await door.ConsiderAsync(context, keyed);
             if (answer == OpenDoorAnswer.Capped)
             {
                 context.Response.StatusCode = StatusCodes.Status429TooManyRequests;
@@ -43,11 +47,9 @@ internal static class AgentKeyGate
             }
 
             // An open route, the right key, or a signed-in person on the app's own call: let it through.
-            string? presented = context.Request.Headers["x-api-key"].FirstOrDefault();
-            string? bearer = context.Request.Headers.Authorization.FirstOrDefault();
             string? requestedWith = context.Request.Headers[HostAuth.RequestedWithHeader].FirstOrDefault();
             bool signedIn = context.User.Identity?.IsAuthenticated == true;
-            if (!NeedsKey(context.Request.Path, context.GetEndpoint()) || HostAuth.HasKey(presented, bearer, apiKey)
+            if (!NeedsKey(context.Request.Path, context.GetEndpoint()) || keyed
                                                                        || HostAuth.IsSignedIn(signedIn, requestedWith))
             {
                 await next(context);

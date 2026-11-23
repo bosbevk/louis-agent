@@ -1,10 +1,10 @@
 # LouisAgent.Evals — design
 
-> **Kind:** library (`net10.0`) · **Path:** `src/evals/LouisAgent.Evals/` · **References:** LouisAgent.Core ·
-> **Used by:** its tests today; the runs of the evals, once they are built
+> **Kind:** library (`net10.0`) · **Path:** `src/evals/LouisAgent.Evals/` · **References:** LouisAgent.Core,
+> LouisAgent.Evals.Contracts, LouisAgent.Api.Contracts · **Used by:** LouisAgent.Api.Evals, and its tests
 > **Also shows:** `component`, `object`
 
-![The evals' library: a reader that takes one eval file into records, a schema made from those records, seven facts that code tells from a transcript, and one judge that marks a criterion](diagrams/LouisAgent.Evals.svg)
+![The evals' library: an eval file read and found beside its agent, a turn graded by code and a judge, a run played against the agent, and the run kept and replayed for free](diagrams/LouisAgent.Evals.svg)
 
 ## Purpose
 
@@ -13,16 +13,20 @@ this library reads that file and grades what happened in a turn. Some things cod
 whether the agent called a tool. The rest is a plain sentence, a criterion, that a model judge marks yes or no with
 its reason.
 
-It is the first part of the evals, which are being rebuilt from scratch
-([ADR 0134](../adr/0134-an-eval-is-one-file-of-conversations.md)). So far it reads a file and grades a turn that a
-test wrote down by hand. Nothing runs an eval against an agent yet, no host serves it, and no page shows it.
+It also runs an eval. A run plays every conversation of a file against the agent, over the same sessions API a
+person's chat uses, grades each turn, and keeps itself as one file. A live run records the agent's answers and the
+judge's as it goes, so the same run can be replayed later for nothing. A site's API serves it through
+[LouisAgent.Api.Evals](LouisAgent.Api.Evals.md), and the records of a run are
+[LouisAgent.Evals.Contracts](LouisAgent.Evals.Contracts.md)'s, so a page can read them. No page shows a run yet.
 
 The doc follows a file from its text to its marks: how it's read, how a wrong one is refused, the schema an editor
-checks it against, then the facts code tells and the criteria the judge marks.
+checks it against, then the facts code tells and the criteria the judge marks. Then it follows a run: a
+conversation played, the repeats and when a run stops, the run kept, the evals found beside their agents, and
+record and replay.
 
 ## How it works
 
-![The evals' library with its two test projects; it stands on the engine for the model client, the address and the ledger's scope](diagrams/LouisAgent.Evals-component.svg)
+![The evals' library stands on the engine, on its contracts and on the shared wire records, and a site's API maps it through LouisAgent.Api.Evals](diagrams/LouisAgent.Evals-component.svg)
 
 ### 1. An eval file
 
@@ -95,7 +99,7 @@ schema.
 
 To grade a turn, code needs what happened in it. That is a `TurnTranscript`: what was asked, what the agent answered
 as it sent it, each tool call with its input and its result as the agent got it, how long the turn took, and its
-error if it had one. Today a test writes one by hand.
+error if it had one. A run writes it from the stream, as part 6 tells; a test can write one by hand.
 
 `Facts.Tell` is one switch on the fact's kind, and every arm reads the transcript and nothing else. It is free,
 instant, and the same every time. There are seven facts:
@@ -147,46 +151,140 @@ guidance asks for an isolated judge per dimension.
 
 *Decided in:* F126, F126.2, [ADR 0134](../adr/0134-an-eval-is-one-file-of-conversations.md).
 
+### 6. A conversation is played
+
+To grade a turn for real, the agent has to be asked. `SessionClient` does that the way any app does: it opens a
+session, sends a message and reads the answer's stream as it comes, and closes the session. It writes the shared
+wire records and reads the stream with the shared reader, so nothing of the wire is typed twice. When the API says
+no, it throws `SessionRefusedException` with the status and the API's own reason, read as the API's `ApiError`.
+
+`TurnTranscripts` turns a turn's stream into its transcript. The text deltas join into the answer, and thinking is
+never part of it. Each tool call is its name and its input, and its result is the result block whole, failed when
+the stream says so. An `error` event is the turn's error. An agent the turn asked streams its own events nested
+under the call that asked it, and those stay out: the call to `AskAgent` is already one of this turn's calls, with
+the answer as its result, and that is what the facts about another agent read. The cost is read apart, from the
+turn's last usage, as a `TurnCost`; a cost nobody could price is null, never 0.
+
+`ConversationPlayer` plays one conversation once. It opens one session as the file's agent, the address's identity
+and its role when it names one, sends each ask in the file's order, times each turn and writes it down, and closes
+the session whatever happens. Then it grades: each fact by code from the turn and the turns before it, each
+criterion by the judge from the turns up to and including that one, never a later one. Asking first and grading
+after keeps one place that opens and closes the session. A turn that ends in the agent's own error is still a turn:
+`no-error` is then not met, and the next turn is still asked, since the agent failing is what an eval is for. A
+refusal from the API is not caught here; stopping is the runner's.
+
+![A run's classes: the player asks over the sessions API and grades, the runner plays every conversation, the store keeps the run by its id, and the judge's answers go through its replay](diagrams/LouisAgent.Evals-runs.svg)
+
+![One conversation of a live run: a session opened with the run's tag and asked to record, each turn asked and written down, the session closed, the facts told, the criteria marked, the run kept again](diagrams/LouisAgent.Evals-run-sequence.svg)
+
+### 7. The repeats, and when a run stops
+
+A model doesn't answer the same way twice, so a run plays each conversation once or three times, each time in a
+session of its own. `EvalRunner` does that, conversation by conversation in the file's order, and hands the run to
+whoever keeps it after every conversation, so the kept run is its own progress. When every conversation has been
+played it ends as finished, at the clock's time.
+
+A conversation passes only when it holds every repeat the run asked for and each one passed, and a repeat passed
+when every mark of every turn is met. That is asked of the records, as section 2 of the contracts' doc tells. So a
+run cut short part way through a conversation never counts it as passed.
+
+Two things end a run as could not finish, with the reason in `StoppedBecause`: a judge that can't mark, and the
+API refusing. In both, nothing was learnt about the agent, so no mark is made up. Everything graded before the stop
+stays on the run, the repeats of the conversation cut short too. Anything else that goes wrong is a bug and
+surfaces, and a cancelled run stays a cancellation.
+
+![One live run in memory: the run holds its conversation, the conversation its three repeats, each repeat its turn with a transcript and marks, and beside it each repeat's trial of recordings](diagrams/LouisAgent.Evals-run-objects.svg)
+
+### 8. A run is kept, and the evals are found
+
+`RunStore` keeps each run as one JSON file in its folder, named by the run's id, so a person can open a run in
+Rider and a folder listing is already in order. The id is the UTC time the run started, to the second, and the
+eval's name: `20261123-063633-guide`. `RunId` is the one place that knows that shape; it reads an id character by
+character, and an id that doesn't read is refused before it is ever part of a path. A file is written beside itself
+and moved into place, so a reader never meets half a run. It is read with `RunJson`, strict as the eval file's
+reader: an unknown field, a missing one or a wrong null is refused, and a file in the folder that isn't a run is an
+error that names the file. The pattern is Fowler's Repository: whoever asks for runs doesn't know they are files.
+
+An eval file sits in its agent's folder, `agents/{identity}/{name}.eval.json`, and the identity's project embeds it
+beside its prompts. `EvalCatalog` reads every such file once, at start-up, from the same embedded files the agent
+catalogue hands the prompt reader, which takes only markdown, so no prompt ever sees an eval. Each eval is held by
+its file's name without the ending, `guide`. Two files with one name, a wrong file, or a file whose agent the
+catalogue has no identity for each throw an `EvalFileException` with the file's path, and the host doesn't start.
+
+### 9. Record, and replay for free
+
+A live run records as it goes. Each play opens its session with the run's id as its run tag, its task
+`{conversation}.{repeat}` and a request to record, so the engine keeps the agent's answers under the trial
+`{run id}/{conversation}.{repeat}` (`RunTrial` names them). The judge isn't in a session, so `JudgeReplay` keeps its
+answers in the same trial: it is a decorator over the judge's client, the engine's own replay client reused whole,
+and the player grades inside `JudgeReplay.Begin(trial)`. So a trial holds the agent's answers and the judge's.
+
+A replay plays a live run back. Each of its sessions asks for the live run's trial, model included, and the judge
+reads its answers from it, so nothing calls a model and a replayed answer is priced as a known 0. The result is a run
+like any other, of the kind replay, with `ReplayOf` naming the live run, in a file of its own.
+
+A recording answers only the request it was made from. When a prompt, a doc the agent reads or a criterion's words
+have changed, it holds no answer, and the replay stops as could not finish: the recording is out of date and a live
+run is needed. The agent's miss ends its turn in the stream's `replay_miss_error`, which the player turns into a
+`RecordingOutOfDateException`, the one place a harness failure is told apart from the agent's own error; the judge's
+miss comes as a `JudgeFailedException` over the engine's miss. It is Fowler's self-initializing fake, which never
+tries to know when its recording went stale; the miss is how we find out.
+
+*Decided in:* F126.3.1, [ADR 0134](../adr/0134-an-eval-is-one-file-of-conversations.md).
+
 ## Structure
 
 ```
 src/evals/LouisAgent.Evals/
 ├── eval.schema.json           # the eval file's schema, made from the records; a golden file
-├── Files/                     # EvalFile, Conversation, Turn; Fact and FactKind, the seven facts
+├── Files/                     # EvalFile, Conversation, Turn; Fact and FactKind; EvalCatalog, the evals found
 │   └── Json/                  # EvalFileReader, EvalFileException, EvalJson, EvalSchema, the two converters
-├── Transcripts/               # TurnTranscript and ToolCallTranscript: what happened in a turn
-├── Grading/                   # Mark, Facts, Judge, JudgeAnswer, JudgeFailedException
-└── Messages/                  # EvalFileMessage, FactMessage, JudgeMessage, and their Holes/
-src/tests/evals/LouisAgent.Evals.Tests/              # the facts, the reader and its faults, the schema, the judge
+├── Grading/                   # Facts, Judge, JudgeAnswer, JudgeFailedException
+├── Sessions/                  # SessionClient, SessionRefusedException: the agent asked over the sessions API
+├── Transcripts/               # TurnTranscripts and TurnCost: a turn's stream written down
+├── Runs/                      # ConversationPlayer, EvalRunner, RunTrial, JudgeReplay, RecordingOutOfDateException
+│   └── Store/                 # RunStore, RunId, RunJson: a run kept as one file
+└── Messages/                  # EvalFileMessage, FactMessage, JudgeMessage, SessionMessage, RunMessage,
+                               # CatalogMessage, and their Holes/
+src/tests/evals/LouisAgent.Evals.Tests/              # the file, the facts, the judge, a turn written down, a play,
+                                                     # a run, the store and the catalogue
 src/tests/evals/LouisAgent.Evals.IntegrationTests/   # the structured answer proved, and the judge on a real model
 ```
 
 ## Configuration
 
-None of its own. The judge takes whatever `IChatClient` it is given; which model a run's judge uses is the runs'
-to say, once they are built.
+None of its own. The judge takes whatever `IChatClient` it is given, the player and the runner a client of the
+sessions API and a clock, and the store its folder. Which folder, which model judges and where the agent is asked
+are the settings of [LouisAgent.Api.Evals](LouisAgent.Api.Evals.md).
 
 ## Tests
 
 `LouisAgent.Evals.Tests` holds the unit tests: each fact read and refused (`FactTests`), the guide's file read
 (`EvalFileReaderTests`), every fault refused at its place (`EvalFileFaultsTests`), the schema held to its golden file
 (`EvalSchemaTests`), the seven facts told (`FactsTests`, `AgentFactsTests`), the judge on a fake model
-(`JudgeTests`), and one turn graded whole (`OneTurnGradedTests`). `EvalMessagesTests` holds every message's holes.
+(`JudgeTests`), and one turn graded whole (`OneTurnGradedTests`). A turn's stream written down
+(`TurnTranscriptsTests`) and the client over a handler that answers (`SessionClientTests`) come next; then one
+conversation played over a fake sessions API (`ConversationPlayerTests`), the pass rule (`RunRecordsTests`), a run's
+repeats and its stops (`EvalRunnerTests`), the store over a folder of its own (`RunStoreTests`) and the evals found
+in file providers built in memory (`EvalCatalogTests`). `EvalMessagesTests` holds every message's holes.
 
 `LouisAgent.Evals.IntegrationTests` calls a real Claude model: `StructuredAnswerProofTests` proves the model answers as
 a typed record, and `JudgeLiveTests` has the judge mark two criteria. Both ask for the key with `Outside.Key`, so they
-skip without one, in CI too.
+skip without one, in CI too. The judge's replay and a whole run on the API in memory are tested in
+[LouisAgent.Api.Evals](LouisAgent.Api.Evals.md)'s tests.
 
 ## Limits and plans
 
-The evals are being rebuilt, and this is their first part ([the plan](../plans/F126-evals-redesigned.md)). Nothing
-yet runs an eval against an agent, keeps a run, or shows one on a page. Where an eval file sits in an identity's
-project and how it's found, the pass rule over repeats, and the judge's model and its settings come with the runs.
+No page shows a run yet, and a run is started by calling its route with the admin key. The page a visitor's
+message carries isn't sent with an ask, which a run says plainly with `PageSent`. A person can't flip a mark, and a
+reworded criterion can't be marked again without a live run. Those are the next children of
+[the evals' plan](../plans/F126-evals-redesigned.md).
 
 ## Related docs
 
-[ADR 0134](../adr/0134-an-eval-is-one-file-of-conversations.md) · [LouisAgent.Core](LouisAgent.Core.md) ·
+[ADR 0134](../adr/0134-an-eval-is-one-file-of-conversations.md) · [LouisAgent.Evals.Contracts](LouisAgent.Evals.Contracts.md) ·
+[LouisAgent.Api.Evals](LouisAgent.Api.Evals.md) · [Run an eval](../guides/run-an-eval.md) · [LouisAgent.Core](LouisAgent.Core.md) ·
 [Test projects](tests.md) · [12 Evaluation](../learning/12-evaluation.md)
 
 ---
-[Projects](README.md) · Previous: [LouisAgent.UsageProbe](LouisAgent.UsageProbe.md) · Next: [Test projects](tests.md)
+[Projects](README.md) · Previous: [LouisAgent.UsageProbe](LouisAgent.UsageProbe.md) · Next: [LouisAgent.Evals.Contracts](LouisAgent.Evals.Contracts.md)

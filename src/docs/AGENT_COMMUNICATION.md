@@ -190,6 +190,19 @@ checked against the workspace, and secret files are never shown.
 
 Nothing here pushes: pushing is always left to you.
 
+### Eval endpoints
+
+A site's API that maps the evals ([LouisAgent.Api.Evals](projects/LouisAgent.Api.Evals.md)) serves four more, all
+behind the admin key. A run plays in the background after its start is answered, and its address answers it as it
+goes and once it has ended, in the run's own JSON.
+
+| Endpoint | Request | What it does |
+|---|---|---|
+| `GET /v1/admin/evals` | — | `{ "evals": [{ "name", "agent", "conversations", "lastRun" }] }`: every eval this host has, its last run in short |
+| `POST /v1/admin/evals/{name}/runs` | `{ "kind": "live" \| "replay", "repeats": 1 \| 3 }` | Starts a run: `202` with `Location: /v1/admin/evals/runs/{id}`. Refused first: an unknown eval `404`; a body that doesn't read, other repeats, no data folder, a live run on a host that keeps no recordings, or a replay with no finished live run `400`; a run already going `409` |
+| `GET /v1/admin/evals/runs/{id}` | — | The run as it is kept: its conversations, repeats, turns with their transcripts and marks, its status and why it couldn't finish; `404` for an id that names no run |
+| `GET /v1/admin/evals/{name}/runs` | — | That eval's runs in short, the newest first; `404` for an unknown eval |
+
 ## The web app and the API
 
 The web app is a Blazor WebAssembly app served by LouisAgent.Api from the same address, so it calls the API directly.

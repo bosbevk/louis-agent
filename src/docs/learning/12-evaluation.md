@@ -2,7 +2,7 @@
 
 > **Skill:** #12 in the [goal](../GOAL.md)'s map, with #16 (human in the loop), a nod to #15 (least privilege) and side
 > lessons for #17, #4 and #3 · **Stages:** F18 steps 6.3 to 6a.5, the judge calibrated and then checked from the portal
-> (2026-10-26 to 27); the rest of F18 and its first v2 baseline (2026-10-29); F49.2b, the generic checks (2026-10-31); F126.1, the old evals deleted, and F126.2, the file and the grading (2026-11-22)
+> (2026-10-26 to 27); the rest of F18 and its first v2 baseline (2026-10-29); F49.2b, the generic checks (2026-10-31); F126.1, the old evals deleted, and F126.2, the file and the grading (2026-11-22); F126.3.1, runs (2026-11-23)
 > · **Written by** Claude, for Louis to read (2026-10-27, extended 2026-10-29, 2026-10-31 and 2026-11-22)
 
 What this answers: how we know the model that grades the cook's answers sees what you see, what it took to get it there, and
@@ -334,6 +334,60 @@ the integration-marking rule's pattern, there since it was written, had kept hal
 
 **In the field's words:** *code-based graders* and *model-based graders* (Anthropic), *structured outputs* with a
 schema on the request, *fail fast*, and a *golden file* for what a model reads.
+
+## Runs, and a replay that costs nothing (F126.3.1)
+
+F126.2 could grade a turn somebody wrote down by hand. F126.3.1 is the part that writes it down for real: an eval
+harness, the piece that runs a task end to end and hands what happened to the graders. It asks the agent the way a
+person would, over the same sessions API the chat uses, so the agent measured is the one visitors get. A turn's
+transcript is built from the stream the agent's own clients read: the answer as sent, each tool call with its result,
+the error, the cost. That is the complete record of a trial, its transcript in the field's word, and the graders
+read nothing else.
+
+A trial starts clean. Each repeat gets a session of its own, and a follow-up goes into the same session, since a
+follow-up means something only when the agent remembers. A run asks for one repeat or three, because a model doesn't
+answer the same way twice, and a conversation passes only when all three pass. That is pass^k, your pick over pass@k:
+one lucky pass out of three says little about what a visitor gets, and three out of three says the agent does it
+reliably. The record holds how many repeats were asked, so a run cut off part way never counts a conversation as
+passed.
+
+The run tells the agent failing from the harness failing, and grades only the first. An agent's error in a turn is a
+result: `no-error` isn't met, and the next turn is still asked. A judge that can't mark, the API refusing, or a
+recording that no longer answers is the harness: the run stops as could not finish, says why, and keeps what it
+graded. Nothing is marked "not met" for trouble that isn't the agent's.
+
+A run is one JSON file a person can open, the way Inspect keeps its logs, named by when it started and the eval, so a
+folder listing is already in order. The eval files travel as content with the agent they prove, embedded beside its
+prompts and found at start-up. Starting a run is long work behind an API, so the start answers `202` with the run's
+address and the run is asked how it goes: Microsoft's Asynchronous Request-Reply, with the run in the background of
+the host on a hosted service that takes one run at a time.
+
+The replay is the part that will pay for itself. A live run records every model answer, the agent's and the judge's,
+under each repeat's trial. A replay plays those answers back: nothing calls a model, and it costs nothing. It is a
+response cache for exactly repeated requests, which is also its limit, and that limit is the point. Change a word of
+the guide's voice and the request no longer matches, so the replay stops, saying the recording is out of date. So the
+guide's eval is now one unit test with no key, and a pull request that changes the guide turns it red until a live run
+records again. That is a regression gate that sees the agent changed.
+
+**What it measured.** Three live runs of the guide's one conversation, three repeats each, on Claude Haiku 5.5 for
+the agent and the judge. The one that counts, `20261123-063633-guide`, took 33 seconds, wrote a 55,578-byte file and
+cost $0.0077 for the agent's 7 calls and $0.0074 for the judge's 9: about a cent and a half for nine marks a repeat.
+All three runs together cost $0.038, priced by the site's table, which matched Anthropic's page that day. Its replay
+took about a second, gave the same 18 marks, and its 16 calls are on the ledger at a known $0. The guide met every
+fact every time, and passed none: it never named the doc it read, and it said "AI agent framework in C#" in one repeat
+of three.
+
+**What didn't work at first.** The first live run finished but recorded nothing of the agent. The open door, which
+lets visitors reach the guide, admitted the run's own sessions as a visitor's and dropped their run tag and their
+recording. Your pick was that a keyed request isn't a visitor. The second run then recorded, but the guide opened with
+the instance's tools instead of its own and never read a doc, so it wasn't the guide visitors get. The door now lets
+an operator's run, a keyed request that names a run, through as a visitor's agent that keeps its run, and the third run
+was right. The judge also split on the guide's `Offer` cards as its nudge, met once and not met twice for the same
+behaviour: a criterion to word more plainly when F126.5 writes the guide's evals.
+
+**In the field's words:** an *eval harness* and a *transcript* (Anthropic), *pass^k* against *pass@k*, a *trial* that
+starts clean, *Asynchronous Request-Reply* (Microsoft), a *hosted service*, a *response cache* as a free regression
+run, and Fowler's *self-initializing fake*.
 
 ## The limits, said plainly
 

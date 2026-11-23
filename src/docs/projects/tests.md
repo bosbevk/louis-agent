@@ -230,6 +230,17 @@ file at its place, hold the schema to its golden file, tell the seven facts, and
 as a typed record and to have the judge mark two criteria. It asks for the key with `Outside.Key`, so it skips without
 one, in CI too. The design is in [LouisAgent.Evals](LouisAgent.Evals.md).
 
+The same project holds a run's tests: a turn's stream written down, the session client over a handler that answers,
+one conversation played over a fake sessions API, the pass rule, a run's repeats and its stops, the run's store over
+a folder of its own, and the evals found in file providers built in memory.
+
+`LouisAgent.Api.Evals.Tests` runs the API in memory with the evals mapped, a test identity whose folder holds an
+eval, a fake model for the agent and one for the judge. It holds the four routes and every refusal of a start, the
+desk reading a cut-off run, the proof that the engine's replay client serves the judge, and a live run recording and
+its replay. `LouisAgent.Api.Evals.Testing` is a class library, not a test project: `EvalReplay` replays an eval from
+recordings kept in git on a product's own API, facts only and with no key, and the site's tests use it for the
+guide. The design is in [LouisAgent.Api.Evals](LouisAgent.Api.Evals.md).
+
 ## Structure
 
 The folders of `src/tests/engine/LouisAgent.Core.Tests`, to look things up.
@@ -273,4 +284,4 @@ The orchestrator's whole loop, run against a scripted LouisAgent.Api, has no tes
 [Write and run tests](../guides/write-tests.md) · [Architecture § Testing](../architecture/08-crosscutting-concepts.md#testing)
 
 ---
-[Projects](README.md) · Previous: [LouisAgent.Evals](LouisAgent.Evals.md)
+[Projects](README.md) · Previous: [LouisAgent.Api.Evals](LouisAgent.Api.Evals.md)
