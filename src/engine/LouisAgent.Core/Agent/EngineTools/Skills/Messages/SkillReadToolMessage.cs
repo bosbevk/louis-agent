@@ -1,4 +1,6 @@
 using System.ComponentModel;
+using LouisAgent.Composition.Messages;
+using LouisAgent.Core.Agent.EngineTools.Skills.Messages.Holes;
 
 namespace LouisAgent.Core.Agent.EngineTools.Skills.Messages;
 
@@ -20,5 +22,6 @@ public enum SkillReadToolMessage
     OnDemandSkill,
 
     [Description("There is no skill '{Name}' to read. The ones you can read: {Available}.")]
+    [Holes(typeof(SkillUnknownHoles))]
     SkillUnknown,
 }

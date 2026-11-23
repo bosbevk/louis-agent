@@ -470,12 +470,17 @@ public site at all (FX229), which an always-failing criterion had pointed at.
 
 **What recording again cost.** One live run of one conversation, once: $0.003563 for the agent by the run's own
 record, and about $0.0008 for the judge's two calls at the price table's rates, about $0.0044 in all. The kept
-recordings are that run's own files, read before they went into the public repository.
+recordings are a second run's own files, read before they went into the public repository: that run cost the agent
+$0.003513 and the judge about $0.0008, and it met every fact and criterion, the reworded one included.
 
 **What didn't work at first.** The test eval's JSON, built in a raw string that ended on a quote, lost that quote to
 the string's closing marks. A message with no page wrote `"page": null` while the browser leaves the key out; the wire
 record now leaves it out for every sender. And the replay test still failed after the new recordings, on the one fact
-the live run had missed, which is what put the eval's expectations in front of you.
+the live run had missed, which is what put the eval's expectations in front of you. On CI the replay then failed on
+Linux and passed here: "message 3 (tool) changed". `ReadSkill` handed the model the skill as the checkout wrote it,
+CRLF on this PC, where the recording container was built, and LF on Linux. It now hands it with LF, as `ReadDoc`
+has done since F126.3.1, and the guide was recorded once more. The lesson is the one F126.3.1 learnt for docs: any
+tool that hands the model a file must hand it the same bytes on every machine.
 
 **In the field's words:** the *harness* against *production*, *train/serve skew* in its eval form, a *self-initializing
 fake* that now records the page too, and Fowler's *Remote Facade* for the route.
