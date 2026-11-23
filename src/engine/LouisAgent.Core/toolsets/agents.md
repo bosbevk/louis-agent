@@ -38,9 +38,6 @@ you get back its answer, never its tools or its conversation.
 - **Another company's server: say so first.** An address with a server before a colon sends the person's words out
   of this hosting, to another company. Before you ask it, tell the person in one line who you are asking and that
   their question goes there.
-- **Some addresses start a fixed sequence.** Asking one runs several agents one after the other, in an order set in
-  code, and counts as one ask. The line under the answer names each step and what it did, and `was skipped` marks a
-  step left out. A later step of a sequence can't be asked on its own: the error names the address to ask instead.
 - **At most three asks a turn.** If an answer doesn't settle it, tell the person what you learned rather than asking
   again and again.
 
