@@ -1,0 +1,20 @@
+/* A turn: the ask in bold, the fold quiet, the answer set off by a rule, the error in the danger colour, and each
+   call's input and result in the monospace face, wrapping rather than scrolling the page. */
+.turn-card { margin-bottom: 16px; }
+.turn-ask { font-weight: 600; }
+.turn-calls { font-size: 14px; color: var(--bs-secondary-color); margin-bottom: 12px; }
+.turn-calls summary { min-height: 24px; cursor: pointer; }
+.turn-call { margin-top: 8px; }
+.turn-call-tool { font-weight: 600; color: var(--bs-body-color); }
+.turn-call pre {
+    font-family: var(--bs-font-monospace);
+    font-size: 13px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    margin: 4px 0;
+    padding: 8px;
+    border-radius: 8px;
+    background: var(--bs-secondary-bg);
+}
+.turn-answer { border-left: 3px solid var(--bs-border-color); padding-left: 14px; margin: 0 0 16px; }
+.turn-error { color: var(--bs-danger); }

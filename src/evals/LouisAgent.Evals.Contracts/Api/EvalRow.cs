@@ -1,3 +1,5 @@
+using LouisAgent.Evals.Contracts.Runs;
+
 namespace LouisAgent.Evals.Contracts.Api;
 
 /// <summary>One eval this host has: its name, the agent it proves, how many conversations, and its last run.</summary>
@@ -5,4 +7,17 @@ namespace LouisAgent.Evals.Contracts.Api;
 /// <param name="Agent">The address of the agent it proves.</param>
 /// <param name="Conversations">How many conversations its file holds.</param>
 /// <param name="LastRun">Its newest run in short, or null before its first.</param>
-public sealed record EvalRow(string Name, string Agent, int Conversations, RunRow? LastRun);
+public sealed record EvalRow(string Name, string Agent, int Conversations, RunRow? LastRun)
+{
+    /// <summary>
+    /// Its last run finished and every one of its conversations passed. A method, so the API's answer gains no field.
+    /// </summary>
+    public bool LastRunPassedInFull() =>
+        LastRun is { Status: RunStatus.Finished } run && run.Passed == Conversations;
+
+    /// <summary>
+    /// How many of its conversations a run of it didn't reach: a run keeps only those it graded, so a run that
+    /// stopped says how many, not which.
+    /// </summary>
+    public int CountNotRunIn(EvalRun run) => Math.Max(0, Conversations - run.Conversations.Count);
+}

@@ -1,0 +1,18 @@
+@* A conversation in a run: whether it passed, its id and its first ask, why it failed, and how many repeats passed.
+   The whole row is the link to the conversation's page. *@
+
+<a class="conversation-row d-flex gap-3 align-items-start" href="@Open">
+    <MarkDot Met="@Conversation.Passed"/>
+    <div class="conversation-row-text flex-grow-1">
+        <div class="conversation-row-id">@Conversation.Id</div>
+        @if (Ask is { } ask)
+        {
+            <div class="conversation-row-ask">"@ask"</div>
+        }
+        @if (FirstMiss is { } miss)
+        {
+            <div class="conversation-row-miss">Repeat @FailedRepeat?.Number, @MissWords: @miss.Mark.Text</div>
+        }
+    </div>
+    <span class="conversation-row-repeats @(Conversation.Passed ? "" : "conversation-row-failed")">@Conversation.CountPassedRepeats() of @Repeats</span>
+</a>

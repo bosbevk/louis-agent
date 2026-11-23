@@ -1,0 +1,14 @@
+@* The one card of a host with no eval: where a file goes, and the guide, linked when the site has docs. *@
+
+<section class="card-p evals-none">
+    <h2 class="evals-none-title">No evals yet</h2>
+    <p>An eval is one file beside the agent it proves: <code>agents/{identity}/{name}.eval.json</code>. It shows up here when the site is deployed with it.</p>
+    @if (Guide is { } guide)
+    {
+        <a href="@guide">How to run an eval</a>
+    }
+    else
+    {
+        <p class="muted">The guide is Run an eval, in the framework's docs.</p>
+    }
+</section>

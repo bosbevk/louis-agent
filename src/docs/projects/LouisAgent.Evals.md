@@ -201,8 +201,8 @@ surfaces, and a cancelled run stays a cancellation.
 Rider and a folder listing is already in order. The id is the UTC time the run started, to the second, and the
 eval's name: `20261123-063633-guide`. `RunId` is the one place that knows that shape; it reads an id character by
 character, and an id that doesn't read is refused before it is ever part of a path. A file is written beside itself
-and moved into place, so a reader never meets half a run. It is read with `RunJson`, strict as the eval file's
-reader: an unknown field, a missing one or a wrong null is refused, and a file in the folder that isn't a run is an
+and moved into place, so a reader never meets half a run. It is read with `RunJson`, from
+[LouisAgent.Evals.Contracts](LouisAgent.Evals.Contracts.md), strict as the eval file's reader: an unknown field, a missing one or a wrong null is refused, and a file in the folder that isn't a run is an
 error that names the file. The pattern is Fowler's Repository: whoever asks for runs doesn't know they are files.
 
 An eval file sits in its agent's folder, `agents/{identity}/{name}.eval.json`, and the identity's project embeds it
@@ -243,7 +243,7 @@ src/evals/LouisAgent.Evals/
 ├── Sessions/                  # SessionClient, SessionRefusedException: the agent asked over the sessions API
 ├── Transcripts/               # TurnTranscripts and TurnCost: a turn's stream written down
 ├── Runs/                      # ConversationPlayer, EvalRunner, RunTrial, JudgeReplay, RecordingOutOfDateException
-│   └── Store/                 # RunStore, RunId, RunJson: a run kept as one file
+│   └── Store/                 # RunStore, RunId: a run kept as one file
 └── Messages/                  # EvalFileMessage, FactMessage, JudgeMessage, SessionMessage, RunMessage,
                                # CatalogMessage, and their Holes/
 src/tests/evals/LouisAgent.Evals.Tests/              # the file, the facts, the judge, a turn written down, a play,

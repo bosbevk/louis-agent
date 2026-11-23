@@ -1,0 +1,4 @@
+/* One figure: its name small, its value in the theme's monospace face. */
+.run-figure { display: flex; flex-direction: column; gap: 4px; }
+.run-figure-name { font-size: 13px; color: var(--bs-secondary-color); }
+.run-figure-value { font-family: var(--bs-font-monospace); font-weight: 700; }

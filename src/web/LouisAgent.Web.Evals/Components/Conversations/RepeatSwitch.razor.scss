@@ -1,0 +1,17 @@
+/* The repeats' switch: a pill of links, the open one filled with the theme's body colour. */
+.repeat-switch {
+    width: fit-content;
+    padding: 4px;
+    margin-bottom: 16px;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 999px;
+}
+.repeat-switch-link {
+    min-height: 24px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    color: var(--bs-body-color);
+    text-decoration: none;
+}
+.repeat-switch-link:hover { text-decoration: underline; }
+.repeat-switch-open { background: var(--bs-body-color); color: var(--bs-body-bg); font-weight: 600; }

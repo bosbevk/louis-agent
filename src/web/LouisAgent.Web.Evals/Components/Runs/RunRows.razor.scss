@@ -1,0 +1,14 @@
+/* An eval's runs: a row each, the date and the score in the monospace face, the open run on the theme's tint. */
+.run-row {
+    padding: 12px 8px;
+    min-height: 24px;
+    border-bottom: 1px solid var(--bs-border-color);
+    color: var(--bs-body-color);
+    text-decoration: none;
+    font-size: 14px;
+}
+.run-row:last-child { border-bottom: 0; }
+.run-row:hover .run-row-when { text-decoration: underline; }
+.run-row-when, .run-row-passed { font-family: var(--bs-font-monospace); }
+.run-row-what { color: var(--bs-secondary-color); }
+.run-row-open { background: var(--bs-secondary-bg); border-radius: 8px; font-weight: 600; }

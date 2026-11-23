@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using LouisAgent.Evals.Contracts.Api;
 using LouisAgent.Evals.Contracts.Runs;
+using LouisAgent.Evals.Contracts.Runs.Json;
 using LouisAgent.Evals.Runs.Store;
 using Microsoft.Extensions.AI;
 using static LouisAgent.Api.Evals.Tests.EvalsTestHost;

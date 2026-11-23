@@ -17,7 +17,9 @@ A step is one commit with its test, small enough for Louis to review in about te
 
 ## Read before you write
 
-- **The step in the plan**: what it builds, its test, and the types its namespace map names.
+- **The step in the plan**: what it builds, its test, and the types its namespace map names. Hold each name you
+  are about to write, the plan's too, to ADR 0126 and ask whether a reader would know what it is without looking
+  it up. A doubtful one goes to Louis as a finding before it is written, never quietly renamed.
 - **The code the step touches**, and how the repo solved the nearest problem.
 - **The tests that will run against it.** *Which tests to run while you build*, below, says how to find them.
 - **The docs of what the step rests on, on the web.** A library call, an API, a platform's limit or a tool's flag

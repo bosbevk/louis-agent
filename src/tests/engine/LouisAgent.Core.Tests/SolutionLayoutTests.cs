@@ -21,7 +21,7 @@ public class SolutionLayoutTests
         "LouisAgent.Mcp", "LouisAgent.Accounts", "LouisAgent.Accounts.Contracts", "LouisAgent.Api.Evals")]
     [TestCase("src/web", "LouisAgent.Web", "LouisAgent.Web.Accounts", "LouisAgent.Web.Themes",
         "LouisAgent.Web.Framework", "LouisAgent.Web.Docs", "LouisAgent.Web.Places",
-        "LouisAgent.Diagrams", "LouisAgent.Diagrams.Engine")]
+        "LouisAgent.Diagrams", "LouisAgent.Diagrams.Engine", "LouisAgent.Web.Evals")]
     [TestCase("src/evals", "LouisAgent.Evals", "LouisAgent.Evals.Contracts")]
     [TestCase("packs/tools", "LouisAgent.Packs.Web", "LouisAgent.Packs.Shell", "LouisAgent.Packs.Files",
         "LouisAgent.Packs.Git", "LouisAgent.Packs.DotNet", "LouisAgent.Packs.Calculator", "LouisAgent.Packs.Docs",
@@ -50,7 +50,8 @@ public class SolutionLayoutTests
         "LouisAgent.Api.Evals.Testing")]
     [TestCase("src/tests/web", "LouisAgent.Web.Tests", "LouisAgent.Web.Testing", "LouisAgent.Web.Accounts.Tests",
         "LouisAgent.Web.Themes.Tests", "LouisAgent.Web.Framework.Tests",
-        "LouisAgent.Web.Docs.Tests", "LouisAgent.Web.Places.Tests", "LouisAgent.Diagrams.Tests")]
+        "LouisAgent.Web.Docs.Tests", "LouisAgent.Web.Places.Tests", "LouisAgent.Diagrams.Tests",
+        "LouisAgent.Web.Evals.Tests")]
     [TestCase("src/tests/evals", "LouisAgent.Evals.Tests", "LouisAgent.Evals.IntegrationTests")]
     [TestCase("src/tests/shared", "LouisAgent.Testing")]
     [TestCase("src/tools", "LouisAgent.UsageProbe", "LouisAgent.FilmExport", "LouisAgent.DocDiagrams")]

@@ -1,0 +1,19 @@
+/* One eval's card: its name large, its agent in the monospace face, its last run's number first. Colours are the
+   theme's names, so glass and flat, light and dark all draw it. */
+.eval-card { display: flex; flex-direction: column; gap: 4px; }
+.eval-card-name { font-size: 28px; font-weight: 500; margin: 0 0 12px; }
+.eval-card-agent { font-family: var(--bs-font-monospace); font-size: 13px; color: var(--bs-secondary-color); }
+.eval-card-count { font-size: 14px; color: var(--bs-secondary-color); }
+.eval-card-score { font-family: var(--bs-font-monospace); margin: 16px 0 0; }
+.eval-card-passed { font-size: 44px; font-weight: 700; line-height: 1; }
+.eval-card-of { font-size: 20px; }
+.eval-card-stopped { color: var(--bs-danger); font-size: 14px; font-weight: 600; margin: 0; }
+.eval-card-never { margin: 16px 0 0; }
+.eval-card-when { font-size: 13px; color: var(--bs-secondary-color); margin: 8px 0 0; }
+.eval-card-date { font-family: var(--bs-font-monospace); }
+.eval-card-open {
+    align-self: flex-start;
+    min-height: 24px;
+    margin-top: 12px;
+    color: var(--bs-body-color);
+}

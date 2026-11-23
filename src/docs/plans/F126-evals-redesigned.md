@@ -261,7 +261,8 @@ Skill 4, Tool use: a follow-up proved to reach the same specialist (`continued`)
   drawn again on the admin's own frame, and for screens 1, 3 and 4 those drawings replace this plan's mockups.
   "Only the link you picked": of the run before, a conversation shows one link and nothing else, so the
   comparison stays F126.4's. "Yes, as drawn". "Methods on the run's records": a page's sums and orderings are
-  asked of the records, as `Passed` is. Its plan is [F126.3.2 The run pages](F126.3.2-the-run-pages.md).
+  asked of the records, as `Passed` is. It is done, its design in [LouisAgent.Web.Evals](../projects/LouisAgent.Web.Evals.md);
+  F126.3.3, the page a conversation names, and F126.3.4, starting a run from the admin, are next.
 
 ---
 [Plans](README.md) · Related: [ADR 0029](../adr/0029-simulations-in-csharp.md) · [ADR 0058](../adr/0058-an-eval-is-a-folder-of-files.md) · [ADR 0104](../adr/0104-a-message-may-carry-the-page.md)

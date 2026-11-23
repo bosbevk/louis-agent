@@ -2,8 +2,8 @@
 
 > **Skill:** #12 in the [goal](../GOAL.md)'s map, with #16 (human in the loop), a nod to #15 (least privilege) and side
 > lessons for #17, #4 and #3 · **Stages:** F18 steps 6.3 to 6a.5, the judge calibrated and then checked from the portal
-> (2026-10-26 to 27); the rest of F18 and its first v2 baseline (2026-10-29); F49.2b, the generic checks (2026-10-31); F126.1, the old evals deleted, and F126.2, the file and the grading (2026-11-22); F126.3.1, runs (2026-11-23)
-> · **Written by** Claude, for Louis to read (2026-10-27, extended 2026-10-29, 2026-10-31 and 2026-11-22)
+> (2026-10-26 to 27); the rest of F18 and its first v2 baseline (2026-10-29); F49.2b, the generic checks (2026-10-31); F126.1, the old evals deleted, and F126.2, the file and the grading (2026-11-22); F126.3.1, runs, and F126.3.2, the run pages (2026-11-23)
+> · **Written by** Claude, for Louis to read (2026-10-27, extended 2026-10-29, 2026-10-31, 2026-11-22 and 2026-11-23)
 
 What this answers: how we know the model that grades the cook's answers sees what you see, what it took to get it there, and
 why the check is now a button in the admin portal instead of four commands in a terminal.
@@ -388,6 +388,53 @@ behaviour: a criterion to word more plainly when F126.5 writes the guide's evals
 **In the field's words:** an *eval harness* and a *transcript* (Anthropic), *pass^k* against *pass@k*, a *trial* that
 starts clean, *Asynchronous Request-Reply* (Microsoft), a *hosted service*, a *response cache* as a free regression
 run, and Fowler's *self-initializing fake*.
+
+## Reading a run (F126.3.2)
+
+A run kept as a file is complete, and nobody reads it. Anthropic's advice on evals keeps coming back to one habit:
+read the transcripts. A score tells you that something got worse; only the transcripts tell you what. F126.3.2 is
+the place where that reading happens, three pages in the admin of a site that names `.Evals()`: the evals, a run,
+and a conversation.
+
+**The number first, the failures first.** A run's page opens on how many conversations passed, of how many, in
+large type, because that is the one thing everyone wants first. Then come the conversations, the failed ones at the
+top, each with one line saying which repeat failed and on which mark, in that mark's own words. Seven rows with two
+failures needs no filter when the failures are already on top. This is the start of an error analysis: you don't
+read every transcript, you read the failed ones, one after another. Previous and Next failed on a conversation's
+page are that habit made into two links.
+
+**What a pass rate hides.** With pass^k, a conversation passes only when all three repeats do, so "5 of 7 passed"
+can hide a conversation that passed two of three. The run page keeps the counts beside the rate: "2 of 3 repeats" on
+every row, and the facts and criteria met over the whole run. A conversation's page opens at its first failed
+repeat, the one worth reading, and a switch shows the others with their tick or cross.
+
+**A code grader and a model grader look different.** A fact is checked in code, so it is drawn in code type and
+says so. A criterion is the judge's, so it carries the judge's line of why. That matters when a mark looks wrong:
+a fact that is wrong is a bug in code; a criterion that is wrong is either the judge or the criterion's words, and
+the line of why tells you which. In the first runs the guide's "Names the doc it read" failed every time, and the
+judge's lines showed why plainly: the answer never named a doc. Reading them is what showed the criterion asks for
+something the public guide shouldn't do at all.
+
+**Ask the record, not the page.** Every figure on these pages is a method on the run's records: the counts, the
+cost, the time, the first miss, the order failed first, the next failed one. The page only draws. So the run page,
+the conversation page and the admin's home card can't disagree about what passed, and the run's file gained no
+field: a test holds its JSON's property names exactly. A cost with no price reads "unknown", never 0, the same rule
+as the usage ledger everywhere else.
+
+**A short run is never shown as a whole one.** A run that could not finish says so first, in its own words, and
+says how many of the eval's conversations it didn't reach. Its score reads "of 2 graded passed", not "of 2 passed".
+That is the same line F126.3.1 drew between a failed agent and a failed harness, carried onto the page.
+
+**An area a site opts into.** The pages are a library, `LouisAgent.Web.Evals`, that a site takes with one word
+among its areas, as the routes are a library its API maps. A site that runs no evals ships neither.
+
+**What didn't work at first.** The pages' folder grew past six files at the run's states and split by page, your
+pick. A hand-made run left "running" read as "could not finish": the API marks a running file that isn't the
+current run as cut off, so "still going" only shows for a run really playing, which is right. And the browser
+window here wouldn't narrow to 390, so the phone width was looked at only through Bootstrap's grid, not by eye.
+
+**In the field's words:** *read the transcripts* and *error analysis* (Anthropic, Hamel Husain), *pass^k*, a *code
+grader* against a *model grader*, and Fowler's *Repository* behind the client.
 
 ## The limits, said plainly
 

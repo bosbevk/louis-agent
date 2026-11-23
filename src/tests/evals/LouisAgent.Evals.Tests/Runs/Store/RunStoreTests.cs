@@ -1,6 +1,7 @@
 using System.Text.Json;
 using LouisAgent.Evals.Contracts.Grading;
 using LouisAgent.Evals.Contracts.Runs;
+using LouisAgent.Evals.Contracts.Runs.Json;
 using LouisAgent.Evals.Contracts.Transcripts;
 using LouisAgent.Evals.Runs.Store;
 

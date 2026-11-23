@@ -1,0 +1,24 @@
+@inherits AdminCardBase
+@* The evals' card on the admin's home (F126.3.2): how many evals the host has, and how many last runs passed in full. *@
+
+<AdminCard Title="Evals" Open="@EvalAddress.EvalsPage">
+    @if (_evals is { Evals.Count: 0 })
+    {
+        <span class="muted evals-card-none">No evals yet.</span>
+    }
+    else if (_evals is { } evals)
+    {
+        <div class="figures">
+            <div class="figure"><span class="figure-value evals-card-count">@evals.Evals.Count</span><span class="figure-name">evals</span></div>
+            <div class="figure"><span class="figure-value evals-card-passed">@PassedInFull</span><span class="figure-name">last runs passed in full</span></div>
+        </div>
+    }
+    else if (NotRead)
+    {
+        <span class="muted">Not read: the admin key, or the API.</span>
+    }
+    else
+    {
+        <span class="muted">Loading…</span>
+    }
+</AdminCard>

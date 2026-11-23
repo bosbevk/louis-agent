@@ -1,0 +1,40 @@
+@* One turn of a repeat: what was asked, the tool calls folded away with each input and result, the answer as the
+   agent sent it, the agent's error when it ended in one, and the turn's marks, two to a row on a wide screen. *@
+
+<section class="card-p turn-card">
+    <h2>Turn @Number</h2>
+    <p class="turn-ask">@Turn.Transcript.Ask</p>
+
+    @if (Turn.Transcript.Calls.Count > 0)
+    {
+        <details class="turn-calls">
+            <summary>@CallsSummary</summary>
+            @foreach (var call in Turn.Transcript.Calls)
+            {
+                <div class="turn-call">
+                    <div class="turn-call-tool">@call.Tool</div>
+                    <pre class="turn-call-input">@call.Input</pre>
+                    <pre class="turn-call-result">@call.Result</pre>
+                </div>
+            }
+        </details>
+    }
+
+    <blockquote class="turn-answer">@Turn.Transcript.Answer</blockquote>
+
+    @if (Turn.Transcript.Error is { } error)
+    {
+        <p class="turn-error"><strong>The agent's error</strong> @error</p>
+    }
+
+    <div class="turn-marks row g-3">
+        @foreach (var fact in Turn.Facts)
+        {
+            <div class="col-12 col-lg-6"><MarkLine Mark="fact" Kind="MarkKind.Fact"/></div>
+        }
+        @foreach (var criterion in Turn.Criteria)
+        {
+            <div class="col-12 col-lg-6"><MarkLine Mark="criterion" Kind="MarkKind.Criterion"/></div>
+        }
+    </div>
+</section>

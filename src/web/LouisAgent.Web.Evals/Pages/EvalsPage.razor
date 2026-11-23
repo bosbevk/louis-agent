@@ -1,0 +1,42 @@
+@page "/admin/evals"
+@layout AdminFrame
+
+@* The evals' page (F126.3.2): one card an eval the host has, its last run's number first; the one card that says
+   where a file goes when there is none; and the frame's key box when the key is refused. *@
+
+<PageTitle>Evals · Admin</PageTitle>
+
+<div class="page-head">
+    <div>
+        <h1>Evals</h1>
+        <p>One card per eval. The number is its last run.</p>
+    </div>
+    <div class="page-actions">
+        <button class="header-button evals-reload" type="button" @onclick="LoadAsync" disabled="@_loading"><span class="ic i-refresh" aria-hidden="true"></span>Reload</button>
+    </div>
+</div>
+
+@if (_error is { } error)
+{
+    <AdminGate Error="@error" NeedsKey="_needsKey" OnSaved="LoadAsync"/>
+}
+
+@if (_loading && _evals is null)
+{
+    <section class="card-p evals-loading"><span class="muted">Loading…</span></section>
+}
+else if (_evals is { Evals.Count: 0 })
+{
+    <NoEvalsCard Guide="@GuideLink"/>
+}
+else if (_evals is { } evals)
+{
+    <div class="row g-3">
+        @foreach (var row in evals.Evals)
+        {
+            <div @key="row.Name" class="col-12 col-md-6 col-xl-3">
+                <EvalCard Row="row"/>
+            </div>
+        }
+    </div>
+}

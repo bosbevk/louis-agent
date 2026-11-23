@@ -61,6 +61,7 @@ public sealed record FrameworkFamily(
             new("LouisAgent.Web", "What every site shares."),
             new("LouisAgent.Web.Themes", "The themes, glass and flat."),
             new("LouisAgent.Web.Accounts", "The account pages."),
+            new("LouisAgent.Web.Evals", "The admin's eval pages: the evals, a run and a conversation, read."),
             new("LouisAgent.Web.Docs", "The docs' parts, from links to the menu."),
             new("LouisAgent.Web.Places", "Every place on a page, its own address."),
             new("LouisAgent.Web.Framework", "These pages."),

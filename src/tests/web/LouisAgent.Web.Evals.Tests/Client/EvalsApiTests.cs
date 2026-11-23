@@ -1,0 +1,113 @@
+using System.Net;
+using System.Net.Http.Json;
+using System.Text.Json;
+using LouisAgent.Evals.Contracts.Api;
+using LouisAgent.Evals.Contracts.Grading;
+using LouisAgent.Evals.Contracts.Runs;
+using LouisAgent.Evals.Contracts.Runs.Json;
+using LouisAgent.Evals.Contracts.Transcripts;
+using LouisAgent.Web.Api;
+using LouisAgent.Web.Evals.Client;
+using LouisAgent.Web.Storage;
+
+namespace LouisAgent.Web.Evals.Tests.Client;
+
+/// <summary>
+/// The pages read the eval routes through one small client over the site's API client, with the run's own JSON
+/// options: the list, a run whole, and an eval's runs; a run the host doesn't have is none.
+/// </summary>
+public class EvalsApiTests
+{
+    private static readonly DateTimeOffset Started = new(2026, 11, 23, 6, 36, 33, TimeSpan.Zero);
+
+    /// <summary>The list asks its route and gives the rows the API sent.</summary>
+    [Test]
+    public async Task ListAsync_AsksTheListRoute_AndGivesTheRows()
+    {
+        var row = new EvalRow("guide", "louis-agent-guide", 1, RunRow.Of(Run()));
+        var (api, stub) = Api(_ => Json(new EvalsReply([row])));
+
+        var reply = await api.ListAsync();
+
+        Assert.That(stub.Requests.Single().Url, Is.EqualTo("http://localhost/v1/admin/evals"));
+        Assert.That(reply.Evals, Is.EqualTo(new[] { row }));
+    }
+
+    /// <summary>A run comes back whole, equal to what the API wrote, compared as its JSON.</summary>
+    [Test]
+    public async Task FindRunAsync_AsksTheRunsRoute_AndGivesTheRunWhole()
+    {
+        var run = Run();
+        var (api, stub) = Api(_ => Json(run));
+
+        var found = await api.FindRunAsync(run.Id);
+
+        Assert.That(stub.Requests.Single().Url, Is.EqualTo($"http://localhost/v1/admin/evals/runs/{run.Id}"));
+        Assert.That(JsonSerializer.Serialize(found, RunJson.Options),
+            Is.EqualTo(JsonSerializer.Serialize(run, RunJson.Options)));
+    }
+
+    /// <summary>A run the host doesn't have is none, not an exception.</summary>
+    [Test]
+    public async Task ARunTheHostDoesntHave_IsNone()
+    {
+        var (api, _) = Api(_ => Status(HttpStatusCode.NotFound));
+
+        Assert.That(await api.FindRunAsync("20261123-063633-guide"), Is.Null);
+    }
+
+    /// <summary>An eval's runs come back in the order the API sent them.</summary>
+    [Test]
+    public async Task ListRunsAsync_AsksTheEvalsRuns_AndKeepsTheirOrder()
+    {
+        var newer = RunRow.Of(Run() with { Id = "20261124-090000-guide" });
+        var older = RunRow.Of(Run());
+        var (api, stub) = Api(_ => Json(new[] { newer, older }));
+
+        var rows = await api.ListRunsAsync("guide");
+
+        Assert.That(stub.Requests.Single().Url, Is.EqualTo("http://localhost/v1/admin/evals/guide/runs"));
+        Assert.That(rows.Select(row => row.Id), Is.EqualTo(new[] { newer.Id, older.Id }));
+    }
+
+    /// <summary>A refused key comes through as the API client's own exception, untouched.</summary>
+    [Test]
+    public void ARefusedKey_IsTheApiClientsOwnException()
+    {
+        var (api, _) = Api(_ => Status(HttpStatusCode.Unauthorized));
+
+        var refused = Assert.ThrowsAsync<AgentApiException>(() => api.FindRunAsync("20261123-063633-guide"));
+
+        Assert.That(refused!.Status, Is.EqualTo(HttpStatusCode.Unauthorized));
+    }
+
+    /// <summary>The client over a stub of the API.</summary>
+    private static (EvalsApi Api, StubHandler Stub) Api(Func<HttpRequestMessage, HttpResponseMessage> answer)
+    {
+        var stub = new StubHandler(answer);
+        var http = new HttpClient(stub) { BaseAddress = new Uri("http://localhost/") };
+        return (new EvalsApi(new AgentApi(http, new ChatSettings())), stub);
+    }
+
+    /// <summary>An answer of this value, written as the routes write it.</summary>
+    private static HttpResponseMessage Json<T>(T value) =>
+        new(HttpStatusCode.OK) { Content = JsonContent.Create(value, options: RunJson.Options) };
+
+    /// <summary>An empty answer with this status.</summary>
+    private static HttpResponseMessage Status(HttpStatusCode status) => new(status);
+
+    /// <summary>A finished run with every field filled, a null cost and an enum among them.</summary>
+    private static EvalRun Run()
+    {
+        var call = new ToolCallTranscript("ReadDoc", """{"path":"README.md"}""", "# louis-agent", Failed: false);
+        var transcript = new TurnTranscript("What is it?", "A framework.", [call], TimeSpan.FromSeconds(6));
+        var turn = new TurnRun(transcript, [new Mark("no-error", true, "No error.")],
+            [new Mark("Names the doc", false, "It doesn't.")], null, null);
+        return new EvalRun("20261123-063633-guide", "guide", "louis-agent-guide", RunKind.Live, 1, Started,
+            [new ConversationRun("guide-what-is", 1, [new RepeatRun(1, [turn])])])
+        {
+            Status = RunStatus.Finished,
+            EndedAt = Started.AddSeconds(33)
+        };
+    }
+}

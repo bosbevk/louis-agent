@@ -241,6 +241,11 @@ its replay. `LouisAgent.Api.Evals.Testing` is a class library, not a test projec
 recordings kept in git on a product's own API, facts only and with no key, and the site's tests use it for the
 guide. The design is in [LouisAgent.Api.Evals](LouisAgent.Api.Evals.md).
 
+What a page asks of a run, its counts, cost, time, first miss and order, is `RunAnswersTests` in
+`LouisAgent.Evals.Tests`. The admin's eval pages are `LouisAgent.Web.Evals.Tests`, in `src/tests/web/`: the client
+over a stub of the API, the addresses, and each page with bUnit over `EvalPagesHost`, a stub of every route the pages
+read. The design is in [LouisAgent.Web.Evals](LouisAgent.Web.Evals.md).
+
 ## Structure
 
 The folders of `src/tests/engine/LouisAgent.Core.Tests`, to look things up.

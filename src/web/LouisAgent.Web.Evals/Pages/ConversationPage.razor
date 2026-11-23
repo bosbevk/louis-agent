@@ -1,0 +1,88 @@
+@page "/admin/evals/{Eval}/runs/{Run}/{Conversation}"
+@page "/admin/evals/{Eval}/runs/{Run}/{Conversation}/{Repeat:int}"
+@layout AdminFrame
+
+@* A conversation's page (F126.3.2): one repeat at a time, turn by turn, with a switch to pick the repeat and the
+   repeat's own figures under its turns. Previous and Next failed walk the run in its page's order, and one link opens
+   the same conversation in the run before. A run or a conversation the host doesn't have is one line. *@
+
+<PageTitle>@Conversation · Admin</PageTitle>
+
+<nav class="conversation-crumbs" aria-label="Breadcrumb"><a href="@EvalAddress.EvalsPage">Evals</a> / @Eval / <a href="@RunPage">@if (_run is { } read)
+    {
+        <span>run of @EvalsWords.FormatLocal(read.StartedAt)</span>
+    }
+    else
+    {
+        @Run
+    }</a></nav>
+
+<div class="page-head">
+    <div>
+        <h1>@Conversation</h1>
+        @if (Held is { } held && Open is { } open)
+        {
+            <p>@(held.Passed ? "Passed" : "Failed"). @held.CountPassedRepeats() of @Repeats passed. This is repeat @open.Number.</p>
+        }
+    </div>
+    <div class="page-actions">
+        @if (Previous is { } previous)
+        {
+            <a class="header-button conversation-previous" href="@PageOf(previous)">‹ Previous</a>
+        }
+        @if (Next is { } next)
+        {
+            <a class="header-button conversation-next" href="@PageOf(next)">Next failed ›</a>
+        }
+        <button class="header-button conversation-reload" type="button" @onclick="LoadAsync" disabled="@_loading"><span class="ic i-refresh" aria-hidden="true"></span>Reload</button>
+    </div>
+</div>
+
+@if (_error is { } error)
+{
+    <AdminGate Error="@error" NeedsKey="_needsKey" OnSaved="LoadAsync"/>
+}
+
+@if (_missing)
+{
+    <section class="card-p conversation-missing">This host has no run @Run.</section>
+}
+else if (_loading && _run is null)
+{
+    <section class="card-p conversation-loading"><span class="muted">Loading…</span></section>
+}
+else if (_run is not null && Held is null)
+{
+    <section class="card-p conversation-missing">This run has no conversation @Conversation.</section>
+}
+else if (Held is not null && Open is null)
+{
+    <section class="card-p conversation-missing">This conversation has no repeat @Repeat.</section>
+}
+else if (Held is { } conversation && Open is { } repeat)
+{
+    @if (conversation.Repeats.Count > 1)
+    {
+        <RepeatSwitch Eval="@Eval" Run="@Run" Conversation="conversation" Open="repeat.Number"/>
+    }
+
+    @foreach (var (turn, number) in repeat.Turns.Select((turn, at) => (turn, at + 1)))
+    {
+        <TurnCard @key="number" Number="number" Turn="turn"/>
+    }
+
+    @if (Before is { } before)
+    {
+        <p class="mb-3"><a class="conversation-before" href="@BeforePageOf(before)">Open this conversation in the run before</a></p>
+    }
+
+    <section class="card-p conversation-repeat">
+        <h2>This repeat</h2>
+        <RunFigures>
+            <RunFigure Name="Took">@EvalsWords.FormatTime(repeat.SumTime())</RunFigure>
+            <RunFigure Name="The agent's cost">@Cost</RunFigure>
+            <RunFigure Name="Facts met">@repeat.CountFacts().Met of @repeat.CountFacts().Of</RunFigure>
+            <RunFigure Name="Criteria met">@repeat.CountCriteria().Met of @repeat.CountCriteria().Of</RunFigure>
+        </RunFigures>
+    </section>
+}

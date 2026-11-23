@@ -1,0 +1,18 @@
+@* One mark of a turn, with its tick or cross: a fact in code type, checked in code, or a criterion in words with the
+   judge's line of why. *@
+
+<div class="mark-line d-flex gap-3 @KindClass @(Mark.Met ? "mark-line-met" : "mark-line-not-met")">
+    <MarkDot Met="@Mark.Met"/>
+    <div>
+        @if (Kind == MarkKind.Fact)
+        {
+            <code class="mark-line-text">@Mark.Text</code>
+            <div class="mark-line-why">Fact, checked in code</div>
+        }
+        else
+        {
+            <div class="mark-line-text">@Mark.Text</div>
+            <div class="mark-line-why">The judge: @Mark.Reason</div>
+        }
+    </div>
+</div>

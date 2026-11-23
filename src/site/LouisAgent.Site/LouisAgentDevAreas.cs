@@ -1,6 +1,7 @@
 using LouisAgent.Choices;
 using LouisAgent.Identities.Guide;
 using LouisAgent.Site.Admin;
+using LouisAgent.Web.Evals;
 using LouisAgent.Site.Components.Showroom;
 using LouisAgent.Site.Layout;
 using LouisAgent.Web.Components.Areas;
@@ -34,7 +35,7 @@ public static class LouisAgentDevAreas
     /// </summary>
     public static void Name(SiteAreasBuilder areas) => areas.Showroom(SiteDemos.All).Focuses(Focuses)
         .Suggestions(GuideSuggestions).BarOpens(BarOpens.Hover)
-        .Admin(typeof(AdminLayout)).Overview(count => count.Tool(LeadTool, "leads")).Add(ResumeArea.Area)
+        .Admin(typeof(AdminLayout)).Overview(count => count.Tool(LeadTool, "leads")).Add(ResumeArea.Area).Evals()
         .Places(Home, typeof(App).Assembly).Glass().Flat();
 
     /// <summary>The word the landing's places sit under, as in <c>/home/welcome</c>.</summary>
