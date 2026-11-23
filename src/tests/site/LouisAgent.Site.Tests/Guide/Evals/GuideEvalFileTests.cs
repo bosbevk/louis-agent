@@ -24,7 +24,7 @@ public class GuideEvalFileTests
         Assert.That(eval.Conversations.Select(conversation => conversation.Id), Is.EqualTo(new[] { "guide-what-is" }));
     }
 
-    /// <summary>FX227: the guide names no doc, so no criterion of its eval asks it to.</summary>
+    /// <summary>FX229: the guide names no doc, so no criterion of its eval asks it to.</summary>
     [Test]
     public void NoCriterion_AsksTheGuideToNameADoc()
     {

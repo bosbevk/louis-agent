@@ -466,7 +466,7 @@ plain sentences what it does for a business, and offered a demo. It read no doc 
 expectations, written for a technical answer, failed. The eval was wrong, not the agent: it had been written for a
 guide that never saw the page. Its conversation now expects what the guide is built to do there, `used ReadSkill` and
 "Says what louis-agent does for a business, in plain words". The same day, the guide stopped naming docs on the
-public site at all (FX227), which an always-failing criterion had pointed at.
+public site at all (FX229), which an always-failing criterion had pointed at.
 
 **What recording again cost.** One live run of one conversation, once: $0.003563 for the agent by the run's own
 record, and about $0.0008 for the judge's two calls at the price table's rates, about $0.0044 in all. The kept

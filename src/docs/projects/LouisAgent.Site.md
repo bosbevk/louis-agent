@@ -159,18 +159,7 @@ on the owner's problem rather than on what we sell. A line under it says what ch
 11 at night is answered, and the person's details wait for them in the morning. Two buttons follow. "Ask for yours"
 goes to the contact page, and "Watch one work" goes to the demos, so they see it before they ask.
 
-Under the buttons sits one line, the framework's announcement strip: a pill that says entries are open, "Two
-businesses get a free website.", and "See how it works". The whole line is a link to the offer's own page,
-`/free-websites`. So the landing stays on what the product does, and the offer has an address of its own to share.
-
-That page says the site wants to show real work, so any business may enter and two are chosen. Each of the two gets
-its website built and set up for free, and hosted free for the first year. Three steps say how it goes: send your
-details, then two are chosen, then it's built with you. Three cards say what's asked in return: a few words on how
-it went, the site shown here with a link, and two short feedback calls. Its button asks Orbi to take the entry. Orbi
-asks in one form, fills in what the visitor already said, shows the entry back and mails it on their yes, and never
-promises a place.
-
-Back on the landing, under the hero runs the tape, one line of what the agents did that never stops. Then comes what
+Under the hero runs the tape, one line of what the agents did that never stops. Then comes what
 it does, as four glass cards, "It does more than chat.", each card something the owner can watch happen. Where it
 runs comes next, "Your data stays in South Africa.": we host it in Azure's South African region, a bigger business may
 keep it on its own servers, and the data stays where it's put.
@@ -459,7 +448,7 @@ The place to look a file up. The site is `src/site/LouisAgent.Site/`, and its ho
 
 | Path | What's in it |
 |---|---|
-| `Pages/` | The site's pages: the home page and contact; under `Offers/`, the free websites; under `About/`, the CV, the privacy page and the trust page; under `Framework/`, the theme's component guide; under `Agents/`, the showroom's start and, under `Showroom/`, the three businesses' demos, whose recordings are in `wwwroot/recordings/showroom/` |
+| `Pages/` | The site's pages: the home page and contact; under `About/`, the CV, the privacy page and the trust page; under `Framework/`, the theme's component guide; under `Agents/`, the showroom's start and, under `Showroom/`, the three businesses' demos, whose recordings are in `wwwroot/recordings/showroom/` |
 | `Errors/NotFound.razor` | The page for an address the site has no page for, outside `Pages/` so the page rules don't count it |
 | `Layout/` | `SiteLayout`, the site's frame on the framework's `SiteShell` and the router's default; `ShowroomLayout`, the demos' frame on `ShowroomShell`; `AdminLayout`, the admin's |
 | `Components/` | `Cv/` (the CV's view, its parts and its print), `Guide/` (`ExpertChat`, the framework's `ChatWidget` with the guide, and the corner's LinkedIn), `Landing/` (the hero, who builds it, the contact strip, and under `Offer/` the bands of the offer), `Showroom/` (`SiteDemos`, a business's demo, each business's mock website in `Websites/`, and the three windows on the start in `Windows/`), `Trust/` (`FactBand`, one part of the trust page) |

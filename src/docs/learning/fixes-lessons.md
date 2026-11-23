@@ -513,7 +513,7 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
-## FX227 · An eval copies its prompt, mistakes and all
+## FX229 · An eval copies its prompt, mistakes and all
 
 The guide's eval failed "Names the doc it read" in every run, and the first page that showed a run turned that
 into a line anyone could read: the answer never named a doc. The eval wasn't wrong about the guide; it was faithful
@@ -523,6 +523,19 @@ the doc is the framework site's agent's job. So the fix went to the prompt first
 holds each. The lesson is that an eval written from a prompt inherits the prompt's mistakes, so a criterion that
 always fails is worth reading as a question about the rule, not only about the agent. Reading the judge's line of
 why, beside the transcript, is what showed it. Skill 12 (evaluation).
+
+## FX227 · An offer lives in more places than its page
+
+The offer of two free websites was closed, and the ask was to remove its page. The page was the smallest part of
+it. The landing's hero carried a line that led there. The sitemap told search engines the page existed. And Orbi
+knew the offer three ways: its voice told it to take entries, a skill told it how to finish one, and the two maps
+of the site it reads listed the page as one to open. So the removal started with a search for every place the offer
+was named. What a visitor sees went first: the page, the line and the sitemap entry, with tests that hold that no
+page answers at the address and that the hero carries no line. What Orbi is told could not go in the same change.
+The guide's eval is replayed from recordings, and a recording answers only the prompt it was made with, so a
+changed voice needs a live run to record again. That part is its own fix, FX228. What an agent is told is part of
+the product, and a feature is not gone until the agent has stopped offering it. Skill 7 (context engineering: the
+prompt is kept true to the product).
 
 ## FX226 · Two waits side by side look like one
 

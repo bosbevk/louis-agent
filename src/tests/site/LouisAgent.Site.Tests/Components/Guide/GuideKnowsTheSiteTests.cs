@@ -65,7 +65,7 @@ public class GuideKnowsTheSiteTests
 
     /// <summary>
     /// An answer ends with no file path (FX77, Louis: "do not do this"), and names no doc, to a developer either
-    /// (FX227): the chat's tool cards already show what was read, and the framework's site hands a developer the doc.
+    /// (FX229): the chat's tool cards already show what was read, and the framework's site hands a developer the doc.
     /// </summary>
     [Test]
     public void TheVoice_NamesNoDoc_AndNoPath()
