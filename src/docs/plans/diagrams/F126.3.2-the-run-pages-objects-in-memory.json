@@ -1,0 +1,35 @@
+{
+  "kind": "flow",
+  "type": "object",
+  "title": "F126.3.2 the run pages: objects in memory",
+  "caption": "One conversation's page, open on repeat 2 of guide-invoices. The page holds the run it read and picks the conversation and the repeat from the address. A turn card holds one turn, and a mark line one mark.",
+  "flow": {
+    "nodes": [
+      { "id": "page", "icon": "book", "tone": "green", "label": "ConversationPage\neval guide · conversation guide-invoices · repeat 2" },
+      { "id": "api", "icon": "server", "tone": "green", "label": "EvalsApi\nover the site's AgentApi" },
+      { "id": "run", "icon": "play", "tone": "teal", "label": "EvalRun\nguide · live · 3 repeats · finished" },
+      { "id": "conv", "icon": "message", "tone": "teal", "label": "ConversationRun\nguide-invoices · 2 of 3 repeats passed" },
+      { "id": "repeat", "icon": "checks", "tone": "teal", "label": "RepeatRun 2\nnot passed" },
+      { "id": "switch", "icon": "checks", "tone": "green", "label": "RepeatSwitch\nthree links, 2 marked" },
+      { "id": "card", "icon": "message", "tone": "green", "label": "TurnCard\nthe ask, 1 tool call folded, the answer" },
+      { "id": "turn", "icon": "book", "tone": "teal", "label": "TurnRun\nits transcript, its cost" },
+      { "id": "facts", "icon": "search", "tone": "green", "label": "2 MarkLines, facts\nboth met" },
+      { "id": "crit", "icon": "scales", "tone": "green", "label": "2 MarkLines, criteria\none not met, with the judge's line" },
+      { "id": "rows", "icon": "file", "tone": "amber", "label": "The eval's RunRows\nread for the link to the run before", "shape": "data" }
+    ],
+    "edges": [
+      { "from": "page", "to": "api" },
+      { "from": "page", "to": "run", "word": "holds what it read" },
+      { "from": "run", "to": "conv" },
+      { "from": "conv", "to": "repeat" },
+      { "from": "page", "to": "switch" },
+      { "from": "page", "to": "card" },
+      { "from": "card", "to": "turn" },
+      { "from": "repeat", "to": "turn" },
+      { "from": "card", "to": "facts" },
+      { "from": "card", "to": "crit" },
+      { "from": "page", "to": "rows", "word": "reads", "style": "dashed" }
+    ],
+    "direction": "down"
+  }
+}
