@@ -1,0 +1,34 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F126.3.1 runs: the architecture",
+  "caption": "The eval library is mapped by the site's own API program. A run asks the agent over the sessions API like any app, keeps its file in the data folder, and its recordings are the engine's, in the replay folder. The number in brackets is the step.",
+  "flow": {
+    "nodes": [
+      { "id": "person", "icon": "user", "tone": "blue", "label": "Someone with the admin key\nstarts a run, asks how it goes", "shape": "terminal" },
+      { "id": "routes", "icon": "server", "tone": "green", "label": "LouisAgent.Api.Evals\nthe four routes and the run desk (8)" },
+      { "id": "evals", "icon": "checks", "tone": "green", "label": "LouisAgent.Evals\nthe player (3, 4), the runner (5), the judge" },
+      { "id": "contracts", "icon": "code", "tone": "teal", "label": "LouisAgent.Evals.Contracts\na run's records (2, 4, 5)" },
+      { "id": "catalog", "icon": "folder", "tone": "amber", "label": "agents/{identity}/*.eval.json\nembedded, found at start-up (7)", "shape": "data" },
+      { "id": "api", "icon": "chip", "tone": "violet", "label": "LouisAgent.Api, the sessions API\nin the same program, asked over HTTP" },
+      { "id": "model", "icon": "message", "tone": "red", "label": "Claude\nthe agent's model and the judge's" },
+      { "id": "runs", "icon": "file", "tone": "amber", "label": "The data folder, evals/runs/\none JSON file per run (6)", "shape": "data" },
+      { "id": "recordings", "icon": "database", "tone": "amber", "label": "The replay folder\nevery answer of a live run (9)", "shape": "data" },
+      { "id": "git", "icon": "branch", "tone": "amber", "label": "src/site/recordings/evals/\nthe guide's recordings, for one test (10)", "shape": "data" }
+    ],
+    "edges": [
+      { "from": "person", "to": "routes", "word": "POST, then GET" },
+      { "from": "routes", "to": "evals", "word": "runs" },
+      { "from": "routes", "to": "catalog", "word": "reads" },
+      { "from": "routes", "to": "runs", "word": "keeps and reads" },
+      { "from": "evals", "to": "contracts", "word": "fills" },
+      { "from": "evals", "to": "api", "word": "a session per repeat" },
+      { "from": "api", "to": "model", "word": "the agent's turns" },
+      { "from": "evals", "to": "model", "word": "one criterion a call" },
+      { "from": "api", "to": "recordings", "word": "records, or replays" },
+      { "from": "evals", "to": "recordings", "word": "the judge's answers" },
+      { "from": "recordings", "to": "git", "word": "copied once", "style": "dashed" }
+    ],
+    "direction": "down"
+  }
+}

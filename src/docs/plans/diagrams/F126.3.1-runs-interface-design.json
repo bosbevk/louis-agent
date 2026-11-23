@@ -1,0 +1,42 @@
+{
+  "kind": "classes",
+  "title": "F126.3.1 runs: the interface design",
+  "caption": "A run holds its conversations, a conversation its repeats, a repeat its turns, and a turn its transcript and its marks. The player, the runner and the store are the three classes that make and keep it. The number is the step that builds each; step 2 moves the two records F126.2 built.",
+  "classes": {
+    "types": [
+      { "id": "run", "name": "EvalRun", "kind": "record, step 5", "members": ["string Id, Eval, Agent", "RunKind Kind", "int Repeats", "RunStatus Status", "string? StoppedBecause", "bool PageSent", "int Passed"] },
+      { "id": "conv", "name": "ConversationRun", "kind": "record, step 5", "members": ["string Id", "IReadOnlyList<RepeatRun> Repeats", "bool Passed"] },
+      { "id": "repeat", "name": "RepeatRun", "kind": "record, step 4", "members": ["int Number", "IReadOnlyList<TurnRun> Turns", "bool Passed"] },
+      { "id": "turn", "name": "TurnRun", "kind": "record, step 4", "members": ["TurnTranscript Transcript", "IReadOnlyList<Mark> Facts", "IReadOnlyList<Mark> Criteria", "decimal? Cost"] },
+      { "id": "tt", "name": "TurnTranscript", "kind": "record, moved in step 2", "members": ["string Ask, Answer", "IReadOnlyList<ToolCallTranscript> Calls", "TimeSpan Took", "string? Error"] },
+      { "id": "mark", "name": "Mark", "kind": "record, moved in step 2", "members": ["string Text", "bool Met", "string Reason"] },
+      { "id": "client", "name": "SessionClient", "kind": "step 3", "members": ["OpenAsync(CreateSessionRequest)", "SendAsync(session, message)", "CloseAsync(session)"] },
+      { "id": "reader", "name": "TurnTranscripts", "kind": "static, step 3", "members": ["TurnTranscript Of(ask, events, took)"] },
+      { "id": "player", "name": "ConversationPlayer", "kind": "step 4", "members": ["Task<RepeatRun> PlayAsync(agent,", "  conversation, trial, ct)"] },
+      { "id": "runner", "name": "EvalRunner", "kind": "step 5", "members": ["Task<EvalRun> RunAsync(started,", "  file, kept, ct)"] },
+      { "id": "store", "name": "RunStore", "kind": "step 6", "members": ["Save(EvalRun run)", "EvalRun? Find(string id)", "IReadOnlyList<EvalRun> Of(string eval)"] },
+      { "id": "catalog", "name": "EvalCatalog", "kind": "step 7", "members": ["EvalFile? Find(string name)", "the names it holds"] },
+      { "id": "desk", "name": "RunDesk", "kind": "step 8", "members": ["starts a run in the background", "holds the one run that is going"] },
+      { "id": "judge", "name": "Judge", "kind": "F126.2", "tone": "violet", "members": ["Task<Mark> MarkAsync(criterion, conversation, ct)"] },
+      { "id": "facts", "name": "Facts", "kind": "static, F126.2", "tone": "violet", "members": ["Mark Tell(fact, turn, earlier)"] }
+    ],
+    "relations": [
+      { "from": "run", "to": "conv", "kind": "holds" },
+      { "from": "conv", "to": "repeat", "kind": "holds" },
+      { "from": "repeat", "to": "turn", "kind": "holds" },
+      { "from": "turn", "to": "tt", "kind": "holds" },
+      { "from": "turn", "to": "mark", "kind": "holds" },
+      { "from": "player", "to": "client", "kind": "holds" },
+      { "from": "player", "to": "judge", "kind": "holds" },
+      { "from": "player", "to": "reader", "kind": "uses" },
+      { "from": "player", "to": "facts", "kind": "uses" },
+      { "from": "player", "to": "repeat", "kind": "creates" },
+      { "from": "runner", "to": "player", "kind": "holds" },
+      { "from": "runner", "to": "run", "kind": "creates" },
+      { "from": "desk", "to": "runner", "kind": "holds" },
+      { "from": "desk", "to": "store", "kind": "holds" },
+      { "from": "desk", "to": "catalog", "kind": "uses" },
+      { "from": "store", "to": "run", "kind": "uses", "word": "keeps" }
+    ]
+  }
+}

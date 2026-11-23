@@ -1,0 +1,23 @@
+{
+  "kind": "cards",
+  "title": "F126.3.1 runs: the overview",
+  "caption": "Five parts: a conversation is played over the sessions API and graded, repeats decide a pass, a run is kept as one file, a site's API starts and follows a run, and a replay costs nothing. No page yet: the screens are F126.3.2's.",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "top", "icon": "play", "title": "F126.3.1 Runs", "code": "an eval meets a live agent", "look": "highlight",
+          "text": "An eval file is played against the agent it names, graded, kept, followed, and replayed for free." }
+      ] },
+      { "cards": [
+        { "id": "play", "icon": "message", "title": "A conversation is played", "code": "ConversationPlayer", "text": "One session, each turn asked in it and written down, then the facts and the judge's marks." },
+        { "id": "pass", "icon": "checks", "title": "Repeats decide a pass", "code": "EvalRunner", "text": "One repeat or three. A conversation passes only when every repeat does." },
+        { "id": "keep", "icon": "file", "title": "A run is one file", "code": "RunStore", "text": "Written again after each conversation, so the file is the progress too." },
+        { "id": "api", "icon": "server", "title": "Started and followed", "code": "MapLouisAgentEvals", "text": "The site's own API answers 202 and a reader asks the run how it goes." },
+        { "id": "replay", "icon": "clock", "title": "A replay is free", "code": "ReplayStore", "text": "A live run records the agent's and the judge's answers. A replay calls no model." }
+      ] }
+    ],
+    "links": [
+      { "from": "top", "to": "play" }, { "from": "top", "to": "pass" }, { "from": "top", "to": "keep" }, { "from": "top", "to": "api" }, { "from": "top", "to": "replay" }
+    ]
+  }
+}
