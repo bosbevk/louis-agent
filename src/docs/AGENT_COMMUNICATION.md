@@ -415,6 +415,53 @@ answers whole (`IAgentIdentity.RelaysAnswersWhole`, Puls) shows the answer as it
 ([ADR 0079](adr/0079-show-a-specialists-report.md)). Measured against one agent answering everything:
 [the delegation check](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/sample-output-puls-check-repeat/README.md).
 
+### A fixed order: sequences
+
+Sometimes the order agents work in shouldn't be left to a model. A fix might always need the reader first, then the
+fixer, then the reviewer. For that an identity declares a sequence (`IAgentIdentity.Sequences`, empty unless it
+says so): a name, such as `fix-an-error`, and the addresses of its steps in order, each one an address from the
+identity's own `Calls`, here or on another server. The model still calls `AskAgent`, but when the address it asks
+is the first step of one of its identity's sequences, code runs the whole sequence (`SequenceRunner`) and the
+model's message becomes the first message. The whole sequence takes one of the turn's three asks, and its steps
+take none. A later step of a sequence is never asked on its own: the ask is refused, naming the sequence and the
+address that starts it. A `tool` or `stronger` on an ask that starts a sequence is refused too, since a sequence
+takes neither. An address in no sequence is asked exactly as before.
+
+Before any step opens, the sequence is checked against its rules, in code (`IdentitySequences`). It needs at least
+two steps, since one step is one ask. Every step must be an address in the identity's `Calls`. No address may come
+twice in one sequence, and an address belongs to one sequence of an identity only, so which sequence an ask starts
+is never in doubt. And every step is an agent, an identity's voice or one of its subagents, never a lookup agent,
+which works with one of the asker's tools. A sequence that breaks one says `Error: the sequence fix-an-error can't
+run:` and why.
+
+Then the steps run one after the other, and each is held to the same checks as one ask: the address in `Calls`, an
+agent it reaches here or a server whose identities list it, the depth cap and the chain of asks. The sequence's own
+name, `{identity}.{name}`, joins the chain its steps are checked against, so no step can be the sequence itself.
+Each step opens a new sub-session one level down, with the turn as its parent, so its usage rolls up and its events
+stream as `sub_session` like any ask's. A step's conversation is not kept for a follow-up: asking the sequence again
+starts every step fresh.
+
+What each step is given is the sequence's choice (`StepInput`). By default a step gets the first message with the
+answer of the step before under it. `WholeConversation` gives it the first message and every answer so far, each
+under the step that gave it, and `PreviousAnswer` gives it only the answer before, as it came back. The first step
+always gets the first message.
+
+What a failed step does is the sequence's choice too (`StepFailure`). A step fails when its address is refused, its
+server can't be reached, it runs out of time, or it answers nothing. By default the sequence stops there and says so:
+`Error: the sequence fix-an-error stopped at step 2 of 3, triage.fixer: … Finished before it: (1) triage.reader
+did: no tools.` With `RetryOnce` the step is asked once more, in a new conversation with the same message, and the
+sequence stops as above if it fails again. With `Skip` the step is left out and the next one gets the answer before
+it. A skipped step is always named in the answer, so it never goes unnoticed, and when every step is left out the
+answer says no step answered.
+
+The answer the asker's model gets is built in code: the last step's answer with a line under it that names each
+step and what it did, in the style of one ask's line,
+`[Answered by the sequence fix-an-error, in this order: (1) triage.reader did: no tools; (2) triage.fixer was
+skipped: …; (3) partner:shop did: SendLead: Sent]`. Another server needs nothing new to use a sequence: it asks an
+identity here, and that identity's own asks run its sequences.
+
+*Decided in:* F176, ADR 0117.
+
 ## What changes next
 
 Planned features change parts of this page; each one's doc lists updating it in its *Docs* step.

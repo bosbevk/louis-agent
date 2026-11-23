@@ -317,6 +317,40 @@ and the rule is in the C# rules.
 What it cost: nothing was paid for. The usage probe, which has no tests, was checked by running the old and the new
 build on two real ledgers: the same output, line for line.
 
+## A fixed order of agents: sequences (F176, 2026-11-23)
+
+Until now every agent decided for itself whom to ask, with `AskAgent`. That is what Anthropic's *Building effective
+agents* (2024-12-19) calls an agent: a system where the model "dynamically direct[s] its own processes and tool
+usage". The same article names the other kind a workflow, where models and tools "are orchestrated through
+predefined code paths", and its first workflow is prompt chaining: a task cut into steps, each model call working on
+the output of the one before, with a programmatic check, a gate, between steps. A sequence is that idea on our
+addresses. An identity lists a few addresses from its own `Calls` in an order, and code walks them. The model can't
+skip a step, ask them the other way round, or forget the reviewer.
+
+The interesting choice was where a sequence starts. It isn't an address of its own. The engine forces it on the ask:
+when the model asks the address that is a sequence's first step, code runs the whole sequence and hands back one
+answer, for one of the turn's three asks. A later step can't be asked alone, and the refusal says which address to
+ask. So the model's habit stays the same (it asks an agent), and the order is held where the model can't change it.
+The gate is in code too. Before any step opens, the sequence's rules are checked (at least two steps, each in
+`Calls`, none twice, an address in one sequence only, no lookup agent), and between steps each ask is held to the
+same checks as any other: the allow-list, the depth cap and the chain of asks.
+
+What a step is given turned out to be a real design question, so it is a choice per sequence. Microsoft's Agent
+Framework, in its sequential orchestration (the page dated 2026-10-26), passes each agent the previous agent's full
+conversation by default. Ours defaults to less: the first message with the answer of the step before. That keeps
+each step's context small and its job clear, which matters because every token a step reads is paid for again on
+each of its requests. The full conversation and the bare previous answer are the other two values. What a failed
+step does is a choice the same way: stop and say where (the default, so nothing silently half-happens), ask it once
+more, or skip it, and a skipped step is always named in the answer.
+
+A trade-off worth knowing: the sequence's own name joins the chain of asks only inside the runner, where its steps
+are checked. The API builds each child session's chain from its parent's, so a step's own asks see the agents above
+them but not the sequence's name. They are still held by the chain of agents and by `AGENT_MAX_DEPTH`, so a loop
+can't run away, but a loop is stopped there rather than at the sequence.
+
+What it cost: nothing was paid for. The tests play both servers with a pretend handler, so every path (all three
+inputs, all three failures, a step on another server, the limits) ran without a model.
+
 ## Next
 
 Decide how often Puls should delegate (keep research and long work, answer short read-only questions itself?) and

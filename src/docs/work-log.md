@@ -12,7 +12,7 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 157 | 75 |
+| Features (`F`) | 158 | 75 |
 | Fixes (`FX`) | 217 | 5 |
 | Cleanups (`CL`) | 47 | 24 |
 
@@ -127,10 +127,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups |
 | CL61 | `ToolCallGuards` past 200 lines once laid out: split it, holes into records (ADR 0119), and end the turn through `TurnEnding.Ends` | Cleanups |
 
-## Features (155 done)
+## Features (156 done)
 
 | Id | When | What |
 |---|---|---|
+| F176 | 2026-11-23 | Sequences: an identity may declare a fixed order of agents from its own `Calls`; asking a sequence's first step runs the whole sequence in code for one of the turn's asks, and a later step can't be asked alone; each step held to one ask's checks, given the first message with the answer before (or the whole conversation, or only the answer before), and on a failure stopping (or asking once more, or skipping it, named); the rules checked before a step opens |
 | F126.3.3 | 2026-11-23 | The page a conversation names, F126.3's third child: the site's API answers a page as a message carries it, read on the server as the widget reads it (`GET /v1/site/page`), the focus rule in the shared contract; a run asks it, sends it with the first ask and keeps it for its replay; a missing page stops a run; the guide's eval recorded again with its page and its expectations rewritten for the landing |
 | F126.3.2 | 2026-11-23 | The run pages, F126.3's second child: `LouisAgent.Web.Evals`, an area a site names with `.Evals()`, louis-agent.dev among them; the evals' page, a card an eval; a run's page, its number first, its conversations failed first with their first miss, its states and the eval's other runs; a conversation's page, one repeat turn by turn with each mark's reason, walking the failed ones and to the run before; every figure a method on the run's records |
 | F126.3.1 | 2026-11-23 | Runs, F126.3's first child: an eval file played against the agent over the sessions API, one session per repeat, graded, kept as one JSON file and replayed from its recording for free; the contracts, and the eval routes a site's API maps behind the admin key, one run at a time in the background; an operator's run passes the open door as the agent visitors get; the guide's eval replayed as one test; ADR 0134 gains two lines |
