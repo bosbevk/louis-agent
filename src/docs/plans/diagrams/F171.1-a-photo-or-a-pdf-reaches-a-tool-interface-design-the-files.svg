@@ -1,5 +1,5 @@
-<svg viewBox="-24 -24 1877 995" width="1877" height="995" role="img" aria-label="F171.1 a photo or a PDF reaches a tool: the interface design" xmlns="http://www.w3.org/2000/svg">
-  <title>F171.1 a photo or a PDF reaches a tool: the interface design</title>
+<svg viewBox="-24 -24 1793 800" width="1793" height="800" role="img" aria-label="F171.1 a photo or a PDF reaches a tool: the interface design, the files" xmlns="http://www.w3.org/2000/svg">
+  <title>F171.1 a photo or a PDF reaches a tool: the interface design, the files</title>
   <style>svg {
   --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #e2dfff; --violet-line: #6b4dff; --violet-ink: #3a22c4; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
   --mono: var(--bs-font-monospace, "Geist Mono", ui-monospace, Menlo, Consolas, monospace);
@@ -204,148 +204,128 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <stop class="mrq-glass-1" offset="1" />
     </linearGradient>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="1877" height="995" rx="14" />
+  <rect class="ground" x="-24" y="-24" width="1793" height="800" rx="14" />
   <g class="drawing" transform="translate(0 0)">
-    <path class="mrq-light" d="M-24 74a938.5 190 0 1 0 1877 0a938.5 190 0 1 0 -1877 0Z" />
-    <text class="mrq-title" x="16" y="14" text-anchor="start">F171.1 a photo or a PDF reaches a tool: the interface design</text>
-    <text class="pic-group" x="1813" y="14" text-anchor="end">Class diagram</text>
-    <rect class="mrq-rule" x="0" y="26" width="1829" height="1" rx="0" />
+    <path class="mrq-light" d="M-24 74a896.5 190 0 1 0 1793 0a896.5 190 0 1 0 -1793 0Z" />
+    <text class="mrq-title" x="16" y="14" text-anchor="start">F171.1 a photo or a PDF reaches a tool: the interface design, the files</text>
+    <text class="pic-group" x="1729" y="14" text-anchor="end">Class diagram</text>
+    <rect class="mrq-rule" x="0" y="26" width="1745" height="1" rx="0" />
     <g class="cls-drawing" transform="translate(0 44)">
-      <path class="cls-line uses" d="M245 225L335 225Q359 225 359 249L359 339Q359 363 383 363L455 363" marker-end="url(#open)" />
-      <path class="cls-line creates" d="M245 381L317 381Q341 381 341 357L341 258Q341 234 365 234L455 234" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M245 381L317 381Q341 381 341 357L341 258Q341 234 365 234L455 234" />
-      <path class="cls-line creates" d="M245 381L317 381Q341 381 341 405L341 513Q341 537 365 537L455 537" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M245 381L317 381Q341 381 341 405L341 513Q341 537 365 537L455 537" />
-      <path class="cls-line implements" d="M245 69L455 69L693 69L725 69Q749 69 749 93L749 195Q749 207 761 207L773 207" marker-end="url(#triangle-violet)" />
-      <path class="cls-line implements" d="M693 225L773 225" marker-end="url(#triangle-violet)" />
-      <path class="cls-line implements" d="M245 693L455 693L693 693L725 693Q749 693 749 669L749 567Q749 555 761 555L773 555" marker-end="url(#triangle-violet)" />
-      <path class="cls-line implements" d="M693 537L773 537" marker-end="url(#triangle-violet)" />
-      <path class="cls-line implements" d="M245 381L455 381" marker-end="url(#triangle-violet)" />
-      <path class="cls-line holds" d="M693 381L725 381Q749 381 749 357L749 255Q749 243 761 243L773 243" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M693 381L725 381Q749 381 749 357L749 255Q749 243 761 243L773 243" />
-      <path class="cls-line holds" d="M693 381L725 381Q749 381 749 405L749 507Q749 519 761 519L773 519" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M693 381L725 381Q749 381 749 405L749 507Q749 519 761 519L773 519" />
-      <path class="cls-line holds" d="M1193 225L1273 225" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M1193 225L1273 225" />
-      <path class="cls-line holds" d="M1518 225L1598 225" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M1518 225L1598 225" />
-      <rect class="pic-pill cls-chip holds" x="711" y="372" width="43" height="18" rx="9" />
-      <text class="pic-pill-word cls-word" x="732.5" y="384" text-anchor="middle">holds</text>
-      <rect class="pic-pill cls-chip holds" x="1211" y="216" width="43" height="18" rx="9" />
-      <text class="pic-pill-word cls-word" x="1232.5" y="228" text-anchor="middle">holds</text>
-      <rect class="pic-pill cls-chip holds" x="1536" y="216" width="43" height="18" rx="9" />
-      <text class="pic-pill-word cls-word" x="1557.5" y="228" text-anchor="middle">holds</text>
-      <rect class="pic-pill cls-chip implements" x="254" y="60" width="78" height="18" rx="9" />
-      <text class="pic-pill-word cls-word" x="293" y="72" text-anchor="middle">implements</text>
-      <rect class="pic-pill cls-chip implements" x="254" y="684" width="78" height="18" rx="9" />
-      <text class="pic-pill-word cls-word" x="293" y="696" text-anchor="middle">implements</text>
-      <rect class="pic-pill cls-chip implements" x="368" y="372" width="78" height="18" rx="9" />
-      <text class="pic-pill-word cls-word" x="407" y="384" text-anchor="middle">implements</text>
-      <rect class="pic-pill cls-chip creates" x="378.5" y="225" width="57" height="18" rx="9" />
-      <text class="pic-pill-word cls-word" x="407" y="237" text-anchor="middle">creates</text>
-      <rect class="pic-pill cls-chip uses" x="284" y="216" width="36" height="18" rx="9" />
-      <text class="pic-pill-word cls-word quiet" x="302" y="228" text-anchor="middle">uses</text>
-      <rect class="cls-cover" x="0" y="27" width="245" height="84" rx="14" />
-      <rect class="mrq-glass" x="0" y="27" width="245" height="84" rx="14" />
-      <rect class="cls-badge tone-green" x="14" y="39" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="28" y="57.5" text-anchor="middle">C</text>
-      <text class="pic-name" x="52" y="58" text-anchor="start">NoSessionFiles</text>
-      <path class="cls-divide" d="M14 79H231" />
-      <text class="cls-member" x="14" y="97" text-anchor="start">finds nothing (4)</text>
-      <rect class="cls-cover" x="0" y="183" width="245" height="84" rx="14" />
-      <rect class="mrq-glass" x="0" y="183" width="245" height="84" rx="14" />
-      <rect class="cls-badge tone-green" x="14" y="195" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="28" y="213.5" text-anchor="middle">C</text>
-      <text class="pic-name" x="52" y="214" text-anchor="start">A pack's tool</text>
-      <path class="cls-divide" d="M14 235H231" />
-      <text class="cls-member" x="14" y="253" text-anchor="start">ReadBill(fileName) (F171.2)</text>
-      <rect class="cls-cover" x="0" y="325" width="245" height="112" rx="14" />
-      <rect class="mrq-glass" x="0" y="325" width="245" height="112" rx="14" />
-      <rect class="cls-badge tone-green" x="14" y="337" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="28" y="355.5" text-anchor="middle">C</text>
-      <text class="pic-name" x="52" y="356" text-anchor="start">ToolsetContext</text>
-      <path class="cls-divide" d="M14 377H231" />
-      <text class="cls-member" x="14" y="395" text-anchor="start">Files (6)</text>
-      <text class="cls-member" x="14" y="409" text-anchor="start">Reader (7)</text>
-      <text class="cls-member" x="14" y="423" text-anchor="start">implements IPackContext</text>
-      <rect class="cls-cover" x="0" y="651" width="245" height="84" rx="14" />
-      <rect class="mrq-glass" x="0" y="651" width="245" height="84" rx="14" />
-      <rect class="cls-badge tone-green" x="14" y="663" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="28" y="681.5" text-anchor="middle">C</text>
-      <text class="pic-name" x="52" y="682" text-anchor="start">NoDocumentReader</text>
-      <path class="cls-divide" d="M14 703H231" />
-      <text class="cls-member" x="14" y="721" text-anchor="start">says this host has no model (4)</text>
-      <rect class="cls-cover" x="455" y="183" width="238" height="84" rx="14" />
-      <rect class="mrq-glass" x="455" y="183" width="238" height="84" rx="14" />
-      <rect class="cls-badge tone-green" x="469" y="195" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="483" y="213.5" text-anchor="middle">C</text>
-      <text class="pic-name" x="507" y="214" text-anchor="start">TurnSessionFiles</text>
-      <path class="cls-divide" d="M469 235H679" />
-      <text class="cls-member" x="469" y="253" text-anchor="start">reads SessionFiles.Current (6)</text>
-      <rect class="cls-cover" x="455" y="312" width="238" height="138" rx="14" />
-      <rect class="mrq-glass" x="455" y="312" width="238" height="138" rx="14" />
-      <rect class="mrq-edge" x="479" y="311.5" width="190" height="1.6" rx="0" />
-      <rect class="cls-badge tone-teal" x="469" y="330" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="483" y="348.5" text-anchor="middle">I</text>
-      <text class="pic-name" x="507" y="340" text-anchor="start">IPackContext</text>
-      <text class="pic-note" x="507" y="356" text-anchor="start">interface</text>
-      <path class="cls-divide" d="M469 376H679" />
-      <text class="cls-member" x="469" y="394" text-anchor="start">Files ISessionFiles (4)</text>
-      <text class="cls-member" x="469" y="408" text-anchor="start">Reader IDocumentReader (4)</text>
-      <text class="cls-member" x="469" y="422" text-anchor="start">InATrial bool</text>
-      <text class="cls-member" x="469" y="436" text-anchor="start">Places ISitePlaces</text>
-      <rect class="cls-cover" x="455" y="481" width="238" height="112" rx="14" />
-      <rect class="mrq-glass" x="455" y="481" width="238" height="112" rx="14" />
-      <rect class="cls-badge tone-green" x="469" y="493" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="483" y="511.5" text-anchor="middle">C</text>
-      <text class="pic-name" x="507" y="512" text-anchor="start">ModelDocumentReader</text>
-      <path class="cls-divide" d="M469 533H679" />
-      <text class="cls-member" x="469" y="551" text-anchor="start">IChatClient + DataContent</text>
-      <text class="cls-member" x="469" y="565" text-anchor="start">GetResponseAsync&lt;T&gt;</text>
-      <text class="cls-member" x="469" y="579" text-anchor="start">UsagePurpose.Reading (7)</text>
-      <rect class="cls-cover" x="773" y="170" width="420" height="110" rx="14" />
-      <rect class="mrq-glass" x="773" y="170" width="420" height="110" rx="14" />
-      <rect class="mrq-edge" x="797" y="169.5" width="372" height="1.6" rx="0" />
-      <rect class="cls-badge tone-teal" x="787" y="188" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="801" y="206.5" text-anchor="middle">I</text>
-      <text class="pic-name" x="825" y="198" text-anchor="start">ISessionFiles</text>
-      <text class="pic-note" x="825" y="214" text-anchor="start">interface</text>
-      <path class="cls-divide" d="M787 234H1179" />
-      <text class="cls-member" x="787" y="252" text-anchor="start">Find(name) SessionFile? (4)</text>
-      <text class="cls-member" x="787" y="266" text-anchor="start">Forget(name) (4)</text>
-      <rect class="cls-cover" x="773" y="482" width="420" height="110" rx="14" />
-      <rect class="mrq-glass" x="773" y="482" width="420" height="110" rx="14" />
-      <rect class="mrq-edge" x="797" y="481.5" width="372" height="1.6" rx="0" />
-      <rect class="cls-badge tone-teal" x="787" y="500" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="801" y="518.5" text-anchor="middle">I</text>
-      <text class="pic-name" x="825" y="510" text-anchor="start">IDocumentReader</text>
-      <text class="pic-note" x="825" y="526" text-anchor="start">interface</text>
-      <path class="cls-divide" d="M787 546H1179" />
-      <text class="cls-member" x="787" y="564" text-anchor="start">ReadAsync&lt;T&gt;(SessionFile, instructions, ct) Task&lt;T&gt; (4)</text>
-      <text class="cls-member" x="787" y="578" text-anchor="start">throws DocumentReadException</text>
-      <rect class="cls-cover" x="1273" y="163" width="245" height="124" rx="14" />
-      <rect class="mrq-glass" x="1273" y="163" width="245" height="124" rx="14" />
-      <rect class="mrq-edge" x="1297" y="162.5" width="197" height="1.6" rx="0" />
-      <rect class="cls-badge tone-teal" x="1287" y="181" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="1301" y="199.5" text-anchor="middle">R</text>
-      <text class="pic-name" x="1325" y="191" text-anchor="start">SessionFile</text>
-      <text class="pic-note" x="1325" y="207" text-anchor="start">record</text>
-      <path class="cls-divide" d="M1287 227H1504" />
-      <text class="cls-member" x="1287" y="245" text-anchor="start">Name string</text>
-      <text class="cls-member" x="1287" y="259" text-anchor="start">MediaType FileMediaType</text>
-      <text class="cls-member" x="1287" y="273" text-anchor="start">Bytes ReadOnlyMemory&lt;byte&gt; (4)</text>
-      <rect class="cls-cover" x="1598" y="177" width="231" height="96" rx="14" />
-      <rect class="mrq-glass" x="1598" y="177" width="231" height="96" rx="14" />
-      <rect class="mrq-edge" x="1622" y="176.5" width="183" height="1.6" rx="0" />
-      <rect class="cls-badge tone-teal" x="1612" y="195" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="1626" y="213.5" text-anchor="middle">E</text>
-      <text class="pic-name" x="1650" y="205" text-anchor="start">FileMediaType</text>
-      <text class="pic-note" x="1650" y="221" text-anchor="start">enum</text>
-      <path class="cls-divide" d="M1612 241H1815" />
-      <text class="cls-member" x="1612" y="259" text-anchor="start">Jpeg, Png, Gif, WebP, Pdf (4)</text>
+      <path class="cls-line uses" d="M315 62L387 62Q411 62 411 86L411 171Q411 195 435 195L507 195" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M787 62L819 62Q843 62 843 86L843 165Q843 186 864 186L885 186" marker-end="url(#open)" />
+      <path class="cls-line creates" d="M315 62L507 62" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M315 62L507 62" />
+      <path class="cls-line creates" d="M315 488L507 488" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M315 488L507 488" />
+      <path class="cls-line implements" d="M315 346L507 346L787 346L819 346Q843 346 843 322L843 243Q843 222 864 222L885 222" marker-end="url(#triangle-violet)" />
+      <path class="cls-line implements" d="M787 488L837 488Q861 488 861 464L861 252Q861 240 873 240L885 240" marker-end="url(#triangle-violet)" />
+      <path class="cls-line implements" d="M315 488L387 488Q411 488 411 464L411 237Q411 213 435 213L507 213" marker-end="url(#triangle-violet)" />
+      <path class="cls-line holds" d="M787 204L885 204" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M787 204L885 204" />
+      <path class="cls-line holds" d="M1109 204L1189 204" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M1109 204L1189 204" />
+      <path class="cls-line holds" d="M1434 204L1514 204" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M1434 204L1514 204" />
+      <rect class="pic-pill cls-chip uses" x="441" y="186" width="36" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="459" y="198" text-anchor="middle">uses</text>
+      <rect class="pic-pill cls-chip creates" x="430.5" y="53" width="57" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="459" y="65" text-anchor="middle">creates</text>
+      <rect class="pic-pill cls-chip uses" x="797" y="53" width="36" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="815" y="65" text-anchor="middle">uses</text>
+      <rect class="pic-pill cls-chip holds" x="805" y="195" width="43" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="826.5" y="207" text-anchor="middle">holds</text>
+      <rect class="pic-pill cls-chip holds" x="1127" y="195" width="43" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="1148.5" y="207" text-anchor="middle">holds</text>
+      <rect class="pic-pill cls-chip holds" x="1452" y="195" width="43" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="1473.5" y="207" text-anchor="middle">holds</text>
+      <rect class="pic-pill cls-chip implements" x="324" y="337" width="78" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="363" y="349" text-anchor="middle">implements</text>
+      <rect class="pic-pill cls-chip implements" x="420" y="204" width="78" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="459" y="216" text-anchor="middle">implements</text>
+      <rect class="pic-pill cls-chip creates" x="430.5" y="479" width="57" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="459" y="491" text-anchor="middle">creates</text>
+      <rect class="cls-cover" x="0" y="13" width="315" height="98" rx="14" />
+      <rect class="mrq-glass" x="0" y="13" width="315" height="98" rx="14" />
+      <rect class="cls-badge tone-green" x="14" y="25" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="28" y="43.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="52" y="44" text-anchor="start">ReadSamplePack</text>
+      <path class="cls-divide" d="M14 65H301" />
+      <text class="cls-member" x="14" y="83" text-anchor="start">CreateTools(context) (8)</text>
+      <text class="cls-member" x="14" y="97" text-anchor="start">new ReadSampleTools(model, context.Files)</text>
+      <rect class="cls-cover" x="0" y="304" width="315" height="84" rx="14" />
+      <rect class="mrq-glass" x="0" y="304" width="315" height="84" rx="14" />
+      <rect class="cls-badge tone-green" x="14" y="316" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="28" y="334.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="52" y="335" text-anchor="start">NoSessionFiles</text>
+      <path class="cls-divide" d="M14 356H301" />
+      <text class="cls-member" x="14" y="374" text-anchor="start">finds nothing (4)</text>
+      <rect class="cls-cover" x="0" y="439" width="315" height="98" rx="14" />
+      <rect class="mrq-glass" x="0" y="439" width="315" height="98" rx="14" />
+      <rect class="cls-badge tone-green" x="14" y="451" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="28" y="469.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="52" y="470" text-anchor="start">ToolsetContext</text>
+      <path class="cls-divide" d="M14 491H301" />
+      <text class="cls-member" x="14" y="509" text-anchor="start">Files (6)</text>
+      <text class="cls-member" x="14" y="523" text-anchor="start">implements IPackContext</text>
+      <rect class="cls-cover" x="507" y="13" width="280" height="98" rx="14" />
+      <rect class="mrq-glass" x="507" y="13" width="280" height="98" rx="14" />
+      <rect class="cls-badge tone-green" x="521" y="25" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="535" y="43.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="559" y="44" text-anchor="start">ReadSampleTools</text>
+      <path class="cls-divide" d="M521 65H773" />
+      <text class="cls-member" x="521" y="83" text-anchor="start">ctor(IChatClient, ISessionFiles) (8)</text>
+      <text class="cls-member" x="521" y="97" text-anchor="start">ReadSample(fileName) string</text>
+      <rect class="cls-cover" x="507" y="142" width="280" height="124" rx="14" />
+      <rect class="mrq-glass" x="507" y="142" width="280" height="124" rx="14" />
+      <rect class="mrq-edge" x="531" y="141.5" width="232" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="521" y="160" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="535" y="178.5" text-anchor="middle">I</text>
+      <text class="pic-name" x="559" y="170" text-anchor="start">IPackContext</text>
+      <text class="pic-note" x="559" y="186" text-anchor="start">interface</text>
+      <path class="cls-divide" d="M521 206H773" />
+      <text class="cls-member" x="521" y="224" text-anchor="start">Files ISessionFiles (4)</text>
+      <text class="cls-member" x="521" y="238" text-anchor="start">Places ISitePlaces</text>
+      <text class="cls-member" x="521" y="252" text-anchor="start">InATrial bool</text>
+      <rect class="cls-cover" x="507" y="446" width="280" height="84" rx="14" />
+      <rect class="mrq-glass" x="507" y="446" width="280" height="84" rx="14" />
+      <rect class="cls-badge tone-green" x="521" y="458" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="535" y="476.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="559" y="477" text-anchor="start">TurnSessionFiles</text>
+      <path class="cls-divide" d="M521 498H773" />
+      <text class="cls-member" x="521" y="516" text-anchor="start">reads SessionFiles.Current (6)</text>
+      <rect class="cls-cover" x="885" y="149" width="224" height="110" rx="14" />
+      <rect class="mrq-glass" x="885" y="149" width="224" height="110" rx="14" />
+      <rect class="mrq-edge" x="909" y="148.5" width="176" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="899" y="167" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="913" y="185.5" text-anchor="middle">I</text>
+      <text class="pic-name" x="937" y="177" text-anchor="start">ISessionFiles</text>
+      <text class="pic-note" x="937" y="193" text-anchor="start">interface</text>
+      <path class="cls-divide" d="M899 213H1095" />
+      <text class="cls-member" x="899" y="231" text-anchor="start">Find(name) SessionFile? (4)</text>
+      <text class="cls-member" x="899" y="245" text-anchor="start">Forget(name) (4)</text>
+      <rect class="cls-cover" x="1189" y="142" width="245" height="124" rx="14" />
+      <rect class="mrq-glass" x="1189" y="142" width="245" height="124" rx="14" />
+      <rect class="mrq-edge" x="1213" y="141.5" width="197" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="1203" y="160" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="1217" y="178.5" text-anchor="middle">R</text>
+      <text class="pic-name" x="1241" y="170" text-anchor="start">SessionFile</text>
+      <text class="pic-note" x="1241" y="186" text-anchor="start">record</text>
+      <path class="cls-divide" d="M1203 206H1420" />
+      <text class="cls-member" x="1203" y="224" text-anchor="start">Name string</text>
+      <text class="cls-member" x="1203" y="238" text-anchor="start">MediaType FileMediaType</text>
+      <text class="cls-member" x="1203" y="252" text-anchor="start">Bytes ReadOnlyMemory&lt;byte&gt; (4)</text>
+      <rect class="cls-cover" x="1514" y="156" width="231" height="96" rx="14" />
+      <rect class="mrq-glass" x="1514" y="156" width="231" height="96" rx="14" />
+      <rect class="mrq-edge" x="1538" y="155.5" width="183" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="1528" y="174" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="1542" y="192.5" text-anchor="middle">E</text>
+      <text class="pic-name" x="1566" y="184" text-anchor="start">FileMediaType</text>
+      <text class="pic-note" x="1566" y="200" text-anchor="start">enum</text>
+      <path class="cls-divide" d="M1528 220H1731" />
+      <text class="cls-member" x="1528" y="238" text-anchor="start">Jpeg, Png, Gif, WebP, Pdf (4)</text>
     </g>
-    <g class="cls-legend" transform="translate(0 832)">
-      <rect class="mrq-rule" x="0" y="0" width="1829" height="1" rx="0" />
+    <g class="cls-legend" transform="translate(0 620)">
+      <rect class="mrq-rule" x="0" y="0" width="1745" height="1" rx="0" />
       <text class="pic-group" x="0" y="22" text-anchor="start">How to read it</text>
       <rect class="cls-badge tone-green" x="0" y="39" width="18" height="18" rx="6" />
       <text class="pic-means" x="28" y="52.5" text-anchor="start">this project</text>
@@ -373,16 +353,19 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="pic-means" x="1260.2" y="52.5" text-anchor="start">uses</text>
     </g>
     <g class="pic-brand" transform="translate(0 0)">
-      <text class="pic-name" x="1813" y="854" text-anchor="end" aria-label="louis-agent">l<tspan class="pic-mark" dy="1.5">•</tspan><tspan dy="-1.5">uis-agent</tspan></text>
+      <text class="pic-name" x="1729" y="642" text-anchor="end" aria-label="louis-agent">l<tspan class="pic-mark" dy="1.5">•</tspan><tspan dy="-1.5">uis-agent</tspan></text>
     </g>
   </g>
-  <rect class="notebar" x="0" y="910" width="1829" height="37" rx="8" />
-  <g class="note-icon" transform="translate(12 920) scale(0.6667)">
+  <rect class="notebar" x="0" y="698" width="1745" height="54" rx="8" />
+  <g class="note-icon" transform="translate(12 708) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />
     <path d="M11 12h1v4h1" />
   </g>
-  <text class="notes" x="38" y="932">
-    <tspan class="note-rest">The pack context gains two members. Each has an implementation in the engine and one that says no for a host that has no session or no model. The number in brackets is the step that builds it.</tspan>
+  <text class="notes" x="38" y="720">
+    <tspan class="note-rest">The pack context gains Files. The engine's implementation reads this turn's files from the flow, and a host with no sessions gets one that finds nothing. The tool is handed the files in its constructor beside its model. The number in</tspan>
+  </text>
+  <text class="notes" x="38" y="737">
+    <tspan class="note-rest">brackets is the step that builds it.</tspan>
   </text>
 </svg>
