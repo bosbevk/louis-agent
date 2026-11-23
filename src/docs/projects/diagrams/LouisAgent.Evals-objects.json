@@ -33,7 +33,7 @@
         "id": "crit",
         "icon": "scales",
         "tone": "teal",
-        "label": "A criterion\n\"Names the doc it read\"",
+        "label": "A criterion\n\"Says it is an AI agent framework in C#\"",
         "shape": "data"
       },
       {
@@ -64,7 +64,7 @@
         "id": "m2",
         "icon": "checks",
         "tone": "green",
-        "label": "Mark\nNames the doc it read · met"
+        "label": "Mark\nSays it is an AI agent framework in C# · met"
       },
       {
         "id": "judge",

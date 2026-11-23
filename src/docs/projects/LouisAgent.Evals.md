@@ -43,7 +43,7 @@ will check and the criteria the judge will mark. This is the guide's first conve
       "turns": [
         { "ask": "What is louis-agent, in one minute?",
           "facts": ["no-error", "used ReadDoc", "under 30s"],
-          "criteria": ["Says it is an AI agent framework in C#", "Names the doc it read"] } ] }
+          "criteria": ["Says it is an AI agent framework in C#", "Ends with one small nudge: a page, a question or the chat"] } ] }
   ]
 }
 ```
@@ -127,7 +127,7 @@ SearchDocs, ReadDoc." or "Took 12 s.". So a red mark explains itself.
 
 ### 5. The judge marks a criterion
 
-What code can't tell for certain is a criterion, a plain sentence such as "Names the doc it read". `Judge.MarkAsync`
+What code can't tell for certain is a criterion, a plain sentence such as "Says it is an AI agent framework in C#". `Judge.MarkAsync`
 marks one with one model call. It sends the conversation up to and including the turn it marks, with every tool
 call and its result, and the one criterion. It asks for the answer as a `JudgeAnswer` through
 `GetResponseAsync<T>`, which puts the record's JSON schema on the request: the reason first, then met or not, so the
