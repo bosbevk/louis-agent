@@ -17,3 +17,7 @@
     margin-top: 12px;
     color: var(--bs-body-color);
 }
+.eval-card-follow { align-self: flex-start; min-height: 24px; margin-top: 12px; color: var(--bs-body-color); }
+.eval-card-actions { margin-top: 16px; }
+.eval-card-note { font-size: 13px; color: var(--bs-secondary-color); margin: 8px 0 0; }
+.eval-card-refused { font-size: 14px; color: var(--bs-danger); margin: 8px 0 0; }

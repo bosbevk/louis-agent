@@ -149,6 +149,41 @@ public class EvalsPageTests
         page.WaitForAssertion(() => Assert.That(reads, Is.EqualTo(2)));
     }
 
+    /// <summary>
+    /// F126.3.4: while an eval's run goes, a line above the cards names it, and every other card's buttons are off.
+    /// </summary>
+    [Test]
+    public void WhileARunGoes_ALineNamesIt_AndTheOtherCardsWait()
+    {
+        using var ctx = new BunitContext();
+        var going = Finished with { Status = RunStatus.Running };
+        var page = Render(ctx, Evals(new EvalRow("guide", "louis-agent-guide", 7, going, Finished),
+            new EvalRow("kitchen", "wheatfield-kitchen", 4, Finished, Finished)));
+
+        Assert.That(page.Find(".evals-going").TextContent,
+            Does.Contain("A run of").And.Contain("guide").And
+                .Contain("is going. One run goes at a time, so the others wait."));
+        Assert.That(page.FindAll(".eval-card")[1].QuerySelectorAll("button").Select(b => b.HasAttribute("disabled")),
+            Has.All.True);
+    }
+
+    /// <summary>F126.3.4: one ask is open at a time: opening a second card's closes the first's.</summary>
+    [Test]
+    public void OneAskIsOpen_AtATime()
+    {
+        using var ctx = new BunitContext();
+        var page = Render(ctx, Evals(new EvalRow("guide", "louis-agent-guide", 7, Finished, Finished),
+            new EvalRow("kitchen", "wheatfield-kitchen", 4, Finished, Finished)));
+
+        page.FindAll(".eval-card")[0].QuerySelectorAll("button").Single(b => b.TextContent.Contains("Run live"))
+            .Click();
+        page.FindAll(".eval-card")[1].QuerySelectorAll("button").Single(b => b.TextContent.Contains("Run live"))
+            .Click();
+
+        Assert.That(page.FindAll(".run-ask"), Has.Count.EqualTo(1));
+        Assert.That(page.FindAll(".eval-card")[1].QuerySelector(".run-ask"), Is.Not.Null);
+    }
+
     /// <summary>A stub of the API that answers the list with these rows.</summary>
     private static Func<HttpRequestMessage, HttpResponseMessage> Evals(params EvalRow[] rows) => _ =>
         new HttpResponseMessage(HttpStatusCode.OK)

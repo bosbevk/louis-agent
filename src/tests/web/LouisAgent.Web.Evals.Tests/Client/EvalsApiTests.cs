@@ -109,7 +109,8 @@ public class EvalsApiTests
     [TestCase(HttpStatusCode.NotFound)]
     public async Task ARefusedStart_AnswersTheApisReason(HttpStatusCode status)
     {
-        var refusal = new ApiError("error", new ApiErrorDetail("invalid_request_error", "A run is already going."));
+        // The client reads only the refusal's words, so its type is any.
+        var refusal = new ApiError("error", new ApiErrorDetail("a-refusal", "A run is already going."));
         var (api, _) = Api(_ => new HttpResponseMessage(status)
         {
             Content = JsonContent.Create(refusal, options: JsonSerializerOptions.Web)
