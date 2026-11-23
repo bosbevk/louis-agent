@@ -78,7 +78,7 @@
         "step": "message",
         "from": "T",
         "to": "J",
-        "text": "MarkAsync(\"Names the doc it read\", the conversation so far)"
+        "text": "MarkAsync(\"Says it is an AI agent framework in C#\", the conversation so far)"
       },
       {
         "step": "message",

@@ -513,6 +513,17 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX227 · An eval copies its prompt, mistakes and all
+
+The guide's eval failed "Names the doc it read" in every run, and the first page that showed a run turned that
+into a line anyone could read: the answer never named a doc. The eval wasn't wrong about the guide; it was faithful
+to the guide's own voice, which told it to end a developer's answer with the doc's path. The rule was the mistake.
+The public site sells to business owners, the chat already shows each doc the guide opens, and handing a developer
+the doc is the framework site's agent's job. So the fix went to the prompt first and the eval second, and a test
+holds each. The lesson is that an eval written from a prompt inherits the prompt's mistakes, so a criterion that
+always fails is worth reading as a question about the rule, not only about the agent. Reading the judge's line of
+why, beside the transcript, is what showed it. Skill 12 (evaluation).
+
 ## FX226 · Two waits side by side look like one
 
 FX225 took the Git tests from 16 minutes to 26 seconds, and the integration step still took 17 minutes. A second

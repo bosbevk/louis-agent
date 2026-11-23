@@ -6,6 +6,6 @@
       "turns": [
         { "ask": "What is louis-agent, in one minute?",
           "facts": ["no-error", "used ReadDoc", "under 30s"],
-          "criteria": ["Says it is an AI agent framework in C#", "Names the doc it read", "Ends with one small nudge: a page, a question or the chat"] } ] }
+          "criteria": ["Says it is an AI agent framework in C#", "Ends with one small nudge: a page, a question or the chat"] } ] }
   ]
 }

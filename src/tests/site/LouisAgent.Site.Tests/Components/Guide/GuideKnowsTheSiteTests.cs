@@ -64,17 +64,17 @@ public class GuideKnowsTheSiteTests
     }
 
     /// <summary>
-    /// A plain-words answer ends with no file path (FX77, Louis: "do not do this"): the doc is named only to a
-    /// developer, and the chat's tool cards already show what was read.
+    /// An answer ends with no file path (FX77, Louis: "do not do this"), and names no doc, to a developer either
+    /// (FX227): the chat's tool cards already show what was read, and the framework's site hands a developer the doc.
     /// </summary>
     [Test]
-    public void TheVoice_NamesADoc_OnlyForADeveloper()
+    public void TheVoice_NamesNoDoc_AndNoPath()
     {
         string voice = WhatTheGuideReads();
 
         Assert.Multiple(() =>
         {
-            Assert.That(voice, Does.Contain("Name the doc, for a developer."));
+            Assert.That(voice, Does.Contain("**Name no doc.**").And.Not.Contain("Name the doc, for a developer"));
             Assert.That(voice, Does.Contain("No file paths in your words"));
             Assert.That(voice, Does.Contain("Like a person talking, not a brochure."));
             Assert.That(voice, Does.Not.Contain("for the curious"));
