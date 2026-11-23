@@ -31,7 +31,9 @@ public class EvalsApiTests
         var reply = await api.ListAsync();
 
         Assert.That(stub.Requests.Single().Url, Is.EqualTo("http://localhost/v1/admin/evals"));
-        Assert.That(reply.Evals, Is.EqualTo(new[] { row }));
+        // Compared as their JSON: a row holds a list, which a record's own equality compares by reference.
+        Assert.That(JsonSerializer.Serialize(reply.Evals, RunJson.Options),
+            Is.EqualTo(JsonSerializer.Serialize(new[] { row }, RunJson.Options)));
     }
 
     /// <summary>A run comes back whole, equal to what the API wrote, compared as its JSON.</summary>

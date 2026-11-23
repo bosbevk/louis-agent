@@ -1,3 +1,4 @@
+using LouisAgent.Evals.Contracts.Api;
 using LouisAgent.Evals.Contracts.Grading;
 using LouisAgent.Evals.Contracts.Runs.Answers;
 
@@ -110,6 +111,22 @@ public sealed record EvalRun(
         if (at < 0 || Conversations[at].WithFlip(repeat, turn, criterion, flip) is not { } flipped) return null;
         return this with { Conversations = TurnRun.Replace(Conversations, at, flipped) };
     }
+
+    /// <summary>This run against the run before it (F126.4).</summary>
+    public RunChange CompareWith(EvalRun before) => RunChange.Of(this, before);
+
+    /// <summary>
+    /// Each criterion it missed, as its answer counts, or a person flipped, by its words, once however many repeats
+    /// did: 1 or 0 for each.
+    /// </summary>
+    public IReadOnlyList<CriterionTally> TallyCriteria() =>
+    [
+        .. AllRepeats().SelectMany(repeat => repeat.Turns).SelectMany(turn => turn.Criteria)
+            .GroupBy(mark => mark.Text)
+            .Select(same => new CriterionTally(same.Key, same.Any(mark => !mark.CountsAsMet()) ? 1 : 0,
+                same.Any(mark => mark.Flip is not null) ? 1 : 0))
+            .Where(tally => tally.Missed + tally.Flipped > 0)
+    ];
 
     /// <summary>Every repeat of every conversation.</summary>
     private IEnumerable<RepeatRun> AllRepeats() => Conversations.SelectMany(conversation => conversation.Repeats);

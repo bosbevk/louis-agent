@@ -184,13 +184,19 @@ public sealed class EvalHandlers(
     /// <summary>The run going here, when it has this id.</summary>
     private EvalRun? GoingAs(string id) => desk.Current?.Id == id ? desk.Current : null;
 
-    /// <summary>An eval's row, with its newest run and its newest live run that finished.</summary>
+    /// <summary>
+    /// An eval's row, with its newest run, the run that one is compared with, and its newest live run that finished,
+    /// all from the runs read once.
+    /// </summary>
     private EvalRow Row(string name, EvalFile file)
     {
-        var last = RunsIn(name).FirstOrDefault();
-        var lastLive = work is null ? null : LastLiveRun(work.Store, name);
-        return new EvalRow(name, file.Agent.ToString(), file.Conversations.Count,
-            last is null ? null : RunRow.Of(last), lastLive is null ? null : RunRow.Of(lastLive));
+        var rows = RunsIn(name).Select(RunRow.Of).ToList();
+        var last = rows.FirstOrDefault();
+        var lastLive = rows.FirstOrDefault(row => row is { Kind: RunKind.Live, Status: RunStatus.Finished });
+        return new EvalRow(name, file.Agent.ToString(), file.Conversations.Count, last, lastLive)
+        {
+            RunBefore = last is null ? null : new RunHistory(rows).FindBefore(last)
+        };
     }
 
     /// <summary>The eval's runs as they really are, the newest first; none without a data folder.</summary>
