@@ -8,7 +8,8 @@
 ## Purpose
 
 This project is where a person reads an eval's runs, in the admin of a site that runs evals. Its first page lists
-the host's evals, one card each, and says how each one's last run went. It reads what
+the host's evals, one card each, and says how each one's last run went. From a card, a run's page gives that run's
+number first and its conversations, the failed ones first. It reads what
 [LouisAgent.Api.Evals](LouisAgent.Api.Evals.md)'s routes send, a run's records as
 [LouisAgent.Evals.Contracts](LouisAgent.Evals.Contracts.md) holds them, and runs in the browser like the rest of the
 admin.
@@ -16,7 +17,7 @@ admin.
 A site takes it with one word among its areas, `.Evals()`, and louis-agent.dev does.
 
 The doc follows a page from its data to what it draws: how a site takes the pages, how the routes are read, the
-evals' page and its cards, and the words.
+evals' page and its cards, a run's page, and the words.
 
 ## How it works
 
@@ -60,10 +61,29 @@ what Bootstrap doesn't, and every colour is a theme's name, so glass and flat, l
 
 ![The evals' page: it reads the host's evals and hands each its card, shows the one card that says where a file goes when there is none, and the frame's key box on a refused key](diagrams/LouisAgent.Web.Evals-components-evals.svg)
 
-### 4. The words
+### 4. A run's page
+
+`RunPage`, at `/admin/evals/{eval}/runs/{run}`, reads one run whole when it opens and again on Reload. A way back to
+the evals sits above its heading, which names the eval and when the run started. The number comes first, "0 of 1
+passed", in the monospace face. Beside it, `RunFigures` lays out the run's other figures, each a `RunFigure` with
+its name over its value: the kind, the repeats, how long it took, the agent's cost, and the facts and criteria met.
+A line under them says which agent was asked, and whether its message carried the page a visitor would be on.
+
+Every one of those figures is the run's own answer, asked of its records: the counts are `CountFacts` and
+`CountCriteria`, the time is `MeasureTime`, and the cost is `SumCost` in the currency `FindCurrency` names. A cost
+with no price, or a time with no end, reads "unknown", never 0.
+
+The conversations follow, in the run's order with the failed ones first. Each is a `ConversationRow`, and the whole
+row links to the conversation's own address. It shows a tick or a cross, the conversation's id, its first ask, and
+how many of its repeats passed, "2 of 3 repeats". A failed one adds a line in the danger colour saying which repeat
+failed first and on what, in that repeat's first miss's own words: "Repeat 2, not met:" and the criterion, or
+"fact not met:" and the fact.
+
+### 5. The words
 
 The words the code picks are `EvalsWords`, one entry for each part of `EvalsPart`, as every page's words are
-(ADR 0132): a count says "1 repeat" or "3 repeats", and a time is said in the browser's own time. `MarkDot` is a mark
+(ADR 0132): a count says "1 repeat" or "3 repeats", a date is said in the browser's own time, and a length of
+time in its two largest parts, "33 s", "6 min 12 s" or "1 h 2 min". `MarkDot` is a mark
 of a fact or a criterion, a tick or a cross with its words for a screen reader, so a mark is never told by colour
 alone.
 
@@ -76,8 +96,8 @@ src/web/LouisAgent.Web.Evals/
 ├── EvalsArea.cs   # .Evals(), and EvalsLibrary, the assembly the router is handed
 ├── Admin/         # EvalsLinks and EvalsCard: the sidebar's link and the home's card
 ├── Client/        # EvalsApi, EvalAddress: the routes read, and every address
-├── Pages/         # EvalsPage: /admin/evals
-├── Components/    # EvalCard, NoEvalsCard, MarkDot, each with its styles
+├── Pages/         # EvalsPage: /admin/evals; RunPage: /admin/evals/{eval}/runs/{run}
+├── Components/    # EvalCard, NoEvalsCard, MarkDot, ConversationRow, RunFigures, RunFigure, each with its styles
 └── Words/         # EvalsWords, and Parts/EvalsPart
 src/tests/web/LouisAgent.Web.Evals.Tests/   # the client, the addresses, the page and its parts, the words
 ```
@@ -90,13 +110,15 @@ None of its own. It reads with the site's API client and the admin's key, and li
 ## Tests
 
 `LouisAgent.Web.Evals.Tests` holds the client over a stub of the API (`EvalsApiTests`), the addresses
-(`EvalAddressTests`), the evals' page with bUnit (`EvalsPageTests`), a mark (`MarkDotTests`), the words
+(`EvalAddressTests`), the evals' page and a run's page with bUnit (`EvalsPageTests`, `RunPageTests`), a mark (`MarkDotTests`), the words
 (`EvalsWordsTests`), the area (`EvalsAreaTests`) and the admin's link and card (`EvalsLinksTests`,
 `EvalsCardTests`). louis-agent.dev's own tests hold that its admin draws the evals' link and card.
 
 ## Limits and plans
 
-A run's page and a conversation's page are not built yet, so a card's link to its last run opens nothing yet.
+A conversation's page is not built yet, so a row's link opens nothing yet. A run's page draws a finished run; a
+run that stopped, one still running and one the host doesn't have have no words of their own yet, and the eval's
+other runs are not listed.
 It is not a package ([ADR 0130](../adr/0130-the-framework-is-published-as-packages-one-tag-each.md)).
 
 ## Related docs

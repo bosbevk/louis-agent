@@ -24,6 +24,12 @@ public enum EvalsPart
     /// <summary>A mark that wasn't met, as a screen reader says it.</summary>
     NotMet,
 
+    /// <summary>A fact a turn didn't meet, as a failed row names its first miss.</summary>
+    FactNotMet,
+
+    /// <summary>A figure the run can't give, such as a cost with no price.</summary>
+    Unknown,
+
     /// <summary>An eval that has never been run.</summary>
     NotRunYet,
 

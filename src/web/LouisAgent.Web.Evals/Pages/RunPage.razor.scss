@@ -1,0 +1,8 @@
+/* A run's page: the way back above the heading, the score large in the monospace face, the cards apart. */
+.run-crumbs { font-size: 14px; margin-bottom: 16px; }
+.run-crumbs a { color: var(--bs-body-color); }
+.run-this, .run-conversations { margin-bottom: 16px; }
+.run-score { font-family: var(--bs-font-monospace); margin: 0; }
+.run-passed { font-size: 44px; font-weight: 700; line-height: 1; }
+.run-of { font-size: 20px; color: var(--bs-secondary-color); }
+.run-asked { font-size: 14px; color: var(--bs-secondary-color); margin: 16px 0 0; }

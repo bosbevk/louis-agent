@@ -251,11 +251,12 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M4 8h16" />
         <path d="M8 4v4" />
       </g>
-      <text class="crd-name" x="370" y="263" text-anchor="start">The evals' page</text>
-      <rect class="mrq-pill" x="324" y="280" width="149.2" height="22" rx="11" />
-      <text class="mrq-code" x="334" y="295" text-anchor="start">EvalsPage, EvalCard</text>
-      <text class="pic-text" x="324" y="326" text-anchor="start">One card an eval, its last run's number</text>
-      <text class="pic-text" x="324" y="344" text-anchor="start">first, and one card when there is none.</text>
+      <text class="crd-name" x="370" y="263" text-anchor="start">The pages</text>
+      <rect class="mrq-pill" x="324" y="280" width="142.4" height="22" rx="11" />
+      <text class="mrq-code" x="334" y="295" text-anchor="start">EvalsPage, RunPage</text>
+      <text class="pic-text" x="324" y="326" text-anchor="start">One card an eval, then a run with its</text>
+      <text class="pic-text" x="324" y="344" text-anchor="start">number first and its conversations</text>
+      <text class="pic-text" x="324" y="362" text-anchor="start">failed first.</text>
       <rect class="mrq-glass" x="612" y="222" width="284" height="160" rx="14" />
       <rect class="mrq-edge" x="640" y="221.5" width="228" height="1.6" rx="0" />
       <rect class="crd-tint" x="630" y="240" width="34" height="34" rx="10" />

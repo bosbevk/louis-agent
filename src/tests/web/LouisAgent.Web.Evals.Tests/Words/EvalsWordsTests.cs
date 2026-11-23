@@ -21,4 +21,13 @@ public class EvalsWordsTests
         Assert.That(EvalsWords.Count(0, EvalsPart.Conversation, EvalsPart.Conversations),
             Is.EqualTo("0 conversations"));
     }
+
+    /// <summary>A time is said in its two largest parts, from seconds alone up to hours and minutes.</summary>
+    [Test]
+    public void ATime_IsSaidInItsTwoLargestParts()
+    {
+        Assert.That(EvalsWords.FormatTime(TimeSpan.FromSeconds(33)), Is.EqualTo("33 s"));
+        Assert.That(EvalsWords.FormatTime(new TimeSpan(0, 6, 12)), Is.EqualTo("6 min 12 s"));
+        Assert.That(EvalsWords.FormatTime(new TimeSpan(1, 2, 5)), Is.EqualTo("1 h 2 min"));
+    }
 }

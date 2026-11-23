@@ -1,0 +1,66 @@
+@page "/admin/evals/{Eval}/runs/{Run}"
+@layout AdminFrame
+
+@* A run's page (F126.3.2): the number first, then what the run ran with, then its conversations, the failed ones
+   first, each saying which repeat failed and on what. *@
+
+<PageTitle>@Eval · Run · Admin</PageTitle>
+
+<nav class="run-crumbs" aria-label="Breadcrumb"><a href="@EvalAddress.EvalsPage">Evals</a> / @Eval</nav>
+
+<div class="page-head">
+    <div>
+        <h1>@Eval@if (_run is { } shown)
+            {
+                <span> · run of @EvalsWords.FormatLocal(shown.StartedAt)</span>
+            }</h1>
+        @if (_run is { } head)
+        {
+            <p>@head.Passed of @head.Conversations.Count conversations passed. A conversation passes only when every one of its repeats does.</p>
+        }
+    </div>
+    <div class="page-actions">
+        <button class="header-button run-reload" type="button" @onclick="LoadAsync" disabled="@_loading"><span class="ic i-refresh" aria-hidden="true"></span>Reload</button>
+    </div>
+</div>
+
+@if (_error is { } error)
+{
+    <AdminGate Error="@error" NeedsKey="_needsKey" OnSaved="LoadAsync"/>
+}
+
+@if (_loading && _run is null)
+{
+    <section class="card-p run-loading"><span class="muted">Loading…</span></section>
+}
+else if (_run is { } run)
+{
+    <section class="card-p run-this">
+        <h2>This run</h2>
+        <RunFigures>
+            <p class="run-score"><span class="run-passed">@run.Passed</span> <span class="run-of">of @run.Conversations.Count passed</span></p>
+            <RunFigure Name="Kind">@Kind</RunFigure>
+            <RunFigure Name="Repeats">@run.Repeats</RunFigure>
+            <RunFigure Name="Took">@Took</RunFigure>
+            <RunFigure Name="The agent's cost"><span class="run-cost">@Cost</span></RunFigure>
+            <RunFigure Name="Facts met">@run.CountFacts().Met of @run.CountFacts().Of</RunFigure>
+            <RunFigure Name="Criteria met">@run.CountCriteria().Met of @run.CountCriteria().Of</RunFigure>
+        </RunFigures>
+        @if (run.PageSent)
+        {
+            <p class="run-asked">Asked as <code>@run.Agent</code>, with the page a visitor's message carries.</p>
+        }
+        else
+        {
+            <p class="run-asked">Asked as <code>@run.Agent</code>, without the page a visitor's message carries.</p>
+        }
+    </section>
+
+    <section class="card-p run-conversations">
+        <h2>Conversations</h2>
+        @foreach (var conversation in run.OrderFailedFirst())
+        {
+            <ConversationRow @key="conversation.Id" Eval="@Eval" Run="@run.Id" Conversation="conversation"/>
+        }
+    </section>
+}

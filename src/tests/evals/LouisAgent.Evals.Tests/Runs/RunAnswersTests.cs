@@ -98,6 +98,16 @@ public class RunAnswersTests
         Assert.That(Run(new ConversationRun("a", 1, [Repeat(1, Turn(cost: null))])).SumCost(), Is.Null);
     }
 
+    /// <summary>A run's currency is its first priced turn's, and none while no turn is priced.</summary>
+    [Test]
+    public void ARunsCurrency_IsItsFirstPricedTurns_OrNone()
+    {
+        var priced = Run(new ConversationRun("a", 2, [Repeat(1, Turn(cost: null)), Repeat(2, Turn(cost: 0.001m))]));
+
+        Assert.That(priced.FindCurrency(), Is.EqualTo("USD"));
+        Assert.That(Run(new ConversationRun("a", 1, [Repeat(1, Turn(cost: null))])).FindCurrency(), Is.Null);
+    }
+
     /// <summary>A run's time is from its start to its end, and none while it has no end.</summary>
     [Test]
     public void ARunsTime_IsFromItsStartToItsEnd_AndNoneWhileItRuns()

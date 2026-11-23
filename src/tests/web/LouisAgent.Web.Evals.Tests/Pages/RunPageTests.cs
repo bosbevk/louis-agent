@@ -1,0 +1,179 @@
+using System.Net;
+using System.Net.Http.Json;
+using LouisAgent.Evals.Contracts.Grading;
+using LouisAgent.Evals.Contracts.Runs;
+using LouisAgent.Evals.Contracts.Runs.Json;
+using LouisAgent.Evals.Contracts.Transcripts;
+using LouisAgent.Web.Api;
+using LouisAgent.Web.Components.Admin;
+using LouisAgent.Web.Evals.Client;
+using LouisAgent.Web.Evals.Pages;
+using LouisAgent.Web.Storage;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace LouisAgent.Web.Evals.Tests.Pages;
+
+/// <summary>
+/// A run's page gives the number first, then what the run ran with, then its conversations, the failed ones first,
+/// each saying which repeat failed and on what. Every figure is the run's own answer.
+/// </summary>
+public class RunPageTests
+{
+    private const string Eval = "guide";
+
+    private static readonly DateTimeOffset Started = new(2026, 11, 23, 6, 19, 0, TimeSpan.Zero);
+
+    /// <summary>A finished run shows passed of conversations, its kind, repeats, time, cost and marks met.</summary>
+    [Test]
+    public void AFinishedRun_ShowsPassedOfConversations_AndWhatItRanWith()
+    {
+        using var ctx = new BunitContext();
+        var page = Render(ctx, Run());
+
+        string figures = page.Find(".run-this").TextContent;
+
+        Assert.That(page.Find(".run-passed").TextContent.Trim(), Is.EqualTo("1"));
+        Assert.That(figures, Does.Contain("of 3 passed").And.Contain("live").And.Contain("6 min 12 s")
+            .And.Contain("$0.003").And.Contain("Facts met").And.Contain("Criteria met").And.Contain("7 of 8"));
+    }
+
+    /// <summary>A run whose turns have no price reads its cost as unknown, never as nothing spent.</summary>
+    [Test]
+    public void ACostWithNoPrice_ReadsUnknown()
+    {
+        using var ctx = new BunitContext();
+        var page = Render(ctx, Run(cost: null));
+
+        Assert.That(page.Find(".run-cost").TextContent.Trim(), Is.EqualTo("unknown"));
+    }
+
+    /// <summary>The conversations come failed first, as the run orders them.</summary>
+    [Test]
+    public void TheConversations_ComeFailedFirst()
+    {
+        using var ctx = new BunitContext();
+        var page = Render(ctx, Run());
+
+        Assert.That(page.FindAll(".conversation-row-id").Select(id => id.TextContent.Trim()),
+            Is.EqualTo(new[] { "guide-invoices", "guide-pricing", "guide-what-is" }));
+    }
+
+    /// <summary>
+    /// A failed row says which repeat failed and on what, in the first miss's words, and how many repeats passed.
+    /// </summary>
+    [Test]
+    public void AFailedRow_SaysWhichRepeatFailedAndOnWhat()
+    {
+        using var ctx = new BunitContext();
+        var page = Render(ctx, Run());
+
+        var rows = page.FindAll(".conversation-row");
+
+        Assert.That(rows[0].QuerySelector(".conversation-row-miss")!.TextContent.Trim(),
+            Is.EqualTo("Repeat 2, not met: Never answers \"I can't do that\""));
+        Assert.That(rows[0].QuerySelector(".conversation-row-repeats")!.TextContent.Trim(),
+            Is.EqualTo("2 of 3 repeats"));
+        Assert.That(rows[1].QuerySelector(".conversation-row-miss")!.TextContent.Trim(),
+            Is.EqualTo("Repeat 1, fact not met: used ShowPage"));
+    }
+
+    /// <summary>A passed row says no miss, and ends with every repeat passed.</summary>
+    [Test]
+    public void APassedRow_HasNoMiss_AndEndsWithEveryRepeat()
+    {
+        using var ctx = new BunitContext();
+        var page = Render(ctx, Run());
+
+        var passed = page.FindAll(".conversation-row")[2];
+
+        Assert.That(passed.QuerySelectorAll(".conversation-row-miss"), Is.Empty);
+        Assert.That(passed.QuerySelector(".conversation-row-repeats")!.TextContent.Trim(),
+            Is.EqualTo("3 of 3 repeats"));
+        Assert.That(passed.QuerySelector(".conversation-row-ask")!.TextContent, Does.Contain("What is louis-agent?"));
+    }
+
+    /// <summary>A row's link is the conversation's own address in this run.</summary>
+    [Test]
+    public void ARowsLink_IsTheConversationsAddress()
+    {
+        using var ctx = new BunitContext();
+        var run = Run();
+        var page = Render(ctx, run);
+
+        Assert.That(page.Find("a.conversation-row").GetAttribute("href"),
+            Is.EqualTo(EvalAddress.ConversationPageOf(Eval, run.Id, "guide-invoices")));
+    }
+
+    /// <summary>The line under the figures says whether the agent was asked with the visitor's page.</summary>
+    [Test]
+    public void TheLineUnderTheFigures_SaysWhetherThePageWasSent()
+    {
+        using var ctx = new BunitContext();
+        using var other = new BunitContext();
+
+        string without = Render(ctx, Run()).Find(".run-asked").TextContent;
+        string with = Render(other, Run() with { PageSent = true }).Find(".run-asked").TextContent;
+
+        Assert.That(without, Does.Contain("louis-agent-guide").And.Contain("without the page"));
+        Assert.That(with, Does.Contain("with the page").And.Not.Contain("without"));
+    }
+
+    /// <summary>
+    /// A run of three repeats: guide-what-is passed all three, guide-invoices failed its second on a criterion, and
+    /// guide-pricing, asked once, failed on a fact. It took 6 min 12 s.
+    /// </summary>
+    private static EvalRun Run(decimal? cost = 0.001m) =>
+        new("20261123-061900-guide", Eval, "louis-agent-guide", RunKind.Live, 3, Started,
+        [
+            new ConversationRun("guide-what-is", 3,
+            [
+                Repeat(1, "What is louis-agent?", cost), Repeat(2, "What is louis-agent?", null),
+                Repeat(3, "What is louis-agent?", null)
+            ]),
+            new ConversationRun("guide-invoices", 3,
+            [
+                Repeat(1, "Can it match invoices?", cost),
+                Repeat(2, "Can it match invoices?", cost, criterion: "Never answers \"I can't do that\""),
+                Repeat(3, "Can it match invoices?", null)
+            ]),
+            new ConversationRun("guide-pricing", 1,
+                [Repeat(1, "Where can I see what it costs?", null, fact: "used ShowPage")])
+        ])
+        {
+            Status = RunStatus.Finished,
+            EndedAt = Started.AddMinutes(6).AddSeconds(12)
+        };
+
+    /// <summary>A repeat of one turn, with a fact or a criterion not met when one is named.</summary>
+    private static RepeatRun Repeat(int number, string ask, decimal? cost, string? fact = null,
+        string? criterion = null)
+    {
+        var transcript = new TurnTranscript(ask, "An answer.", [], TimeSpan.FromSeconds(4));
+        List<Mark> facts = [new("no-error", true, "No error.")];
+        if (fact is not null) facts.Add(new Mark(fact, false, "It didn't."));
+        List<Mark> criteria = [new("Answers the ask", true, "It does.")];
+        if (criterion is not null) criteria.Add(new Mark(criterion, false, "It said it can't."));
+        return new RepeatRun(number, [new TurnRun(transcript, facts, criteria, cost, cost is null ? null : "USD")]);
+    }
+
+    /// <summary>The run's page over a stub of the API that answers with this run, once it has loaded.</summary>
+    private static IRenderedComponent<RunPage> Render(BunitContext ctx, EvalRun run)
+    {
+        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
+        var settings = new ChatSettings();
+        var answer = new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = JsonContent.Create(run, options: RunJson.Options)
+        };
+        var http = new HttpClient(new StubHandler(_ => answer)) { BaseAddress = new Uri("http://localhost/") };
+        var api = new AgentApi(http, settings);
+        ctx.Services.AddSingleton(new ChatStore(ctx.JSInterop.JSRuntime, settings));
+        ctx.Services.AddSingleton(api);
+        ctx.Services.AddSingleton(new EvalsApi(api));
+        ctx.Services.AddSingleton(new AdminAccess());
+
+        var page = ctx.Render<RunPage>(parameters => parameters.Add(p => p.Eval, Eval).Add(p => p.Run, run.Id));
+        page.WaitForState(() => page.FindAll(".run-loading").Count == 0, TimeSpan.FromSeconds(10));
+        return page;
+    }
+}

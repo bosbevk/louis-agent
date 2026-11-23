@@ -1,0 +1,41 @@
+using LouisAgent.Evals.Contracts.Runs;
+using LouisAgent.Evals.Contracts.Runs.Answers;
+using LouisAgent.Web.Evals.Client;
+using LouisAgent.Web.Evals.Words;
+using LouisAgent.Web.Evals.Words.Parts;
+using Microsoft.AspNetCore.Components;
+
+namespace LouisAgent.Web.Evals.Components;
+
+/// <summary>
+/// A conversation in a run, one line of the run's page: whether it passed, what it first asked, and for a failed one
+/// which repeat failed and on what, in the first miss's own words.
+/// </summary>
+public partial class ConversationRow
+{
+    /// <summary>The eval the run belongs to.</summary>
+    [Parameter, EditorRequired]
+    public string Eval { get; set; } = "";
+
+    /// <summary>The run's id.</summary>
+    [Parameter, EditorRequired]
+    public string Run { get; set; } = "";
+
+    /// <summary>The conversation this row draws.</summary>
+    [Parameter, EditorRequired]
+    public ConversationRun Conversation { get; set; } = null!;
+
+    private string Open => EvalAddress.ConversationPageOf(Eval, Run, Conversation.Id);
+
+    private string? Ask => Conversation.FindFirstAsk();
+
+    private RepeatRun? FailedRepeat => Conversation.FindFirstFailedRepeat();
+
+    private Miss? FirstMiss => FailedRepeat?.FindFirstMiss();
+
+    /// <summary>"fact not met" for a fact, "not met" for a criterion, whose own words say what it asked.</summary>
+    private string MissWords =>
+        EvalsWords.Words[FirstMiss?.Kind == MarkKind.Fact ? EvalsPart.FactNotMet : EvalsPart.NotMet];
+
+    private string Repeats => EvalsWords.Count(Conversation.Asked, EvalsPart.Repeat, EvalsPart.Repeats);
+}

@@ -28,9 +28,9 @@
           {
             "id": "page",
             "icon": "browser",
-            "title": "The evals' page",
-            "code": "EvalsPage, EvalCard",
-            "text": "One card an eval, its last run's number first, and one card when there is none."
+            "title": "The pages",
+            "code": "EvalsPage, RunPage",
+            "text": "One card an eval, then a run with its number first and its conversations failed first."
           },
           {
             "id": "words",

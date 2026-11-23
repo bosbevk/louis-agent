@@ -1,7 +1,7 @@
 {
   "kind": "classes",
   "title": "LouisAgent.Web.Evals: its classes",
-  "caption": "The page reads the host's evals through the client, which reads the routes the addresses name; each eval is a card, and the words come from one place.",
+  "caption": "The pages read through the client, which reads the routes the addresses name; each eval is a card, each conversation of a run a row, and the words come from one place.",
   "classes": {
     "types": [
       {
@@ -35,6 +35,33 @@
         "kind": "component",
         "members": [
           "bool Met"
+        ]
+      },
+      {
+        "id": "run",
+        "name": "RunPage",
+        "kind": "page, /admin/evals/{eval}/runs/{run}",
+        "members": [
+          "reads the run once, and on Reload",
+          "asks the run for every figure"
+        ]
+      },
+      {
+        "id": "row",
+        "name": "ConversationRow",
+        "kind": "component",
+        "members": [
+          "ConversationRun Conversation",
+          "the first failed repeat and its miss"
+        ]
+      },
+      {
+        "id": "figures",
+        "name": "RunFigures, RunFigure",
+        "kind": "component",
+        "members": [
+          "string Name",
+          "the value as content"
         ]
       },
       {
@@ -115,6 +142,26 @@
       {
         "from": "dot",
         "to": "words",
+        "kind": "uses"
+      },
+      {
+        "from": "run",
+        "to": "api",
+        "kind": "uses"
+      },
+      {
+        "from": "run",
+        "to": "figures",
+        "kind": "creates"
+      },
+      {
+        "from": "run",
+        "to": "row",
+        "kind": "creates"
+      },
+      {
+        "from": "row",
+        "to": "address",
         "kind": "uses"
       }
     ]

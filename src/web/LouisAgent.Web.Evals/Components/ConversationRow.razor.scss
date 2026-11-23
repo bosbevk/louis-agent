@@ -1,0 +1,16 @@
+/* A conversation in a run: its id, its first ask quieter, its miss in the danger colour, and its repeats in the
+   monospace face at the end. Colours are the theme's names, so every theme and mode draws it. */
+.conversation-row {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--bs-border-color);
+    color: var(--bs-body-color);
+    text-decoration: none;
+    min-height: 24px;
+}
+.conversation-row:last-child { border-bottom: 0; }
+.conversation-row:hover .conversation-row-id { text-decoration: underline; }
+.conversation-row-id { font-weight: 600; }
+.conversation-row-ask { font-size: 14px; color: var(--bs-secondary-color); }
+.conversation-row-miss { font-size: 14px; font-weight: 600; color: var(--bs-danger); margin-top: 2px; }
+.conversation-row-repeats { font-family: var(--bs-font-monospace); font-size: 14px; white-space: nowrap; }
+.conversation-row-failed { color: var(--bs-danger); }
