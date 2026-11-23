@@ -26,7 +26,10 @@ Do this first, and write the plan from what you found.
 - **What is there already.** Read the code the work will touch, and how the repo solved the nearest problem. The
   repo may hold the thing the plan was about to build, and then the plan uses it.
 - **Which rules reach it.** A change to a shared file is tested by everything that reads it. Find the tests
-  and the rules that will run against the work, so no step is stopped by one it didn't expect.
+  and the rules that will run against the work, so no step is stopped by one it didn't expect. Count the files
+  each new or grown folder will hold against `FolderSizeTests`' six, and for a new project ask what the docs' rules
+  want of it and when (`ProjectDocsTests`, `EveryProjectWithComponents_ShowsOne`): a Razor project needs its design
+  doc from its first component, not at the close.
 - **The patterns that fit**, read on the web that day: Refactoring.Guru, the Gang of Four, Fowler, Microsoft's
   .NET guidance. Where there is a choice among them, it goes to Louis with `/put-a-finding` before the plan is
   written.
