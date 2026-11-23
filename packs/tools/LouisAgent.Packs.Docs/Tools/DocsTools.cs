@@ -56,7 +56,7 @@ public sealed class DocsTools
             : string.Join('\n', entries);
     }
 
-    /// <summary>One doc, whole.</summary>
+    /// <summary>One doc, whole, with LF line endings whatever the checkout wrote, so it reads the same everywhere.</summary>
     [Description("Reads one doc of the docs, whole, as text. The path is the one ListDocs or SearchDocs showed.")]
     public string ReadDoc(
         [Description("The doc's path from the docs root, such as 'adr/0027-engine-identities-and-packs.md'.")]
@@ -69,7 +69,7 @@ public sealed class DocsTools
         if (new FileInfo(full).Length > MostBytes)
             return MessageText.Format(DocsToolMessage.DocTooLarge, new { Path = path });
 
-        return File.ReadAllText(full, Encoding.UTF8);
+        return File.ReadAllText(full, Encoding.UTF8).ReplaceLineEndings("\n");
     }
 
     /// <summary>Every line of the docs that holds the text, case ignored, as path:line: text.</summary>
