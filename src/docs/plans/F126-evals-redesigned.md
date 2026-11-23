@@ -271,7 +271,8 @@ Skill 4, Tool use: a follow-up proved to reach the same specialist (`continued`)
   the agent. "Kept with the run's recordings": a live play keeps the page it sent under its trial, and a replay
   sends that one. "Move the rule to the shared contract": the focus rule moves from the web to
   `LouisAgent.Composition`, so the API can ask it. Its plan is
-  [F126.3.3](F126.3.3-the-page-a-conversation-names.md).
+  F126.3.3. It is done, its design in [LouisAgent.Api](../projects/LouisAgent.Api.md) and
+  [LouisAgent.Evals](../projects/LouisAgent.Evals.md); F126.3.4, starting a run from the admin, is next.
 
 ---
 [Plans](README.md) · Related: [ADR 0029](../adr/0029-simulations-in-csharp.md) · [ADR 0058](../adr/0058-an-eval-is-a-folder-of-files.md) · [ADR 0104](../adr/0104-a-message-may-carry-the-page.md)

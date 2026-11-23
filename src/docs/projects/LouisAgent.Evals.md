@@ -17,7 +17,9 @@ It also runs an eval. A run plays every conversation of a file against the agent
 person's chat uses, grades each turn, and keeps itself as one file. A live run records the agent's answers and the
 judge's as it goes, so the same run can be replayed later for nothing. A site's API serves it through
 [LouisAgent.Api.Evals](LouisAgent.Api.Evals.md), and the records of a run are
-[LouisAgent.Evals.Contracts](LouisAgent.Evals.Contracts.md)'s, so a page can read them. No page shows a run yet.
+[LouisAgent.Evals.Contracts](LouisAgent.Evals.Contracts.md)'s, so the admin's pages read them. A conversation
+that names a page is sent that page with its first ask, as a visitor's message carries it, so the agent measured
+is given what production's agent is given.
 
 The doc follows a file from its text to its marks: how it's read, how a wrong one is refused, the schema an editor
 checks it against, then the facts code tells and the criteria the judge marks. Then it follows a run: a
@@ -173,6 +175,13 @@ after keeps one place that opens and closes the session. A turn that ends in the
 `no-error` is then not met, and the next turn is still asked, since the agent failing is what an eval is for. A
 refusal from the API is not caught here; stopping is the runner's.
 
+A conversation that names a page, such as the guide's on `/`, is sent that page as the site's widget would send it.
+`PageClient` asks the site's API for it, `GET /v1/site/page?address=`, over the same HTTP client the agent is asked
+with, once the play's session is open, since opening a session that records starts its trial afresh. The player
+sends the page with the first ask and with no later one, which is what the widget does for a visitor who stays on
+one page, and `SessionClient` puts it in the message's body under the wire's own key, leaving the key out when there
+is none. A conversation that names no page is played as before, and a run says whether it sent one in `PageSent`.
+
 ![A run's classes: the player asks over the sessions API and grades, the runner plays every conversation, the store keeps the run by its id, and the judge's answers go through its replay](diagrams/LouisAgent.Evals-runs.svg)
 
 ![One conversation of a live run: a session opened with the run's tag and asked to record, each turn asked and written down, the session closed, the facts told, the criteria marked, the run kept again](diagrams/LouisAgent.Evals-run-sequence.svg)
@@ -188,8 +197,10 @@ A conversation passes only when it holds every repeat the run asked for and each
 when every mark of every turn is met. That is asked of the records, as section 2 of the contracts' doc tells. So a
 run cut short part way through a conversation never counts it as passed.
 
-Two things end a run as could not finish, with the reason in `StoppedBecause`: a judge that can't mark, and the
-API refusing. In both, nothing was learnt about the agent, so no mark is made up. Everything graded before the stop
+Three things end a run as could not finish, with the reason in `StoppedBecause`: a judge that can't mark, the API
+refusing, and a page a conversation names that isn't a page of the site, which `PageClient` throws as a
+`PageMissingException` naming its address. A host that maps no site says the same, since the route isn't there. In
+each, nothing was learnt about the agent, so no mark is made up. Everything graded before the stop
 stays on the run, the repeats of the conversation cut short too. Anything else that goes wrong is a bug and
 surfaces, and a cancelled run stays a cancellation.
 
@@ -217,20 +228,25 @@ A live run records as it goes. Each play opens its session with the run's id as 
 `{conversation}.{repeat}` and a request to record, so the engine keeps the agent's answers under the trial
 `{run id}/{conversation}.{repeat}` (`RunTrial` names them). The judge isn't in a session, so `JudgeReplay` keeps its
 answers in the same trial: it is a decorator over the judge's client, the engine's own replay client reused whole,
-and the player grades inside `JudgeReplay.Begin(trial)`. So a trial holds the agent's answers and the judge's.
+and the player grades inside `JudgeReplay.Begin(trial)`. The page a conversation names is kept there too: a live
+play saves it under its trial as a fetch, keyed by the page route's own address, so the engine's kinds stay as they
+are. So a trial holds the page, the agent's answers and the judge's.
 
 A replay plays a live run back. Each of its sessions asks for the live run's trial, model included, and the judge
-reads its answers from it, so nothing calls a model and a replayed answer is priced as a known 0. The result is a run
+reads its answers from it, so nothing calls a model and a replayed answer is priced as a known 0. The page is read
+back from the trial too, and the page route is never asked. The result is a run
 like any other, of the kind replay, with `ReplayOf` naming the live run, in a file of its own.
 
 A recording answers only the request it was made from. When a prompt, a doc the agent reads or a criterion's words
 have changed, it holds no answer, and the replay stops as could not finish: the recording is out of date and a live
 run is needed. The agent's miss ends its turn in the stream's `replay_miss_error`, which the player turns into a
 `RecordingOutOfDateException`, the one place a harness failure is told apart from the agent's own error; the judge's
-miss comes as a `JudgeFailedException` over the engine's miss. It is Fowler's self-initializing fake, which never
+miss comes as a `JudgeFailedException` over the engine's miss, and a trial with no kept page is out of date the
+same way, `PageClient` throwing the same exception. It is Fowler's self-initializing fake, which never
 tries to know when its recording went stale; the miss is how we find out.
 
-*Decided in:* F126.3.1, [ADR 0134](../adr/0134-an-eval-is-one-file-of-conversations.md).
+*Decided in:* F126.3.1, F126.3.3, [ADR 0134](../adr/0134-an-eval-is-one-file-of-conversations.md),
+[ADR 0104](../adr/0104-a-message-may-carry-the-page.md).
 
 ## Structure
 
@@ -240,7 +256,8 @@ src/evals/LouisAgent.Evals/
 ├── Files/                     # EvalFile, Conversation, Turn; Fact and FactKind; EvalCatalog, the evals found
 │   └── Json/                  # EvalFileReader, EvalFileException, EvalJson, EvalSchema, the two converters
 ├── Grading/                   # Facts, Judge, JudgeAnswer, JudgeFailedException
-├── Sessions/                  # SessionClient, SessionRefusedException: the agent asked over the sessions API
+├── Sessions/                  # SessionClient, SessionRefusedException: the agent asked over the sessions API;
+│                              # PageClient, PageMissingException: the page a conversation names
 ├── Transcripts/               # TurnTranscripts and TurnCost: a turn's stream written down
 ├── Runs/                      # ConversationPlayer, EvalRunner, RunTrial, JudgeReplay, RecordingOutOfDateException
 │   └── Store/                 # RunStore, RunId: a run kept as one file
@@ -263,7 +280,8 @@ are the settings of [LouisAgent.Api.Evals](LouisAgent.Api.Evals.md).
 (`EvalFileReaderTests`), every fault refused at its place (`EvalFileFaultsTests`), the schema held to its golden file
 (`EvalSchemaTests`), the seven facts told (`FactsTests`, `AgentFactsTests`), the judge on a fake model
 (`JudgeTests`), and one turn graded whole (`OneTurnGradedTests`). A turn's stream written down
-(`TurnTranscriptsTests`) and the client over a handler that answers (`SessionClientTests`) come next; then one
+(`TurnTranscriptsTests`), the client over a handler that answers (`SessionClientTests`) and the page client over a
+handler and a replay store of its own (`PageClientTests`) come next; then one
 conversation played over a fake sessions API (`ConversationPlayerTests`), the pass rule (`RunRecordsTests`), a run's
 repeats and its stops (`EvalRunnerTests`), the store over a folder of its own (`RunStoreTests`) and the evals found
 in file providers built in memory (`EvalCatalogTests`). `EvalMessagesTests` holds every message's holes.
@@ -275,8 +293,9 @@ skip without one, in CI too. The judge's replay and a whole run on the API in me
 
 ## Limits and plans
 
-No page shows a run yet, and a run is started by calling its route with the admin key. The page a visitor's
-message carries isn't sent with an ask, which a run says plainly with `PageSent`. A person can't flip a mark, and a
+A run is started by calling its route with the admin key; starting one from the admin is the next child. The page
+sent is read on the server, so what only a screen knows (the section in view, an open card) is never in it, and
+words a site hides with CSS alone are. A person can't flip a mark, and a
 reworded criterion can't be marked again without a live run. Those are the next children of
 [the evals' plan](../plans/F126-evals-redesigned.md).
 

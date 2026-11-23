@@ -12,7 +12,7 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 156 | 75 |
+| Features (`F`) | 157 | 75 |
 | Fixes (`FX`) | 216 | 4 |
 | Cleanups (`CL`) | 47 | 24 |
 
@@ -22,7 +22,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 
 | Id | What | Phase |
 |---|---|---|
-| F126 | Evals, redesigned: one `.eval.json` of conversations with turns, seven facts in code, criteria a judge marks, flips to correct it, its own eval host, six screens; today's evals deleted, not ported; five children since 2026-11-22: F126.1 delete the old evals (done 2026-11-22); F126.2 the file and the grading (done 2026-11-22; closeness of meaning is a criterion the judge marks, F93 folded in); F126.3 runs and the run page, split 2026-11-23 into F126.3.1 runs (done 2026-11-23), F126.3.2 the run pages, which read a run (done 2026-11-23), F126.3.3 the page a conversation names, read on the server and sent with the first ask (started 2026-11-23), and F126.3.4 starting and following a run from the admin; F126.4 flips, re-grade and better-or-worse; F126.5 new evals | Now |
+| F126 | Evals, redesigned: one `.eval.json` of conversations with turns, seven facts in code, criteria a judge marks, flips to correct it, its own eval host, six screens; today's evals deleted, not ported; five children since 2026-11-22: F126.1 delete the old evals (done 2026-11-22); F126.2 the file and the grading (done 2026-11-22; closeness of meaning is a criterion the judge marks, F93 folded in); F126.3 runs and the run page, split 2026-11-23 into F126.3.1 runs (done 2026-11-23), F126.3.2 the run pages, which read a run (done 2026-11-23), F126.3.3 the page a conversation names, read on the server and sent with the first ask (done 2026-11-23), and F126.3.4 starting and following a run from the admin; F126.4 flips, re-grade and better-or-worse; F126.5 new evals | Now |
 | F171 | The bill checker (Louis, 2026-11-21; 2026-11-22: "this feature is next"): a phone app that reads a Western Cape municipal account from a photo or a PDF, checks every line against Cape Town's, Swartland's and Overstrand's own tariffs and drafts the dispute, free to download with one subscription; the product in its own private `bill-checker` repository on the framework's packages, the framework's parts here: F171.1 a photo or PDF reaches a tool (started 2026-11-22); F171.2 the bills pack reads and checks; F171.3 the dispute letter; F171.4 the identity and evals; F171.5 the account, consent and our own subscriptions part; F171.6 the phone app; F171.7 the stores; F171.8 the monthly report | Now, F171.1 after F126; F171.2 on after F140 |
 | F43 | Accounts, tenants and durable sessions; its first child, durable sessions, after F171.1 and before F157 | Now, its first child after F171.1 |
 | FX4 | Append-only history | Now, after F43's first child |
@@ -130,6 +130,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 
 | Id | When | What |
 |---|---|---|
+| F126.3.3 | 2026-11-23 | The page a conversation names, F126.3's third child: the site's API answers a page as a message carries it, read on the server as the widget reads it (`GET /v1/site/page`), the focus rule in the shared contract; a run asks it, sends it with the first ask and keeps it for its replay; a missing page stops a run; the guide's eval recorded again with its page and its expectations rewritten for the landing |
 | F126.3.2 | 2026-11-23 | The run pages, F126.3's second child: `LouisAgent.Web.Evals`, an area a site names with `.Evals()`, louis-agent.dev among them; the evals' page, a card an eval; a run's page, its number first, its conversations failed first with their first miss, its states and the eval's other runs; a conversation's page, one repeat turn by turn with each mark's reason, walking the failed ones and to the run before; every figure a method on the run's records |
 | F126.3.1 | 2026-11-23 | Runs, F126.3's first child: an eval file played against the agent over the sessions API, one session per repeat, graded, kept as one JSON file and replayed from its recording for free; the contracts, and the eval routes a site's API maps behind the admin key, one run at a time in the background; an operator's run passes the open door as the agent visitors get; the guide's eval replayed as one test; ADR 0134 gains two lines |
 | F126.2 | 2026-11-22 | The file and the grading, F126's second child: `LouisAgent.Evals` reads an eval file of conversations into records and refuses a wrong one at its first fault with its place, makes its schema from the records, tells seven facts from a turn's transcript, and has a judge mark one criterion with one model call, proved on Claude; ADR 0134 gains its line |

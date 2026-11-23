@@ -22,6 +22,10 @@ The site's API must keep runs and recordings. Its compose file sets both: `SITE_
 and without recordings a live start is too. Start the container as
 [Change the site](change-the-site.md) says, with the model's key in `src/site/config/.env.secrets`.
 
+A conversation may name a page, as the guide's does with `"page": "/"`. Its first ask then carries that page as a
+visitor's message would, read from the site's own `GET /v1/site/page?address=`, so the host must serve the site.
+A page the site doesn't have stops the run as could not finish, with its address.
+
 Every eval route asks for the admin key, `ADMIN_API_KEY` in `.env.secrets` or `AGENT_API_KEY` when there is none.
 Read it into your shell without printing it:
 
@@ -64,7 +68,8 @@ KEY=$(grep -E '^ADMIN_API_KEY=' src/site/config/.env.secrets | cut -d= -f2-)
    the next failed one or to the same conversation in the run before. The pages read; nothing on them starts a run.
 
 6. Replay it. The replay plays the eval's last live run that finished, as many repeats as it recorded, and ends as
-   a run of its own with `replayOf` naming the live one:
+   a run of its own with `replayOf` naming the live one. A page a conversation names is sent as the live run kept
+   it, so the page route isn't asked:
 
    ```bash
    curl -s -i -X POST http://127.0.0.1:5080/v1/admin/evals/guide/runs -H "x-api-key: $KEY" \
