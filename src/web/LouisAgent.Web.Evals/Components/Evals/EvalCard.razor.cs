@@ -6,7 +6,7 @@ using LouisAgent.Web.Evals.Words;
 using LouisAgent.Web.Evals.Words.Parts;
 using Microsoft.AspNetCore.Components;
 
-namespace LouisAgent.Web.Evals.Components;
+namespace LouisAgent.Web.Evals.Components.Evals;
 
 /// <summary>
 /// One eval's card on the evals' page: what it is, and its last run's number first. It shows only what the row

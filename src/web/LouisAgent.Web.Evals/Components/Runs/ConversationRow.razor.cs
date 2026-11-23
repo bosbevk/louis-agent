@@ -5,7 +5,7 @@ using LouisAgent.Web.Evals.Words;
 using LouisAgent.Web.Evals.Words.Parts;
 using Microsoft.AspNetCore.Components;
 
-namespace LouisAgent.Web.Evals.Components;
+namespace LouisAgent.Web.Evals.Components.Runs;
 
 /// <summary>
 /// A conversation in a run, one line of the run's page: whether it passed, what it first asked, and for a failed one

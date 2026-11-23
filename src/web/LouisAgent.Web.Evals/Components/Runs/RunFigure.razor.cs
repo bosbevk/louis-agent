@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components;
 
-namespace LouisAgent.Web.Evals.Components;
+namespace LouisAgent.Web.Evals.Components.Runs;
 
 /// <summary>One named figure of a run, such as Took or Facts met.</summary>
 public partial class RunFigure

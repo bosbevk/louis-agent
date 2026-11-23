@@ -1,6 +1,6 @@
-using LouisAgent.Web.Evals.Components;
+using LouisAgent.Web.Evals.Components.Marks;
 
-namespace LouisAgent.Web.Evals.Tests.Components;
+namespace LouisAgent.Web.Evals.Tests.Components.Marks;
 
 /// <summary>A mark is a tick or a cross a screen reader says in words, never a colour alone.</summary>
 public class MarkDotTests

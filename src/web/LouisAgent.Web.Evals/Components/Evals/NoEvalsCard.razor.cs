@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components;
 
-namespace LouisAgent.Web.Evals.Components;
+namespace LouisAgent.Web.Evals.Components.Evals;
 
 /// <summary>
 /// The one card a host with no eval shows: where an eval file goes, and the guide, linked when the site names its

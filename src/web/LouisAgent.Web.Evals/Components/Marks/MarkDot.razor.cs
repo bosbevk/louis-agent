@@ -2,7 +2,7 @@ using LouisAgent.Web.Evals.Words;
 using LouisAgent.Web.Evals.Words.Parts;
 using Microsoft.AspNetCore.Components;
 
-namespace LouisAgent.Web.Evals.Components;
+namespace LouisAgent.Web.Evals.Components.Marks;
 
 /// <summary>
 /// A mark of a fact or a criterion: a tick or a cross, with its words for a screen reader, so a mark is never told

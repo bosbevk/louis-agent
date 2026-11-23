@@ -97,7 +97,10 @@ src/web/LouisAgent.Web.Evals/
 ├── Admin/         # EvalsLinks and EvalsCard: the sidebar's link and the home's card
 ├── Client/        # EvalsApi, EvalAddress: the routes read, and every address
 ├── Pages/         # EvalsPage: /admin/evals; RunPage: /admin/evals/{eval}/runs/{run}
-├── Components/    # EvalCard, NoEvalsCard, MarkDot, ConversationRow, RunFigures, RunFigure, each with its styles
+├── Components/    # each part with its styles, in a folder for the page it draws
+│   ├── Evals/     # EvalCard, NoEvalsCard: the evals' page
+│   ├── Runs/      # RunFigures, RunFigure, ConversationRow: a run's page
+│   └── Marks/     # MarkDot: a mark, on every page
 └── Words/         # EvalsWords, and Parts/EvalsPart
 src/tests/web/LouisAgent.Web.Evals.Tests/   # the client, the addresses, the page and its parts, the words
 ```
