@@ -26,6 +26,14 @@ public sealed record ConversationRun(string Id, int Asked, IReadOnlyList<RepeatR
     /// <summary>Its first repeat that didn't pass; none when all of them passed.</summary>
     public RepeatRun? FindFirstFailedRepeat() => Repeats.FirstOrDefault(repeat => !repeat.Passed);
 
+    /// <summary>
+    /// The repeat a page opens: the one asked for, or with none asked for its first failed one, or its first. A
+    /// number it doesn't hold is none.
+    /// </summary>
+    public RepeatRun? FindRepeat(int? number) => number is { } asked
+        ? Repeats.FirstOrDefault(repeat => repeat.Number == asked)
+        : FindFirstFailedRepeat() ?? Repeats.FirstOrDefault();
+
     /// <summary>What its first turn asked, from its first repeat; none when it holds no turn.</summary>
     public string? FindFirstAsk() => Repeats.FirstOrDefault()?.Turns.FirstOrDefault()?.Transcript.Ask;
 }

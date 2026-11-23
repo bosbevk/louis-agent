@@ -27,6 +27,12 @@ public enum EvalsPart
     /// <summary>A fact a turn didn't meet, as a failed row names its first miss.</summary>
     FactNotMet,
 
+    /// <summary>One tool call, as a turn's fold counts them.</summary>
+    ToolCall,
+
+    /// <summary>More tool calls than one.</summary>
+    ToolCalls,
+
     /// <summary>A figure the run can't give, such as a cost with no price.</summary>
     Unknown,
 

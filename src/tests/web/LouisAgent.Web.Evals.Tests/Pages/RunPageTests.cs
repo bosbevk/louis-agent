@@ -151,5 +151,5 @@ public class RunPageTests
 
     /// <summary>The run's page over a stub of the API that has this run, once it has loaded.</summary>
     private static IRenderedComponent<RunPage> Render(BunitContext ctx, EvalRun run) =>
-        new RunPageHost(run).Render(ctx, Eval, run.Id);
+        new EvalPagesHost(run).Render(ctx, Eval, run.Id);
 }

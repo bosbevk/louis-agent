@@ -73,6 +73,23 @@ public class RunAnswersTests
         Assert.That(allPassed.FindFirstFailedRepeat(), Is.Null);
     }
 
+    /// <summary>
+    /// A conversation opens the repeat it is asked for; asked for none, its first failed repeat, or its first; and a
+    /// number it doesn't hold is none.
+    /// </summary>
+    [Test]
+    public void AConversation_OpensTheRepeatAskedFor_ElseTheFirstFailed_ElseTheFirst()
+    {
+        var failed = new ConversationRun("a", 3,
+            [Repeat(1, Turn()), Repeat(2, Turn(facts: [false])), Repeat(3, Turn())]);
+        var passed = new ConversationRun("b", 2, [Repeat(1, Turn()), Repeat(2, Turn())]);
+
+        Assert.That(failed.FindRepeat(3)?.Number, Is.EqualTo(3));
+        Assert.That(failed.FindRepeat(null)?.Number, Is.EqualTo(2));
+        Assert.That(passed.FindRepeat(null)?.Number, Is.EqualTo(1));
+        Assert.That(passed.FindRepeat(7), Is.Null);
+    }
+
     /// <summary>A conversation's first ask is its first repeat's first turn's, and none with no turn.</summary>
     [Test]
     public void AConversationsFirstAsk_IsItsFirstRepeatsFirstTurns_OrNone()

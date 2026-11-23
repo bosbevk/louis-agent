@@ -9,7 +9,8 @@
 
 This project is where a person reads an eval's runs, in the admin of a site that runs evals. Its first page lists
 the host's evals, one card each, and says how each one's last run went. From a card, a run's page gives that run's
-number first and its conversations, the failed ones first. It reads what
+number first and its conversations, the failed ones first, and a conversation's page reads one repeat turn by
+turn. It reads what
 [LouisAgent.Api.Evals](LouisAgent.Api.Evals.md)'s routes send, a run's records as
 [LouisAgent.Evals.Contracts](LouisAgent.Evals.Contracts.md) holds them, and runs in the browser like the rest of the
 admin.
@@ -17,7 +18,7 @@ admin.
 A site takes it with one word among its areas, `.Evals()`, and louis-agent.dev does.
 
 The doc follows a page from its data to what it draws: how a site takes the pages, how the routes are read, the
-evals' page and its cards, a run's page, and the words.
+evals' page and its cards, a run's page, a conversation's page, and the words.
 
 ## How it works
 
@@ -90,7 +91,25 @@ conversations it graded, so the eval's row (`EvalRow.CountNotRunIn`) says how ma
 "of 2 graded passed". A run still going says so under the heading, with how many conversations are graded so far,
 and Reload reads what is graded since; nothing polls. A run the host doesn't have is one line that names the id.
 
-### 5. The words
+### 5. A conversation's page
+
+`ConversationPage` is at the conversation's own address in its run, with the repeat as the address's last part when
+one is asked for: `/admin/evals/{eval}/runs/{run}/{conversation}/2`. It reads the run whole, and picks the
+conversation and the repeat from the address. Which repeat opens is the conversation's own answer, `FindRepeat`:
+the one asked for, or with none asked for its first failed one, the one worth reading first, or its first. Moving to
+another repeat changes only the address, so the page reads again only when the run changes, or on Reload.
+
+Under a way back to the evals and to the run, the heading names the conversation and says whether it passed, how
+many repeats passed and which one is on show. `RepeatSwitch` is a pill of links, one a repeat with its tick or
+cross, the open one filled and marked with `aria-current`; a conversation of one repeat has none. Each turn of the
+repeat is a `TurnCard`: what was asked, a fold that says how many tool calls and names the tools, holding each
+call's input and result, the answer as the agent sent it, the agent's error when the turn ended in one, and the
+turn's marks two to a row on a wide screen. A mark is a `MarkLine`: a fact in code type, "checked in code", or a
+criterion in words with the judge's line of why. The repeat's own figures close the page: how long its turns took,
+their cost, and its facts and criteria met. A run, a conversation or a repeat the host doesn't have is one line
+that names it.
+
+### 6. The words
 
 The words the code picks are `EvalsWords`, one entry for each part of `EvalsPart`, as every page's words are
 (ADR 0132): a count says "1 repeat" or "3 repeats", a date is said in the browser's own time, and a length of
@@ -107,11 +126,12 @@ src/web/LouisAgent.Web.Evals/
 ├── EvalsArea.cs   # .Evals(), and EvalsLibrary, the assembly the router is handed
 ├── Admin/         # EvalsLinks and EvalsCard: the sidebar's link and the home's card
 ├── Client/        # EvalsApi, EvalAddress: the routes read, and every address
-├── Pages/         # EvalsPage: /admin/evals; RunPage: /admin/evals/{eval}/runs/{run}
+├── Pages/         # EvalsPage, RunPage, ConversationPage
 ├── Components/    # each part with its styles, in a folder for the page it draws
 │   ├── Evals/     # EvalCard, NoEvalsCard: the evals' page
 │   ├── Runs/      # RunFigures, RunFigure, ConversationRow, RunRows: a run's page
-│   └── Marks/     # MarkDot: a mark, on every page
+│   ├── Conversations/ # RepeatSwitch, TurnCard: a conversation's page
+│   └── Marks/     # MarkDot, MarkLine: a mark, on every page
 └── Words/         # EvalsWords, and Parts/EvalsPart
 src/tests/web/LouisAgent.Web.Evals.Tests/   # the client, the addresses, the page and its parts, the words
 ```
@@ -125,13 +145,15 @@ None of its own. It reads with the site's API client and the admin's key, and li
 
 `LouisAgent.Web.Evals.Tests` holds the client over a stub of the API (`EvalsApiTests`), the addresses
 (`EvalAddressTests`), the evals' page and a run's page with bUnit (`EvalsPageTests`, `RunPageTests`,
-`RunPageStatesTests`, over `RunPageHost`, a stub of every route the page reads), the runs list (`RunRowsTests`), a mark (`MarkDotTests`), the words
+`RunPageStatesTests`), a conversation's page (`ConversationPageTests`), all over `EvalPagesHost`, a stub of every
+route the pages read,, the runs list (`RunRowsTests`), a mark (`MarkDotTests`), the words
 (`EvalsWordsTests`), the area (`EvalsAreaTests`) and the admin's link and card (`EvalsLinksTests`,
 `EvalsCardTests`). louis-agent.dev's own tests hold that its admin draws the evals' link and card.
 
 ## Limits and plans
 
-A conversation's page is not built yet, so a row's link opens nothing yet.
+A conversation's page has no way yet to walk to the next failed conversation, or to the same conversation in the
+run before.
 It is not a package ([ADR 0130](../adr/0130-the-framework-is-published-as-packages-one-tag-each.md)).
 
 ## Related docs

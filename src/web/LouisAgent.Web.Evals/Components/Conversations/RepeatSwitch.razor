@@ -1,0 +1,9 @@
+@* The switch between a conversation's repeats: one link each, with its tick or cross, the open one marked. Each
+   repeat has its own address, so the browser's Back works. *@
+
+<nav class="repeat-switch d-inline-flex flex-wrap gap-1" aria-label="Repeats">
+    @foreach (var repeat in Conversation.Repeats)
+    {
+        <a @key="repeat.Number" class="repeat-switch-link d-inline-flex align-items-center gap-2 @(IsOpen(repeat) ? "repeat-switch-open" : "")" href="@PageOf(repeat)" aria-current="@(IsOpen(repeat) ? "page" : null)"><MarkDot Met="@repeat.Passed"/>Repeat @repeat.Number</a>
+    }
+</nav>

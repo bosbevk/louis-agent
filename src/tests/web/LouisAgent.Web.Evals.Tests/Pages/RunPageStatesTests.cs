@@ -69,7 +69,7 @@ public class RunPageStatesTests
     public void ARunTheHostDoesntHave_IsOneLine_NamingItsId()
     {
         using var ctx = new BunitContext();
-        var page = new RunPageHost(null).Render(ctx, Eval, "20261122-164000-kitchen");
+        var page = new EvalPagesHost(null).Render(ctx, Eval, "20261122-164000-kitchen");
 
         Assert.That(page.Find(".run-missing").TextContent, Does.Contain("20261122-164000-kitchen"));
         Assert.That(page.FindAll(".run-this"), Is.Empty);
@@ -91,14 +91,14 @@ public class RunPageStatesTests
     }
 
     /// <summary>A host with this run, the kitchen's eval of four conversations, and two runs of it.</summary>
-    private static RunPageHost Host(EvalRun run)
+    private static EvalPagesHost Host(EvalRun run)
     {
         var newer = RunRow.Of(run) with
         {
             Id = "20261123-090000-kitchen",
             StartedAt = Started.AddDays(1)
         };
-        return new RunPageHost(run, new EvalsReply([new EvalRow(Eval, "wheatfield-kitchen", 4, newer)]),
+        return new EvalPagesHost(run, new EvalsReply([new EvalRow(Eval, "wheatfield-kitchen", 4, newer)]),
             [newer, RunRow.Of(run)]);
     }
 

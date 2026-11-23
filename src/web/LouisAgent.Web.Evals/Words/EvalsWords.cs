@@ -21,6 +21,8 @@ public static class EvalsWords
         EvalsPart.NotMet => "not met",
         EvalsPart.FactNotMet => "fact not met",
         EvalsPart.Unknown => "unknown",
+        EvalsPart.ToolCall => "tool call",
+        EvalsPart.ToolCalls => "tool calls",
         EvalsPart.NotRunYet => "Not run yet.",
         EvalsPart.CouldNotFinish => "Could not finish",
         _ => throw new ArgumentOutOfRangeException(nameof(part), part, null)

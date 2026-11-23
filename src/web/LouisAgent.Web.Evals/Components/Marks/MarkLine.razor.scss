@@ -1,0 +1,5 @@
+/* A mark: its text, then its why quieter; a mark not met in the danger colour. */
+.mark-line-text { font-weight: 600; }
+code.mark-line-text { font-weight: 400; color: var(--bs-body-color); }
+.mark-line-why { font-size: 14px; color: var(--bs-secondary-color); }
+.mark-line-not-met .mark-line-text { color: var(--bs-danger); }
