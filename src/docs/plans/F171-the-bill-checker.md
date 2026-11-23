@@ -376,6 +376,16 @@ its row in the work log's open table with the count. Louis, 2026-11-22: "save me
   blue. The brand guide and its files are in the Claude project's files, under `marketing/bill-checker/brand/`.
   The name is still open (Klopdit is the working one), and the app's id and the product's root namespace wait on it.
 
+- **The bills tool takes its model, and the engine reads nothing** (Louis, 2026-11-23, his tap on "Change F171.1 to
+  IChatClient", after ADR 0028 gained the rule that a tool that needs a model takes Microsoft's `IChatClient` in
+  its constructor, PR #549). F171.1 no longer adds `IDocumentReader` or `ModelDocumentReader`. The host wraps each
+  model once (`ToolModels`, a ledger row of purpose `tool` per call) and hands them to the program's catalogue,
+  which gives each pack the model it picks in code (his picks B, 1 and 3 on three cards the same day). The pack
+  context gains only `ISessionFiles`. So `ReadBill` takes the file's name, finds it through the pack context, and
+  sends its instructions and the bytes to the model the bills pack was built with. Where this plan's table, its
+  namespace map, its folder tree and its pictures still name the reader, the
+  [F171.1 plan](F171.1-a-photo-or-a-pdf-reaches-a-tool.md) is the one to follow.
+
 ## Open before the first child
 
 A review on 2026-11-22 read this plan against `main` and the stores' rules. It is in the Claude project's files,
