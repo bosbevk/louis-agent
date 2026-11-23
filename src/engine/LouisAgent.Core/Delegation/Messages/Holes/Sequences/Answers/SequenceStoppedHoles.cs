@@ -1,4 +1,4 @@
-namespace LouisAgent.Core.Delegation.Messages.Holes.Sequences;
+namespace LouisAgent.Core.Delegation.Messages.Holes.Sequences.Answers;
 
 /// <summary>
 /// A sequence that stopped at a step: its name, the step's place and address, why it failed, and the steps that

@@ -1,7 +1,7 @@
 using LouisAgent.Composition.Messages;
 using LouisAgent.Composition.Packs.Sequences;
 using LouisAgent.Core.Delegation.Messages;
-using LouisAgent.Core.Delegation.Messages.Holes.Sequences;
+using LouisAgent.Core.Delegation.Messages.Holes.Sequences.Inputs;
 
 namespace LouisAgent.Core.Delegation.Sequences;
 

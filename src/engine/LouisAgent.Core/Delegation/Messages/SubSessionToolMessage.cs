@@ -3,7 +3,8 @@ using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Delegation.Messages.Holes.Addresses;
 using LouisAgent.Core.Delegation.Messages.Holes.Asks;
 using LouisAgent.Core.Delegation.Messages.Holes.Lookups;
-using LouisAgent.Core.Delegation.Messages.Holes.Sequences;
+using LouisAgent.Core.Delegation.Messages.Holes.Sequences.Answers;
+using LouisAgent.Core.Delegation.Messages.Holes.Sequences.Inputs;
 
 namespace LouisAgent.Core.Delegation.Messages;
 
@@ -234,6 +235,12 @@ public enum SubSessionToolMessage
     [Description("({Number}) {Address} did: {Did}")]
     [Holes(typeof(SequenceStepDidHoles))]
     SequenceStepDid,
+    [Description("({Number}) {Address} was skipped: {Reason}")]
+    [Holes(typeof(SequenceStepSkippedHoles))]
+    SequenceStepSkipped,
+    [Description("Error: no step of the sequence {Sequence} answered: {Steps}")]
+    [Holes(typeof(SequenceNoStepAnsweredHoles))]
+    SequenceNoStepAnswered,
     [Description("{Answer}\n\n[Answered by the sequence {Sequence}, in this order: {Steps}]")]
     [Holes(typeof(SequenceAnswerHoles))]
     SequenceAnswer,

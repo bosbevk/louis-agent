@@ -77,13 +77,31 @@ public sealed class SequenceRunner
         var done = new List<StepOutcome>();
         for (int index = 0; index < sequence.Steps.Count; index++)
         {
-            string input = StepMessage.For(sequence.Input, message, done);
-            var outcome = await _steps.AskAsync(owner, index + 1, sequence.Steps[index], input, chain,
-                attachments ?? [], cancellationToken);
-            if (outcome.Failed) return SequenceAnswer.Stopped(sequence, outcome, done);
+            int number = index + 1;
+            string step = sequence.Steps[index], input = StepMessage.For(sequence.Input, message, done);
+            var outcome = await AskAsync(sequence.Failure,
+                () => _steps.AskAsync(owner, number, step, input, chain, attachments ?? [], cancellationToken));
+            // A step left out is kept, so the answer's line names it; any other failure ends the sequence here.
+            if (outcome.Failed && sequence.Failure != StepFailure.Skip)
+                return SequenceAnswer.Stopped(sequence, outcome, done);
             done.Add(outcome);
         }
 
         return SequenceAnswer.Finished(sequence, done);
+    }
+
+    /// <summary>Asks the step, and once more when it failed and the sequence says to try again.</summary>
+    /// <remarks>
+    /// A switch on the shape (ADR 0051): only a failure under <see cref="StepFailure.RetryOnce"/> is asked again.
+    /// What a failure does after that is the loop's: stop, or leave the step out.
+    /// </remarks>
+    private static async Task<StepOutcome> AskAsync(StepFailure failure, Func<Task<StepOutcome>> ask)
+    {
+        var first = await ask();
+        return (first.Failed, failure) switch
+        {
+            (true, StepFailure.RetryOnce) => await ask(),
+            _ => first
+        };
     }
 }

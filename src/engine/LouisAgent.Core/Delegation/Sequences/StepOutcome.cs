@@ -1,6 +1,6 @@
 using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Delegation.Messages;
-using LouisAgent.Core.Delegation.Messages.Holes.Sequences;
+using LouisAgent.Core.Delegation.Messages.Holes.Sequences.Answers;
 
 namespace LouisAgent.Core.Delegation.Sequences;
 
@@ -25,9 +25,17 @@ internal sealed record StepOutcome(int Number, string Address, string Answer, st
     /// <summary>A step that failed, with the reason.</summary>
     public static StepOutcome Refused(int number, string address, string why) => new(number, address, "", why, "");
 
-    /// <summary>The step in the answer's line: its place, its address and what it did.</summary>
+    /// <summary>
+    /// The step in the answer's line: its place, its address and what it did, or, left out, why it failed.
+    /// </summary>
     public string DidLine()
     {
+        if (Failed)
+        {
+            var skipped = new SequenceStepSkippedHoles(Number, Address, Failure!);
+            return MessageText.Format(SubSessionToolMessage.SequenceStepSkipped, skipped);
+        }
+
         var did = new SequenceStepDidHoles(Number, Address, Did);
         return MessageText.Format(SubSessionToolMessage.SequenceStepDid, did);
     }
