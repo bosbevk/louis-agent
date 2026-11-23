@@ -1,0 +1,41 @@
+{
+  "kind": "classes",
+  "title": "F126.3.2 the run pages: the interface design",
+  "caption": "The area hands a site the client, the pages and the admin's link and card. A page reads through the client and asks the run's records what to show. The number is the step that builds each; the records in violet are F126.3.1's, and step 3 gives them their methods.",
+  "classes": {
+    "types": [
+      { "id": "area", "name": "EvalsArea", "kind": "static, step 10", "members": ["SiteAreasBuilder Evals(this areas)"] },
+      { "id": "api", "name": "EvalsApi", "kind": "step 4", "members": ["Task<EvalsReply> ListAsync()", "Task<EvalRun?> FindRunAsync(id)", "Task<IReadOnlyList<RunRow>>", "  ListRunsAsync(eval)"] },
+      { "id": "address", "name": "EvalAddress", "kind": "static, step 4", "members": ["the evals, a run, a conversation", "the three routes that are read"] },
+      { "id": "json", "name": "RunJson", "kind": "static, moved in step 2", "members": ["JsonSerializerOptions Options"] },
+      { "id": "evalspage", "name": "EvalsPage", "kind": "page, step 5", "members": ["/admin/evals", "a card per eval, the empty state"] },
+      { "id": "runpage", "name": "RunPage", "kind": "page, steps 6 and 7", "members": ["/admin/evals/{eval}/runs/{run}", "the number, the conversations,", "  the states, the eval's runs"] },
+      { "id": "convpage", "name": "ConversationPage", "kind": "page, steps 8 and 9", "members": ["…/{conversation}/{repeat}", "the turns, the repeat switch,", "  the walk, the run before"] },
+      { "id": "card", "name": "EvalsCard, EvalsLinks", "kind": "components, step 10", "members": ["the admin home's card", "the sidebar's link"] },
+      { "id": "run", "name": "EvalRun", "kind": "record, methods in step 3", "tone": "violet", "members": ["Tally CountFacts(), CountCriteria()", "decimal? SumCost()", "TimeSpan? MeasureTime()", "OrderFailedFirst()", "FindNextFailed(after), FindPrevious(before)"] },
+      { "id": "conv", "name": "ConversationRun", "kind": "record, methods in step 3", "tone": "violet", "members": ["int CountPassedRepeats()", "RepeatRun? FindFirstFailedRepeat()", "string? FindFirstAsk()"] },
+      { "id": "repeat", "name": "RepeatRun", "kind": "record, methods in step 3", "tone": "violet", "members": ["Tally CountFacts(), CountCriteria()", "decimal? SumCost()", "TimeSpan SumTime()", "Miss? FindFirstMiss()"] },
+      { "id": "tally", "name": "Tally", "kind": "record, step 3", "members": ["int Met", "int Of"] },
+      { "id": "miss", "name": "Miss", "kind": "record, step 3", "members": ["int Turn", "a fact or a criterion", "Mark Mark"] },
+      { "id": "row", "name": "EvalRow, RunRow", "kind": "records, F126.3.1", "tone": "violet", "members": ["what the list routes send"] }
+    ],
+    "relations": [
+      { "from": "area", "to": "api", "kind": "uses", "word": "registers" },
+      { "from": "area", "to": "card", "kind": "uses", "word": "hands the admin" },
+      { "from": "api", "to": "json", "kind": "uses" },
+      { "from": "api", "to": "address", "kind": "uses" },
+      { "from": "api", "to": "run", "kind": "creates", "word": "reads" },
+      { "from": "api", "to": "row", "kind": "creates", "word": "reads" },
+      { "from": "evalspage", "to": "api", "kind": "holds" },
+      { "from": "runpage", "to": "api", "kind": "holds" },
+      { "from": "convpage", "to": "api", "kind": "holds" },
+      { "from": "card", "to": "api", "kind": "holds" },
+      { "from": "runpage", "to": "run", "kind": "uses" },
+      { "from": "convpage", "to": "run", "kind": "uses" },
+      { "from": "run", "to": "conv", "kind": "holds" },
+      { "from": "conv", "to": "repeat", "kind": "holds" },
+      { "from": "repeat", "to": "tally", "kind": "creates" },
+      { "from": "repeat", "to": "miss", "kind": "creates" }
+    ]
+  }
+}
