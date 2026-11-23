@@ -1,3 +1,4 @@
+using LouisAgent.Evals.Contracts.Grading;
 using LouisAgent.Evals.Contracts.Runs.Answers;
 
 namespace LouisAgent.Evals.Contracts.Runs;
@@ -74,11 +75,15 @@ public sealed record EvalRun(
             .FirstOrDefault(c => c is not null);
 
     /// <summary>
-    /// Its conversations with the failed ones first, and inside each group as the file has them; the filter keeps
-    /// the order, so no sort can swap two that are equal.
+    /// Its conversations with the failed ones first, then those that passed only after a flip, then the rest, and
+    /// inside each group as the file has them; the filters keep the order, so no sort can swap two that are equal.
     /// </summary>
     public IReadOnlyList<ConversationRun> OrderFailedFirst() =>
-        [.. Conversations.Where(conversation => !conversation.Passed), .. Conversations.Where(c => c.Passed)];
+    [
+        .. Conversations.Where(conversation => !conversation.Passed),
+        .. Conversations.Where(conversation => conversation.PassedAfterAFlip()),
+        .. Conversations.Where(conversation => conversation.Passed && !conversation.PassedAfterAFlip())
+    ];
 
     /// <summary>The next conversation that didn't pass after this one, in that order; none after the last.</summary>
     public ConversationRun? FindNextFailed(string after) =>
@@ -88,6 +93,20 @@ public sealed record EvalRun(
     /// <summary>The conversation before this one, in that order; none before the first or for an unknown id.</summary>
     public ConversationRun? FindPrevious(string before) =>
         OrderFailedFirst().TakeWhile(conversation => conversation.Id != before).LastOrDefault();
+
+    /// <summary>How many marks a person flipped, over every repeat of every conversation.</summary>
+    public int CountFlips() => AllRepeats().Sum(repeat => repeat.CountFlips());
+
+    /// <summary>
+    /// This run with one criterion flipped, or put back with none: the conversation by its id, the repeat by its
+    /// number, and the turn and the criterion counted from 1, as the pages show them. None for a place it doesn't have.
+    /// </summary>
+    public EvalRun? WithFlip(string conversation, int repeat, int turn, int criterion, Flip? flip)
+    {
+        int at = Conversations.ToList().FindIndex(played => played.Id == conversation);
+        if (at < 0 || Conversations[at].WithFlip(repeat, turn, criterion, flip) is not { } flipped) return null;
+        return this with { Conversations = TurnRun.Replace(Conversations, at, flipped) };
+    }
 
     /// <summary>Every repeat of every conversation.</summary>
     private IEnumerable<RepeatRun> AllRepeats() => Conversations.SelectMany(conversation => conversation.Repeats);

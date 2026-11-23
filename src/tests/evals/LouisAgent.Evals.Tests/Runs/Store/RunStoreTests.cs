@@ -65,6 +65,44 @@ public class RunStoreTests
         Assert.That(found!.Conversations[0].Repeats[0].Turns.Select(turn => turn.JudgeCost), Has.All.Null);
     }
 
+    /// <summary>F126.4: a run written before a mark could be flipped still reads, no mark flipped.</summary>
+    [Test]
+    public void ARunWithNoFlipOnItsMarks_StillReads()
+    {
+        var store = new RunStore(_folder);
+        var run = Run("20261123-043012-guide", Started);
+        store.Save(run);
+        string path = Path.Combine(_folder, "20261123-043012-guide.json");
+        // The file as a run was written before: every mark's flip taken out, wherever it sits.
+        var written = JsonNode.Parse(File.ReadAllText(path))!;
+        var marks = written["conversations"]!.AsArray().SelectMany(c => c!["repeats"]!.AsArray())
+            .SelectMany(r => r!["turns"]!.AsArray())
+            .SelectMany(t => t!["facts"]!.AsArray().Concat(t["criteria"]!.AsArray()));
+        foreach (var mark in marks) mark!.AsObject().Remove("flip");
+        File.WriteAllText(path, written.ToJsonString());
+
+        var found = store.Find(run.Id);
+
+        Assert.That(File.ReadAllText(path), Does.Not.Contain("flip"));
+        Assert.That(found!.CountFlips(), Is.Zero);
+    }
+
+    /// <summary>F126.4: a flip with its note and its time is written and read back as it was.</summary>
+    [Test]
+    public void AFlip_WithItsNoteAndTime_IsWrittenAndReadBack()
+    {
+        var store = new RunStore(_folder);
+        var flip = new Flip(Started.AddHours(1), "It does say so.");
+        var run = Run("20261123-043012-guide", Started).WithFlip("guide-what-is", 1, 1, 1, flip)!;
+
+        store.Save(run);
+        var found = store.Find(run.Id)!;
+
+        Assert.That(found.Conversations[0].Repeats[0].Turns[0].Criteria[0].Flip, Is.EqualTo(flip));
+        Assert.That(File.ReadAllText(Path.Combine(_folder, "20261123-043012-guide.json")),
+            Does.Contain("\"note\": \"It does say so.\""));
+    }
+
     /// <summary>Saving a run with the same id again replaces it.</summary>
     [Test]
     public void SavingTheSameIdAgain_ReplacesIt()

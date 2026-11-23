@@ -26,4 +26,17 @@ public sealed record TurnRun(
     /// </summary>
     /// <remarks>An init property, not a constructor parameter, so a run's file that has none still reads.</remarks>
     public decimal? JudgeCost { get; init; }
+
+    /// <summary>
+    /// This turn with one criterion flipped, counted from 1, or put back with none; none for a criterion it doesn't
+    /// have. A fact is never flipped, since code tells it.
+    /// </summary>
+    public TurnRun? WithFlip(int criterion, Flip? flip) =>
+        criterion >= 1 && criterion <= Criteria.Count
+            ? this with { Criteria = Replace(Criteria, criterion - 1, Criteria[criterion - 1] with { Flip = flip }) }
+            : null;
+
+    /// <summary>The list with the item at that place swapped for another, the rest as they were.</summary>
+    internal static IReadOnlyList<T> Replace<T>(IReadOnlyList<T> items, int at, T item) =>
+        [.. items.Take(at), item, .. items.Skip(at + 1)];
 }
