@@ -3,7 +3,6 @@ using AngleSharp.Dom;
 using LouisAgent.Site.Pages;
 using LouisAgent.Site.Pages.About;
 using LouisAgent.Site.Pages.Framework;
-using LouisAgent.Site.Pages.Offers;
 using LouisAgent.Web.Components.Site.Bands;
 using Microsoft.AspNetCore.Components;
 
@@ -20,7 +19,6 @@ public class SitePagesTests
     [TestCase(typeof(ContactPage), "/contact", "An agent for your business, built for you.")]
     [TestCase(typeof(PrivacyPage), "/privacy", "What happens to what you type.")]
     [TestCase(typeof(TrustPage), "/trust", "What keeps your business safe here, and what doesn't yet.")]
-    [TestCase(typeof(FreeWebsitesPage), "/free-websites", "Two businesses get a free website.")]
     public void APage_IsAtItsAddress_WithItsHeading(Type page, string address, string heading)
     {
         using var ctx = new BunitContext();
@@ -38,6 +36,20 @@ public class SitePagesTests
             Assert.That(routes, Is.EqualTo(new[] { address }));
             Assert.That(cut.Find("h1.chrome").TextContent, Is.EqualTo(heading));
         });
+    }
+
+    /// <summary>
+    /// FX227: the offer of two free websites is closed (Louis, 2026-11-23: "remove this then asap"), so no page
+    /// answers at its old address.
+    /// </summary>
+    [Test]
+    public void TheFreeWebsitesPage_IsGone()
+    {
+        var routes = typeof(HomePage).Assembly.GetTypes()
+            .SelectMany(type => type.GetCustomAttributes<RouteAttribute>())
+            .Select(route => route.Template);
+
+        Assert.That(routes, Has.None.EqualTo("/free-websites"));
     }
 
     /// <summary>

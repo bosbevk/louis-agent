@@ -13,15 +13,16 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 156 | 75 |
-| Fixes (`FX`) | 215 | 4 |
+| Fixes (`FX`) | 216 | 5 |
 | Cleanups (`CL`) | 47 | 24 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (103 in the TODO)
+## Open (104 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
+| FX228 | Orbi still knows the two free websites after their page went (FX227): its voice, its entry skill and its two maps of the site name the offer; taking them out changes its prompt, so the guide's eval is recorded again in a live run | Now, next |
 | F126 | Evals, redesigned: one `.eval.json` of conversations with turns, seven facts in code, criteria a judge marks, flips to correct it, its own eval host, six screens; today's evals deleted, not ported; five children since 2026-11-22: F126.1 delete the old evals (done 2026-11-22); F126.2 the file and the grading (done 2026-11-22; closeness of meaning is a criterion the judge marks, F93 folded in); F126.3 runs and the run page, split 2026-11-23 into F126.3.1 runs (done 2026-11-23), F126.3.2 the run pages, which read a run (done 2026-11-23), F126.3.3 the page a conversation names, read on the server and sent with the first ask (started 2026-11-23), and F126.3.4 starting and following a run from the admin; F126.4 flips, re-grade and better-or-worse; F126.5 new evals | Now |
 | F171 | The bill checker (Louis, 2026-11-21; 2026-11-22: "this feature is next"): a phone app that reads a Western Cape municipal account from a photo or a PDF, checks every line against Cape Town's, Swartland's and Overstrand's own tariffs and drafts the dispute, free to download with one subscription; the product in its own private `bill-checker` repository on the framework's packages, the framework's parts here: F171.1 a photo or PDF reaches a tool (started 2026-11-22); F171.2 the bills pack reads and checks; F171.3 the dispute letter; F171.4 the identity and evals; F171.5 the account, consent and our own subscriptions part; F171.6 the phone app; F171.7 the stores; F171.8 the monthly report | Now, F171.1 after F126; F171.2 on after F140 |
 | F43 | Accounts, tenants and durable sessions; its first child, durable sessions, after F171.1 and before F157 | Now, its first child after F171.1 |
@@ -287,10 +288,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (215 done)
+## Fixes (216 done)
 
 | Id | When | What |
 |---|---|---|
+| FX227 | 2026-11-23 | The offer of two free websites is closed: its page, the line under the hero, its sitemap entry and what Orbi said and did for it are gone |
 | FX226 | 2026-11-22 | The packages' integration test turns MSBuild's node reuse off too, the second test that waited 15 minutes for a leftover worker |
 | FX225 | 2026-11-22 | The pack-install test turns MSBuild's node reuse off, so CI's integration step no longer waits 15 minutes for a leftover worker |
 | FX224 | 2026-11-22 | deploy.ps1 update writes its yaml with no byte-order mark, so it runs from Windows too |
