@@ -5,13 +5,12 @@ using LouisAgent.Composition.Agents;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Delegation.Addresses.Peers;
 using LouisAgent.Composition.Packs;
-using LouisAgent.Composition.Sessions;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Delegation.Addresses;
 using LouisAgent.Core.Delegation.Messages;
+using LouisAgent.Core.Delegation.Sequences;
 using LouisAgent.Core.Delegation.SubSessions;
 using LouisAgent.Core.Sessions;
-using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Sessions.SubSessions;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Sinks;
@@ -30,7 +29,9 @@ namespace LouisAgent.Core.Delegation.Agents;
 /// (<see cref="AgentAddresses"/>). The child opens one level down, on the same path as a subagent
 /// (<see cref="PeerSession"/>): the key from AGENT_API_KEY, the limit of three a turn, the timeout, the roll-up and the
 /// live events. A lookup agent's address takes one of the asker's tools and goes to <see cref="LookupAsk"/>, on its own
-/// limits (F127.5: one tool for every call an agent makes).
+/// limits (F127.5: one tool for every call an agent makes). The first step of one of the asker's sequences runs the
+/// whole sequence through <see cref="SequenceRunner"/>, for one ask; a later step is refused
+/// (<see cref="IdentitySequences"/>).
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0117-one-address-for-every-agent-call.md">ADR 0117: one address for every agent call</seealso>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0031-orchestration-is-an-engine-function.md">ADR 0031: orchestration is an engine function</seealso>
@@ -64,6 +65,12 @@ public sealed class AskAgentTools(
     /// </summary>
     private readonly LookupAsk _lookups = new(SessionOf(http, apiKey, usageSink, time, peers, peerKeys),
         lookupLlms ?? new Dictionary<string, IReadOnlyList<string>>(), lookupTimeout);
+
+    /// <summary>
+    /// The address that starts one of the asker's sequences goes here, on the same peers, keys, clock and limits.
+    /// </summary>
+    private readonly SequenceRunner _sequences = new(peers, identities, apiKey, http, timeout, time, usageSink,
+        peerKeys, maxDepth);
 
     /// <summary>The name this instance goes by among its peers, when the host names more than one (F127.3.1).</summary>
     public const string Self = "self";
@@ -116,12 +123,14 @@ public sealed class AskAgentTools(
         bool stronger = false,
         CancellationToken cancellationToken = default)
     {
+        bool extras = !string.IsNullOrWhiteSpace(tool) || stronger;
+        if (await SequenceAsync(address, message, attachments, extras, cancellationToken) is { } sequenced)
+            return sequenced;
         if (Reach(address, tool, out string? refusal) is not { } agent) return refusal!;
-        if (OutOfBounds(agent) is { } bound) return bound;
+        if (AgentAsks.OutOfBounds(agent, TurnChain.Current, maxDepth) is { } bound) return bound;
         if (ForwardedAttachments.Take(attachments, out var forwarded) is { } unknownAttachment)
             return unknownAttachment;
-        // The server the address names, else this instance: "self" when the host names more than one server.
-        string? server = agent.Address.Peer ?? (peers.ContainsKey(Self) ? Self : null);
+        string? server = AgentAsks.ServerOf(agent.Address, peers);
         if (PeerHttp.ResolvePeer(peers, server, out Uri peer, out string name) is { } noPeer) return noPeer;
         if (agent.Address.Peer is not null &&
             await _identities.RefusalAsync(name, peer, agent.Address.Identity, cancellationToken) is { } notThere)
@@ -131,9 +140,7 @@ public sealed class AskAgentTools(
             return await _lookups.AskAsync(agent, tool, new SendMessageRequest(message, forwarded), stronger, peer,
                 name, cancellationToken);
 
-        // A voice whose window is on the visitor's screen gets the page it sits in, as its window would send (FX134).
-        var page = agent.Kind == AddressKind.Identity ? WindowPages.For(agent.Address.Identity) : null;
-        var ask = new Ask(agent, new SendMessageRequest(message, forwarded, page), UsageScope.Current,
+        var ask = new Ask(agent, AgentAsks.MessageFor(agent, message, forwarded), UsageScope.Current,
             // The call that asked, so a host can show the agent's work under it.
             FunctionInvokingChatClient.CurrentContext?.CallContent.CallId, Asker()?.RelaysAnswersWhole == true);
         if (_slots.Take(ask.Scope, out string? parent) is { } limit) return limit;
@@ -147,17 +154,32 @@ public sealed class AskAgentTools(
     }
 
     /// <summary>
+    /// An ask of an address in one of the asker's sequences: the first step runs the whole sequence, for one of the
+    /// turn's asks, and a later step is refused. Nothing for an address in no sequence, which is asked as one agent.
+    /// </summary>
+    /// <remarks>
+    /// Guard clauses (Fowler): an asker and an address, the sequence's rules, the files, the turn's ask.
+    /// </remarks>
+    private async Task<string?> SequenceAsync(string address, string message, string[]? attachments, bool extras,
+        CancellationToken cancellationToken)
+    {
+        if (Asker() is not { } asker || !AgentAddress.TryParse(address, out var parsed)) return null;
+        var sequences = IdentitySequences.Of(asker);
+        if (sequences.AskRefusal(parsed, extras) is { } refused) return refused;
+        if (sequences.StartedBy(parsed) is not { } sequence) return null;
+        if (ForwardedAttachments.Take(attachments, out var forwarded) is { } unknown) return unknown;
+        if (_slots.Take(UsageScope.Current, out _) is { } limit) return limit;
+        return await _sequences.RunAsync(sequence, message, cancellationToken, forwarded);
+    }
+
+    /// <summary>
     /// Opens a new conversation with the agent, one level down, as the identity in the role resolved: no toolsets
     /// sent, so a voice loads its own packs.
     /// </summary>
     private Task<string> StartAsync(Ask ask, Uri peer, string name, string? parent, SubSessionToolMessage footer,
         CancellationToken cancellationToken)
     {
-        string label = ask.Agent.Address.ToString();
-        var opening = new CreateSessionRequest($"agent:{label}", ask.Scope?.Tags.Run, ask.Scope?.Tags.Service,
-            Depth: TurnDepth.Current + 1, Parent: parent, Location: UserPlace.Current?.Location,
-            TimeZone: UserPlace.Current?.TimeZone,
-            Role: ask.Agent.Role, Replay: SessionReplay.ForSubSession(), Identity: ask.Agent.Address.Identity);
+        var opening = AgentAsks.Opening(ask.Agent, ask.Scope, parent);
         return _session.OpenAsync(peer, name, opening, ask.Message, [], ask.Agent.Role, KindOf(ask, footer),
             ask.ToolUseId, ask.Scope, _timeout, cancellationToken);
     }
@@ -214,25 +236,6 @@ public sealed class AskAgentTools(
         return AgentAddresses.Resolve(parsed, identities, out refusal);
     }
 
-    /// <summary>
-    /// Why an ask would go too far (F127.5, Louis's two picks): past the deepest level this instance allows, or to an
-    /// agent already in the chain above, which would go round in a loop. Another server keeps its own chain.
-    /// </summary>
-    /// <remarks>Guard clauses (Fowler), the depth first: it holds for every ask.</remarks>
-    private string? OutOfBounds(AddressedAgent agent)
-    {
-        string address = agent.Address.ToString();
-        if (TurnDepth.Current + 1 > maxDepth)
-        {
-            var tooDeep = new AskTooDeepHoles(address, maxDepth);
-            return MessageText.Format(SubSessionToolMessage.AskTooDeep, tooDeep);
-        }
-        var chain = TurnChain.Current;
-        if (agent.Address.Peer is not null || !chain.Contains(AgentAddresses.ChainKeyOf(agent))) return null;
-        var inChain = new AskInChainHoles(address, string.Join(" > ", chain));
-        return MessageText.Format(SubSessionToolMessage.AskInChain, inChain);
-    }
-
     /// <summary>No agent, with the reason naming the address as the model wrote it.</summary>
     private static AddressedAgent? Refuse(SubSessionToolMessage message, string address, out string? refusal)
     {
@@ -242,10 +245,7 @@ public sealed class AskAgentTools(
     }
 
     /// <summary>The identity the running turn speaks for, if this instance runs it.</summary>
-    private IAgentIdentity? Asker() =>
-        TurnIdentity.Current is { } who
-            ? identities.FirstOrDefault(i => string.Equals(i.Name, who.Name, StringComparison.OrdinalIgnoreCase))
-            : null;
+    private IAgentIdentity? Asker() => AgentAsks.AskerOf(identities);
 
     /// <summary>
     /// The answer under the line that names who gave it and what this reply did; never what it used (FX27).

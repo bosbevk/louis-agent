@@ -3,6 +3,7 @@
 **Status:** Accepted (2026-11-10, Louis's picks during F127.2); `AskAgent` on one instance built in F127.3.1
 (2026-11-11); an agent on another server (F127.3.2), the guide mentoring (F127.4) and the minions (F127.5) to come.
 Amends [ADR 0079](0079-show-a-specialists-report.md) and [ADR 0021](0021-minions-one-task-one-tool.md) (F127.5).
+Sequences, a fixed order an identity forces on its `Calls`, added with F176 (2026-11-23).
 
 ## Context
 
@@ -126,6 +127,28 @@ The guided live demo (F127.3 picks 7 and 8, F127.4 picks 1, 6 to 8), each a rule
 - **A page may hand the talk to the asked agent's own window** (`AgentWindows` in the web): the window shows the ask
   in the visitor's words and the answer as it streams, then carries on in the same session; the asker's chat says
   so in one line.
+
+## What F176 settled (2026-11-23)
+
+An identity may force the order some of its agents run in. Louis: "it is not an address, it is just a chain of
+addresses forced to run after each other", and "the address has to be in Calls". Each a rule now:
+
+- **A sequence is a list on the identity, and it is optional.** `IAgentIdentity.Sequences`, none unless it says so:
+  a name and addresses in order. It has no address of its own, and it is called a sequence because a chain is
+  already the trail of who asked whom.
+- **Every step is an address in that identity's `Calls`.** A step that is not is refused in code, with the reason.
+  So a sequence never reaches further than its identity may.
+- **The engine forces it on the ask** (Louis's pick, of three: not a tool of its own, nor host code only). Asking a
+  sequence's first step with `AskAgent` runs every step in order, in code, for one of the turn's asks. A later step
+  is never asked on its own.
+- **A step is held to every check one ask keeps:** the server's own key and identities, the depth cap, and no agent
+  twice in a chain of asks.
+- **What a step is given, and what a failed step does, are choices of the sequence** (Louis: "it should atually be
+  an option", "this should also be an option"). Unless it says so, a step gets the first message with the answer of
+  the step before, and a failed step stops the sequence with its reason. A step left out is always named in the
+  answer.
+- **A sequence has at least two steps, no address twice, and an address is in one sequence only;** a step is an
+  agent, never a lookup agent.
 
 ## Consequences
 

@@ -249,7 +249,7 @@ CLI, the ACP server and the MCP server use every toolset the instance can load; 
 When the agent asks another agent with `AskAgent`, a sub-session runs on a peer as the address the parent named:
 an identity in its own voice, or one of its roles, with the toolsets its own file declares. There can be at most 3 in
 a turn, 5 minutes each, and the asked agent may ask the ones its own identity's `Calls` allow, down to
-`AGENT_MAX_DEPTH`; an agent already in the chain of asks is refused. Only the answer comes back, under a line that says who answered and which tools it called,
+`AGENT_MAX_DEPTH`; an agent already in the chain of asks is refused. An identity may fix the order of some of those asks with a sequence: asking its first address runs every step in order, in code, as one ask. Only the answer comes back, under a line that says who answered and which tools it called,
 and its usage records carry the parent turn (`parent`). If the answer comes back empty, because the asked agent used
 up all its tool rounds, it's asked once more in the same session. A sub-session gets no routing: its toolsets come
 from its own file.
