@@ -20,6 +20,8 @@
     <ProjectReference Include="..\..\engine\LouisAgent.Core\LouisAgent.Core.csproj" />
     <!-- F126.3.1: the records of a run, which a page in the browser reads too. -->
     <ProjectReference Include="..\LouisAgent.Evals.Contracts\LouisAgent.Evals.Contracts.csproj" />
+    <!-- F126.3.1: the API's error record, so a refusal is read as the API writes it; it references nothing. -->
+    <ProjectReference Include="..\..\hosts\LouisAgent.Api.Contracts\LouisAgent.Api.Contracts.csproj" />
   </ItemGroup>
 
   <ItemGroup>
