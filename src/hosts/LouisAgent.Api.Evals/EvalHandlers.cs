@@ -19,7 +19,7 @@ using FoundRuns = Microsoft.AspNetCore.Http.HttpResults.Results<
         LouisAgent.Evals.Contracts.Api.RunRow>>,
     Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.ApiError>>;
 using StartAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
-    Microsoft.AspNetCore.Http.HttpResults.Accepted<LouisAgent.Evals.Contracts.Runs.EvalRun>,
+    Microsoft.AspNetCore.Http.HttpResults.Accepted,
     Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.ApiError>>;
 
 namespace LouisAgent.Api.Evals;
@@ -48,7 +48,6 @@ public sealed class EvalHandlers(
     bool keepsRecordings,
     TimeProvider clock)
 {
-
     /// <summary>Where a run is read, by its id.</summary>
     public const string RunAddress = "/v1/admin/evals/runs/";
 
@@ -91,7 +90,8 @@ public sealed class EvalHandlers(
             return ApiErrors.Conflict(MessageText.Format(EvalsApiMessage.RunGoing, going));
         }
 
-        return TypedResults.Accepted(RunAddress + started.Id, started);
+        // The address is the answer: the run is read there in its own JSON, as it goes and once it has ended.
+        return TypedResults.Accepted(RunAddress + started.Id);
     }
 
     /// <summary>The run with this id, as it is kept, running or ended.</summary>

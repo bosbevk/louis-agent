@@ -82,7 +82,7 @@ public sealed class OpenDoor(OpenDoorOptions options, TimeProvider? clock = null
     /// A session an admitted session's turn asks for (its <c>parent</c>, F127.4.2) counts as that visitor's, not the
     /// address that opened it, which is the server's own: the visitor's window may carry on in it, under their cap.
     /// </remarks>
-    internal async Task<OpenDoorAnswer> ConsiderAsync(HttpContext context)
+    internal async Task<OpenDoorAnswer> ConsiderAsync(HttpContext context, bool keyed = false)
     {
         if (!Options.IsOpen) return OpenDoorAnswer.NotMine;
         if (SessionIdOf(context.Request.Path) is { } id && _admitted.ContainsKey(id)) return OpenDoorAnswer.Pass;
@@ -91,6 +91,8 @@ public sealed class OpenDoor(OpenDoorOptions options, TimeProvider? clock = null
         if (!IsOpeningASession(context.Request)) return OpenDoorAnswer.NotMine;
         if (await OpeningAsync(context.Request) is not { Identity: { } identity } opening)
             return OpenDoorAnswer.NotMine;
+        // An operator's run (F126.3.1, an eval) presents the key and names its run: no visitor, so the key decides.
+        if (keyed && opening.Run is not null) return OpenDoorAnswer.NotMine;
 
         // One more for this visitor today, unless the day's cap is reached; other days' counts go as they're met.
         string visitor = VisitorOf(opening.ParentSession) ?? AddressOf(context);
@@ -161,7 +163,7 @@ public sealed class OpenDoor(OpenDoorOptions options, TimeProvider? clock = null
             using var json = JsonDocument.Parse(string.IsNullOrWhiteSpace(text) ? "{}" : text);
             if (json.RootElement.ValueKind != JsonValueKind.Object) return null;
             return new Opening(Options.Admits(Text(json.RootElement, "identity")),
-                Text(json.RootElement, "parent")?.Split('#')[0]);
+                Text(json.RootElement, "parent")?.Split('#')[0], Text(json.RootElement, "run"));
         }
         catch (JsonException)
         {
@@ -182,8 +184,8 @@ public sealed class OpenDoor(OpenDoorOptions options, TimeProvider? clock = null
     private static string? Text(JsonElement body, string name) =>
         body.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.String ? value.GetString() : null;
 
-    /// <summary>What a body opens: the open identity it names, and the session whose turn asked for it.</summary>
-    private sealed record Opening(string? Identity, string? ParentSession);
+    /// <summary>What a body opens: the open identity it names, the session whose turn asked for it, its run.</summary>
+    private sealed record Opening(string? Identity, string? ParentSession, string? Run);
 
     /// <summary>A session the door admitted: when, and the visitor it counts for.</summary>
     private sealed record Admitted(DateTimeOffset At, string Visitor);
