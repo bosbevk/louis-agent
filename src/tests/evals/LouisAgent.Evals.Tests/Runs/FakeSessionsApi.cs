@@ -2,20 +2,24 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using LouisAgent.Choices;
+using LouisAgent.Core.Sessions.Replay.Store;
 using LouisAgent.Evals.Sessions;
 using LouisAgent.SessionStream;
+using LouisAgent.SessionStream.Wire.Requests;
 
 namespace LouisAgent.Evals.Tests.Runs;
 
 /// <summary>
 /// The sessions API, played by a handler: each session it opens gets the next id, each message is answered with the
 /// next turn's stream, and every request is written down. A turn given as <see cref="Refused"/> answers 500, as an
-/// API that fails mid-conversation does.
+/// API that fails mid-conversation does. The site's page route answers every address with a page, but those named
+/// missing (F126.3.3).
 /// </summary>
 internal sealed class FakeSessionsApi
 {
     private const string Api = "http://api.test/";
     private const string Sessions = "/v1/sessions";
+    private const string PageRoute = "/v1/site/page";
 
     /// <summary>A turn the API refuses instead of answering.</summary>
     public const string? Refused = null;
@@ -35,6 +39,26 @@ internal sealed class FakeSessionsApi
 
     /// <summary>A client over this API.</summary>
     public SessionClient Client() => new(new HttpClient(Handler) { BaseAddress = new Uri(Api) });
+
+    /// <summary>The addresses the site has no page at, which the page route answers 404.</summary>
+    public HashSet<string> MissingPages { get; } = new(StringComparer.Ordinal);
+
+    /// <summary>A page client over this API, keeping its pages in this store, if any.</summary>
+    public PageClient Pages(ReplayStore? recordings = null) =>
+        new(new HttpClient(Handler) { BaseAddress = new Uri(Api) }, recordings);
+
+    /// <summary>Each address the page route was asked for, in order.</summary>
+    public IReadOnlyList<string> PagesAsked() =>
+        Handler.Requests.Where(request => new Uri(request.Url).AbsolutePath == PageRoute)
+            .Select(request => AddressOf(new Uri(request.Url))).ToList();
+
+    /// <summary>The page each message carried, by its address, or none, in order.</summary>
+    public IReadOnlyList<string?> PagesSent() =>
+        Handler.Requests.Where(request => request.Url.EndsWith("/messages", StringComparison.Ordinal))
+            .Select(request => JsonDocument.Parse(request.Body!).RootElement.TryGetProperty("page", out var page)
+                ? page.GetProperty("url").GetString()
+                : null)
+            .ToList();
 
     /// <summary>Each request as its method and its path, in the order they came.</summary>
     public IReadOnlyList<string> Calls() =>
@@ -70,8 +94,20 @@ internal sealed class FakeSessionsApi
         string path = request.RequestUri!.AbsolutePath;
         if (request.Method == HttpMethod.Delete) return Json(HttpStatusCode.OK, """{"deleted":true}""");
         if (path == Sessions) return Opens();
+        if (path == PageRoute) return PageAt(AddressOf(request.RequestUri));
         return Streams(_turns.Dequeue());
     }
+
+    /// <summary>The page at an address, or 404 when it is named missing.</summary>
+    private HttpResponseMessage PageAt(string address)
+    {
+        if (MissingPages.Contains(address)) return new HttpResponseMessage(HttpStatusCode.NotFound);
+        var page = new PageRequest(address, "A page", "Its words.");
+        return Json(HttpStatusCode.OK, JsonSerializer.Serialize(page, JsonSerializerOptions.Web));
+    }
+
+    /// <summary>The address a call to the page route asks for.</summary>
+    private static string AddressOf(Uri route) => Uri.UnescapeDataString(route.Query["?address=".Length..]);
 
     /// <summary>A new session, with the next id.</summary>
     private HttpResponseMessage Opens()

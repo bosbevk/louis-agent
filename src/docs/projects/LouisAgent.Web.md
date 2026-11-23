@@ -87,7 +87,8 @@ compared by whole segments, and the default when none matches. The guide's widge
 message.
 
 `SitesNameTheirAreasTests` holds the rule that a site names its areas this way. The code is in `Components/Areas/`,
-and the focuses in `Components/Areas/Focuses/`.
+and the focuses' builder in `Components/Areas/Focuses/`. The rule it builds, `SiteFocuses`, is the shared contract's,
+in `LouisAgent.Composition`'s `Sites/`, so the site's API asks the same rule the widget does.
 
 *Decided in:* F127.6, F127.7, [ADR 0120](../adr/0120-nothing-is-hand-wired-from-the-framework.md).
 

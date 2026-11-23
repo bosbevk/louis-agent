@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using LouisAgent.Api.Site;
 using LouisAgent.Api.Testing;
 using LouisAgent.Core.Sessions.Replay.Store;
 using LouisAgent.Evals.Contracts.Api;
@@ -53,11 +54,12 @@ internal sealed class EvalsTestHost : IAsyncDisposable
 
     /// <summary>
     /// The API started with the evals: a data folder and a recordings folder unless a test says there is none, the
-    /// eval's one turn with this criterion when one is given, and the folders of an earlier host when one is named.
+    /// eval's one turn with this criterion when one is given, the folders of an earlier host when one is named, and
+    /// when a page is named, its conversation on that page and this assembly's pages as the site.
     /// </summary>
     public static async Task<EvalsTestHost> StartAsync(IChatClient agentModel, IChatClient? judgeModel = null,
         bool withDataFolder = true, bool withRecordings = true, string? criterion = null,
-        EvalsTestHost? sameFoldersAs = null)
+        EvalsTestHost? sameFoldersAs = null, string? page = null)
     {
         var folders = sameFoldersAs?.Kept ?? new Folders(
             withDataFolder ? Directory.CreateTempSubdirectory("evals-data-").FullName : null,
@@ -67,10 +69,12 @@ internal sealed class EvalsTestHost : IAsyncDisposable
             ? judge
             : new JudgeReplay(judge, new ReplayStore(folders.Recordings));
         var options = new EvalsOptions(folders.Data, null, null, null);
-        var app = ApiTestHost.Build(adminKey: AdminKey, model: agentModel, moreIdentities: [Identity(criterion)],
+        var app = ApiTestHost.Build(adminKey: AdminKey, model: agentModel, moreIdentities: [Identity(criterion, page)],
             services: (builder, host) => builder.AddLouisAgentEvals(host, replaying, options,
                 services => ((TestServer)services.GetRequiredService<IServer>()).CreateClient()),
             routes: api => api.MapLouisAgentEvals(AdminKey), replayDirectory: folders.Recordings);
+        // A conversation that names a page needs a site to read it from: this assembly's pages (F126.3.3).
+        if (page is not null) app.MapLouisAgentSite(typeof(EvalsTestHost).Assembly, _ => { });
         await app.StartAsync();
         return new EvalsTestHost(app, folders, ownsFolders: sameFoldersAs is null);
     }
@@ -126,15 +130,16 @@ internal sealed class EvalsTestHost : IAsyncDisposable
             return new ChatResponse(new ChatMessage(ChatRole.Assistant, text));
         }, 20).ToArray());
 
-    /// <summary>The test identity, its voice and its one eval in its folder.</summary>
-    private static FakeIdentity Identity(string? criterion)
+    /// <summary>The test identity, its voice and its one eval, its conversation on a page if one is named.</summary>
+    private static FakeIdentity Identity(string? criterion, string? page)
     {
         string criteria = criterion is null ? "" : $$""","criteria":["{{criterion}}"]""";
+        string on = page is null ? "" : $",\"page\":\"{page}\"";
         return new FakeIdentity(Agent, provider: new FakePrompts(new Dictionary<string, string>
         {
             [$"agents/{Agent}/voice.md"] = "# An eval agent\n\nYou greet people.\n",
             [$"agents/{Agent}/{Eval}.eval.json"] =
-                $$"""{"agent":"{{Agent}}","conversations":[{"id":"hello","turns":""" +
+                $$"""{"agent":"{{Agent}}","conversations":[{"id":"hello"{{on}},"turns":""" +
                 $$"""[{"ask":"Hello?","facts":["no-error"]{{criteria}}}]}]}"""
         }));
     }

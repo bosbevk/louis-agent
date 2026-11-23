@@ -37,12 +37,15 @@ public sealed class SessionClient(HttpClient http)
         return opened!.SessionId;
     }
 
-    /// <summary>Sends one message, and hands you its answer's events as they come.</summary>
-    public async IAsyncEnumerable<SessionEvent> SendAsync(string session, string message,
+    /// <summary>
+    /// Sends one message, with the page it carries when one goes with it, and hands you its answer's events as they
+    /// come.
+    /// </summary>
+    public async IAsyncEnumerable<SessionEvent> SendAsync(string session, string message, PageRequest? page = null,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         // Ask for the headers only, so the stream is read while the answer is still being written.
-        var body = new SendMessageRequest(message, null);
+        var body = new SendMessageRequest(message, null, page);
         using var send = new HttpRequestMessage(HttpMethod.Post, $"{SessionAt(session)}/messages");
         send.Content = JsonContent.Create(body, options: JsonSerializerOptions.Web);
         using var response = await http.SendAsync(send, HttpCompletionOption.ResponseHeadersRead, cancellationToken);

@@ -59,6 +59,42 @@ public class SessionClientTests
         Assert.That(body, Does.Contain("\"message\":\"What is louis-agent?\""));
     }
 
+    /// <summary>F126.3.3: a message sent with a page carries it in the body under the wire's key.</summary>
+    [Test]
+    public async Task AMessageWithAPage_CarriesIt()
+    {
+        var handler = new StubHandler(_ => Stream());
+        var page = new PageRequest("/", "louis-agent", "The website that answers.", Focus: "selling");
+
+        await foreach (var _ in Client(handler).SendAsync("s-42", "What is louis-agent?", page))
+        {
+        }
+
+        Assert.That(handler.Requests.Single().Body, Does.Contain("\"page\":{\"url\":\"/\"")
+            .And.Contain("\"focus\":\"selling\""));
+    }
+
+    /// <summary>A message sent with no page leaves the key out, as the widget's body does.</summary>
+    [Test]
+    public async Task AMessageWithNoPage_LeavesTheKeyOut()
+    {
+        var handler = new StubHandler(_ => Stream());
+
+        await foreach (var _ in Client(handler).SendAsync("s-42", "What is louis-agent?"))
+        {
+        }
+
+        Assert.That(handler.Requests.Single().Body, Does.Not.Contain("\"page\""));
+    }
+
+    /// <summary>A stream that starts and stops, the shortest answer.</summary>
+    private static HttpResponseMessage Stream() => new(HttpStatusCode.OK)
+    {
+        Content = new StringContent(
+            "event: message_start\ndata: {\"type\":\"message_start\",\"message\":{\"session_id\":\"s-42\"}}\n\n" +
+            "event: message_stop\ndata: {\"type\":\"message_stop\"}\n\n", Encoding.UTF8, "text/event-stream")
+    };
+
     /// <summary>Closing a session deletes it.</summary>
     [Test]
     public async Task CloseAsync_DeletesTheSession()

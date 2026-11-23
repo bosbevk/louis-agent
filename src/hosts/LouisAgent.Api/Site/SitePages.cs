@@ -2,6 +2,7 @@ using System.Reflection;
 using LouisAgent.Api.Config;
 using LouisAgent.Api.Endpoints.Routing;
 using LouisAgent.Api.Site.Places;
+using LouisAgent.Api.Site.Reading;
 using LouisAgent.Api.Site.Rendering;
 using LouisAgent.Core.Hosting;
 using Microsoft.AspNetCore.Builder;
@@ -36,7 +37,10 @@ public static class SitePages
         // (F164.2), on one index rendered once.
         var places = new SitePlaces(routes, prerenderer);
         app.Services.GetService<AgentEngineFactory>()?.Context.Places.Serve(places);
-        SitePlaceSearch.Map(app.MapHostGroup(), places);
+        var v1 = app.MapHostGroup();
+        SitePlaceSearch.Map(v1, places);
+        // A page as a message carries it (F126.3.3), for an eval's run to send its agent what the widget would.
+        SitePageRoute.Map(v1, ReadPages.Create(routes, prerenderer, services));
         app.MapFallback(handler.HandleAsync);
         return app;
     }

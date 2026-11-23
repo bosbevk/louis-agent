@@ -1,4 +1,5 @@
 using LouisAgent.Composition.Agents;
+using LouisAgent.Core.Sessions.Replay.Store;
 using LouisAgent.Evals.Contracts.Runs;
 using LouisAgent.Evals.Files;
 using LouisAgent.Evals.Grading;
@@ -130,11 +131,77 @@ public class EvalRunnerTests
             Runner(api).RunAsync(StartedRun(1), TwoConversations, Kept([]), cancelled.Token));
     }
 
-    /// <summary>The runner over this API, a judge on this model, and a clock at the run's end time.</summary>
-    private static EvalRunner Runner(FakeSessionsApi api, FakeChatClient? judgeModel = null)
+    /// <summary>F126.3.3: three repeats ask for a conversation's page under three trials, kept in each.</summary>
+    [Test]
+    public async Task ThreeRepeats_AskForThePage_UnderThreeTrials()
+    {
+        var api = new FakeSessionsApi(Enumerable.Repeat(Answered("Yes."), 3).ToArray());
+        var folder = Directory.CreateTempSubdirectory("runner-pages-").FullName;
+        try
+        {
+            var recordings = new ReplayStore(folder);
+            var onePage = new EvalFile(TwoConversations.Agent, [TwoConversations.Conversations[0] with { Page = "/" }]);
+
+            await Runner(api, recordings: recordings).RunAsync(StartedRun(3), onePage, Kept([]));
+
+            Assert.That(api.PagesAsked(), Has.Count.EqualTo(3));
+            foreach (int repeat in new[] { 1, 2, 3 })
+                Assert.That(await recordings.AsksAsync($"20261123-043012-guide/guide-what-is.{repeat}",
+                        ReplayKind.Fetch), Has.Count.EqualTo(1), $"repeat {repeat}");
+        }
+        finally
+        {
+            Directory.Delete(folder, recursive: true);
+        }
+    }
+
+    /// <summary>
+    /// A page the site doesn't have stops the run as could not finish, with the address in its reason, and keeps the
+    /// conversations graded before it.
+    /// </summary>
+    [Test]
+    public async Task AMissingPage_StopsTheRun_WithItsAddress_KeepingWhatWasGraded()
+    {
+        var api = new FakeSessionsApi(Answered("Yes."), Answered("Yes."));
+        api.MissingPages.Add("/gone");
+        var secondOnAMissingPage = TwoConversations with
+        {
+            Conversations =
+            [TwoConversations.Conversations[0], TwoConversations.Conversations[1] with { Page = "/gone" }]
+        };
+
+        var run = await Runner(api).RunAsync(StartedRun(1), secondOnAMissingPage, Kept([]));
+
+        Assert.That(run.Status, Is.EqualTo(RunStatus.CouldNotFinish));
+        Assert.That(run.StoppedBecause, Does.Contain("/gone"));
+        Assert.That(run.Conversations.Select(c => c.Id), Is.EqualTo(new[] { "guide-what-is" }));
+    }
+
+    /// <summary>A run that sent a page says so, and one whose conversations name none doesn't.</summary>
+    [Test]
+    public async Task ARun_SaysWhetherItSentAPage()
+    {
+        var withAPage = TwoConversations with
+        {
+            Conversations =
+            [TwoConversations.Conversations[0] with { Page = "/" }, TwoConversations.Conversations[1]]
+        };
+
+        var sent = await Runner(new FakeSessionsApi(Answered("Yes."), Answered("Yes.")))
+            .RunAsync(StartedRun(1), withAPage, Kept([]));
+        var none = await Runner(new FakeSessionsApi(Answered("Yes."), Answered("Yes.")))
+            .RunAsync(StartedRun(1), TwoConversations, Kept([]));
+
+        Assert.That((sent.PageSent, none.PageSent), Is.EqualTo((true, false)));
+    }
+
+    /// <summary>The runner over this API and its page route, a judge on this model, a clock at the run's end.</summary>
+    private static EvalRunner Runner(FakeSessionsApi api, FakeChatClient? judgeModel = null,
+        ReplayStore? recordings = null)
     {
         var judge = new Judge(judgeModel ?? new FakeChatClient());
-        return new EvalRunner(new ConversationPlayer(api.Client(), judge), new FakeTimeProvider(Ended));
+        var player = new ConversationPlayer(api.Client(), api.Pages(recordings), judge);
+        return new EvalRunner(player, new FakeTimeProvider(Ended));
     }
 
     /// <summary>A run of the guide's eval as it starts, asking for this many repeats.</summary>

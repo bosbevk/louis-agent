@@ -1,27 +1,20 @@
-using LouisAgent.Web.Components.Areas;
-using LouisAgent.Web.Components.Areas.Focuses;
-using Microsoft.Extensions.DependencyInjection;
+using LouisAgent.Composition.Sites;
 
-namespace LouisAgent.Web.Tests.Components.Areas.Focuses;
+namespace LouisAgent.Core.Tests.Composition.Sites;
 
 /// <summary>
 /// F127.7, Louis: one guide for the whole website, selling on the ordinary pages, the demos on /demos, technical on
-/// /framework. A site names its parts' focuses through the builder (ADR 0120), and a page's focus is its longest
-/// matching address, else the default.
+/// /framework. A page's focus is its longest matching address, else the default. The rule is the shared contract's
+/// (F126.3.3), so the widget and the site's API ask the same one.
 /// </summary>
 public class SiteFocusesTests
 {
     /// <summary>louis-agent.dev's parts, as its areas name them.</summary>
-    private static SiteFocuses Site()
-    {
-        var services = new ServiceCollection().AddSiteAreas(areas => areas.Focuses(focuses => focuses
-            .Default("selling")
-            .Under("/demos", "demos")
-            .Under("/guesthouse-demo", "demos")
-            .Under("/framework", "framework")
-            .Under("/framework/how-it-works/web", "deeper")));
-        return services.BuildServiceProvider().GetRequiredService<SiteFocuses>();
-    }
+    private static SiteFocuses Site() => new("selling",
+    [
+        new FocusPart("/demos", "demos"), new FocusPart("/guesthouse-demo", "demos"),
+        new FocusPart("/framework", "framework"), new FocusPart("/framework/how-it-works/web", "deeper")
+    ]);
 
     /// <summary>A page takes the focus of its longest matching address, its query and its place in it aside.</summary>
     [TestCase("/framework/packs", "framework")]
@@ -44,16 +37,8 @@ public class SiteFocusesTests
     [Test]
     public void NoDefault_LeavesOtherPagesWithout()
     {
-        var services = new ServiceCollection()
-            .AddSiteAreas(areas => areas.Focuses(focuses => focuses.Under("/demos", "demos")));
-        var focuses = services.BuildServiceProvider().GetRequiredService<SiteFocuses>();
+        var focuses = new SiteFocuses(null, [new FocusPart("/demos", "demos")]);
 
         Assert.That((focuses.Of("/demos/x"), focuses.Of("/pricing")), Is.EqualTo(("demos", (string?)null)));
     }
-
-    /// <summary>A site that names no focuses has none to look up.</summary>
-    [Test]
-    public void ASiteWithoutFocuses_RegistersNone() =>
-        Assert.That(new ServiceCollection().AddSiteAreas(areas => areas.Chat()).BuildServiceProvider()
-            .GetService<SiteFocuses>(), Is.Null);
 }

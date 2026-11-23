@@ -44,7 +44,8 @@ public static class EvalsStartup
         builder.Services.AddSingleton(provider =>
         {
             var work = options.RunsFolder is { } folder
-                ? new RunWork(new RunStore(folder), judgeModel, () => api(provider), TimeProvider.System)
+                ? new RunWork(new RunStore(folder), judgeModel, () => api(provider), ReplayStore.From(host.Agent),
+                    TimeProvider.System)
                 : null;
             return new EvalHandlers(catalog, provider.GetRequiredService<RunDesk>(), work, host.Agent.KeepsRecordings,
                 TimeProvider.System);

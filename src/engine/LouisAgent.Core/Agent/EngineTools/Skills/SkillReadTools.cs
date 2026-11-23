@@ -1,6 +1,7 @@
 using LouisAgent.Composition.Messages;
 using System.ComponentModel;
 using LouisAgent.Core.Agent.EngineTools.Skills.Messages;
+using LouisAgent.Core.Agent.EngineTools.Skills.Messages.Holes;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Skills.Headers;
 using LouisAgent.Core.Skills.Headers.Identities;
@@ -31,12 +32,12 @@ public sealed class SkillReadTools(IEnumerable<IdentitySkill> skills)
         "each and says when it's needed. Read it before you answer what it covers.")]
     public string ReadSkill(
         [Description("The skill's name as the list writes it, such as identity/skill.")]
-        string name) =>
-        _onDemand.FirstOrDefault(s => s.Name == name) is { } skill
-            ? skill.Body
-            : MessageText.Format(SkillReadToolMessage.SkillUnknown, new
-            {
-                Name = name,
-                Available = string.Join(", ", _onDemand.Select(s => s.Name))
-            });
+        string name)
+    {
+        // LF whatever the checkout wrote, so the model is asked the same on every machine and a recording replays.
+        if (_onDemand.FirstOrDefault(s => s.Name == name) is { } skill) return skill.Body.ReplaceLineEndings("\n");
+
+        var unknown = new SkillUnknownHoles(name, string.Join(", ", _onDemand.Select(s => s.Name)));
+        return MessageText.Format(SkillReadToolMessage.SkillUnknown, unknown);
+    }
 }

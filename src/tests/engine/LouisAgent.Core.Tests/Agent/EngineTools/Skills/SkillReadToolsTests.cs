@@ -1,4 +1,5 @@
 using LouisAgent.Core.Agent.EngineTools.Skills;
+using LouisAgent.Core.Skills.Headers;
 using LouisAgent.Core.Skills.Headers.Identities;
 
 namespace LouisAgent.Core.Tests.Agent.EngineTools.Skills;
@@ -20,6 +21,19 @@ public class SkillReadToolsTests
 
         Assert.That(text, Does.Contain("# Testprod - Price list").And.Contain("A small thing costs R100."));
         Assert.That(text, Does.Not.Contain("load: on-demand"));
+    }
+
+    /// <summary>
+    /// A skill is read with LF line endings whatever the checkout wrote, so the model is asked the same on every
+    /// machine and a recording made on one replays on another (F126.3.3).
+    /// </summary>
+    [Test]
+    public void ASkillWithWindowsLineEndings_IsReadWithLf()
+    {
+        var skill = new IdentitySkill("testprod/lines", "Two lines.", SkillLoad.OnDemand,
+            "Line one.\r\nLine two.\r\n");
+
+        Assert.That(new SkillReadTools([skill]).ReadSkill("testprod/lines"), Is.EqualTo("Line one.\nLine two.\n"));
     }
 
     /// <summary>

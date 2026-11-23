@@ -33,12 +33,11 @@ public class SessionRequestJsonTests
         }
         """);
 
-    /// <summary>A message on the wire, with one attachment and no page.</summary>
+    /// <summary>A message on the wire, with one attachment and no page, which leaves the key out (F126.3.3).</summary>
     private static readonly string MessageJson = Compact(
         """
         {
-          "message": "Plan three dinners", "attachments": [{ "name": "list.txt", "content": "eggs" }],
-          "page": null
+          "message": "Plan three dinners", "attachments": [{ "name": "list.txt", "content": "eggs" }]
         }
         """);
 
@@ -81,7 +80,10 @@ public class SessionRequestJsonTests
         Assert.That(Written(read), Is.EqualTo(json));
     }
 
-    /// <summary>A message goes with its attachments, each by name and content, and no page.</summary>
+    /// <summary>
+    /// A message goes with its attachments, each by name and content, and with no page leaves the page's key out, as
+    /// the browser's own body does.
+    /// </summary>
     [Test]
     public void AMessage_WritesItsAttachments_AndNoPage() =>
         Assert.That(Written(new SendMessageRequest("Plan three dinners", [new AttachmentRequest("list.txt", "eggs")])),

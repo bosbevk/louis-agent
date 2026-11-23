@@ -2,7 +2,7 @@
 
 > **Skill:** #12 in the [goal](../GOAL.md)'s map, with #16 (human in the loop), a nod to #15 (least privilege) and side
 > lessons for #17, #4 and #3 · **Stages:** F18 steps 6.3 to 6a.5, the judge calibrated and then checked from the portal
-> (2026-10-26 to 27); the rest of F18 and its first v2 baseline (2026-10-29); F49.2b, the generic checks (2026-10-31); F126.1, the old evals deleted, and F126.2, the file and the grading (2026-11-22); F126.3.1, runs, and F126.3.2, the run pages (2026-11-23)
+> (2026-10-26 to 27); the rest of F18 and its first v2 baseline (2026-10-29); F49.2b, the generic checks (2026-10-31); F126.1, the old evals deleted, and F126.2, the file and the grading (2026-11-22); F126.3.1, runs, F126.3.2, the run pages, and F126.3.3, the page a conversation names (2026-11-23)
 > · **Written by** Claude, for Louis to read (2026-10-27, extended 2026-10-29, 2026-10-31, 2026-11-22 and 2026-11-23)
 
 What this answers: how we know the model that grades the cook's answers sees what you see, what it took to get it there, and
@@ -435,6 +435,55 @@ window here wouldn't narrow to 390, so the phone width was looked at only throug
 
 **In the field's words:** *read the transcripts* and *error analysis* (Anthropic, Hamel Husain), *pass^k*, a *code
 grader* against a *model grader*, and Fowler's *Repository* behind the client.
+
+## The page a conversation names (F126.3.3)
+
+An eval is only worth its score if the agent it measures is the agent people meet. On louis-agent.dev the guide is
+never asked a bare question: every message a visitor sends carries the page they're reading, its words, its places,
+its links, and the part of the site it belongs to, which tells the guide whether to sell, show demos or talk shop.
+Until F126.3.3 an eval sent none of that, so it measured a guide nobody meets. The field calls this the gap between
+the eval's harness and production, and it's the first thing to close before trusting a number.
+
+**Read on the server, the way the widget reads it.** The site's API now answers `GET /v1/site/page?address=` with
+the page as a message carries it, rendered on the server and read rule for rule as the widget's script reads it in
+the browser: the title, the words of `main`, the places with the widget's own marks, the links within the site, and
+the focus from the same rule the widget asks, which moved to the shared contract so both could reach it. The run
+asks that route for the page a conversation names, sends it with the first ask only, as the widget does for a
+visitor who stays put, and keeps it beside the agent's and the judge's answers, so a replay sends the very same page
+and costs nothing.
+
+**Comparing the two readings found three differences.** On the landing, `/demos` and `/trust`, the titles, the
+places and the links matched. The server read 2,580 characters on the landing that the browser hides; the reader now
+leaves out what the markup marks `hidden` or `aria-hidden`, which brought the landing to 4,080 characters against the
+browser's 4,137. The browser's `innerText` runs words together where blocks meet ("roomtook"), and the server keeps
+them apart, the cleaner of the two, so that stays. And the animated mark's state words differ by the second, which
+nobody needs. What a server can't know, what CSS alone hides and what is on the visitor's screen, stays out of reach,
+and that is said plainly in the design doc.
+
+**The eval learnt something on its first run with the page.** Asked "What is louis-agent, in one minute?" on the
+landing, the guide answered as a seller, as its voice asks on a selling page: it read its selling skill, said in three
+plain sentences what it does for a business, and offered a demo. It read no doc and never said C#, so the eval's old
+expectations, written for a technical answer, failed. The eval was wrong, not the agent: it had been written for a
+guide that never saw the page. Its conversation now expects what the guide is built to do there, `used ReadSkill` and
+"Says what louis-agent does for a business, in plain words". The same day, the guide stopped naming docs on the
+public site at all (FX229), which an always-failing criterion had pointed at.
+
+**What recording again cost.** One live run of one conversation, once: $0.003563 for the agent by the run's own
+record, and about $0.0008 for the judge's two calls at the price table's rates, about $0.0044 in all. The kept
+recordings are a second run's own files, read before they went into the public repository: that run cost the agent
+$0.003513 and the judge about $0.0008, and it met every fact and criterion, the reworded one included.
+
+**What didn't work at first.** The test eval's JSON, built in a raw string that ended on a quote, lost that quote to
+the string's closing marks. A message with no page wrote `"page": null` while the browser leaves the key out; the wire
+record now leaves it out for every sender. And the replay test still failed after the new recordings, on the one fact
+the live run had missed, which is what put the eval's expectations in front of you. On CI the replay then failed on
+Linux and passed here: "message 3 (tool) changed". `ReadSkill` handed the model the skill as the checkout wrote it,
+CRLF on this PC, where the recording container was built, and LF on Linux. It now hands it with LF, as `ReadDoc`
+has done since F126.3.1, and the guide was recorded once more. The lesson is the one F126.3.1 learnt for docs: any
+tool that hands the model a file must hand it the same bytes on every machine.
+
+**In the field's words:** the *harness* against *production*, *train/serve skew* in its eval form, a *self-initializing
+fake* that now records the page too, and Fowler's *Remote Facade* for the route.
 
 ## The limits, said plainly
 

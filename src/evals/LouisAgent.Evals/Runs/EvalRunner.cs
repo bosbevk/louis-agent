@@ -38,6 +38,9 @@ public sealed class EvalRunner(ConversationPlayer player, TimeProvider clock)
         foreach (var conversation in file.Conversations)
         {
             var played = await PlayAsync(started, file, conversation, cancellationToken);
+            // A page went with the conversation once one of its repeats was played.
+            if (conversation.Page is not null && played.Run.Repeats.Count > 0)
+                started = started with { PageSent = true };
             if (played.Run.Repeats.Count > 0) graded.Add(played.Run);
             if (played.StoppedBecause is { } reason)
                 return await EndAsync(started, graded, RunStatus.CouldNotFinish, reason, kept);
@@ -79,6 +82,12 @@ public sealed class EvalRunner(ConversationPlayer player, TimeProvider clock)
             var judgeFailed = new JudgeFailedHoles(failed.Message);
             return new PlayedConversation(new ConversationRun(conversation.Id, started.Repeats, repeats),
                 MessageText.Format(RunMessage.JudgeFailed, judgeFailed));
+        }
+        catch (PageMissingException missing)
+        {
+            var notOnTheSite = new PageNotOnTheSiteHoles(missing.Address);
+            return new PlayedConversation(new ConversationRun(conversation.Id, started.Repeats, repeats),
+                MessageText.Format(RunMessage.PageNotOnTheSite, notOnTheSite));
         }
         catch (SessionRefusedException refused)
         {
