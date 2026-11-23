@@ -14,4 +14,10 @@ public sealed record EvalRow(string Name, string Agent, int Conversations, RunRo
     /// </summary>
     public bool LastRunPassedInFull() =>
         LastRun is { Status: RunStatus.Finished } run && run.Passed == Conversations;
+
+    /// <summary>
+    /// How many of its conversations a run of it didn't reach: a run keeps only those it graded, so a run that
+    /// stopped says how many, not which.
+    /// </summary>
+    public int CountNotRunIn(EvalRun run) => Math.Max(0, Conversations - run.Conversations.Count);
 }

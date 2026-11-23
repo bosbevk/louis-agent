@@ -2,7 +2,8 @@
 @layout AdminFrame
 
 @* A run's page (F126.3.2): the number first, then what the run ran with, then its conversations, the failed ones
-   first, each saying which repeat failed and on what. *@
+   first, and the eval's other runs at the foot. A run that stopped gives its reason first, one still running shows
+   what is graded so far, and a run the host doesn't have is one line. *@
 
 <PageTitle>@Eval · Run · Admin</PageTitle>
 
@@ -14,9 +15,17 @@
             {
                 <span> · run of @EvalsWords.FormatLocal(shown.StartedAt)</span>
             }</h1>
-        @if (_run is { } head)
+        @switch (_run?.Status)
         {
-            <p>@head.Passed of @head.Conversations.Count conversations passed. A conversation passes only when every one of its repeats does.</p>
+            case RunStatus.Finished:
+                <p>@Passed of @Graded conversations passed. A conversation passes only when every one of its repeats does.</p>
+                break;
+            case RunStatus.CouldNotFinish:
+                <p>@Graded of @Held conversations were graded, then the run could not go on.</p>
+                break;
+            case RunStatus.Running:
+                <p class="run-running">The run is still going. @Graded of @Held conversations are graded so far, and Reload reads what is graded since.</p>
+                break;
         }
     </div>
     <div class="page-actions">
@@ -29,16 +38,29 @@
     <AdminGate Error="@error" NeedsKey="_needsKey" OnSaved="LoadAsync"/>
 }
 
-@if (_loading && _run is null)
+@if (_missing)
+{
+    <section class="card-p run-missing">This host has no run @Run.</section>
+}
+else if (_loading && _run is null)
 {
     <section class="card-p run-loading"><span class="muted">Loading…</span></section>
 }
 else if (_run is { } run)
 {
+    @if (run.Status == RunStatus.CouldNotFinish)
+    {
+        <section class="card-p run-stopped">
+            <h2>The run could not finish</h2>
+            <p>@run.StoppedBecause</p>
+            <p>@NotRun did not run.</p>
+        </section>
+    }
+
     <section class="card-p run-this">
         <h2>This run</h2>
         <RunFigures>
-            <p class="run-score"><span class="run-passed">@run.Passed</span> <span class="run-of">of @run.Conversations.Count passed</span></p>
+            <p class="run-score col-12 col-lg-auto"><span class="run-passed">@run.Passed</span> <span class="run-of">of @run.Conversations.Count @(run.Status == RunStatus.Finished ? "passed" : "graded passed")</span></p>
             <RunFigure Name="Kind">@Kind</RunFigure>
             <RunFigure Name="Repeats">@run.Repeats</RunFigure>
             <RunFigure Name="Took">@Took</RunFigure>
@@ -63,4 +85,6 @@ else if (_run is { } run)
             <ConversationRow @key="conversation.Id" Eval="@Eval" Run="@run.Id" Conversation="conversation"/>
         }
     </section>
+
+    <RunRows Eval="@Eval" Rows="_runs" Open="@run.Id"/>
 }

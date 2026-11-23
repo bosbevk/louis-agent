@@ -63,7 +63,8 @@ what Bootstrap doesn't, and every colour is a theme's name, so glass and flat, l
 
 ### 4. A run's page
 
-`RunPage`, at `/admin/evals/{eval}/runs/{run}`, reads one run whole when it opens and again on Reload. A way back to
+`RunPage`, at `/admin/evals/{eval}/runs/{run}`, reads one run whole when it opens and again on Reload, with the
+eval's line in the host's list and the eval's runs beside it. A way back to
 the evals sits above its heading, which names the eval and when the run started. The number comes first, "0 of 1
 passed", in the monospace face. Beside it, `RunFigures` lays out the run's other figures, each a `RunFigure` with
 its name over its value: the kind, the repeats, how long it took, the agent's cost, and the facts and criteria met.
@@ -78,6 +79,16 @@ row links to the conversation's own address. It shows a tick or a cross, the con
 how many of its repeats passed, "2 of 3 repeats". A failed one adds a line in the danger colour saying which repeat
 failed first and on what, in that repeat's first miss's own words: "Repeat 2, not met:" and the criterion, or
 "fact not met:" and the fact.
+
+Under the conversations, `RunRows` lists the eval's runs as the API sends them, newest first. Each is a link with
+when it started, its kind, its repeats and how many conversations passed, and the open run is marked for the eye
+and, with `aria-current`, for a screen reader. That list is where the run before is found.
+
+A page says plainly what it could not show. A run that could not finish puts a card first, in the danger colour,
+with the run's own reason, then how many of the eval's conversations it didn't reach: a run keeps only the
+conversations it graded, so the eval's row (`EvalRow.CountNotRunIn`) says how many, not which, and the score reads
+"of 2 graded passed". A run still going says so under the heading, with how many conversations are graded so far,
+and Reload reads what is graded since; nothing polls. A run the host doesn't have is one line that names the id.
 
 ### 5. The words
 
@@ -99,7 +110,7 @@ src/web/LouisAgent.Web.Evals/
 ├── Pages/         # EvalsPage: /admin/evals; RunPage: /admin/evals/{eval}/runs/{run}
 ├── Components/    # each part with its styles, in a folder for the page it draws
 │   ├── Evals/     # EvalCard, NoEvalsCard: the evals' page
-│   ├── Runs/      # RunFigures, RunFigure, ConversationRow: a run's page
+│   ├── Runs/      # RunFigures, RunFigure, ConversationRow, RunRows: a run's page
 │   └── Marks/     # MarkDot: a mark, on every page
 └── Words/         # EvalsWords, and Parts/EvalsPart
 src/tests/web/LouisAgent.Web.Evals.Tests/   # the client, the addresses, the page and its parts, the words
@@ -113,15 +124,14 @@ None of its own. It reads with the site's API client and the admin's key, and li
 ## Tests
 
 `LouisAgent.Web.Evals.Tests` holds the client over a stub of the API (`EvalsApiTests`), the addresses
-(`EvalAddressTests`), the evals' page and a run's page with bUnit (`EvalsPageTests`, `RunPageTests`), a mark (`MarkDotTests`), the words
+(`EvalAddressTests`), the evals' page and a run's page with bUnit (`EvalsPageTests`, `RunPageTests`,
+`RunPageStatesTests`, over `RunPageHost`, a stub of every route the page reads), the runs list (`RunRowsTests`), a mark (`MarkDotTests`), the words
 (`EvalsWordsTests`), the area (`EvalsAreaTests`) and the admin's link and card (`EvalsLinksTests`,
 `EvalsCardTests`). louis-agent.dev's own tests hold that its admin draws the evals' link and card.
 
 ## Limits and plans
 
-A conversation's page is not built yet, so a row's link opens nothing yet. A run's page draws a finished run; a
-run that stopped, one still running and one the host doesn't have have no words of their own yet, and the eval's
-other runs are not listed.
+A conversation's page is not built yet, so a row's link opens nothing yet.
 It is not a package ([ADR 0130](../adr/0130-the-framework-is-published-as-packages-one-tag-each.md)).
 
 ## Related docs

@@ -1,0 +1,14 @@
+@* An eval's runs at the foot of a run's page, as the API lists them: each a link with when it started, what it ran
+   and how it went, the open run marked. *@
+
+<section class="card-p run-rows">
+    <h2>This eval's runs</h2>
+    @foreach (var row in Rows)
+    {
+        <a @key="row.Id" class="run-row d-flex flex-wrap column-gap-3 @(IsOpen(row) ? "run-row-open" : "")" href="@PageOf(row)" aria-current="@(IsOpen(row) ? "page" : null)">
+            <span class="run-row-when">@EvalsWords.FormatLocal(row.StartedAt)</span>
+            <span class="run-row-what">@KindOf(row) · @RepeatsOf(row)</span>
+            <span class="run-row-passed ms-auto">@row.Passed of @row.Conversations passed</span>
+        </a>
+    }
+</section>

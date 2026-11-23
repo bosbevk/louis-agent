@@ -222,6 +222,16 @@ public class RunAnswersTests
         Assert.That(new EvalRow("guide", "louis-agent-guide", 1, null).LastRunPassedInFull(), Is.False);
     }
 
+    /// <summary>An eval counts the conversations a run of it didn't reach, and never fewer than none.</summary>
+    [Test]
+    public void AnEval_CountsTheConversationsARunDidNotReach()
+    {
+        var run = Run(new ConversationRun("a", 1, [Repeat(1, Turn())]), new ConversationRun("b", 1, []));
+
+        Assert.That(new EvalRow("guide", "louis-agent-guide", 4, null).CountNotRunIn(run), Is.EqualTo(2));
+        Assert.That(new EvalRow("guide", "louis-agent-guide", 1, null).CountNotRunIn(run), Is.Zero);
+    }
+
     /// <summary>Every property name in a JSON value, at any depth.</summary>
     private static void Collect(JsonElement element, SortedSet<string> names)
     {

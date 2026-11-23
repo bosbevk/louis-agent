@@ -1,5 +1,6 @@
 using System.Net;
 using LouisAgent.Choices;
+using LouisAgent.Evals.Contracts.Api;
 using LouisAgent.Evals.Contracts.Runs;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Evals.Client;
@@ -12,8 +13,8 @@ using Microsoft.AspNetCore.Components;
 namespace LouisAgent.Web.Evals.Pages;
 
 /// <summary>
-/// A run's page. It reads the run whole when it opens and on Reload, and asks the run's own records for every
-/// figure it shows: passed, the marks met, the cost and the time.
+/// A run's page. It reads the run whole, the host's evals and this eval's runs when it opens and on Reload, and asks
+/// the run's own records for every figure it shows: passed, the marks met, the cost and the time.
 /// </summary>
 /// <remarks>
 /// The page only draws. What a run knows about itself (its counts, its order failed first) is the record's to
@@ -23,8 +24,10 @@ namespace LouisAgent.Web.Evals.Pages;
 public partial class RunPage
 {
     private EvalRun? _run;
+    private EvalRow? _eval;
+    private IReadOnlyList<RunRow> _runs = [];
     private string? _error;
-    private bool _needsKey, _loading;
+    private bool _needsKey, _loading, _missing;
 
     /// <summary>The eval the run belongs to, from the address.</summary>
     [Parameter]
@@ -36,6 +39,19 @@ public partial class RunPage
 
     [Inject] private EvalsApi Api { get; set; } = null!;
     [Inject] private ChatStore Store { get; set; } = null!;
+
+    private int Passed => _run?.Passed ?? 0;
+
+    /// <summary>How many conversations the run has graded.</summary>
+    private int Graded => _run?.Conversations.Count ?? 0;
+
+    /// <summary>How many conversations the eval holds, or the run's own count while the eval isn't listed.</summary>
+    private int Held => _eval?.Conversations ?? Graded;
+
+    /// <summary>"2 conversations", the ones of the eval the run didn't reach.</summary>
+    private string NotRun =>
+        EvalsWords.Count(_run is null ? 0 : _eval?.CountNotRunIn(_run) ?? 0, EvalsPart.Conversation,
+            EvalsPart.Conversations);
 
     /// <summary>The run's kind, as its file writes it.</summary>
     private string Kind => _run?.Kind.Wire() ?? "";
@@ -56,7 +72,8 @@ public partial class RunPage
     }
 
     /// <summary>
-    /// Reads the run. A refused key shows the frame's key box, and a host that can't be reached says so in a line.
+    /// Reads the run, the eval's line in the host's list and the eval's runs. A run the host doesn't have is one line;
+    /// a refused key shows the frame's key box, and a host that can't be reached says so in a line.
     /// </summary>
     private async Task LoadAsync()
     {
@@ -65,6 +82,9 @@ public partial class RunPage
         try
         {
             _run = await Api.FindRunAsync(Run);
+            _missing = _run is null;
+            _eval = (await Api.ListAsync()).Evals.FirstOrDefault(row => row.Name == Eval);
+            _runs = await Api.ListRunsAsync(Eval);
         }
         catch (AgentApiException ex)
         {

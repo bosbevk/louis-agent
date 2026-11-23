@@ -1,15 +1,8 @@
-using System.Net;
-using System.Net.Http.Json;
 using LouisAgent.Evals.Contracts.Grading;
 using LouisAgent.Evals.Contracts.Runs;
-using LouisAgent.Evals.Contracts.Runs.Json;
 using LouisAgent.Evals.Contracts.Transcripts;
-using LouisAgent.Web.Api;
-using LouisAgent.Web.Components.Admin;
 using LouisAgent.Web.Evals.Client;
 using LouisAgent.Web.Evals.Pages;
-using LouisAgent.Web.Storage;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Web.Evals.Tests.Pages;
 
@@ -156,24 +149,7 @@ public class RunPageTests
         return new RepeatRun(number, [new TurnRun(transcript, facts, criteria, cost, cost is null ? null : "USD")]);
     }
 
-    /// <summary>The run's page over a stub of the API that answers with this run, once it has loaded.</summary>
-    private static IRenderedComponent<RunPage> Render(BunitContext ctx, EvalRun run)
-    {
-        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
-        var settings = new ChatSettings();
-        var answer = new HttpResponseMessage(HttpStatusCode.OK)
-        {
-            Content = JsonContent.Create(run, options: RunJson.Options)
-        };
-        var http = new HttpClient(new StubHandler(_ => answer)) { BaseAddress = new Uri("http://localhost/") };
-        var api = new AgentApi(http, settings);
-        ctx.Services.AddSingleton(new ChatStore(ctx.JSInterop.JSRuntime, settings));
-        ctx.Services.AddSingleton(api);
-        ctx.Services.AddSingleton(new EvalsApi(api));
-        ctx.Services.AddSingleton(new AdminAccess());
-
-        var page = ctx.Render<RunPage>(parameters => parameters.Add(p => p.Eval, Eval).Add(p => p.Run, run.Id));
-        page.WaitForState(() => page.FindAll(".run-loading").Count == 0, TimeSpan.FromSeconds(10));
-        return page;
-    }
+    /// <summary>The run's page over a stub of the API that has this run, once it has loaded.</summary>
+    private static IRenderedComponent<RunPage> Render(BunitContext ctx, EvalRun run) =>
+        new RunPageHost(run).Render(ctx, Eval, run.Id);
 }
