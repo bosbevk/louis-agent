@@ -8,8 +8,9 @@ namespace LouisAgent.Api.Site.Reading;
 /// <summary>
 /// Reads a page rendered on the server as the guide's widget reads it in the browser, and gives it as a message
 /// carries it: its address, its title, the words of its main part, its places and its links within the site, and
-/// the focus the site's rule gives it. What the markup marks hidden is no words and no link. What needs a screen (the section in view, the open card, the selected piece)
-/// is never set, and the text is not cut here: the cap is the API's, in one place.
+/// the focus the site's rule gives it. What the markup marks hidden is no words and no link. What needs a screen
+/// (the section in view, the open card, the selected piece) is never set, and the text is not cut here: the cap is
+/// the API's, in one place.
 /// </summary>
 /// <remarks>
 /// Adapter: the places come from the site's own places reader, one walk of the markup, and each is turned into a
