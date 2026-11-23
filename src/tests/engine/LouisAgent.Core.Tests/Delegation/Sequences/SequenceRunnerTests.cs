@@ -99,10 +99,11 @@ public class SequenceRunnerTests
     }
 
     /// <summary>
-    /// A step the owner doesn't name in its <c>Calls</c> is refused in code, and nothing is opened for it.
+    /// A sequence that breaks a rule, such as a step the owner doesn't name in its <c>Calls</c>, is refused in code
+    /// before any step is opened.
     /// </summary>
     [Test]
-    public async Task AStepNotInTheOwnersCalls_IsRefused_AndNothingIsOpened()
+    public async Task ASequenceThatBreaksARule_IsRefused_BeforeAnyStepIsOpened()
     {
         var peer = new SequencePeer();
         var owner = new FakeIdentity("triage", calls: ["testprod"]);
@@ -112,10 +113,9 @@ public class SequenceRunnerTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(answer,
-                Does.Contain("stopped at step 2 of 2, testprod.researcher: Error: triage may not call"));
-            Assert.That(answer, Does.EndWith("Finished before it: (1) testprod did: no tools."));
-            Assert.That(peer.Opened, Is.EqualTo(new[] { "self testprod" }));
+            Assert.That(answer, Does.StartWith("Error: the sequence fix-an-error can't run: its step " +
+                                               "'testprod.researcher' is no address in the Calls"));
+            Assert.That(peer.Opened, Is.Empty);
         });
     }
 
@@ -144,7 +144,7 @@ public class SequenceRunnerTests
         });
     }
 
-    /// <summary>A step that would open an agent deeper than this instance allows is refused, and never opened.</summary>
+    /// <summary>A step that would open an agent deeper than this instance allows is refused unopened.</summary>
     [Test]
     public async Task AStepPastTheDeepestLevel_IsRefused()
     {

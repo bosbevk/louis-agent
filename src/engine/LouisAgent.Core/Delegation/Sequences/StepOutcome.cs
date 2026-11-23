@@ -33,10 +33,10 @@ internal sealed record StepOutcome(int Number, string Address, string Answer, st
         if (Failed)
         {
             var skipped = new SequenceStepSkippedHoles(Number, Address, Failure!);
-            return MessageText.Format(SubSessionToolMessage.SequenceStepSkipped, skipped);
+            return MessageText.Format(SequenceToolMessage.SequenceStepSkipped, skipped);
         }
 
         var did = new SequenceStepDidHoles(Number, Address, Did);
-        return MessageText.Format(SubSessionToolMessage.SequenceStepDid, did);
+        return MessageText.Format(SequenceToolMessage.SequenceStepDid, did);
     }
 }

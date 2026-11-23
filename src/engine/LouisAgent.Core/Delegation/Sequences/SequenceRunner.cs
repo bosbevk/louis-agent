@@ -60,12 +60,14 @@ public sealed class SequenceRunner
     /// answer its model reads.
     /// </summary>
     /// <remarks>
-    /// Guard clauses (Fowler): an identity to run it for, a chain it isn't in already, then the steps.
+    /// Guard clauses (Fowler): an identity to run it for, a sequence that keeps the rules, a chain it isn't in
+    /// already, then the steps.
     /// </remarks>
     public async Task<string> RunAsync(AgentSequence sequence, string message,
         CancellationToken cancellationToken = default, List<AttachmentRequest>? attachments = null)
     {
         if (AgentAsks.AskerOf(_identities) is not { } owner) return MessageText.Format(SubSessionToolMessage.AskerNone);
+        if (IdentitySequences.Of(owner).RefusalOf(sequence) is { } broken) return broken;
         string key = $"{owner.Name}.{sequence.Name}";
         if (TurnChain.Current.Contains(key))
         {

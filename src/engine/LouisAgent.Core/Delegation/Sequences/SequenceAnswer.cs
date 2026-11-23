@@ -27,11 +27,11 @@ internal static class SequenceAnswer
         if (done.LastOrDefault(step => !step.Failed) is not { } last)
         {
             var none = new SequenceNoStepAnsweredHoles(sequence.Name, Steps(done));
-            return MessageText.Format(SubSessionToolMessage.SequenceNoStepAnswered, none);
+            return MessageText.Format(SequenceToolMessage.SequenceNoStepAnswered, none);
         }
 
         var answer = new SequenceAnswerHoles(last.Answer, sequence.Name, Steps(done));
-        return MessageText.Format(SubSessionToolMessage.SequenceAnswer, answer);
+        return MessageText.Format(SequenceToolMessage.SequenceAnswer, answer);
     }
 
     /// <summary>Where the sequence stopped and why, with the steps that finished before it.</summary>
@@ -39,7 +39,7 @@ internal static class SequenceAnswer
     {
         var stopped = new SequenceStoppedHoles(sequence.Name, failed.Number, sequence.Steps.Count, failed.Address,
             failed.Failure ?? "", done.Count == 0 ? "(none)" : Steps(done));
-        return MessageText.Format(SubSessionToolMessage.SequenceStopped, stopped);
+        return MessageText.Format(SequenceToolMessage.SequenceStopped, stopped);
     }
 
     /// <summary>Each step in order, with what it did.</summary>

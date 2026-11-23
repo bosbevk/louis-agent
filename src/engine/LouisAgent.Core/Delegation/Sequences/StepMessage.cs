@@ -39,20 +39,20 @@ internal static class StepMessage
     {
         var answers = string.Join("\n\n", answered.Select(Answered));
         var input = new SequenceStepsSoFarHoles(firstMessage, answers);
-        return MessageText.Format(SubSessionToolMessage.SequenceStepsSoFar, input);
+        return MessageText.Format(SequenceToolMessage.SequenceStepsSoFar, input);
     }
 
     /// <summary>One answer under the step that gave it.</summary>
     private static string Answered(StepOutcome step)
     {
         var answered = new SequenceStepAnsweredHoles(step.Address, step.Answer);
-        return MessageText.Format(SubSessionToolMessage.SequenceStepAnswered, answered);
+        return MessageText.Format(SequenceToolMessage.SequenceStepAnswered, answered);
     }
 
     /// <summary>The first message with the answer of the step before under it.</summary>
     private static string WithPrevious(string firstMessage, StepOutcome previous)
     {
         var input = new SequenceStepInputHoles(firstMessage, previous.Address, previous.Answer);
-        return MessageText.Format(SubSessionToolMessage.SequenceStepInput, input);
+        return MessageText.Format(SequenceToolMessage.SequenceStepInput, input);
     }
 }
