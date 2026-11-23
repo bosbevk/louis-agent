@@ -2,7 +2,7 @@ using LouisAgent.Evals.Contracts.Grading;
 using LouisAgent.Evals.Contracts.Runs;
 using LouisAgent.Evals.Contracts.Transcripts;
 
-namespace LouisAgent.Evals.Grading;
+namespace LouisAgent.Evals.Grading.Turns;
 
 /// <summary>
 /// The one rule for when a mark carries over from an earlier run: where a turn says the same as before

@@ -1,9 +1,9 @@
 using LouisAgent.Evals.Contracts.Grading;
 using LouisAgent.Evals.Contracts.Runs;
 using LouisAgent.Evals.Contracts.Transcripts;
-using LouisAgent.Evals.Grading;
+using LouisAgent.Evals.Grading.Turns;
 
-namespace LouisAgent.Evals.Tests.Grading;
+namespace LouisAgent.Evals.Tests.Grading.Turns;
 
 /// <summary>
 /// F126.4: the one rule for when a mark carries over. Where a turn says the same as before and a criterion's words are

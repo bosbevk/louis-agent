@@ -132,6 +132,25 @@ public class RunStoreTests
         Assert.That(File.ReadAllText(Path.Combine(_folder, "20261123-043012-guide.json")), Is.EqualTo(before));
     }
 
+    /// <summary>F126.4: a re-grade is written as the kind "re-grade", with the run it re-graded, and read back.</summary>
+    [Test]
+    public void ARegrade_IsWrittenByItsWireName_AndReadBack()
+    {
+        var store = new RunStore(_folder);
+        var run = Run("20261123-160000-guide", Started) with
+        {
+            Kind = RunKind.Regrade,
+            RegradeOf = "20261123-043012-guide"
+        };
+
+        store.Save(run);
+        var found = store.Find(run.Id)!;
+
+        Assert.That(File.ReadAllText(Path.Combine(_folder, "20261123-160000-guide.json")),
+            Does.Contain("\"kind\": \"re-grade\""));
+        Assert.That((found.Kind, found.RegradeOf), Is.EqualTo((RunKind.Regrade, "20261123-043012-guide")));
+    }
+
     /// <summary>Saving a run with the same id again replaces it.</summary>
     [Test]
     public void SavingTheSameIdAgain_ReplacesIt()

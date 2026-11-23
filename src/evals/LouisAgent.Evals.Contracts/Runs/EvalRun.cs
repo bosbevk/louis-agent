@@ -42,6 +42,9 @@ public sealed record EvalRun(
     /// <summary>The live run a replay plays back, or none for a live run.</summary>
     public string? ReplayOf { get; init; }
 
+    /// <summary>The run a re-grade graded again, or none for a live run or a replay.</summary>
+    public string? RegradeOf { get; init; }
+
     /// <summary>Whether the page a visitor is on was sent with each ask; never yet, so a run says so plainly.</summary>
     public bool PageSent { get; init; }
 

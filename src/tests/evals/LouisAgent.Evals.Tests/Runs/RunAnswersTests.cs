@@ -174,7 +174,7 @@ public class RunAnswersTests
 
     /// <summary>
     /// A run's file holds only the fields declared: its JSON's names are exactly these, a turn's judge cost the one
-    /// F126.3.4 added, and a mark's flip, with its time and note, the ones F126.4 added.
+    /// F126.3.4 added, and a mark's flip, with its time and note, and a re-grade's run, the ones F126.4 added.
     /// </summary>
     [Test]
     public void ARunsFile_HoldsNoNewField()
@@ -224,6 +224,7 @@ public class RunAnswersTests
             "pageSent",
             "passed",
             "reason",
+            "regradeOf",
             "repeats",
             "replayOf",
             "result",
