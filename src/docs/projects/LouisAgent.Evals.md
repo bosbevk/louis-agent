@@ -36,14 +36,14 @@ will check and the criteria the judge will mark. This is the guide's first conve
 
 ```json
 {
-  "$schema": "../../../../../../evals/LouisAgent.Evals/eval.schema.json",
+  "$schema": "../../../../evals/LouisAgent.Evals/eval.schema.json",
   "agent": "louis-agent-guide",
   "conversations": [
     { "id": "guide-what-is", "page": "/",
       "turns": [
         { "ask": "What is louis-agent, in one minute?",
-          "facts": ["no-error", "used ReadDoc", "under 30s"],
-          "criteria": ["Says it is an AI agent framework in C#", "Ends with one small nudge: a page, a question or the chat"] } ] }
+          "facts": ["no-error", "used ReadSkill", "under 30s"],
+          "criteria": ["Says what louis-agent does for a business, in plain words", "Ends with one small nudge: a page, a question or the chat"] } ] }
   ]
 }
 ```
