@@ -30,6 +30,7 @@ it in the code when that helps.
 | **Router** | The routing part of a mode (CL9): after its voice, in the same file, it sends a task to the toolset it needs; level 0 only |
 | **Runbook** | The orchestrator's instructions for one API method of the service it watches |
 | **Session** | One conversation with its own history, toolsets and role, fixed when it opens |
+| **Sequence** | A fixed order of agents an identity declares from its own `Calls` (`IAgentIdentity.Sequences`, F176, ADR 0117): asking its first address with `AskAgent` runs every step in order, in code; it has no address of its own |
 | **Skill** | A markdown file of guidance, or a named procedure in one (`## Skill:`) that `ExecuteSkill` runs |
 | **Subagent** | A sub-session with its own voice inside its agent's folder, that does one task and reports back; one name everywhere, its address `{identity}.{name}` (`triage.sorter`), ADR 0133 |
 | **Sub-session** | A session opened by another agent on a peer, one level below its asker (`AskAgent`, a lookup agent with one of the asker's tools), at most `AGENT_MAX_DEPTH` deep |
