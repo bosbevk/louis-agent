@@ -2,7 +2,7 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace LouisAgent.Evals.Runs.Store;
+namespace LouisAgent.Evals.Contracts.Runs.Json;
 
 /// <summary>
 /// The one options object a run's file is written and read with: strict, as the eval file's are, with enums by

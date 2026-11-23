@@ -1,6 +1,7 @@
 using System.Text.Json;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Evals.Contracts.Runs;
+using LouisAgent.Evals.Contracts.Runs.Json;
 using LouisAgent.Evals.Messages;
 using LouisAgent.Evals.Messages.Holes.Runs;
 

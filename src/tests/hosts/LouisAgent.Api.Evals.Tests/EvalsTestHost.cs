@@ -3,6 +3,7 @@ using LouisAgent.Api.Testing;
 using LouisAgent.Core.Sessions.Replay.Store;
 using LouisAgent.Evals.Contracts.Api;
 using LouisAgent.Evals.Contracts.Runs;
+using LouisAgent.Evals.Contracts.Runs.Json;
 using LouisAgent.Evals.Runs;
 using LouisAgent.Evals.Runs.Store;
 using Microsoft.AspNetCore.Builder;

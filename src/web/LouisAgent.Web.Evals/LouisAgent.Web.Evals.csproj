@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <!-- The eval pages (F126.3.2): the admin's pages where a person reads an eval's runs, a run and a conversation, the
+       client of the API's eval routes, the words and the styles. A site that names its evals among its areas takes
+       it; a site that doesn't ships none of it. It sits on LouisAgent.Web and reads a run's records from the
+       contracts, which reference nothing, so it runs in the browser. -->
+  <PropertyGroup>
+    <RootNamespace>LouisAgent.Web.Evals</RootNamespace>
+    <!-- Not a package yet (ADR 0130): no product outside this repository runs an eval. -->
+    <IsPackable>false</IsPackable>
+    <TargetFramework>net10.0</TargetFramework>
+    <!-- A component Razor can't find would be drawn as a plain HTML tag, and the build would still pass. -->
+    <WarningsAsErrors>$(WarningsAsErrors);RZ10012</WarningsAsErrors>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <!-- CL58: a library has no page to watch; left unset, the Sass package compiles its watcher attribute into us. -->
+    <SassCompilerEnableWatcher>false</SassCompilerEnableWatcher>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="10.0.12" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.12" />
+    <!-- CL58: a component's own X.razor.scss, compiled to the X.razor.css Blazor scopes and bundles; sasscompiler.json. -->
+    <PackageReference Include="AspNetCore.SassCompiler" Version="1.107.1" PrivateAssets="all" ExcludeAssets="runtime;compile" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The framework's web: the admin's frame the pages draw inside, the API client, the key box. -->
+    <ProjectReference Include="..\LouisAgent.Web\LouisAgent.Web.csproj" />
+    <!-- A run's records and its JSON options, as the store wrote them and the eval routes send them. -->
+    <ProjectReference Include="..\..\evals\LouisAgent.Evals.Contracts\LouisAgent.Evals.Contracts.csproj" />
+
+    <!-- The Sass compiler's settings are read at build time only; published, the libraries' copies would land on one
+         path and dotnet publish refuses (FX62). -->
+    <Content Update="sasscompiler.json" CopyToOutputDirectory="Never" CopyToPublishDirectory="Never" Pack="false" />
+  </ItemGroup>
+
+</Project>

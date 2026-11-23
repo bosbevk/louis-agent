@@ -7,6 +7,7 @@ using LouisAgent.Api.Evals.Messages.Holes.Runs;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Evals.Contracts.Api;
 using LouisAgent.Evals.Contracts.Runs;
+using LouisAgent.Evals.Contracts.Runs.Json;
 using LouisAgent.Evals.Files;
 using LouisAgent.Evals.Runs.Store;
 using Microsoft.AspNetCore.Http;
