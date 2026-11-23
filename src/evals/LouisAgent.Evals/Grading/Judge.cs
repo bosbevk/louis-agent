@@ -25,8 +25,8 @@ namespace LouisAgent.Evals.Grading;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0134-an-eval-is-one-file-of-conversations.md">ADR 0134: an eval is one file of conversations</seealso>
 public sealed class Judge(IChatClient model)
 {
-    /// <summary>The criterion's mark for the conversation's last turn.</summary>
-    public async Task<Mark> MarkAsync(
+    /// <summary>The criterion's mark for the conversation's last turn, with what the call to mark it cost.</summary>
+    public async Task<JudgedMark> MarkAsync(
         string criterion, IReadOnlyList<TurnTranscript> conversation, CancellationToken cancellationToken = default)
     {
         List<ChatMessage> request =
@@ -48,7 +48,8 @@ public sealed class Judge(IChatClient model)
             throw new JudgeFailedException(MessageText.Format(JudgeMessage.ModelFailed, modelFailed), failed);
         }
 
-        return MarkOf(criterion, response);
+        // What the call cost is its own scope's total: the ledger's price, a known 0 when played back, none unrecorded.
+        return new JudgedMark(MarkOf(criterion, response), grading.Total().Cost);
     }
 
     /// <summary>The conversation as the judge reads it: each turn under its number, then the one criterion.</summary>

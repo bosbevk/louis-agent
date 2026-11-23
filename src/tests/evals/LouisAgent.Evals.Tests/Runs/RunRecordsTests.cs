@@ -43,6 +43,21 @@ public class RunRecordsTests
         Assert.That(run.Passed, Is.EqualTo(2));
     }
 
+    /// <summary>F126.3.4: a repeat and a run add their turns' judge costs; none known stays none, never 0.</summary>
+    [Test]
+    public void ARepeatAndARun_AddTheirJudgeCosts_AndNoneKnownStaysNone()
+    {
+        var transcript = new TurnTranscript("Hi?", "Hello.", [], TimeSpan.FromSeconds(3));
+        var judged = new TurnRun(transcript, [], [], null, null) { JudgeCost = 0.002m };
+        var unknown = new TurnRun(transcript, [], [], null, null);
+        var repeat = new RepeatRun(1, [judged, unknown, judged with { JudgeCost = 0.001m }]);
+        var run = new EvalRun("20261123-043012-guide", "guide", "louis-agent-guide", RunKind.Live, 1, Started,
+            [new ConversationRun("a", 1, [repeat]), new ConversationRun("b", 1, [new RepeatRun(1, [unknown])])]);
+
+        Assert.That((repeat.SumJudgeCost(), run.SumJudgeCost()), Is.EqualTo(((decimal?)0.003m, (decimal?)0.003m)));
+        Assert.That(new RepeatRun(1, [unknown]).SumJudgeCost(), Is.Null);
+    }
+
     /// <summary>A repeat of one turn, with one fact met or not.</summary>
     private static RepeatRun Repeat(int number, bool met)
     {

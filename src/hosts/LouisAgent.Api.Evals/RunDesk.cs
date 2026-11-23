@@ -38,12 +38,28 @@ public sealed class RunDesk(ILogger<RunDesk> log) : BackgroundService
     }
 
     /// <summary>Takes the slot for this run and hands its work to the background, unless a run is going.</summary>
-    public bool TryStart(EvalRun started, Func<CancellationToken, Task> work)
+    /// <summary>
+    /// Stops the run going here when it has this id: its work's person's signal is cancelled, and the work keeps the
+    /// run as stopped. False when no run, or another, is going.
+    /// </summary>
+    public bool TryStop(string id)
+    {
+        lock (_gate)
+        {
+            if (_going is not { } going || going.Run.Id != id) return false;
+            // Cancelled under the lock, so the signal can't be let go between finding it and cancelling it; its
+            // callbacks run apart, so none of them waits on this lock.
+            _ = going.Stop.CancelAsync();
+            return true;
+        }
+    }
+
+    public bool TryStart(EvalRun started, Func<RunSignals, Task> work)
     {
         lock (_gate)
         {
             if (_going is not null) return false;
-            _going = new Going(started, work);
+            _going = new Going(started, work, new CancellationTokenSource());
         }
 
         _handed.Release();
@@ -82,12 +98,13 @@ public sealed class RunDesk(ILogger<RunDesk> log) : BackgroundService
     /// </summary>
     private async Task RunAsync(Going going, CancellationToken stoppingToken)
     {
+        // The work plays under either signal: the host's shutdown or a person's stop, joined into one token.
+        using var playing = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken, going.Stop.Token);
         try
         {
-            await going.Work(stoppingToken);
+            await going.Work(new RunSignals(playing.Token, going.Stop.Token));
         }
-        catch (Exception failed) when (failed is not OperationCanceledException ||
-                                       !stoppingToken.IsCancellationRequested)
+        catch (Exception failed) when (failed is not OperationCanceledException || !playing.IsCancellationRequested)
         {
             var runFailed = new RunFailedHoles(going.Run.Id, failed.Message);
             log.Log(LogLevel.Error, EvalsApiMessage.RunFailed, runFailed, failed);
@@ -95,9 +112,10 @@ public sealed class RunDesk(ILogger<RunDesk> log) : BackgroundService
         finally
         {
             lock (_gate) _going = null;
+            going.Stop.Dispose();
         }
     }
 
     /// <summary>The run that is going, and the work that plays it.</summary>
-    private sealed record Going(EvalRun Run, Func<CancellationToken, Task> Work);
+    private sealed record Going(EvalRun Run, Func<RunSignals, Task> Work, CancellationTokenSource Stop);
 }

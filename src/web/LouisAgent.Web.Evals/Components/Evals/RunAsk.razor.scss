@@ -1,0 +1,18 @@
+/* The ask before a live run, set apart from the card above it by a rule; its chosen repeat and its run button
+   filled with the theme's body colour. Colours are the theme's names, so every theme and mode draws it. */
+.run-ask { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--bs-border-color); }
+.run-ask-title { font-size: 16px; font-weight: 700; margin: 0 0 4px; }
+.run-ask-what, .run-ask-estimate { font-size: 14px; margin: 0 0 12px; }
+.run-ask-repeats { font-size: 14px; margin-bottom: 12px; }
+.run-ask-choice { padding: 3px; border: 1px solid var(--bs-border-color); border-radius: 999px; }
+.run-ask-option {
+    min-width: 40px;
+    min-height: 28px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--bs-body-color);
+}
+.run-ask-option.is-chosen { background: var(--bs-body-color); color: var(--bs-body-bg); font-weight: 700; }
+.run-ask-go { background: var(--bs-body-color); color: var(--bs-body-bg); }
+.run-ask-go:disabled { opacity: .6; }

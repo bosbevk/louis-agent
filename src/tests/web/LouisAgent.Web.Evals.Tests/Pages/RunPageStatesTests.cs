@@ -47,16 +47,17 @@ public class RunPageStatesTests
         using var ctx = new BunitContext();
         var page = Host(Run()).Render(ctx, Eval, Run().Id);
 
-        Assert.That(page.Find(".run-running").TextContent, Does.Contain("still going"));
+        Assert.That(page.Find(".run-running").TextContent, Does.Contain("The run is going.")
+            .And.Contain("2 of 4 conversations are graded so far"));
         Assert.That(page.FindAll(".conversation-row"), Has.Count.EqualTo(2));
     }
 
-    /// <summary>Reload reads the run again.</summary>
+    /// <summary>Reload reads an ended run again.</summary>
     [Test]
     public void Reload_ReadsTheRunAgain()
     {
         using var ctx = new BunitContext();
-        var host = Host(Run());
+        var host = Host(Finished());
         var page = host.Render(ctx, Eval, Run().Id);
 
         page.Find("button.run-reload").Click();
@@ -89,6 +90,97 @@ public class RunPageStatesTests
         Assert.That(rows[1].ClassList, Does.Contain("run-row-open"));
         Assert.That(rows[0].ClassList, Does.Not.Contain("run-row-open"));
     }
+
+    /// <summary>F126.3.4: a running run's page reads it again every three seconds, by the page's clock.</summary>
+    [Test]
+    public void ARunningRunsPage_ReadsItAgain_EveryThreeSeconds()
+    {
+        using var ctx = new BunitContext();
+        var host = Host(Run());
+        var page = host.Render(ctx, Eval, Run().Id);
+
+        host.Clock.Advance(TimeSpan.FromSeconds(3));
+        page.WaitForAssertion(() => Assert.That(host.RunReads, Is.EqualTo(2)));
+        host.Clock.Advance(TimeSpan.FromSeconds(3));
+        page.WaitForAssertion(() => Assert.That(host.RunReads, Is.EqualTo(3)));
+    }
+
+    /// <summary>When a read answers a run that has ended, the page shows it and reads no more.</summary>
+    [Test]
+    public void WhenTheRunEnds_ThePageShowsIt_AndReadsNoMore()
+    {
+        using var ctx = new BunitContext();
+        var host = Host(Run());
+        var page = host.Render(ctx, Eval, Run().Id);
+
+        host.Answers(Finished());
+        host.Clock.Advance(TimeSpan.FromSeconds(3));
+        page.WaitForAssertion(() => Assert.That(page.FindAll(".run-running"), Is.Empty));
+        host.Clock.Advance(TimeSpan.FromSeconds(9));
+
+        Assert.That(host.RunReads, Is.EqualTo(2));
+    }
+
+    /// <summary>A page that is gone reads no more, and a finished run's page never reads again by itself.</summary>
+    [Test]
+    public async Task AGonePage_AndAFinishedRunsPage_ReadNoMore()
+    {
+        using var ctx = new BunitContext();
+        var going = Host(Run());
+        going.Render(ctx, Eval, Run().Id);
+        await ctx.DisposeComponentsAsync();
+        going.Clock.Advance(TimeSpan.FromSeconds(9));
+        using var other = new BunitContext();
+        var finished = Host(Finished());
+        finished.Render(other, Eval, Run().Id);
+        finished.Clock.Advance(TimeSpan.FromSeconds(9));
+
+        Assert.That((going.RunReads, finished.RunReads), Is.EqualTo((1, 1)));
+    }
+
+    /// <summary>While the run goes, Stop is there and Reload is not; Stop stops it and reads it again.</summary>
+    [Test]
+    public void WhileTheRunGoes_StopStopsIt_AndReadsItAgain()
+    {
+        using var ctx = new BunitContext();
+        var host = Host(Run());
+        var page = host.Render(ctx, Eval, Run().Id);
+
+        Assert.That(page.FindAll("button.run-reload"), Is.Empty);
+        page.Find("button.run-stop").Click();
+
+        page.WaitForAssertion(() => Assert.That((host.Stops, host.RunReads), Is.EqualTo((1, 2))));
+    }
+
+    /// <summary>
+    /// A run a person stopped shows its own box: that a person stopped it, that what was graded before is kept, and
+    /// how many conversations did not run; it is not shown as an error.
+    /// </summary>
+    [Test]
+    public void AStoppedRun_ShowsItsBox_NotAsAnError()
+    {
+        using var ctx = new BunitContext();
+        var run = Run() with
+        {
+            Status = RunStatus.Stopped,
+            EndedAt = Started.AddSeconds(158)
+        };
+        var page = Host(run).Render(ctx, Eval, run.Id);
+
+        Assert.That(page.Find(".run-stopped-by-person").TextContent, Does.Contain("The run was stopped")
+            .And.Contain("A person stopped it. What was graded before is kept.").And
+            .Contain("2 conversations did not run."));
+        Assert.That(page.FindAll(".run-stopped"), Is.Empty, "not the could-not-finish box");
+        Assert.That(page.Find(".page-head").TextContent,
+            Does.Contain("2 of 4 conversations were graded, then the run was stopped."));
+    }
+
+    /// <summary>The kitchen's run as it ended, finished.</summary>
+    private static EvalRun Finished() => Run() with
+    {
+        Status = RunStatus.Finished,
+        EndedAt = Started.AddSeconds(30)
+    };
 
     /// <summary>A host with this run, the kitchen's eval of four conversations, and two runs of it.</summary>
     private static EvalPagesHost Host(EvalRun run)

@@ -18,4 +18,12 @@ public sealed record TurnRun(
     IReadOnlyList<Mark> Facts,
     IReadOnlyList<Mark> Criteria,
     decimal? Cost,
-    string? Currency);
+    string? Currency)
+{
+    /// <summary>
+    /// What judging this turn's criteria cost, the known ones added: the run's second bill, beside the agent's own
+    /// <see cref="Cost" />. Null when no criterion's cost is known, and absent from a run written before it was kept.
+    /// </summary>
+    /// <remarks>An init property, not a constructor parameter, so a run's file that has none still reads.</remarks>
+    public decimal? JudgeCost { get; init; }
+}

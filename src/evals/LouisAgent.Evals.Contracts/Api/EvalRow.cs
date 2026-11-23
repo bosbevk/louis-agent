@@ -1,4 +1,5 @@
 using LouisAgent.Evals.Contracts.Runs;
+using LouisAgent.Evals.Contracts.Runs.Answers;
 
 namespace LouisAgent.Evals.Contracts.Api;
 
@@ -7,8 +8,23 @@ namespace LouisAgent.Evals.Contracts.Api;
 /// <param name="Agent">The address of the agent it proves.</param>
 /// <param name="Conversations">How many conversations its file holds.</param>
 /// <param name="LastRun">Its newest run in short, or null before its first.</param>
-public sealed record EvalRow(string Name, string Agent, int Conversations, RunRow? LastRun)
+/// <param name="LastLiveRun">Its newest live run that finished, the one a replay plays back, or null.</param>
+public sealed record EvalRow(string Name, string Agent, int Conversations, RunRow? LastRun, RunRow? LastLiveRun = null)
 {
+    /// <summary>
+    /// What a live run of this many repeats is likely to cost: what the last live run spent a repeat, the agent's and
+    /// the judge's added, times the repeats. None with no live run, or when that run had no price, never 0. When only
+    /// one of the two costs was known, it is that one alone, as every sum of a run adds what is known
+    /// (<see cref="KnownCost" />), so it says less than the run will spend rather than nothing.
+    /// </summary>
+    public decimal? EstimateLive(int repeats) =>
+        LastLiveRun is { Repeats: > 0 } live && KnownCost.Sum([live.Cost, live.JudgeCost]) is { } spent
+            ? spent / live.Repeats * repeats
+            : null;
+
+    /// <summary>Whether it has a live run that finished, the one a replay plays back for free.</summary>
+    public bool CanReplay() => LastLiveRun is not null;
+
     /// <summary>
     /// Its last run finished and every one of its conversations passed. A method, so the API's answer gains no field.
     /// </summary>

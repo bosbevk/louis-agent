@@ -115,6 +115,17 @@ public class RunAnswersTests
         Assert.That(Run(new ConversationRun("a", 1, [Repeat(1, Turn(cost: null))])).SumCost(), Is.Null);
     }
 
+    /// <summary>F126.3.4: a run's time so far runs to now while it goes, and to its end once it ended.</summary>
+    [Test]
+    public void ARunsTimeSoFar_IsToNowWhileItGoes_AndToItsEndOnceEnded()
+    {
+        var now = Started.AddSeconds(158);
+
+        Assert.That(Run().MeasureTimeSoFar(now), Is.EqualTo(TimeSpan.FromSeconds(158)));
+        Assert.That((Run() with { EndedAt = Started.AddSeconds(30) }).MeasureTimeSoFar(now),
+            Is.EqualTo(TimeSpan.FromSeconds(30)));
+    }
+
     /// <summary>A run's currency is its first priced turn's, and none while no turn is priced.</summary>
     [Test]
     public void ARunsCurrency_IsItsFirstPricedTurns_OrNone()
@@ -161,7 +172,10 @@ public class RunAnswersTests
         Assert.That(run.FindPrevious("b"), Is.Null);
     }
 
-    /// <summary>A run's file holds no new field: its JSON's names are exactly the ones declared before.</summary>
+    /// <summary>
+    /// A run's file holds only the fields declared: its JSON's names are exactly these, a turn's judge cost the one
+    /// F126.3.4 added.
+    /// </summary>
     [Test]
     public void ARunsFile_HoldsNoNewField()
     {
@@ -200,6 +214,7 @@ public class RunAnswersTests
             "failed",
             "id",
             "input",
+            "judgeCost",
             "kind",
             "met",
             "number",
@@ -248,6 +263,59 @@ public class RunAnswersTests
         Assert.That(new EvalRow("guide", "louis-agent-guide", 4, null).CountNotRunIn(run), Is.EqualTo(2));
         Assert.That(new EvalRow("guide", "louis-agent-guide", 1, null).CountNotRunIn(run), Is.Zero);
     }
+
+    /// <summary>F126.3.4: a run in short carries what it cost the agent and the judge, and in what currency.</summary>
+    [Test]
+    public void ARunInShort_CarriesItsTwoCosts_AndItsCurrency()
+    {
+        var turn = Turn(cost: 0.002m) with { JudgeCost = 0.001m };
+        var row = RunRow.Of(Run(new ConversationRun("a", 1, [Repeat(1, turn, Turn(cost: 0.003m))])));
+
+        Assert.That((row.Cost, row.JudgeCost, row.Currency), Is.EqualTo(((decimal?)0.005m, (decimal?)0.001m, "USD")));
+    }
+
+    /// <summary>
+    /// F126.3.4: an eval's live estimate is what its last live run spent a repeat, the agent's and the judge's
+    /// added, times the repeats asked.
+    /// </summary>
+    [TestCase(1, 0.02, 0.01, 3, 0.09)]
+    [TestCase(3, 0.06, 0.03, 1, 0.03)]
+    public void AnEvalsEstimate_IsWhatItsLastLiveRunSpentARepeat_TimesTheRepeats(int ran, decimal agent,
+        decimal judge, int asked, decimal estimate)
+    {
+        var lastLive = LastLive(ran) with
+        {
+            Cost = agent,
+            JudgeCost = judge
+        };
+
+        Assert.That(new EvalRow("guide", "louis-agent-guide", 1, null, lastLive).EstimateLive(asked),
+            Is.EqualTo(estimate));
+    }
+
+    /// <summary>With no live run, or one that had no price, there is no estimate, never 0.</summary>
+    [Test]
+    public void WithNoLiveRun_OrNoPrice_ThereIsNoEstimate()
+    {
+        Assert.That(new EvalRow("guide", "louis-agent-guide", 1, null).EstimateLive(3), Is.Null);
+        Assert.That(new EvalRow("guide", "louis-agent-guide", 1, null, LastLive(1)).EstimateLive(3), Is.Null);
+    }
+
+    /// <summary>An eval can be replayed only when it has a live run that finished.</summary>
+    [Test]
+    public void AnEval_CanReplay_OnlyWithALiveRun()
+    {
+        Assert.That(new EvalRow("guide", "louis-agent-guide", 1, null, LastLive(1)).CanReplay(), Is.True);
+        Assert.That(new EvalRow("guide", "louis-agent-guide", 1, null).CanReplay(), Is.False);
+    }
+
+    /// <summary>A finished live run in short, of this many repeats, with no price.</summary>
+    private static RunRow LastLive(int repeats) =>
+        RunRow.Of(Run(new ConversationRun("a", repeats, [Repeat(1, Turn())])) with
+        {
+            Status = RunStatus.Finished,
+            Repeats = repeats
+        });
 
     /// <summary>Every property name in a JSON value, at any depth.</summary>
     private static void Collect(JsonElement element, SortedSet<string> names)

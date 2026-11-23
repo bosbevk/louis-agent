@@ -10,6 +10,7 @@
         "kind": "page, /admin/evals",
         "members": [
           "reads the evals once, and on Reload",
+          "holds which card's ask is open",
           "shows the key box on a refused key"
         ]
       },
@@ -18,7 +19,9 @@
         "name": "EvalCard",
         "kind": "component",
         "members": [
-          "EvalRow Row"
+          "EvalRow Row",
+          "bool AskOpen, bool Waiting",
+          "EventCallback<string?> OnAsk"
         ]
       },
       {
@@ -42,7 +45,8 @@
         "name": "RunPage",
         "kind": "page, /admin/evals/{eval}/runs/{run}",
         "members": [
-          "reads the run once, and on Reload",
+          "reads the run once, and every 3 s while it goes",
+          "stops a going run",
           "asks the run for every figure"
         ]
       },
@@ -71,7 +75,9 @@
         "members": [
           "Task<EvalsReply> ListAsync()",
           "Task<EvalRun?> FindRunAsync(id)",
-          "Task<IReadOnlyList<RunRow>> ListRunsAsync(eval)"
+          "Task<IReadOnlyList<RunRow>> ListRunsAsync(eval)",
+          "Task<RunStart> StartAsync(eval, kind, repeats)",
+          "Task StopAsync(run)"
         ]
       },
       {

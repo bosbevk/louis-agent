@@ -1,7 +1,7 @@
 {
   "kind": "nested",
   "title": "The evals' page: what it is made of",
-  "caption": "The page reads the host's evals and hands each its card; with none it shows the one card that says where a file goes, and on a refused key the frame's key box.",
+  "caption": "The page reads the host's evals and hands each its card, and holds which card's ask is open; with none it shows the one card that says where a file goes, and on a refused key the frame's key box.",
   "nested": {
     "subtitle": "LouisAgent.Web.Evals, Pages / EvalsPage",
     "root": {
@@ -16,9 +16,31 @@
           "name": "EvalCard",
           "kind": "a card",
           "tone": "green",
-          "note": "one an eval, its last run first",
+          "note": "one an eval, its last run first, then a replay or a live run",
           "in": [
-            "Row"
+            "Row",
+            "AskOpen",
+            "Waiting"
+          ],
+          "out": [
+            "OnAsk"
+          ],
+          "holds": [
+            {
+              "id": "ask",
+              "name": "RunAsk",
+              "kind": "a card's part",
+              "tone": "green",
+              "note": "the ask before a live run: one repeat or three, and what it will likely cost",
+              "in": [
+                "Row",
+                "Starting"
+              ],
+              "out": [
+                "OnRun",
+                "OnClose"
+              ]
+            }
           ]
         },
         {

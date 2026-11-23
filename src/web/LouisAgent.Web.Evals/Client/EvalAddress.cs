@@ -30,5 +30,18 @@ public static class EvalAddress
     public static string RunsRouteOf(string eval) => $"{EvalsRoute}/{Escaped(eval)}/runs";
 
     /// <summary>One part of an address, escaped so a name can't change the address's shape.</summary>
+    /// <summary>
+    /// The run's id in the address a start answers, <c>/v1/admin/evals/runs/{id}</c>; none for any other address.
+    /// </summary>
+    public static string? FindRunId(string address)
+    {
+        string runs = RunRouteOf("");
+        string path = address.TrimStart('/');
+        if (!path.StartsWith(runs, StringComparison.Ordinal)) return null;
+
+        string id = path[runs.Length..];
+        return id.Length == 0 || id.Contains('/') ? null : Uri.UnescapeDataString(id);
+    }
+
     private static string Escaped(string part) => Uri.EscapeDataString(part);
 }

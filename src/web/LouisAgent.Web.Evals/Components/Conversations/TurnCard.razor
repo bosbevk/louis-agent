@@ -21,6 +21,7 @@
     }
 
     <blockquote class="turn-answer">@Turn.Transcript.Answer</blockquote>
+    <p class="turn-costs">@AgentCostName @AgentCost · @JudgeCostName @JudgeCost</p>
 
     @if (Turn.Transcript.Error is { } error)
     {

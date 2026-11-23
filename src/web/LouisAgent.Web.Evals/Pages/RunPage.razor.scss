@@ -1,9 +1,8 @@
 /* A run's page: the way back above the heading, the score large in the monospace face, the cards apart. */
 .run-crumbs { font-size: 14px; margin-bottom: 16px; }
 .run-crumbs a { display: inline-block; min-height: 24px; padding: 3px 0; color: var(--bs-body-color); }
-.run-stopped, .run-this, .run-conversations, .run-missing { margin-bottom: 16px; }
-.run-stopped h2 { color: var(--bs-danger); }
-.run-stopped p:last-child { margin-bottom: 0; }
+.run-this, .run-conversations, .run-missing { margin-bottom: 16px; }
+.run-stop { color: var(--bs-danger); }
 .run-score { font-family: var(--bs-font-monospace); margin: 0; }
 .run-passed { font-size: 44px; font-weight: 700; line-height: 1; }
 .run-of { font-size: 20px; color: var(--bs-secondary-color); }

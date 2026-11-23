@@ -1,0 +1,19 @@
+@* The ask before a live run, inline on its eval's card (F126.3.4): what it plays, one repeat or three, what it is
+   likely to cost, and two buttons named for what they do. *@
+
+<div class="run-ask">
+    <h3 class="run-ask-title">@Question</h3>
+    <p class="run-ask-what">@What</p>
+    <div class="run-ask-repeats d-flex align-items-center gap-2">
+        <span>@RepeatsLabel</span>
+        <div class="run-ask-choice d-inline-flex" role="group" aria-label="@RepeatsLabel">
+            <button type="button" class="@ChoiceClass(1)" aria-pressed="@IsChosen(1)" @onclick="() => Choose(1)">1</button>
+            <button type="button" class="@ChoiceClass(3)" aria-pressed="@IsChosen(3)" @onclick="() => Choose(3)">3</button>
+        </div>
+    </div>
+    <p class="run-ask-estimate">@EstimateLine</p>
+    <div class="d-flex flex-wrap gap-2">
+        <button type="button" class="header-button run-ask-go" disabled="@Starting" @onclick="RunAsync">@Go</button>
+        <button type="button" class="header-button run-ask-cancel" @onclick="OnClose">@DontRun</button>
+    </div>
+</div>

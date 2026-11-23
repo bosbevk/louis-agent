@@ -23,6 +23,7 @@
           "List()",
           "StartAsync(name, body)",
           "Find(id)",
+          "Stop(id)",
           "RunsOf(name)"
         ]
       },
@@ -33,6 +34,7 @@
         "members": [
           "EvalRun? Current",
           "bool TryStart(started, work)",
+          "bool TryStop(id)",
           "EvalRun Read(stored)"
         ]
       },
@@ -42,7 +44,7 @@
         "kind": "class",
         "members": [
           "RunStore Store",
-          "Func<CancellationToken, Task> For(started, file)"
+          "Func<RunSignals, Task> For(started, file)"
         ]
       },
       {

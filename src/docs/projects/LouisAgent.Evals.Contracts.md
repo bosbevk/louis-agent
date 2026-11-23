@@ -26,8 +26,9 @@ A turn as the agent did it is a `TurnTranscript`: what was asked, the answer as 
 a `ToolCallTranscript` with its input and its result as the agent got it, whether that call failed, how long the
 turn took, and its error if it had one. Each fact and each criterion ends as a `Mark`: its words, met or not, and one
 plain line of why. A `TurnRun` puts them together: the transcript, a mark for each fact and each criterion in the
-file's order, and what the agent's turn cost with its currency. A cost nobody could price is null, never 0
-([ADR 0007](../adr/0007-measure-every-request.md)).
+file's order, what the agent's turn cost with its currency, and what judging its criteria cost. A run has two
+bills, the agent's and the judge's, and a turn keeps both apart, so a page can say what each one spent. A cost
+nobody could price is null, never 0 ([ADR 0007](../adr/0007-measure-every-request.md)).
 
 ![A run's records: a run holds its conversations, a conversation its repeats, a repeat its turns, and a turn its transcript and its marks](diagrams/LouisAgent.Evals.Contracts-records.svg)
 
@@ -52,21 +53,31 @@ costs and times, and finds its first miss: the first mark not met, turns in orde
 criteria, as a `Miss` that says the turn, whether it is a fact or a criterion (`MarkKind`), and the mark. A
 conversation counts its passed repeats, finds its first failed one and its first ask, and picks the repeat a page
 opens: the one asked for, else its first failed one, else its first. The run adds its repeats' counts with `+`,
-sums its known costs with `KnownCost` (none priced is null, never 0), names its currency, measures its time from
-start to end, and orders its conversations failed first, with the next failed one after a conversation and the one
+sums its known costs with `KnownCost` (none priced is null, never 0), the agent's with `SumCost` and the judge's
+with `SumJudgeCost`, names its currency, measures its time from start to end, or to a given moment while it goes
+(`MeasureTimeSoFar`), and orders its conversations failed first, with the next failed one after a conversation and the one
 before it. An `EvalRow` says whether its last run passed in full, and how many conversations a run of it didn't
 reach.
 
-`RunKind` says live or replay, and `RunStatus` running, finished or could not finish. Their wire names, `live`,
-`replay`, `running`, `finished` and `could-not-finish`, are .NET's own `JsonStringEnumMemberName`, which `[WireName]`
+`RunKind` says live or replay, and `RunStatus` running, finished, could not finish, or stopped, when a person
+stopped it while it went and what was graded before is kept. Their wire names, `live`, `replay`, `running`,
+`finished`, `could-not-finish` and `stopped`, are .NET's own `JsonStringEnumMemberName`, which `[WireName]`
 is underneath. So the project still references nothing, and `.Wire()` and `SettingChoice` read the same names
 ([ADR 0024](../adr/0024-choices-are-enums.md)).
 
 ### 3. The API's rows
 
 The eval routes list in short what a page shows in a list. An `EvalRow` is one eval: its name, its agent, how many
-conversations, and its last run. A `RunRow` is a run in short, made from the run with `RunRow.Of`: its id, kind,
-status, repeats, when it started and ended, how many conversations passed and how many it graded. `EvalsReply`
+conversations, its last run, and its last live run that finished. A `RunRow` is a run in short, made from the run
+with `RunRow.Of`: its id, kind, status, repeats, when it started and ended, how many conversations passed and how
+many it graded, and what it cost the agent and the judge, in its currency.
+
+Two questions a card asks are the row's to answer. `CanReplay` says whether there is a live run to play back.
+`EstimateLive` says about what a live run of so many repeats will cost: what the last finished live run spent on
+the agent and the judge, divided by its repeats and times the repeats asked. When only one of the two bills was
+priced it is that one, and when neither was, or there is no such run, it is null, so the ask says the cost isn't
+known instead of showing $0. An estimate is only as good as the last real spend, which is why it comes from a run
+that happened and not from a price table. `EvalsReply`
 holds the rows of every eval, and `StartRunRequest` is what a start asks for: live or replay, and one repeat or
 three.
 
@@ -81,7 +92,7 @@ the store does: an unknown field, a missing one or a wrong null is refused.
 
 ![Who writes and who reads a run: the runner saves it, the routes find it in the store and answer with it](diagrams/LouisAgent.Evals.Contracts-sequence.svg)
 
-*Decided in:* F126.3.1, [ADR 0045](../adr/0045-typed-answers-and-a-shared-contract.md),
+*Decided in:* F126.3.1, F126.3.4, [ADR 0045](../adr/0045-typed-answers-and-a-shared-contract.md),
 [ADR 0134](../adr/0134-an-eval-is-one-file-of-conversations.md).
 
 ## Structure
@@ -104,8 +115,9 @@ None. A run's JSON options are `RunJson`, here.
 
 It has no test project of its own: its records are held where they are used. The pass rule is
 `RunRecordsTests`, a run's file read back whole is `RunStoreTests`, and what a page asks of a run is
-`RunAnswersTests`, which also holds that the run's JSON gains no field, all in `LouisAgent.Evals.Tests`; the routes'
-rows are `EvalRoutesTests` in `LouisAgent.Api.Evals.Tests`.
+`RunAnswersTests`, which also holds the run's JSON field by field, so a field added or lost fails it, and the rows'
+costs and the estimate, all in `LouisAgent.Evals.Tests`; the routes' rows are `EvalRoutesTests` in
+`LouisAgent.Api.Evals.Tests`.
 
 ## Limits and plans
 

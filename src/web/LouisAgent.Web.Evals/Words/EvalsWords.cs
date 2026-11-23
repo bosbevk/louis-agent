@@ -25,12 +25,44 @@ public static class EvalsWords
         EvalsPart.ToolCalls => "tool calls",
         EvalsPart.NotRunYet => "Not run yet.",
         EvalsPart.CouldNotFinish => "Could not finish",
+        EvalsPart.ReplayFree => "Replay free",
+        EvalsPart.RunLiveAsk => "Run live…",
+        EvalsPart.NothingToReplay => "Nothing to replay yet. A replay plays a live run back.",
+        EvalsPart.AskQuestion => "Run {0} live?",
+        EvalsPart.AskWhat => "{0}, against the real model and the real site.",
+        EvalsPart.RepeatsLabel => "Repeats",
+        EvalsPart.Estimate => "About {0} for {1}, from what the last live run cost.",
+        EvalsPart.CostNotKnown => "The cost isn't known yet. No live run with a price has finished.",
+        EvalsPart.RunLiveAbout => "Run live, about {0}",
+        EvalsPart.RunLive => "Run live",
+        EvalsPart.DontRun => "Don't run",
+        EvalsPart.GoingBefore => "A run of",
+        EvalsPart.GoingAfter => "is going. One run goes at a time, so the others wait.",
+        EvalsPart.GoingSince => "Going since {0}",
+        EvalsPart.FollowTheRun => "Follow the run →",
+        EvalsPart.Stopped => "Stopped",
+        EvalsPart.SoFar => "So far",
+        EvalsPart.Took => "Took",
+        EvalsPart.AgentCostName => "The agent's cost",
+        EvalsPart.JudgeCostName => "The judge's cost",
+        EvalsPart.StopTheRun => "Stop the run",
+        EvalsPart.RunGoingHead =>
+            "The run is going. {0} of {1} conversations are graded so far, and this page reads it again every few " +
+            "seconds.",
+        EvalsPart.RunStoppedHead => "{0} of {1} conversations were graded, then the run was stopped.",
+        EvalsPart.StoppedTitle => "The run was stopped",
+        EvalsPart.StoppedByAPerson => "A person stopped it. What was graded before is kept.",
+        EvalsPart.DidNotRun => "{0} did not run.",
         _ => throw new ArgumentOutOfRangeException(nameof(part), part, null)
     });
 
     /// <summary>A count in words, in the one's words for one and the many's for any other: "3 repeats".</summary>
     public static string Count(int count, EvalsPart one, EvalsPart many) =>
         $"{count} {Words[count == 1 ? one : many]}";
+
+    /// <summary>A part's words with its holes filled, in order, the same in every culture.</summary>
+    public static string Fill(EvalsPart part, params object[] holes) =>
+        string.Format(CultureInfo.InvariantCulture, Words[part], holes);
 
     /// <summary>A time in the browser's own time, as the overview shows a talk's: "23 Nov 2026, 08:19".</summary>
     public static string FormatLocal(DateTimeOffset at) =>

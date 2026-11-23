@@ -1,6 +1,8 @@
 using LouisAgent.Evals.Contracts.Runs;
 using LouisAgent.Evals.Files;
 using LouisAgent.Evals.Grading;
+using LouisAgent.Composition.Messages;
+using LouisAgent.Api.Evals.Messages;
 using LouisAgent.Core.Sessions.Replay.Store;
 using LouisAgent.Evals.Runs;
 using LouisAgent.Evals.Runs.Store;
@@ -34,11 +36,14 @@ public sealed class RunWork(
     public RunStore Store => store;
 
     /// <summary>The work that plays this run of this eval file to its end.</summary>
-    public Func<CancellationToken, Task> For(EvalRun started, EvalFile file) =>
-        cancellationToken => PlayAsync(started, file, cancellationToken);
+    public Func<RunSignals, Task> For(EvalRun started, EvalFile file) =>
+        signals => PlayAsync(started, file, signals);
 
-    /// <summary>The run played and kept, or kept as could not finish when something failed.</summary>
-    private async Task PlayAsync(EvalRun started, EvalFile file, CancellationToken cancellationToken)
+    /// <summary>
+    /// The run played and kept: as stopped when a person stopped it, as could not finish when something failed, and
+    /// left as it was when the host shut down, so it then reads as cut off.
+    /// </summary>
+    private async Task PlayAsync(EvalRun started, EvalFile file, RunSignals signals)
     {
         // The run as last kept, so a failure keeps what was graded before it.
         var last = started;
@@ -55,7 +60,18 @@ public sealed class RunWork(
                 last = run;
                 store.Save(run);
                 return Task.CompletedTask;
-            }, cancellationToken);
+            }, signals.Playing);
+        }
+        catch (OperationCanceledException) when (signals.Stopped.IsCancellationRequested)
+        {
+            // A person's stop is no failure: the run is kept as stopped with what was graded before it.
+            var stoppedByAPerson = last with
+            {
+                Status = RunStatus.Stopped,
+                EndedAt = clock.GetUtcNow(),
+                StoppedBecause = MessageText.Format(EvalsApiMessage.StoppedByAPerson)
+            };
+            store.Save(stoppedByAPerson);
         }
         catch (Exception failed) when (failed is not OperationCanceledException)
         {

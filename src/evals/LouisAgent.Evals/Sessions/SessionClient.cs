@@ -32,8 +32,10 @@ public sealed class SessionClient(HttpClient http)
             cancellationToken);
         await EnsureSuccessAsync(response, cancellationToken);
 
+        // The session exists now: its id is read whatever happens, so a run stopped this moment can still close it.
         var opened =
-            await response.Content.ReadFromJsonAsync<SessionCreatedReply>(SessionJson.SnakeCase, cancellationToken);
+            await response.Content.ReadFromJsonAsync<SessionCreatedReply>(SessionJson.SnakeCase,
+                CancellationToken.None);
         return opened!.SessionId;
     }
 

@@ -1,0 +1,19 @@
+@* How a run that didn't finish ended, said first on its page (F126.3.4): a person's stop in the page's own colours,
+   or the harness failing as the error it is, with the run's own reason; and how many conversations did not run. *@
+
+@if (Run.Status == RunStatus.Stopped)
+{
+    <section class="card-p run-ending run-stopped-by-person">
+        <h2>@StoppedTitle</h2>
+        <p>@StoppedByAPerson</p>
+        <p>@DidNotRun</p>
+    </section>
+}
+else if (Run.Status == RunStatus.CouldNotFinish)
+{
+    <section class="card-p run-ending run-stopped">
+        <h2>The run could not finish</h2>
+        <p>@Run.StoppedBecause</p>
+        <p>@DidNotRun</p>
+    </section>
+}

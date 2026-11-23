@@ -40,7 +40,7 @@ public class JudgeLiveTests
         };
         var judge = new Judge(new LlmClientFactory([AnthropicProvider.Instance]).Create(options));
 
-        var mark = await judge.MarkAsync(criterion, [Turn]);
+        var mark = (await judge.MarkAsync(criterion, [Turn])).Mark;
 
         Assert.That(mark.Met, Is.EqualTo(met), mark.Reason);
     }

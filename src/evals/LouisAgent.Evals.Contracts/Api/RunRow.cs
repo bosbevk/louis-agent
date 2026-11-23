@@ -11,6 +11,9 @@ namespace LouisAgent.Evals.Contracts.Api;
 /// <param name="EndedAt">When it ended, in UTC, once it has.</param>
 /// <param name="Passed">How many of its conversations passed.</param>
 /// <param name="Conversations">How many conversations it has graded.</param>
+/// <param name="Cost">What its agent's turns cost, the known ones added, or null when none had a price.</param>
+/// <param name="JudgeCost">What judging its turns cost, the known ones added, or null when none is known.</param>
+/// <param name="Currency">The currency its costs are in, or null when nothing was priced.</param>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public sealed record RunRow(
     string Id,
@@ -20,9 +23,12 @@ public sealed record RunRow(
     DateTimeOffset StartedAt,
     DateTimeOffset? EndedAt,
     int Passed,
-    int Conversations)
+    int Conversations,
+    decimal? Cost = null,
+    decimal? JudgeCost = null,
+    string? Currency = null)
 {
     /// <summary>The run, in short.</summary>
     public static RunRow Of(EvalRun run) => new(run.Id, run.Kind, run.Status, run.Repeats, run.StartedAt, run.EndedAt,
-        run.Passed, run.Conversations.Count);
+        run.Passed, run.Conversations.Count, run.SumCost(), run.SumJudgeCost(), run.FindCurrency());
 }
