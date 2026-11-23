@@ -1,4 +1,5 @@
-@* One eval's card: its name, its agent, its conversations, and how its last run went, with the way to that run. *@
+@* One eval's card: its name, its agent, its conversations, and how its last run went, with the way to that run; then
+   a free replay and a live run after asking, or, while its run goes, the way to follow it (F126.3.4). *@
 
 <section class="card-p eval-card h-100">
     <h2 class="eval-card-name">@Row.Name</h2>
@@ -15,14 +16,50 @@
         <p class="eval-card-score"><span class="eval-card-passed">@last.Passed</span> <span class="eval-card-of">of @last.Conversations passed</span></p>
     }
 
-    @if (Stopped)
+    @if (CouldNotFinishThen)
     {
         <p class="eval-card-stopped">@CouldNotFinish: @Row.LastRun?.Conversations of @Row.Conversations graded</p>
     }
 
-    @if (Row.LastRun is { } run)
+    @if (StoppedThen)
     {
-        <p class="eval-card-when"><span class="eval-card-date">@When</span> · @Kind · @RepeatCount</p>
-        <a class="eval-card-open" href="@Open">Open the last run →</a>
+        <p class="eval-card-stopped">@Stopped</p>
+    }
+
+    @if (Going)
+    {
+        <p class="eval-card-when">@GoingSince · @Kind · @RepeatCount</p>
+        <a class="eval-card-follow" href="@Open">@FollowTheRun</a>
+    }
+    else
+    {
+        @if (Row.LastRun is not null)
+        {
+            <p class="eval-card-when"><span class="eval-card-date">@When</span> · @Kind · @RepeatCount</p>
+            <a class="eval-card-open" href="@Open">Open the last run →</a>
+        }
+
+        <div class="eval-card-actions d-flex flex-wrap gap-2">
+            @if (Row.CanReplay())
+            {
+                <button type="button" class="header-button" disabled="@Off" @onclick="ReplayAsync">@ReplayFree</button>
+            }
+            <button type="button" class="header-button" disabled="@Off" @onclick="AskAsync">@RunLiveAsk</button>
+        </div>
+
+        @if (!Row.CanReplay())
+        {
+            <p class="eval-card-note">@NothingToReplay</p>
+        }
+
+        @if (AskOpen && !Waiting)
+        {
+            <RunAsk Row="Row" Starting="_starting" OnRun="RunLiveAsync" OnClose="CloseAsync"/>
+        }
+
+        @if (_refused is { } refused)
+        {
+            <p class="eval-card-refused">@refused</p>
+        }
     }
 </section>

@@ -142,6 +142,9 @@ let it tell, it answers not met and says what is missing.
 
 The judge sets no temperature, since the newest models refuse one, and forces no tool. Its call runs in the
 ledger's `grading` scope, so when it's given a client that records, the cost lands under its own purpose (ADR 0007).
+`MarkAsync` hands back a `JudgedMark`: the mark, and what its call cost, read from that scope's own total. That is the
+ledger's price when the client records to one, a known 0 when the answer was played back, and null when nothing
+priced it, never 0.
 A judge that can't mark throws `JudgeFailedException`, for an empty answer, one that doesn't fit, or a failure from
 the provider. It never answers "not met" for its own trouble, because that would blame the agent. A cancelled call
 stays a cancellation. One call per criterion was picked over one call per conversation, as Anthropic's evals
@@ -171,7 +174,10 @@ turn's last usage, as a `TurnCost`; a cost nobody could price is null, never 0.
 and its role when it names one, sends each ask in the file's order, times each turn and writes it down, and closes
 the session whatever happens. Then it grades: each fact by code from the turn and the turns before it, each
 criterion by the judge from the turns up to and including that one, never a later one. Asking first and grading
-after keeps one place that opens and closes the session. A turn that ends in the agent's own error is still a turn:
+after keeps one place that opens and closes the session. A turn's judge cost is its criteria's costs added with
+`KnownCost`, kept on the turn beside the agent's, so a run has its two bills apart. The player grades under the
+play's own run and task, so the judge's rows in the ledger name their run as the agent's rows do. A turn that ends
+in the agent's own error is still a turn:
 `no-error` is then not met, and the next turn is still asked, since the agent failing is what an eval is for. A
 refusal from the API is not caught here; stopping is the runner's.
 
@@ -202,7 +208,9 @@ refusing, and a page a conversation names that isn't a page of the site, which `
 `PageMissingException` naming its address. A host that maps no site says the same, since the route isn't there. In
 each, nothing was learnt about the agent, so no mark is made up. Everything graded before the stop
 stays on the run, the repeats of the conversation cut short too. Anything else that goes wrong is a bug and
-surfaces, and a cancelled run stays a cancellation.
+surfaces, and a cancelled run stays a cancellation: the runner throws it on, and the host that started the run says
+whether a person stopped it ([LouisAgent.Api.Evals](LouisAgent.Api.Evals.md)). A session opened just as the run is
+stopped is still closed, since its id is read whatever the stop says.
 
 ![One live run in memory: the run holds its conversation, the conversation its three repeats, each repeat its turn with a transcript and marks, and beside it each repeat's trial of recordings](diagrams/LouisAgent.Evals-run-objects.svg)
 

@@ -1,8 +1,10 @@
 using LouisAgent.Choices;
 using LouisAgent.Composition.Agents;
 using LouisAgent.Core.Sessions.Replay;
+using LouisAgent.Core.Usage.Records;
 using LouisAgent.Evals.Contracts.Grading;
 using LouisAgent.Evals.Contracts.Runs;
+using LouisAgent.Evals.Contracts.Runs.Answers;
 using LouisAgent.Evals.Contracts.Transcripts;
 using LouisAgent.Evals.Files;
 using LouisAgent.Evals.Grading;
@@ -43,8 +45,11 @@ public sealed class ConversationPlayer(
     {
         var asked = await AskAllAsync(agent, conversation, trial, cancellationToken);
 
-        // The judge's answers are kept in the play's trial beside the agent's, or played back from it.
+        // The judge's answers are kept in the play's trial beside the agent's, or played back from it, and its calls
+        // are recorded under the play's run and task, so the ledger ties what judging cost to its run (F126.3.4).
         using var judging = JudgeReplay.Begin(trial);
+        var playTags = new UsageTags(trial.Task, trial.Run, null);
+        using var grading = UsageScope.Begin(UsagePurpose.Grading, tags: playTags);
         var transcripts = asked.Select(turn => turn.Transcript).ToList();
         var turns = new List<TurnRun>();
         for (int at = 0; at < asked.Count; at++)
@@ -118,10 +123,18 @@ public sealed class ConversationPlayer(
         var facts = turn.Facts.Select(fact => Facts.Tell(fact, asked.Transcript, earlier)).ToList();
 
         var criteria = new List<Mark>();
+        var judgeCosts = new List<decimal?>();
         foreach (string criterion in turn.Criteria)
-            criteria.Add(await judge.MarkAsync(criterion, soFar, cancellationToken));
+        {
+            var judged = await judge.MarkAsync(criterion, soFar, cancellationToken);
+            criteria.Add(judged.Mark);
+            judgeCosts.Add(judged.Cost);
+        }
 
-        return new TurnRun(asked.Transcript, facts, criteria, asked.Cost.Amount, asked.Cost.Currency);
+        return new TurnRun(asked.Transcript, facts, criteria, asked.Cost.Amount, asked.Cost.Currency)
+        {
+            JudgeCost = KnownCost.Sum(judgeCosts)
+        };
     }
 
     /// <summary>A turn as it was asked, before it is graded.</summary>

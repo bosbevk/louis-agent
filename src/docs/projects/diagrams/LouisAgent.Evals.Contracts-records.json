@@ -47,7 +47,8 @@
           "TurnTranscript Transcript",
           "IReadOnlyList<Mark> Facts, Criteria",
           "decimal? Cost",
-          "string? Currency"
+          "string? Currency",
+          "decimal? JudgeCost"
         ]
       },
       {
@@ -96,7 +97,8 @@
         "members": [
           "Running",
           "Finished",
-          "CouldNotFinish"
+          "CouldNotFinish",
+          "Stopped"
         ]
       },
       {
@@ -104,7 +106,7 @@
         "name": "RunRow",
         "kind": "record",
         "members": [
-          "a run in short",
+          "a run in short, with its two costs",
           "RunRow Of(EvalRun run)"
         ]
       }

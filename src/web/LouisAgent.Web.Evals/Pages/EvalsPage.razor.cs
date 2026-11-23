@@ -1,5 +1,8 @@
 using System.Net;
 using LouisAgent.Evals.Contracts.Api;
+using LouisAgent.Web.Evals.Words.Parts;
+using LouisAgent.Web.Evals.Words;
+using LouisAgent.Evals.Contracts.Runs;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Docs;
 using LouisAgent.Web.Evals.Client;
@@ -26,6 +29,7 @@ public partial class EvalsPage
     private const string GuidePath = "src/docs/guides/run-an-eval.md";
 
     private EvalsReply? _evals;
+    private string? _asking;
     private string? _error;
     private bool _needsKey, _loading;
 
@@ -34,6 +38,22 @@ public partial class EvalsPage
     [Inject] private IServiceProvider Services { get; set; } = null!;
 
     /// <summary>The guide's address in the site's docs, or none when the site names no docs.</summary>
+    /// <summary>The eval whose run is going, which every other card waits for; none while none goes.</summary>
+    private string? Going => _evals?.Evals.FirstOrDefault(row => row.LastRun is { Status: RunStatus.Running })?.Name;
+
+    private static string GoingBefore => EvalsWords.Words[EvalsPart.GoingBefore];
+
+    private static string GoingAfter => EvalsWords.Words[EvalsPart.GoingAfter];
+
+    /// <summary>Whether this card's ask is the one open: one at a time, held here (Louis's pick, 2026-11-23).</summary>
+    private bool IsAsking(EvalRow row) => row.Name == _asking;
+
+    /// <summary>Whether this card waits for another eval's run.</summary>
+    private bool IsWaiting(EvalRow row) => Going is { } going && going != row.Name;
+
+    /// <summary>Opens a card's ask, closing any other, or closes it.</summary>
+    private void Ask(string? eval) => _asking = eval;
+
     private string? GuideLink => Services.GetService<DocsAddress>()?.For(GuidePath);
 
     /// <summary>Reads the admin's key, then the evals.</summary>

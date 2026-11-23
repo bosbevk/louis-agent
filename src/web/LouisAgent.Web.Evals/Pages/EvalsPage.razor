@@ -31,11 +31,16 @@ else if (_evals is { Evals.Count: 0 })
 }
 else if (_evals is { } evals)
 {
+    @if (Going is { } going)
+    {
+        <section class="card-p evals-going mb-3">@GoingBefore <strong>@going</strong> @GoingAfter</section>
+    }
+
     <div class="row g-3">
         @foreach (var row in evals.Evals)
         {
             <div @key="row.Name" class="col-12 col-md-6 col-xl-3">
-                <EvalCard Row="row"/>
+                <EvalCard Row="row" AskOpen="@IsAsking(row)" Waiting="@IsWaiting(row)" OnAsk="Ask"/>
             </div>
         }
     </div>

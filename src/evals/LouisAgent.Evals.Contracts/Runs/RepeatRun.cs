@@ -27,6 +27,9 @@ public sealed record RepeatRun(int Number, IReadOnlyList<TurnRun> Turns)
     /// <summary>Its criteria over all its turns, met of all.</summary>
     public MarkCount CountCriteria() => Count(Turns.SelectMany(turn => turn.Criteria));
 
+    /// <summary>What judging its turns cost, the known ones added; null when none is known, never 0.</summary>
+    public decimal? SumJudgeCost() => KnownCost.Sum(Turns.Select(turn => turn.JudgeCost));
+
     /// <summary>What the agent's turns cost, the known ones added; null when none has a price.</summary>
     public decimal? SumCost() => KnownCost.Sum(Turns.Select(turn => turn.Cost));
 

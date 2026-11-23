@@ -13,6 +13,8 @@
 
   <ItemGroup>
     <PackageReference Include="bunit" Version="2.12.5" />
+    <!-- F126.3.4: the run page's timer is tested on a clock the test moves (Louis's pick, 2026-11-23). -->
+    <PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" Version="10.10.0" />
     <PackageReference Include="coverlet.collector" Version="6.0.4" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.0" />
     <PackageReference Include="NUnit" Version="4.3.2" />

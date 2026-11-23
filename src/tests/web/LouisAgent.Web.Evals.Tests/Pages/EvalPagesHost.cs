@@ -10,6 +10,7 @@ using LouisAgent.Web.Evals.Pages;
 using LouisAgent.Web.Storage;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Time.Testing;
 
 namespace LouisAgent.Web.Evals.Tests.Pages;
 
@@ -19,7 +20,7 @@ namespace LouisAgent.Web.Evals.Tests.Pages;
 /// </summary>
 internal sealed class EvalPagesHost
 {
-    private readonly EvalRun? _run;
+    private EvalRun? _run;
     private readonly EvalsReply _evals;
     private readonly IReadOnlyList<RunRow> _runs;
 
@@ -33,6 +34,15 @@ internal sealed class EvalPagesHost
 
     /// <summary>How many times the run itself was read.</summary>
     public int RunReads { get; private set; }
+
+    /// <summary>How many times the run was asked to stop.</summary>
+    public int Stops { get; private set; }
+
+    /// <summary>The clock the pages are given, which a test moves (F126.3.4).</summary>
+    public FakeTimeProvider Clock { get; } = new(new DateTimeOffset(2026, 11, 23, 14, 10, 0, TimeSpan.Zero));
+
+    /// <summary>From now on the run is answered as this, as a run that goes on changes.</summary>
+    public void Answers(EvalRun run) => _run = run;
 
     /// <summary>The page for this eval's run, once it has loaded.</summary>
     public IRenderedComponent<RunPage> Render(BunitContext ctx, string eval, string run) =>
@@ -50,6 +60,7 @@ internal sealed class EvalPagesHost
         ctx.Services.AddSingleton(api);
         ctx.Services.AddSingleton(new EvalsApi(api));
         ctx.Services.AddSingleton(new AdminAccess());
+        ctx.Services.AddSingleton<TimeProvider>(Clock);
 
         var page = ctx.Render(parameters);
         page.WaitForState(() => page.FindAll(loading).Count == 0, TimeSpan.FromSeconds(10));
@@ -62,6 +73,12 @@ internal sealed class EvalPagesHost
         string path = request.RequestUri!.AbsolutePath;
         if (path.EndsWith("/runs", StringComparison.Ordinal)) return Json(_runs);
         if (!path.Contains("/runs/", StringComparison.Ordinal)) return Json(_evals);
+
+        if (request.Method == HttpMethod.Delete)
+        {
+            Stops++;
+            return new HttpResponseMessage(HttpStatusCode.NoContent);
+        }
 
         RunReads++;
         return _run is null ? new HttpResponseMessage(HttpStatusCode.NotFound) : Json(_run);

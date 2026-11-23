@@ -14,7 +14,8 @@ namespace LouisAgent.Web.Evals.Pages;
 
 /// <summary>
 /// A run's page. It reads the run whole, the host's evals and this eval's runs when it opens and on Reload, and asks
-/// the run's own records for every figure it shows: passed, the marks met, the cost and the time.
+/// the run's own records for every figure it shows: passed, the marks met, both costs and the time. A going run is
+/// read again every few seconds and can be stopped (F126.3.4).
 /// </summary>
 /// <remarks>
 /// The page only draws. What a run knows about itself (its counts, its order failed first) is the record's to
@@ -27,7 +28,11 @@ public partial class RunPage
     private EvalRow? _eval;
     private IReadOnlyList<RunRow> _runs = [];
     private string? _error;
-    private bool _needsKey, _loading, _missing;
+    private bool _needsKey, _loading, _missing, _stopping, _gone;
+    private ITimer? _timer;
+
+    /// <summary>How often a going run is read again: a run's file changes about once a conversation.</summary>
+    private static readonly TimeSpan Every = TimeSpan.FromSeconds(3);
 
     /// <summary>The eval the run belongs to, from the address.</summary>
     [Parameter]
@@ -39,6 +44,13 @@ public partial class RunPage
 
     [Inject] private EvalsApi Api { get; set; } = null!;
     [Inject] private ChatStore Store { get; set; } = null!;
+
+    /// <summary>The clock the page follows a run by, the one the evals' area registers.</summary>
+    [Inject]
+    private TimeProvider Clock { get; set; } = null!;
+
+    /// <summary>Whether the run is going, so the page follows it and offers to stop it.</summary>
+    private bool Going => _run is { Status: RunStatus.Running };
 
     private int Passed => _run?.Passed ?? 0;
 
@@ -57,7 +69,28 @@ public partial class RunPage
     private string Kind => _run?.Kind.Wire() ?? "";
 
     /// <summary>How long the run took, or unknown while it has no end.</summary>
-    private string Took => _run?.MeasureTime() is { } time ? EvalsWords.FormatTime(time) : Unknown;
+    /// <summary>"So far" while the run goes, "Took" once it has ended.</summary>
+    private string TimeName => EvalsWords.Words[Going ? EvalsPart.SoFar : EvalsPart.Took];
+
+    /// <summary>How long it has gone, by the page's clock while it goes, or unknown before it is read.</summary>
+    private string Time => _run is { } run
+        ? EvalsWords.FormatTime(run.MeasureTimeSoFar(Clock.GetUtcNow()))
+        : Unknown;
+
+    private static string AgentCostName => EvalsWords.Words[EvalsPart.AgentCostName];
+
+    private static string JudgeCostName => EvalsWords.Words[EvalsPart.JudgeCostName];
+
+    private static string StopTheRun => EvalsWords.Words[EvalsPart.StopTheRun];
+
+    private string GoingHead => EvalsWords.Fill(EvalsPart.RunGoingHead, Graded, Held);
+
+    private string StoppedHead => EvalsWords.Fill(EvalsPart.RunStoppedHead, Graded, Held);
+
+    /// <summary>What judging its turns cost so far, or unknown when none is known, never 0 (ADR 0007).</summary>
+    private string JudgeCost => _run?.SumJudgeCost() is { } cost
+        ? UsageFormat.Money(cost, _run.FindCurrency())
+        : Unknown;
 
     /// <summary>What the agent's turns cost, or unknown when none was priced, never 0 (ADR 0007).</summary>
     private string Cost => _run?.SumCost() is { } cost ? UsageFormat.Money(cost, _run.FindCurrency()) : Unknown;
@@ -69,6 +102,55 @@ public partial class RunPage
     {
         if (!Store.Loaded) await Store.LoadAsync();
         await LoadAsync();
+        Follow();
+    }
+
+    /// <summary>The page is gone: it reads no more.</summary>
+    public void Dispose()
+    {
+        _gone = true;
+        StopFollowing();
+    }
+
+    /// <summary>
+    /// Follows a going run: a timer on the page's clock reads it again every few seconds, until it has ended or the
+    /// page is gone. A finished run's page never reads by itself.
+    /// </summary>
+    private void Follow()
+    {
+        if (_gone || !Going)
+        {
+            StopFollowing();
+            return;
+        }
+
+        // The tick comes off the render thread, so the read and the redraw go through the renderer.
+        _timer ??= Clock.CreateTimer(_ => _ = InvokeAsync(ReadAgainAsync), null, Every, Every);
+    }
+
+    /// <summary>One tick: the run read again, drawn, and followed on only while it still goes.</summary>
+    private async Task ReadAgainAsync()
+    {
+        if (_gone) return;
+        await LoadAsync();
+        Follow();
+        StateHasChanged();
+    }
+
+    private void StopFollowing()
+    {
+        _timer?.Dispose();
+        _timer = null;
+    }
+
+    /// <summary>Stops the run, then reads it again to show how it ended.</summary>
+    private async Task StopAsync()
+    {
+        _stopping = true;
+        await Api.StopAsync(Run);
+        await LoadAsync();
+        _stopping = false;
+        Follow();
     }
 
     /// <summary>

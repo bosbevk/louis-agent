@@ -41,6 +41,13 @@ public enum EvalsApiMessage
     [Holes(typeof(NoSuchRunHoles))]
     NoSuchRun,
 
+    [Description("A person stopped the run. What was graded before the stop is kept.")]
+    StoppedByAPerson,
+
+    [Description("The run {Id} isn't going, so there is nothing to stop.")]
+    [Holes(typeof(RunNotGoingHoles))]
+    RunNotGoing,
+
     [Description("The run was cut off before it ended, as when the host restarts.")]
     CutOff,
 

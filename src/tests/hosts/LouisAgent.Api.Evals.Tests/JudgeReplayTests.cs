@@ -78,6 +78,6 @@ public class JudgeReplayTests
         var judge = new Judge(new JudgeReplay(model, new ReplayStore(_folder)));
 
         using var replay = JudgeReplay.Begin(trial);
-        return await judge.MarkAsync(criterion, Conversation);
+        return (await judge.MarkAsync(criterion, Conversation)).Mark;
     }
 }

@@ -17,6 +17,11 @@ public static class EvalsArea
 {
     /// <summary>The eval pages, named among the site's areas.</summary>
     public static SiteAreasBuilder Evals(this SiteAreasBuilder areas) =>
-        areas.Add(new SiteArea("evals", services => services.TryAddScoped<EvalsApi>(), [EvalsLibrary.Assembly],
+        areas.Add(new SiteArea("evals", services =>
+            {
+                services.TryAddScoped<EvalsApi>();
+                // The clock a run's page follows a going run by (Louis's pick, 2026-11-23); a site may set its own.
+                services.TryAddSingleton(TimeProvider.System);
+            }, [EvalsLibrary.Assembly],
             AdminLinks: typeof(EvalsLinks), AdminCard: typeof(EvalsCard)));
 }

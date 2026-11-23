@@ -90,6 +90,17 @@ public class ConversationPageTests
             .And.Contain("the answer opens with \"I can't do that\"."));
     }
 
+    /// <summary>F126.3.4: a turn shows what judging it cost, beside what it cost the agent.</summary>
+    [Test]
+    public void ATurn_ShowsWhatJudgingItCost_BesideTheAgentsCost()
+    {
+        using var ctx = new BunitContext();
+        var page = Render(ctx, "guide-invoices", repeat: 2);
+
+        Assert.That(page.Find(".turn-costs").TextContent, Does.Contain("The agent's cost").And.Contain("$0.0008")
+            .And.Contain("The judge's cost").And.Contain("$0.0002"));
+    }
+
     /// <summary>A conversation of one repeat has no switch.</summary>
     [Test]
     public void OneRepeat_HasNoSwitch()
@@ -152,6 +163,11 @@ public class ConversationPageTests
         var criterion = new Mark("Never answers \"I can't do that\"", met,
             "the answer opens with \"I can't do that\".");
         return new RepeatRun(number,
-            [new TurnRun(transcript, [new Mark("used ReadDoc", true, "Called.")], [criterion], 0.0008m, "USD")]);
+        [
+            new TurnRun(transcript, [new Mark("used ReadDoc", true, "Called.")], [criterion], 0.0008m, "USD")
+            {
+                JudgeCost = 0.0002m
+            }
+        ]);
     }
 }

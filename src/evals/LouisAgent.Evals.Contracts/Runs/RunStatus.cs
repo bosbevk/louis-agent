@@ -17,5 +17,8 @@ public enum RunStatus
 
     /// <summary>The run stopped early, and says why in its <c>StoppedBecause</c>.</summary>
     [JsonStringEnumMemberName("could-not-finish")]
-    CouldNotFinish
+    CouldNotFinish,
+
+    /// <summary>A person stopped it while it went; what was graded before the stop is kept (F126.3.4).</summary>
+    [JsonStringEnumMemberName("stopped")] Stopped
 }

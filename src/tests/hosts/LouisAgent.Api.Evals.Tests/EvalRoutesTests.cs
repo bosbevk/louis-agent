@@ -19,6 +19,7 @@ public class EvalRoutesTests
     [TestCase("GET", "/v1/admin/evals")]
     [TestCase("POST", "/v1/admin/evals/greets/runs")]
     [TestCase("GET", "/v1/admin/evals/runs/20261123-043012-greets")]
+    [TestCase("DELETE", "/v1/admin/evals/runs/20261123-043012-greets")]
     [TestCase("GET", "/v1/admin/evals/greets/runs")]
     public async Task EachRoute_AnswersUnauthorized_WithoutTheAdminKey(string method, string path)
     {
@@ -63,6 +64,25 @@ public class EvalRoutesTests
         Assert.That(evals!.Evals.Single().LastRun, Is.EqualTo(RunRow.Of(run)));
     }
 
+    /// <summary>
+    /// F126.3.4: the list names each eval's last live run that finished apart from its last run, so after a replay the
+    /// live run it played back is still named; an eval never run live names none.
+    /// </summary>
+    [Test]
+    public async Task TheList_NamesTheLastLiveRun_ApartFromTheLastRun()
+    {
+        await using var host = await StartAsync(Answering("Hello."));
+        var before = await host.Client.GetFromJsonAsync<EvalsReply>("/v1/admin/evals", RunJson.Options);
+
+        var live = await host.RunToTheEndAsync();
+        var replay = await host.RunToTheEndAsync(RunKind.Replay);
+        var after = await host.Client.GetFromJsonAsync<EvalsReply>("/v1/admin/evals", RunJson.Options);
+
+        Assert.That(before!.Evals.Single().LastLiveRun, Is.Null);
+        Assert.That(after!.Evals.Single().LastRun!.Id, Is.EqualTo(replay.Id));
+        Assert.That(after.Evals.Single().LastLiveRun!.Id, Is.EqualTo(live.Id));
+    }
+
     /// <summary>A second start while one runs is a 409; a model that waits for the test holds the first open.</summary>
     [Test]
     public async Task ASecondStart_WhileOneRuns_IsAConflict()
@@ -83,6 +103,70 @@ public class EvalRoutesTests
         Assert.That(second.StatusCode, Is.EqualTo(HttpStatusCode.Conflict));
         await host.EndedAsync(first.Headers.Location!);
     }
+
+    /// <summary>
+    /// F126.3.4: DELETE on the going run's address stops it: 204, and the run is then kept as stopped, with its end
+    /// time and a reason that says a person stopped it.
+    /// </summary>
+    [Test]
+    public async Task StoppingTheGoingRun_KeepsItAsStopped()
+    {
+        using var held = new ManualResetEventSlim();
+        await using var host = await StartAsync(Waiting(held));
+        using var started = await host.StartRunAsync();
+
+        using var stop = await host.Client.DeleteAsync(started.Headers.Location!);
+        var run = await host.EndedAsync(started.Headers.Location!);
+        held.Set();
+
+        Assert.That(stop.StatusCode, Is.EqualTo(HttpStatusCode.NoContent));
+        Assert.That((run.Status, run.EndedAt is not null), Is.EqualTo((RunStatus.Stopped, true)));
+        Assert.That(run.StoppedBecause, Does.Contain("stopped"));
+    }
+
+    /// <summary>A stop of an unknown run is a 404, and of a run that has ended a 409 with its reason.</summary>
+    [Test]
+    public async Task StoppingAnUnknownRun_IsNotFound_AndAnEndedOne_AConflict()
+    {
+        await using var host = await StartAsync(Answering("Hello."));
+        var ended = await host.RunToTheEndAsync();
+
+        using var unknown = await host.Client.DeleteAsync("/v1/admin/evals/runs/20261123-043012-nobody");
+        using var over = await host.Client.DeleteAsync($"/v1/admin/evals/runs/{ended.Id}");
+
+        Assert.That(unknown.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+        Assert.That(over.StatusCode, Is.EqualTo(HttpStatusCode.Conflict));
+        Assert.That(await over.Content.ReadAsStringAsync(), Does.Contain(ended.Id));
+    }
+
+    /// <summary>
+    /// A run cut by the host's shutdown is left in its file as it was, still running, so it reads as cut off: only a
+    /// person's stop is kept as stopped.
+    /// </summary>
+    [Test]
+    public async Task ARunCutByTheHostsShutdown_IsLeftAsItWas()
+    {
+        using var held = new ManualResetEventSlim();
+        await using var keeper = await StartAsync(Answering("Hello."));
+        var shuttingDown = await StartAsync(Waiting(held), sameFoldersAs: keeper);
+        using var started = await shuttingDown.StartRunAsync();
+        await Task.Delay(200);
+
+        await shuttingDown.DisposeAsync();
+        held.Set();
+
+        string id = started.Headers.Location!.ToString()[EvalHandlers.RunAddress.Length..];
+        string file = await File.ReadAllTextAsync(Path.Combine(keeper.RunsFolder, id + ".json"));
+        Assert.That(file, Does.Contain("\"status\": \"running\"").Or.Contain("\"status\":\"running\""));
+    }
+
+    /// <summary>A model that waits for the test before it answers, so a run stays going.</summary>
+    private static FakeChatClient Waiting(ManualResetEventSlim held) => new(Enumerable.Repeat<Func<IList<ChatMessage>,
+        ChatResponse>>(_ =>
+    {
+        held.Wait(TimeSpan.FromSeconds(30));
+        return new ChatResponse(new ChatMessage(ChatRole.Assistant, "Hello."));
+    }, 5).ToArray());
 
     /// <summary>An eval the host doesn't have is a 404.</summary>
     [Test]

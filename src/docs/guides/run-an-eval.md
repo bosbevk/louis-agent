@@ -1,7 +1,7 @@
 # Run an eval
 
-> **How-to.** Start a run of a site's eval through its API, follow it, read its file, replay it for free, and what
-> to do when a replay says its recording is out of date. **Elsewhere:** how a run works in
+> **How-to.** Start a run of a site's eval from its admin or through its API, follow it, stop it, read its file,
+> replay it for free, and what to do when a replay says its recording is out of date. **Elsewhere:** how a run works in
 > [LouisAgent.Evals](../projects/LouisAgent.Evals.md), the routes and their settings in
 > [LouisAgent.Api.Evals](../projects/LouisAgent.Api.Evals.md), what an eval is in
 > [ADR 0134](../adr/0134-an-eval-is-one-file-of-conversations.md).
@@ -33,9 +33,31 @@ Read it into your shell without printing it:
 KEY=$(grep -E '^ADMIN_API_KEY=' src/site/config/.env.secrets | cut -d= -f2-)
 ```
 
-![The steps: a live run, read until it ends, its file, then a replay, and a live run again when the replay is out of date](diagrams/run-an-eval-flow.svg)
+## In the admin
 
-## Steps
+On a site that names `.Evals()` among its areas, as louis-agent.dev does, the admin does all of it with the key you
+already gave it.
+
+![In the admin: a replay starts from the card at once, a live run after its ask, and the run's page follows it until it ends or is stopped](diagrams/run-an-eval-admin.svg)
+
+1. Open **Evals** in the admin's sidebar, at `/admin/evals`. Each eval is a card with its last run's number first.
+2. To replay for free, press **Replay free** on the eval's card. It is there once the eval has a live run that
+   finished.
+3. To run live, press **Run live…**, pick one repeat or three, and read the estimate, which comes from what the last
+   live run cost. Press **Run live, about $…** to start it, or **Don't run**. On louis-agent.dev that waits for
+   Louis's go.
+4. Either way the browser opens the run's page. It reads the run again every few seconds while it goes, and its
+   figures say how long it has gone and what the agent and the judge have cost so far.
+5. To stop it, press **Stop the run**. The run ends as stopped and keeps what it graded before the stop.
+6. Read it. A run's page lists its conversations failed first, with the first miss of each, and the eval's other
+   runs at its foot. A conversation opens at its first failed repeat, turn by turn, with every tool call, answer,
+   mark and cost, and walks to the next failed one or to the same conversation in the run before.
+
+## Through the API
+
+The same runs, with `curl`, from a terminal or a script.
+
+![The steps: a live run, read until it ends, its file, then a replay, and a live run again when the replay is out of date](diagrams/run-an-eval-flow.svg)
 
 1. See the site's evals, each with its agent and its last run:
 
@@ -50,22 +72,23 @@ KEY=$(grep -E '^ADMIN_API_KEY=' src/site/config/.env.secrets | cut -d= -f2-)
      -H "content-type: application/json" -d '{"kind":"live","repeats":3}'
    ```
 
-3. Read that address until the run's `status` is no longer `running`. It ends as `finished`, or as
-   `could-not-finish` with its reason in `stoppedBecause`:
+3. Read that address until the run's `status` is no longer `running`. It ends as `finished`, as `stopped` when a
+   person stopped it, or as `could-not-finish`, each of the last two with its reason in `stoppedBecause`:
 
    ```bash
    curl -s http://127.0.0.1:5080/v1/admin/evals/runs/20261123-063633-guide -H "x-api-key: $KEY"
    ```
 
 4. Read the run's file, the same record: `src/site/data/evals/runs/{id}.json`. Each conversation has its repeats,
-   each repeat its turns, and each turn what was asked, the answer, every tool call, its cost, and a mark with its
-   reason for each fact and each criterion. `passed` on a conversation is true only when every repeat passed.
+   each repeat its turns, and each turn what was asked, the answer, every tool call, what it cost the agent and the
+   judge, and a mark with its reason for each fact and each criterion. `passed` on a conversation is true only when every repeat passed.
 
-5. Or read it in the admin, on a site that names `.Evals()` among its areas, as louis-agent.dev does. Open
-   **Evals** in the admin's sidebar at `/admin/evals`: one card an eval, its last run's number first. A card opens
-   the last run, its conversations failed first with the first miss of each, and the eval's other runs at its foot.
-   A conversation opens at its first failed repeat, turn by turn, with every tool call, answer and mark, and walks to
-   the next failed one or to the same conversation in the run before. The pages read; nothing on them starts a run.
+5. To stop a run while it goes, delete its address. The answer is `204`, and the run then keeps itself as
+   `stopped`. A run that has ended answers `409`, and one the host doesn't have `404`:
+
+   ```bash
+   curl -s -i -X DELETE http://127.0.0.1:5080/v1/admin/evals/runs/20261123-063633-guide -H "x-api-key: $KEY"
+   ```
 
 6. Replay it. The replay plays the eval's last live run that finished, as many repeats as it recorded, and ends as
    a run of its own with `replayOf` naming the live one. A page a conversation names is sent as the live run kept

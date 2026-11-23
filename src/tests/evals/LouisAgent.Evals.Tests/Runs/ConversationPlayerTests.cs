@@ -1,4 +1,6 @@
 using LouisAgent.Composition.Agents;
+using LouisAgent.Core.Llm.UsageMapping;
+using LouisAgent.Core.Pricing.Prices;
 using LouisAgent.Evals.Contracts.Runs;
 using LouisAgent.Evals.Files;
 using LouisAgent.Evals.Grading;
@@ -175,6 +177,119 @@ public class ConversationPlayerTests
         Assert.That(api.PagesAsked(), Is.Empty);
         Assert.That(api.PagesSent(), Is.EqualTo(new string?[] { null, null }));
     }
+
+    /// <summary>F126.3.4: a turn's judge cost is its criteria's costs added, the ledger's price of each call.</summary>
+    [Test]
+    public async Task ATurnsJudgeCost_IsItsCriteriasCostsAdded()
+    {
+        var api = new FakeSessionsApi(Answered("A framework."), Answered("Yes."));
+        var ledger = new ListUsageSink();
+        using var judgeModel = new UsageRecordingChatClient(PricedMet(), new PricingUsageSink(ledger, Prices), "judge");
+
+        var repeat = await new ConversationPlayer(api.Client(), api.Pages(), new Judge(judgeModel))
+            .PlayAsync(Guide, TwoTurns, Trial);
+
+        var costs = ledger.Records.Select(record => record.Cost!.Amount).ToList();
+        Assert.That(repeat.Turns.Select(turn => turn.JudgeCost), Is.EqualTo(new decimal?[] { costs[0], costs[1] }));
+        Assert.That(costs, Has.All.GreaterThan(0m));
+    }
+
+    /// <summary>
+    /// F126.3.4, step 8's finding: the judge's calls are recorded under the play's run and task, as the agent's are,
+    /// so the ledger ties what judging a run cost to that run.
+    /// </summary>
+    [Test]
+    public async Task TheJudgesCalls_AreRecordedUnderThePlaysRunAndTask()
+    {
+        var api = new FakeSessionsApi(Answered("A framework."), Answered("Yes."));
+        var ledger = new ListUsageSink();
+        using var judgeModel = new UsageRecordingChatClient(PricedMet(), ledger, "judge");
+
+        await new ConversationPlayer(api.Client(), api.Pages(), new Judge(judgeModel))
+            .PlayAsync(Guide, TwoTurns, Trial);
+
+        Assert.That(ledger.Records.Select(record => (record.Run, record.Task)),
+            Has.All.EqualTo((Trial.Run, Trial.Task)));
+    }
+
+    /// <summary>A turn judged with no ledger has no known judge cost, nor does a turn with no criteria.</summary>
+    [Test]
+    public async Task ATurnsJudgeCost_IsNoneWhenNotKnown_OrWithNoCriteria()
+    {
+        var api = new FakeSessionsApi(Answered("A framework."), Answered("Yes."));
+        var noCriteria = TwoTurns with { Turns = [TwoTurns.Turns[0], TwoTurns.Turns[1] with { Criteria = [] }] };
+
+        var repeat = await Player(api, Met()).PlayAsync(Guide, noCriteria, Trial);
+
+        Assert.That(repeat.Turns.Select(turn => turn.JudgeCost), Is.EqualTo(new decimal?[] { null, null }));
+    }
+
+    /// <summary>
+    /// F126.3.4: a play stopped once its session is open still closes the session, with no token, so a stopped run
+    /// leaves none open.
+    /// </summary>
+    [Test]
+    public async Task APlayStopped_AfterItsSessionOpens_StillClosesIt()
+    {
+        var api = new FakeSessionsApi(Answered("A framework."), Answered("Yes."));
+        using var stop = new CancellationTokenSource();
+        var http = new HttpClient(new StopAfterOpening(api.Handler, stop))
+        {
+            BaseAddress = new Uri("http://api.test/")
+        };
+        var player = new ConversationPlayer(new SessionClient(http), api.Pages(), new Judge(Met()));
+
+        Assert.CatchAsync<OperationCanceledException>(() => player.PlayAsync(Guide, TwoTurns, Trial, stop.Token));
+
+        Assert.That(api.Calls(), Has.Some.StartsWith("DELETE"));
+        await Task.CompletedTask;
+    }
+
+    /// <summary>Stops the play as soon as the API has opened its session.</summary>
+    private sealed class StopAfterOpening(HttpMessageHandler inner, CancellationTokenSource stop)
+        : DelegatingHandler(inner)
+    {
+        /// <summary>Passes each request on, and cancels the play once a session has opened.</summary>
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
+            CancellationToken cancellationToken)
+        {
+            var response = await base.SendAsync(request, cancellationToken);
+            if (request.Method == HttpMethod.Post && request.RequestUri!.AbsolutePath == "/v1/sessions")
+                await stop.CancelAsync();
+            return response;
+        }
+    }
+
+    /// <summary>A price table for the judge's model, so its calls are priced.</summary>
+    private static readonly PriceTable Prices = new()
+    {
+        Models = new Dictionary<string, ModelPrice>
+        {
+            ["judge"] = new()
+            {
+                Input = 1m,
+                Output = 5m,
+                CacheRead = 0.1m,
+                CacheWrite5m = 1.25m,
+                CacheWrite1h = 2m
+            }
+        }
+    };
+
+    /// <summary>A judge's model that marks every criterion met, each answer with its usage.</summary>
+    private static FakeChatClient PricedMet() => new(_ => PricedJudged(), _ => PricedJudged(), _ => PricedJudged());
+
+    /// <summary>The judge's answer met, with the tokens it used.</summary>
+    private static ChatResponse PricedJudged() =>
+        new(new ChatMessage(ChatRole.Assistant, """{"reason":"Read the answer.","met":true}"""))
+        {
+            ModelId = "judge",
+            Usage = new UsageDetails
+            {
+                InputTokenCount = 1000,
+                OutputTokenCount = 100
+            }
+        };
 
     /// <summary>The player over this API and its page route, with a judge on this model.</summary>
     private static ConversationPlayer Player(FakeSessionsApi api, FakeChatClient judgeModel) =>

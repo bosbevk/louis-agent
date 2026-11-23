@@ -40,4 +40,13 @@ public class EvalAddressTests
         Assert.That(EvalAddress.RunsRouteOf("a b"), Is.EqualTo("v1/admin/evals/a%20b/runs"));
         Assert.That(EvalAddress.RunRouteOf("r/1"), Is.EqualTo("v1/admin/evals/runs/r%2F1"));
     }
+
+    /// <summary>F126.3.4: a run's id is read from the address a start answers, and none from another.</summary>
+    [TestCase("/v1/admin/evals/runs/20261123-063633-guide", "20261123-063633-guide")]
+    [TestCase("v1/admin/evals/runs/20261123-063633-guide", "20261123-063633-guide")]
+    [TestCase("/v1/admin/evals/guide/runs", null)]
+    [TestCase("/v1/admin/evals/runs/", null)]
+    [TestCase("/v1/admin/evals/runs/a/b", null)]
+    public void ARunsId_IsReadFromTheAddressAStartAnswers(string address, string? run) =>
+        Assert.That(EvalAddress.FindRunId(address), Is.EqualTo(run));
 }

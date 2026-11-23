@@ -92,7 +92,7 @@ public class JudgeTests
     {
         var model = Answering($$"""{"reason":"It names docs/README.md.","met":{{(met ? "true" : "false")}}}""");
 
-        var mark = await new Judge(model).MarkAsync(Criterion, Conversation);
+        var mark = (await new Judge(model).MarkAsync(Criterion, Conversation)).Mark;
 
         Assert.That(mark, Is.EqualTo(new Mark(Criterion, met, "It names docs/README.md.")));
     }

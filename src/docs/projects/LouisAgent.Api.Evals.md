@@ -4,17 +4,17 @@
 > LouisAgent.Api · **Used by:** LouisAgent.SiteApi, and its tests
 > **Also shows:** `component`
 
-![What a site's API takes for its agents' evals: four routes behind the admin key, a desk that runs one run at a time, the work that plays a run, and its settings](diagrams/LouisAgent.Api.Evals.svg)
+![What a site's API takes for its agents' evals: five routes behind the admin key, a desk that runs one run at a time, the work that plays a run, and its settings](diagrams/LouisAgent.Api.Evals.svg)
 
 ## Purpose
 
 This project is how a site runs the evals of its own agents. A site's API program takes it with two lines, and from
-then on someone with the admin key can start a run of an eval, follow it while it plays, and read it once it has
-ended, all over the site's own API. The playing and grading are [LouisAgent.Evals](LouisAgent.Evals.md)'s; this
+then on someone with the admin key can start a run of an eval, follow it while it plays, stop it, and read it once
+it has ended, all over the site's own API. The playing and grading are [LouisAgent.Evals](LouisAgent.Evals.md)'s; this
 project serves them, one run at a time, in the background of the host.
 
 The doc follows a run from the start: how a site takes the evals, how a start is checked, how the run goes on after
-the answer, how it reaches the agent, and what its settings are.
+the answer, how a person stops it, how it reaches the agent, and what its settings are.
 
 ## How it works
 
@@ -24,17 +24,19 @@ the answer, how it reaches the agent, and what its settings are.
 
 A site's program calls `AddLouisAgentEvals` among its services and `MapLouisAgentEvals` on the API's group, beside
 its own routes. The first reads the host's eval files from its catalogue there and then, so a wrong one stops the
-host at start-up with its reason, and it registers the run desk and the routes' handlers. The second maps four
+host at start-up with its reason, and it registers the run desk and the routes' handlers. The second maps five
 routes, all behind the admin key:
 
 | Route | What it answers |
 |---|---|
-| `GET /v1/admin/evals` | Every eval this host has: its name, its agent, how many conversations, and its last run in short |
+| `GET /v1/admin/evals` | Every eval this host has: its name, its agent, how many conversations, its last run in short, and its last live run that finished, whose costs a page estimates the next one from |
 | `POST /v1/admin/evals/{name}/runs` | Starts a run, from a body of its kind (`live` or `replay`) and its repeats (1 or 3): `202` with the run's address in `Location` |
 | `GET /v1/admin/evals/runs/{id}` | The run as it is kept, running or ended |
+| `DELETE /v1/admin/evals/runs/{id}` | Stops the run going: `204`, then the run keeps itself as stopped. A run this host doesn't have is `404`, one that isn't going `409` |
 | `GET /v1/admin/evals/{name}/runs` | That eval's runs in short, the newest first |
 
-Every answer is the run's own JSON, so what the API sends is what the run's file holds.
+Every answer is the run's own JSON, so what the API sends is what the run's file holds. A run in short carries what
+it cost the agent and the judge, and their currency, so a list needs no second read to price it.
 
 ![Its classes: the startup registers the desk and the handlers, a handler checks a start and hands the desk the work, which plays the run and keeps it](diagrams/LouisAgent.Api.Evals-classes.svg)
 
@@ -63,9 +65,27 @@ waits for the run when it shuts down. A failure inside the work is logged, and t
 happened. A run cut off by a shutdown stays running in its file, and the desk reads a stored run that says running
 and isn't its own as could not finish, so no clean-up job is needed.
 
+### 4. A person stops a run
+
+A run can be stopped while it plays, and the stop takes effect at once. The `DELETE` route asks the desk to stop the
+run by its id. The desk holds a cancellation source for the one run going, and `TryStop` cancels it under the same
+lock a start takes, so a stop can't land between a run ending and the next one starting. It answers whether that
+run was the one going.
+
+The run's work gets two signals, as `RunSignals`. `Stopped` is a person's stop alone. `Playing` joins it with the
+host's shutdown, and that is what the runner plays under. So when the play is cancelled, the work can tell why. On
+a person's stop it keeps the run as stopped, with everything graded before the stop and the reason "A person stopped
+the run". On a shutdown it leaves the file as it was, running, which the desk reads as could not finish when the
+host comes back, as above.
+
+The conversation in play is cut off part way, so its turn costs what it had spent and no more. The session the play
+opened is still closed: reading the answer to the session's creation ignores the stop, so a session created at the
+moment of the stop is known and deleted, never left open. A stopped run is never the run a replay plays back, nor an
+eval's last live run, since both must have finished.
+
 ![A run started and followed: the start is answered at once, the run plays on in the background and is kept after each conversation, and its address answers it](diagrams/LouisAgent.Api.Evals-sequence.svg)
 
-### 4. A run reaches the agent as any app does
+### 5. A run reaches the agent as any app does
 
 `RunWork` is one run's work. It saves the run as it starts, then plays it with the evals' runner, keeping it in its
 file after every conversation, and keeps it as could not finish with the reason when something fails part way. It
@@ -81,17 +101,19 @@ counted against the day's cap, and isn't tagged as a visitor's in the ledger
 
 The judge's client is `EvalsStartup.JudgeClient`: the host's provider on the judge's model, then the judge's replay
 when the host keeps recordings, then the host's usage ledger, so a live mark is priced under the grading purpose and
-a replayed one is a known 0.
+a replayed one is a known 0. Its rows carry the run's id and the conversation's task, as the agent's do, so the ledger
+alone can say what judging one run cost.
 
-*Decided in:* F126.3.1, [ADR 0134](../adr/0134-an-eval-is-one-file-of-conversations.md).
+*Decided in:* F126.3.1, F126.3.4, [ADR 0134](../adr/0134-an-eval-is-one-file-of-conversations.md).
 
 ## Structure
 
 ```
 src/hosts/LouisAgent.Api.Evals/
 ├── EvalsStartup.cs     # AddLouisAgentEvals, MapLouisAgentEvals, the judge's client
-├── EvalHandlers.cs     # the four routes' answers, a start's refusals first
-├── RunDesk.cs          # the one run going, as a hosted service
+├── EvalHandlers.cs     # the five routes' answers, a start's refusals first
+├── RunDesk.cs          # the one run going, as a hosted service, and its stop
+├── RunSignals.cs       # a person's stop, and the stop the play runs under
 ├── RunWork.cs          # one run played over the sessions API and kept
 ├── EvalsOptions.cs     # the settings, read once
 └── Messages/           # EvalsApiMessage and its Holes/
@@ -118,8 +140,9 @@ visitor's never does.
 
 `LouisAgent.Api.Evals.Tests` runs the API in memory with the evals mapped, a test identity whose folder holds an
 eval, a fake model for the agent and one for the judge. `EvalRoutesTests` holds the routes: the admin key, the
-list, a live run started and read until it ends, a second start refused while one runs, and each refusal.
-`RunDeskTests` holds a cut-off run read as could not finish. `JudgeReplayTests` proves the engine's replay client
+list, a live run started and read until it ends, a second start refused while one runs, each refusal, and a going
+run stopped with `204` and kept as stopped, a stop of a run that isn't going refused. `RunDeskTests` holds a cut-off
+run read as could not finish, and a stop that cancels the going run's work. `JudgeReplayTests` proves the engine's replay client
 serves the judge's typed call, and `ReplayRunTests` holds a live run recording and a replay giving the same marks
 with no model called, or stopping when its recording is out of date.
 
@@ -129,8 +152,9 @@ in git, on the site's own API in memory, facts only, with no key. The guide's is
 
 ## Limits and plans
 
-No page starts or shows a run yet, so a run is started by calling its route with the admin key. The project is not
-a package ([ADR 0130](../adr/0130-the-framework-is-published-as-packages-one-tag-each.md)).
+One run goes at a time, and nothing starts one on a schedule. The admin's pages start, follow and stop a run
+([LouisAgent.Web.Evals](LouisAgent.Web.Evals.md)), and the routes stay open to `curl` with the admin key. The
+project is not a package ([ADR 0130](../adr/0130-the-framework-is-published-as-packages-one-tag-each.md)).
 
 ## Related docs
 
