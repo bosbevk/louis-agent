@@ -161,7 +161,10 @@ public class RunAnswersTests
         Assert.That(run.FindPrevious("b"), Is.Null);
     }
 
-    /// <summary>A run's file holds no new field: its JSON's names are exactly the ones declared before.</summary>
+    /// <summary>
+    /// A run's file holds only the fields declared: its JSON's names are exactly these, a turn's judge cost the one
+    /// F126.3.4 added.
+    /// </summary>
     [Test]
     public void ARunsFile_HoldsNoNewField()
     {
@@ -200,6 +203,7 @@ public class RunAnswersTests
             "failed",
             "id",
             "input",
+            "judgeCost",
             "kind",
             "met",
             "number",

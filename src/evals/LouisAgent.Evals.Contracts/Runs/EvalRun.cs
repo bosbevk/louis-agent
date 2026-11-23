@@ -54,6 +54,10 @@ public sealed record EvalRun(
     public MarkCount CountCriteria() =>
         AllRepeats().Aggregate(MarkCount.None, (sum, repeat) => sum + repeat.CountCriteria());
 
+    /// <summary>What judging every turn of every repeat cost, the known ones added; null when none is known.</summary>
+    public decimal? SumJudgeCost() =>
+        KnownCost.Sum(AllRepeats().SelectMany(repeat => repeat.Turns).Select(turn => turn.JudgeCost));
+
     /// <summary>What the agent's turns cost, the known ones added; null when none has a price.</summary>
     public decimal? SumCost() =>
         KnownCost.Sum(AllRepeats().SelectMany(repeat => repeat.Turns).Select(turn => turn.Cost));

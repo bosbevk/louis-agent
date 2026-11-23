@@ -34,7 +34,7 @@ public class OneTurnGradedTests
         var facts = turn.Facts.Select(fact => Facts.Tell(fact, GuideWhatIs, [])).ToList();
         var criteria = new List<Mark>();
         foreach (string criterion in turn.Criteria)
-            criteria.Add(await judge.MarkAsync(criterion, [GuideWhatIs]));
+            criteria.Add((await judge.MarkAsync(criterion, [GuideWhatIs])).Mark);
 
         Assert.Multiple(() =>
         {

@@ -1,3 +1,4 @@
+using System.Text.Json.Nodes;
 using System.Text.Json;
 using LouisAgent.Evals.Contracts.Grading;
 using LouisAgent.Evals.Contracts.Runs;
@@ -41,6 +42,27 @@ public class RunStoreTests
         var found = store.Find(run.Id);
 
         Assert.That(Json(found!), Is.EqualTo(Json(run)));
+    }
+
+    /// <summary>F126.3.4: a run written before a turn had a judge cost still reads, its judge cost none.</summary>
+    [Test]
+    public void ARunWithNoJudgeCostOnItsTurns_StillReads()
+    {
+        var store = new RunStore(_folder);
+        var run = Run("20261123-043012-guide", Started);
+        store.Save(run);
+        string path = Path.Combine(_folder, "20261123-043012-guide.json");
+        // The file as a run was written before: every turn's judgeCost taken out, wherever it sits.
+        var written = JsonNode.Parse(File.ReadAllText(path))!;
+        foreach (var turn in written["conversations"]!.AsArray().SelectMany(c => c!["repeats"]!.AsArray())
+                     .SelectMany(r => r!["turns"]!.AsArray()))
+            turn!.AsObject().Remove("judgeCost");
+        File.WriteAllText(path, written.ToJsonString());
+
+        var found = store.Find(run.Id);
+
+        Assert.That(File.ReadAllText(path), Does.Not.Contain("judgeCost"));
+        Assert.That(found!.Conversations[0].Repeats[0].Turns.Select(turn => turn.JudgeCost), Has.All.Null);
     }
 
     /// <summary>Saving a run with the same id again replaces it.</summary>

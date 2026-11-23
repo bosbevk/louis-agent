@@ -3,6 +3,7 @@ using LouisAgent.Composition.Agents;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Evals.Contracts.Grading;
 using LouisAgent.Evals.Contracts.Runs;
+using LouisAgent.Evals.Contracts.Runs.Answers;
 using LouisAgent.Evals.Contracts.Transcripts;
 using LouisAgent.Evals.Files;
 using LouisAgent.Evals.Grading;
@@ -118,10 +119,18 @@ public sealed class ConversationPlayer(
         var facts = turn.Facts.Select(fact => Facts.Tell(fact, asked.Transcript, earlier)).ToList();
 
         var criteria = new List<Mark>();
+        var judgeCosts = new List<decimal?>();
         foreach (string criterion in turn.Criteria)
-            criteria.Add(await judge.MarkAsync(criterion, soFar, cancellationToken));
+        {
+            var judged = await judge.MarkAsync(criterion, soFar, cancellationToken);
+            criteria.Add(judged.Mark);
+            judgeCosts.Add(judged.Cost);
+        }
 
-        return new TurnRun(asked.Transcript, facts, criteria, asked.Cost.Amount, asked.Cost.Currency);
+        return new TurnRun(asked.Transcript, facts, criteria, asked.Cost.Amount, asked.Cost.Currency)
+        {
+            JudgeCost = KnownCost.Sum(judgeCosts)
+        };
     }
 
     /// <summary>A turn as it was asked, before it is graded.</summary>
