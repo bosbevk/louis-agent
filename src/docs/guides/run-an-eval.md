@@ -1,7 +1,8 @@
 # Run an eval
 
 > **How-to.** Start a run of a site's eval from its admin or through its API, follow it, stop it, read its file,
-> replay it for free, and what to do when a replay says its recording is out of date. **Elsewhere:** how a run works in
+> replay it for free, correct the judge on a mark, re-grade a run, copy a conversation into the eval file, and what to
+> do when a replay says its recording is out of date. **Elsewhere:** how a run works in
 > [LouisAgent.Evals](../projects/LouisAgent.Evals.md), the routes and their settings in
 > [LouisAgent.Api.Evals](../projects/LouisAgent.Api.Evals.md), what an eval is in
 > [ADR 0134](../adr/0134-an-eval-is-one-file-of-conversations.md).
@@ -51,7 +52,16 @@ already gave it.
 5. To stop it, press **Stop the run**. The run ends as stopped and keeps what it graded before the stop.
 6. Read it. A run's page lists its conversations failed first, with the first miss of each, and the eval's other
    runs at its foot. A conversation opens at its first failed repeat, turn by turn, with every tool call, answer,
-   mark and cost, and walks to the next failed one or to the same conversation in the run before.
+   mark and cost, and walks to the next failed one or to the same conversation in the run before. The run's head
+   says how it went against the run before, and **The last 8 runs** shows the trend and the criteria missed most.
+7. To correct the judge, press **Flip** on a criterion's mark on a conversation's page, write why in one line if you
+   want, and press **Flip to met** (or **Flip to not met**). Your answer counts in every number from then on, and
+   **Undo the flip** puts the judge's answer back.
+8. To grade a run again after you changed the eval file, press **Re-grade** on its page. No agent is asked: facts
+   are checked again, unchanged marks are kept with your flips, and the judge is asked only for a criterion that is
+   new or reworded. The new run's page says what changed and what it cost.
+9. To turn a conversation into a test case, press **Copy as conversation** on its page, paste the block into the
+   eval file's `conversations`, and change it.
 
 ## Through the API
 
@@ -90,7 +100,22 @@ The same runs, with `curl`, from a terminal or a script.
    curl -s -i -X DELETE http://127.0.0.1:5080/v1/admin/evals/runs/20261123-063633-guide -H "x-api-key: $KEY"
    ```
 
-6. Replay it. The replay plays the eval's last live run that finished, as many repeats as it recorded, and ends as
+6. Flip a criterion's mark, with a one-line note or none, at the mark's own address; the turn and the criterion
+   count from 1. The answer is `204`. Delete the same address to put the judge's answer back:
+
+   ```bash
+   curl -s -i -X PUT http://127.0.0.1:5080/v1/admin/evals/runs/20261123-063633-guide/guide-what-is/1/1/criteria/2/flip \
+     -H "x-api-key: $KEY" -H "content-type: application/json" -d '{"note":"It does say so."}'
+   ```
+
+7. Re-grade a kept run, or read one of its conversations as a block for the eval file:
+
+   ```bash
+   curl -s -i -X POST http://127.0.0.1:5080/v1/admin/evals/runs/20261123-063633-guide/regrade -H "x-api-key: $KEY"
+   curl -s http://127.0.0.1:5080/v1/admin/evals/runs/20261123-063633-guide/guide-what-is/as-file -H "x-api-key: $KEY"
+   ```
+
+8. Replay it. The replay plays the eval's last live run that finished, as many repeats as it recorded, and ends as
    a run of its own with `replayOf` naming the live one. A page a conversation names is sent as the live run kept
    it, so the page route isn't asked:
 
@@ -104,7 +129,9 @@ The same runs, with `curl`, from a terminal or a script.
 A recording answers only the requests it was made from. When the agent's prompt, a tool, a doc it read or a
 criterion's words change, the replay ends as `could-not-finish`, saying the recording no longer answers, so it is out
 of date and a live run is needed, and what changed first. Nothing is wrong with the run: start a live run again, on
-Louis's go, and replay that one.
+Louis's go, and replay that one. When only a criterion's words changed, re-grade the live run instead: it asks
+the judge for the reworded criterion alone and adds its answer to the live run's recording, so Replay free plays
+again.
 
 The guide's eval is also one test, `GuideEvalReplayTests`, which replays the first repeat of a live run from
 `src/site/recordings/evals/` with no key. When it turns red after a change to the guide, copy a new live run's first

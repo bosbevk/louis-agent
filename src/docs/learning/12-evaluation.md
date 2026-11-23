@@ -555,6 +555,70 @@ new states.
 button labels*, the human-in-the-loop guard before an action that costs; and the *test double for time*, the fake
 clock.
 
+## Flips, re-grade and better or worse (F126.4)
+
+The judge is a model, and it is sometimes wrong. Until now a run's number mixed the agent's mistakes with the
+judge's, nobody could tell which criterion to reword, and seeing what a reworded criterion did cost a live run. Now a
+person corrects the judge mark by mark, a run is graded again from its stored answers for almost nothing, and every
+run says whether it was better or worse than the one before.
+
+**A person correcting the judge.** Every criterion's mark has Flip. A flip says "the judge got this wrong", with one
+optional line of why, and it is kept on the mark itself, beside the judge's own answer and reason. The mark then
+answers which answer counts, and every number of the run asks it, never the judge's answer directly. Hamel Husain
+asks for exactly this: the expert's verdict plus a critique detailed enough to teach a judge later. LangSmith does it
+the same way, a correction on the judge's score with an explanation. What we leave out is a percentage of agreement:
+a run says how often each criterion was flipped, which tells you which criterion wants rewording, or wants to be a
+fact. A fact is never flipped, since code tells it.
+
+**When two answers are the same answer.** A flip is a person's word on one answer, so it must not leak onto a
+different one. One rule decides: two turns say the same when the ask, the answer, the error and every tool call are
+the same, compared as the text kept, and how long they took doesn't count. Where a turn says the same and a
+criterion's words are word for word the same, the earlier mark is the mark. A replay uses it to carry the live run's
+flips, and a re-grade to keep marks. The rule is asked by name, because a C# record's own equality compares its
+lists by reference, and two turns that read alike would come out different: a test shows it.
+
+**Re-scoring without re-running.** A re-grade is a new run made from a run's stored answers, with no agent asked, as
+Inspect's `inspect score` writes a new log and W&B Weave's rescore a new evaluation run. Facts are told again in
+code, which is free. Every mark the rule finds is kept, flip and all. The judge is asked only for a criterion that is
+new or reworded. So grading becomes a separate, cheap pass over stored transcripts: a run against an unchanged file
+asks the judge nothing, and the re-graded run says after what it asked and what it cost, in place of an ask before.
+The grading of a turn moved into one `TurnGrader` that the player and the re-grader share, so they can't drift.
+
+**Recording new episodes.** The judge's answers in a re-grade are added to the live run's own recording, beside the
+answers already there, which is VCR's new-episodes mode. That is what makes a reworded criterion cheap: before, a
+replay of the live run stopped on it as out of date; now one re-grade asks the judge once a repeat for it, and Replay
+free plays again. A test proves it on the API in memory: after a re-grade with a reworded criterion, the replay
+finishes, and a re-grade of that re-grade records into the same live play.
+
+**Comparing runs.** Each run is compared with the run before: a re-grade with the run it re-graded, since it is about
+what changed in the file, and a live run or a replay with the newest earlier run that finished, the way Braintrust
+picks the most recent experiment as its baseline. A run that stopped holds only part of its conversations, so it is
+never a baseline. The run's head says "▲ 1 more than the run before" in green or "▼ 1 fewer" in red, rows are tagged
+"now passes" or "now fails", and the last eight runs are a bar each with the criteria they missed most. Each run's row
+carries its own tally of missed and flipped criteria, so the history adds rows and reads no run whole.
+
+**Turning a real conversation into a test case.** Copy as conversation turns a run's conversation back into a block
+for the eval file, written by the file's own options, so it reads back with the file's own reader. A conversation
+that surprised you becomes a test in one paste.
+
+**What was measured.** On the :5080 container, for free: a replay at $0; a flip with a note made the conversation
+"Passed after your flip", and Undo put it back; a re-grade of a replay with the file unchanged made 0 judge calls and
+kept 2 of 2 marks; the change line, the eight bars and the criteria missed most showed; and the guide's conversation,
+copied and pasted into a scratch copy of its eval file, read back. The one paid check, re-grading the guide's live run
+after rewording one criterion, ended as could not finish: the provider refused the judge's call with "invalid
+x-api-key", the site container's model key having stopped working since the morning's runs. Nothing was spent, the
+re-grade kept its reason, and the real-provider proof waits for a working key.
+
+**What didn't work at first.** After a re-grade, the browser moved to the new run's address but the page kept the
+old run's figures: Blazor keeps a page when only its address's run changes, and the run's page read once, when made.
+It now reads whenever the address names a run it hasn't read. A re-grade that judged nothing said the judge's new
+answers had joined the recording; that line now shows only after judge calls. And rows that now carry a list broke
+two tests that compared rows by equality, which they now do as JSON.
+
+**In the field's words:** *human review* of an *LLM-as-a-judge*, with a *critique*; *re-scoring* (Inspect, Weave);
+*VCR's new_episodes record mode*; a *baseline* and *regressions per case* (Braintrust); *Information Expert* for where a
+flip lives; and *Extract Class* for the turn grader.
+
 ## The limits, said plainly
 
 36 labels, one judge, one person. Nine fails is "few labels" by the card's own rule. A pass at 100% on nine is weaker

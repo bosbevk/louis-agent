@@ -78,7 +78,9 @@
         "members": [
           "string Text",
           "bool Met",
-          "string Reason"
+          "string Reason",
+          "Flip? Flip",
+          "bool CountsAsMet()"
         ]
       },
       {
@@ -87,7 +89,8 @@
         "kind": "enum",
         "members": [
           "Live",
-          "Replay"
+          "Replay",
+          "Regrade"
         ]
       },
       {

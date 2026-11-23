@@ -34,6 +34,11 @@ An eval is one file of conversations, and the old evals are gone.
   model judge marks yes or no with a reason, one call per criterion.
 - **A conversation passes only when every fact and every criterion of every turn is met, in every repeat.**
 - **A person corrects the judge by flipping a mark.** There are no label files and no percentage of agreement.
+- **A flip is kept on its mark, and a re-grade or a replay carries it where the criterion's words and the agent's
+  answer are the same.**
+- **A re-grade is a new run made from a run's stored answers:** facts told again, a mark kept where the criterion
+  and the answer are the same, the judge asked only for the rest, and its answers added to the live run's recording,
+  so a replay plays them back.
 - **The eval part is a library a site's own API maps.** A run asks the agent over the sessions API, like any app.
 - **An eval file is read through the same file providers as the prompts.**
 - **Two rules carry over.** A pack and an identity reference no eval project, as 0073 said, so either can follow
@@ -58,7 +63,7 @@ An eval is one file of conversations, and the old evals are gone.
 
 ## Links
 
-- F126, F126.1, F126.2, F126.3.1; [ADR 0049](0049-nothing-is-compatible-before-a-sale.md), nothing is compatible before a sale;
+- F126, F126.1, F126.2, F126.3.1, F126.4; [ADR 0049](0049-nothing-is-compatible-before-a-sale.md), nothing is compatible before a sale;
   [ADR 0011](0011-prompts-are-content.md), prompts are content
 - Michael Nygard, [Documenting Architecture Decisions](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions):
   a decision that is replaced stays, marked superseded

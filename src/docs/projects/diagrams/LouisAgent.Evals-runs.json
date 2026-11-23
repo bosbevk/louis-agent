@@ -1,7 +1,7 @@
 {
   "kind": "classes",
   "title": "LouisAgent.Evals: the classes of a run",
-  "caption": "The player asks the agent over the sessions API and grades what came back; the runner plays every conversation as many times as asked; the store keeps the run, by an id RunId reads; the judge's answers go through its replay.",
+  "caption": "The player asks the agent over the sessions API and its turn grader grades what came back; the re-grader grades a run's stored answers again through the same turn grader; the runner plays every conversation as many times as asked; the store keeps the run, by an id RunId reads; the judge's answers go through its replay.",
   "classes": {
     "types": [
       {
@@ -49,7 +49,25 @@
         "kind": "class",
         "members": [
           "Task<EvalRun> RunAsync(started,",
-          "  file, kept, ct)"
+          "  file, kept, played, ct)"
+        ]
+      },
+      {
+        "id": "regrader",
+        "name": "Regrader",
+        "kind": "class",
+        "members": [
+          "Task<EvalRun> RegradeAsync(started,",
+          "  graded, file, kept, ct)"
+        ]
+      },
+      {
+        "id": "grader",
+        "name": "TurnGrader",
+        "kind": "class",
+        "members": [
+          "Task<TurnRun> GradeAsync(turn,",
+          "  transcript, cost, soFar, before, ct)"
         ]
       },
       {
@@ -117,8 +135,24 @@
       },
       {
         "from": "player",
+        "to": "grader",
+        "kind": "holds"
+      },
+      {
+        "from": "grader",
         "to": "judge",
         "kind": "holds"
+      },
+      {
+        "from": "regrader",
+        "to": "grader",
+        "kind": "holds"
+      },
+      {
+        "from": "regrader",
+        "to": "trial",
+        "kind": "creates",
+        "word": "the live run's play"
       },
       {
         "from": "player",
@@ -126,7 +160,7 @@
         "kind": "uses"
       },
       {
-        "from": "player",
+        "from": "grader",
         "to": "facts",
         "kind": "uses"
       },

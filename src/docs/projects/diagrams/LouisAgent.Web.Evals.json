@@ -1,7 +1,7 @@
 {
   "kind": "cards",
   "title": "LouisAgent.Web.Evals: the overview",
-  "caption": "The admin's eval pages: a client of the eval routes with every address in one place, the evals' page with a card an eval that starts its next run, and the words its code picks.",
+  "caption": "The admin's eval pages: a client of the eval routes with every address in one place, the evals' page with a card an eval that starts its next run, a run's page that re-grades and compares, a conversation's page that flips a mark and copies, and the words its code picks.",
   "cards": {
     "rows": [
       {
