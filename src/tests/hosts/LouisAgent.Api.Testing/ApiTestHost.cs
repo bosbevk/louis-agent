@@ -45,11 +45,12 @@ internal static class ApiTestHost
         IChatClient? model = null, IReadOnlyList<IAgentPack>? morePacks = null,
         IReadOnlyList<IAgentIdentity>? moreIdentities = null, OpenDoorOptions? openDoor = null,
         IReadOnlyDictionary<string, Uri>? agentPeers = null, bool streamPace = false,
-        Action<WebApplicationBuilder, AgentHostContext>? services = null, Action<IEndpointRouteBuilder>? routes = null)
+        Action<WebApplicationBuilder, AgentHostContext>? services = null, Action<IEndpointRouteBuilder>? routes = null,
+        string? replayDirectory = null)
     {
         // The same services as ApiStartup, on an in-memory test server instead of a port.
         var host = HostContext(workspaceRoot ?? RepoRoot, model ?? new NoModel(), morePacks, moreIdentities,
-            agentPeers, streamPace);
+            agentPeers, streamPace, replayDirectory);
         var builder = WebApplication.CreateBuilder();
         builder.WebHost.UseTestServer();
         builder.Services.AddApi(host, openDoor ?? OpenDoorOptions.Shut);
@@ -100,11 +101,11 @@ internal static class ApiTestHost
     /// <summary>
     /// The agent the test API runs: the test agent and any identity a test adds (F166.1: no product), on the test
     /// agent's packs, the tests' own tools and any a test adds, with this workspace and model, the peers a test names
-    /// (none by default), and its words paced when a test says so (F156).
+    /// (none by default), its words paced when a test says so (F156), and its recordings kept where a test says.
     /// </summary>
     private static AgentHostContext HostContext(string workspaceRoot, IChatClient model,
         IReadOnlyList<IAgentPack>? morePacks = null, IReadOnlyList<IAgentIdentity>? moreIdentities = null,
-        IReadOnlyDictionary<string, Uri>? agentPeers = null, bool streamPace = false)
+        IReadOnlyDictionary<string, Uri>? agentPeers = null, bool streamPace = false, string? replayDirectory = null)
     {
         var options = new AgentOptions
         {
@@ -112,7 +113,8 @@ internal static class ApiTestHost
             SkillsDirectory = SkillsFolder,
             RatesUrl = null,
             AgentPeers = agentPeers ?? new Dictionary<string, Uri>(),
-            StreamPace = streamPace
+            StreamPace = streamPace,
+            ReplayDirectory = replayDirectory
         };
         // A test may add an identity beside the test agent (F109.3: a session names its identity), and its packs.
         var catalog = new AgentCatalog([TestAgent.Identity, .. moreIdentities ?? []],

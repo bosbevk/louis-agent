@@ -3,6 +3,7 @@ using LouisAgent.Api.Contracts;
 using LouisAgent.Api.Endpoints;
 using LouisAgent.Api.Evals.Messages;
 using LouisAgent.Api.Evals.Messages.Holes;
+using LouisAgent.Api.Evals.Messages.Holes.Runs;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Evals.Contracts.Api;
 using LouisAgent.Evals.Contracts.Runs;
@@ -36,11 +37,18 @@ namespace LouisAgent.Api.Evals;
 /// <param name="catalog">The host's evals.</param>
 /// <param name="desk">The one run going.</param>
 /// <param name="work">How a run is played and kept, or none on a host with no data folder.</param>
+/// <param name="keepsRecordings">Whether the host keeps recordings, which every live run makes.</param>
 /// <param name="clock">The time a run starts at.</param>
 /// <seealso href="https://learn.microsoft.com/azure/architecture/patterns/async-request-reply">Asynchronous Request-Reply pattern</seealso>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0051-flat-conditionals-and-named-endpoints.md">ADR 0051: flat conditionals and named endpoints</seealso>
-public sealed class EvalHandlers(EvalCatalog catalog, RunDesk desk, RunWork? work, TimeProvider clock)
+public sealed class EvalHandlers(
+    EvalCatalog catalog,
+    RunDesk desk,
+    RunWork? work,
+    bool keepsRecordings,
+    TimeProvider clock)
 {
+
     /// <summary>Where a run is read, by its id.</summary>
     public const string RunAddress = "/v1/admin/evals/runs/";
 
@@ -63,15 +71,20 @@ public sealed class EvalHandlers(EvalCatalog catalog, RunDesk desk, RunWork? wor
             return ApiErrors.BadRequest(MessageText.Format(EvalsApiMessage.RepeatsNotOneOrThree, repeats));
         }
 
-        if (request.Kind == RunKind.Replay)
-            return ApiErrors.BadRequest(MessageText.Format(EvalsApiMessage.ReplayNotYet));
         if (work is null)
         {
             var setting = new NowhereToKeepHoles(EvalsOptions.DataFolderSetting);
             return ApiErrors.BadRequest(MessageText.Format(EvalsApiMessage.NowhereToKeep, setting));
         }
 
-        var started = Started(name, file, request);
+        if (request.Kind == RunKind.Live && !keepsRecordings)
+            return ApiErrors.BadRequest(MessageText.Format(EvalsApiMessage.LiveNeedsRecordings));
+
+        var replayed = request.Kind == RunKind.Replay ? LastLiveRun(work.Store, name) : null;
+        if (request.Kind == RunKind.Replay && replayed is null)
+            return ApiErrors.BadRequest(MessageText.Format(EvalsApiMessage.NoLiveRunToReplay));
+
+        var started = Started(name, file, request, replayed, work.Store);
         if (!desk.TryStart(started, work.For(started, file)))
         {
             var going = new RunGoingHoles(desk.Current?.Id ?? "");
@@ -128,13 +141,24 @@ public sealed class EvalHandlers(EvalCatalog catalog, RunDesk desk, RunWork? wor
     private IEnumerable<EvalRun> RunsIn(string name) => (work?.Store.Of(name) ?? []).Select(desk.Read);
 
     /// <summary>The run as it starts: its id from the time to the second and the eval's name.</summary>
-    private EvalRun Started(string name, EvalFile file, StartRunRequest request)
+    private EvalRun Started(string name, EvalFile file, StartRunRequest request, EvalRun? replayed, RunStore store)
     {
         var now = clock.GetUtcNow();
         var at = new DateTimeOffset(now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second, TimeSpan.Zero);
-        string id = new RunId(at, name).Text;
-        return new EvalRun(id, name, file.Agent.ToString(), request.Kind, request.Repeats, at, []);
+        // An id names one run: a start in a second another run started in takes the next second.
+        while (store.Find(new RunId(at, name).Text) is not null) at = at.AddSeconds(1);
+
+        // A replay plays the live run's repeats back, as many as it recorded.
+        int repeats = replayed?.Repeats ?? request.Repeats;
+        return new EvalRun(new RunId(at, name).Text, name, file.Agent.ToString(), request.Kind, repeats, at, [])
+        {
+            ReplayOf = replayed?.Id
+        };
     }
+
+    /// <summary>The eval's newest live run that finished, the one a replay plays back, or none.</summary>
+    private EvalRun? LastLiveRun(RunStore store, string name) => store.Of(name).Select(desk.Read)
+        .FirstOrDefault(run => run is { Kind: RunKind.Live, Status: RunStatus.Finished });
 
     /// <summary>The refusal of an eval this host doesn't have.</summary>
     private static JsonHttpResult<ApiError> Unknown(string name)

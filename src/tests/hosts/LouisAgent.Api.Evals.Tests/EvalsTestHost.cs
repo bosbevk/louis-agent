@@ -1,7 +1,9 @@
 using System.Net.Http.Json;
 using LouisAgent.Api.Testing;
+using LouisAgent.Core.Sessions.Replay.Store;
 using LouisAgent.Evals.Contracts.Api;
 using LouisAgent.Evals.Contracts.Runs;
+using LouisAgent.Evals.Runs;
 using LouisAgent.Evals.Runs.Store;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting.Server;
@@ -13,8 +15,8 @@ namespace LouisAgent.Api.Evals.Tests;
 
 /// <summary>
 /// The API in memory with the evals mapped beside it, as a site's program maps them: a test identity whose folder
-/// holds an eval of one conversation, a model for the agent and one for the judge, and a data folder of its own.
-/// A run reaches the agent at the test server, the program's own address in a test.
+/// holds an eval of one conversation, a model for the agent and one for the judge, and a data folder and a
+/// recordings folder of its own. A run reaches the agent at the test server, the program's own address in a test.
 /// </summary>
 internal sealed class EvalsTestHost : IAsyncDisposable
 {
@@ -28,11 +30,13 @@ internal sealed class EvalsTestHost : IAsyncDisposable
     public const string Eval = "greets";
 
     private readonly WebApplication _app;
+    private readonly bool _ownsFolders;
 
-    private EvalsTestHost(WebApplication app, string? dataFolder)
+    private EvalsTestHost(WebApplication app, Folders folders, bool ownsFolders)
     {
         _app = app;
-        DataFolder = dataFolder;
+        _ownsFolders = ownsFolders;
+        Kept = folders;
         Client = app.GetTestClient();
         Client.DefaultRequestHeaders.Add("x-api-key", AdminKey);
     }
@@ -40,24 +44,34 @@ internal sealed class EvalsTestHost : IAsyncDisposable
     /// <summary>A client of the API, with the admin's key on every request.</summary>
     public HttpClient Client { get; }
 
-    /// <summary>The data folder this host keeps its runs under, or none.</summary>
-    public string? DataFolder { get; }
+    /// <summary>Where this host keeps its runs and its recordings.</summary>
+    public Folders Kept { get; }
 
     /// <summary>The runs' folder under the data folder.</summary>
-    public string RunsFolder => Path.Combine(DataFolder!, "evals", "runs");
+    public string RunsFolder => Path.Combine(Kept.Data!, "evals", "runs");
 
-    /// <summary>The API started with the evals, with a data folder unless a test says there is none.</summary>
+    /// <summary>
+    /// The API started with the evals: a data folder and a recordings folder unless a test says there is none, the
+    /// eval's one turn with this criterion when one is given, and the folders of an earlier host when one is named.
+    /// </summary>
     public static async Task<EvalsTestHost> StartAsync(IChatClient agentModel, IChatClient? judgeModel = null,
-        bool withDataFolder = true)
+        bool withDataFolder = true, bool withRecordings = true, string? criterion = null,
+        EvalsTestHost? sameFoldersAs = null)
     {
-        string? data = withDataFolder ? Directory.CreateTempSubdirectory("evals-data-").FullName : null;
-        var options = new EvalsOptions(data, null, null, null);
-        var app = ApiTestHost.Build(adminKey: AdminKey, model: agentModel, moreIdentities: [Identity()],
-            services: (builder, host) => builder.AddLouisAgentEvals(host, judgeModel ?? new FakeChatClient(), options,
+        var folders = sameFoldersAs?.Kept ?? new Folders(
+            withDataFolder ? Directory.CreateTempSubdirectory("evals-data-").FullName : null,
+            withRecordings ? Directory.CreateTempSubdirectory("evals-recordings-").FullName : null);
+        var judge = judgeModel ?? new FakeChatClient();
+        var replaying = folders.Recordings is null
+            ? judge
+            : new JudgeReplay(judge, new ReplayStore(folders.Recordings));
+        var options = new EvalsOptions(folders.Data, null, null, null);
+        var app = ApiTestHost.Build(adminKey: AdminKey, model: agentModel, moreIdentities: [Identity(criterion)],
+            services: (builder, host) => builder.AddLouisAgentEvals(host, replaying, options,
                 services => ((TestServer)services.GetRequiredService<IServer>()).CreateClient()),
-            routes: api => api.MapLouisAgentEvals(AdminKey));
+            routes: api => api.MapLouisAgentEvals(AdminKey), replayDirectory: folders.Recordings);
         await app.StartAsync();
-        return new EvalsTestHost(app, data);
+        return new EvalsTestHost(app, folders, ownsFolders: sameFoldersAs is null);
     }
 
     /// <summary>Starts a run of the eval, live with one repeat unless a test says otherwise.</summary>
@@ -65,6 +79,14 @@ internal sealed class EvalsTestHost : IAsyncDisposable
     {
         var request = new StartRunRequest(kind, repeats);
         return Client.PostAsJsonAsync($"/v1/admin/evals/{Eval}/runs", request, RunJson.Options);
+    }
+
+    /// <summary>A run started and read until it has ended; the start must be accepted.</summary>
+    public async Task<EvalRun> RunToTheEndAsync(RunKind kind = RunKind.Live)
+    {
+        using var started = await StartRunAsync(kind: kind);
+        Assert.That(started.IsSuccessStatusCode, Is.True, await started.Content.ReadAsStringAsync());
+        return await EndedAsync(started.Headers.Location!);
     }
 
     /// <summary>The run at this address, read until it has ended.</summary>
@@ -84,24 +106,45 @@ internal sealed class EvalsTestHost : IAsyncDisposable
     public async Task<EvalRun> RunAtAsync(Uri location) =>
         (await Client.GetFromJsonAsync<EvalRun>(location, RunJson.Options))!;
 
-    /// <summary>The server and its data folder go.</summary>
+    /// <summary>The server goes, and the folders with it when this host made them.</summary>
     public async ValueTask DisposeAsync()
     {
         await _app.DisposeAsync();
-        if (DataFolder is not null && Directory.Exists(DataFolder)) Directory.Delete(DataFolder, recursive: true);
+        if (!_ownsFolders) return;
+
+        foreach (string? folder in new[] { Kept.Data, Kept.Recordings })
+            if (folder is not null && Directory.Exists(folder))
+                Directory.Delete(folder, recursive: true);
     }
 
-    /// <summary>A model for the agent that answers every turn with this text.</summary>
-    public static FakeChatClient Answering(string text) =>
-        new(Enumerable.Repeat<Func<IList<ChatMessage>, ChatResponse>>(
-            _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, text)), 20).ToArray());
+    /// <summary>A model that answers every call with this text, counting the calls in this box.</summary>
+    public static FakeChatClient Answering(string text, Count? count = null) =>
+        new(Enumerable.Repeat<Func<IList<ChatMessage>, ChatResponse>>(_ =>
+        {
+            if (count is not null) count.Calls++;
+            return new ChatResponse(new ChatMessage(ChatRole.Assistant, text));
+        }, 20).ToArray());
 
     /// <summary>The test identity, its voice and its one eval in its folder.</summary>
-    private static FakeIdentity Identity() => new(Agent, provider: new FakePrompts(new Dictionary<string, string>
+    private static FakeIdentity Identity(string? criterion)
     {
-        [$"agents/{Agent}/voice.md"] = "# An eval agent\n\nYou greet people.\n",
-        [$"agents/{Agent}/{Eval}.eval.json"] =
-            $$"""{"agent":"{{Agent}}","conversations":[{"id":"hello","turns":""" +
-            """[{"ask":"Hello?","facts":["no-error"]}]}]}"""
-    }));
+        string criteria = criterion is null ? "" : $$""","criteria":["{{criterion}}"]""";
+        return new FakeIdentity(Agent, provider: new FakePrompts(new Dictionary<string, string>
+        {
+            [$"agents/{Agent}/voice.md"] = "# An eval agent\n\nYou greet people.\n",
+            [$"agents/{Agent}/{Eval}.eval.json"] =
+                $$"""{"agent":"{{Agent}}","conversations":[{"id":"hello","turns":""" +
+                $$"""[{"ask":"Hello?","facts":["no-error"]{{criteria}}}]}]}"""
+        }));
+    }
+
+    /// <summary>Where a host keeps its runs and its recordings, or none.</summary>
+    public sealed record Folders(string? Data, string? Recordings);
+
+    /// <summary>How many times a model was called.</summary>
+    public sealed class Count
+    {
+        /// <summary>The calls so far.</summary>
+        public int Calls { get; set; }
+    }
 }

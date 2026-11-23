@@ -1,4 +1,6 @@
+using LouisAgent.Choices;
 using LouisAgent.Composition.Agents;
+using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Evals.Contracts.Grading;
 using LouisAgent.Evals.Contracts.Runs;
 using LouisAgent.Evals.Contracts.Transcripts;
@@ -18,8 +20,9 @@ namespace LouisAgent.Evals.Runs;
 /// <remarks>
 /// A pipeline: a conversation goes in and a graded repeat comes out, asking first and grading after, so one place
 /// opens and closes the session and the judge reads the same turns either way. A turn that ends in the agent's own
-/// error is still a turn, since that is the agent failing and what an eval is for. A refusal from the API or a
-/// judge that can't mark is not caught here: stopping the run is the runner's.
+/// error is still a turn, since that is the agent failing and what an eval is for, but a recording that no longer
+/// answers is the harness failing, and this is the one place the two are told apart. A refusal from the API, a judge
+/// that can't mark or an out-of-date recording is not caught here: stopping the run is the runner's.
 /// </remarks>
 /// <param name="sessions">The sessions API the agent is asked over.</param>
 /// <param name="judge">The judge that marks each criterion.</param>
@@ -33,8 +36,10 @@ public sealed class ConversationPlayer(SessionClient sessions, Judge judge, Time
     public async Task<RepeatRun> PlayAsync(
         AgentAddress agent, Conversation conversation, RunTrial trial, CancellationToken cancellationToken = default)
     {
-        var asked = await AskAllAsync(agent, conversation, cancellationToken);
+        var asked = await AskAllAsync(agent, conversation, trial, cancellationToken);
 
+        // The judge's answers are kept in the play's trial beside the agent's, or played back from it.
+        using var judging = JudgeReplay.Begin(trial);
         var transcripts = asked.Select(turn => turn.Transcript).ToList();
         var turns = new List<TurnRun>();
         for (int at = 0; at < asked.Count; at++)
@@ -46,12 +51,17 @@ public sealed class ConversationPlayer(SessionClient sessions, Judge judge, Time
 
     /// <summary>
     /// Every ask sent in one session opened as the agent, in order; the session is closed whatever happens, with no
-    /// token, so a cancelled run still lets it go.
+    /// token, so a cancelled run still lets it go. A live play records under its trial, and a replay asks for the
+    /// recorded trial back, the model's answers included.
     /// </summary>
     private async Task<List<AskedTurn>> AskAllAsync(
-        AgentAddress agent, Conversation conversation, CancellationToken cancellationToken)
+        AgentAddress agent, Conversation conversation, RunTrial trial, CancellationToken cancellationToken)
     {
-        var opening = new CreateSessionRequest(null, null, null, Role: agent.Role, Identity: agent.Identity);
+        var replay = trial.Replayed is { } recorded
+            ? new ReplayRequest(WebReplayMode.Replay.Wire(), recorded, Model: true)
+            : new ReplayRequest(WebReplayMode.Record.Wire(), null);
+        var opening = new CreateSessionRequest(trial.Task, trial.Run, null, Role: agent.Role, Replay: replay,
+            Identity: agent.Identity);
         string session = await sessions.OpenAsync(opening, cancellationToken);
         try
         {
@@ -73,6 +83,10 @@ public sealed class ConversationPlayer(SessionClient sessions, Judge judge, Time
         var events = new List<SessionEvent>();
         await foreach (var streamEvent in sessions.SendAsync(session, ask, cancellationToken))
             events.Add(streamEvent);
+
+        // A recording that no longer answers is the harness failing, not the agent: it stops the run.
+        var miss = events.OfType<ErrorReported>().FirstOrDefault(error => error.Kind == StreamErrorKind.ReplayMiss);
+        if (miss is not null) throw new RecordingOutOfDateException(TurnTranscripts.MessageOf(miss) ?? "");
 
         var transcript = TurnTranscripts.Of(ask, events, _clock.GetElapsedTime(started));
         return new AskedTurn(transcript, TurnTranscripts.CostOf(events));

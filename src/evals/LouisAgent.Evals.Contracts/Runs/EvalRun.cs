@@ -31,6 +31,9 @@ public sealed record EvalRun(
     /// <summary>Why it couldn't finish, when it couldn't.</summary>
     public string? StoppedBecause { get; init; }
 
+    /// <summary>The live run a replay plays back, or none for a live run.</summary>
+    public string? ReplayOf { get; init; }
+
     /// <summary>Whether the page a visitor is on was sent with each ask; never yet, so a run says so plainly.</summary>
     public bool PageSent { get; init; }
 

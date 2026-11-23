@@ -79,7 +79,7 @@ public static class TurnTranscripts
     }
 
     /// <summary>The failure's own message.</summary>
-    private static string? MessageOf(ErrorReported error) =>
+    internal static string? MessageOf(ErrorReported error) =>
         error.Data.GetProperty("error").GetProperty("message").GetString();
 
     /// <summary>What kind of block or delta this is.</summary>

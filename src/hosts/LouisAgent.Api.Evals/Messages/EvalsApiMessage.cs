@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using LouisAgent.Api.Evals.Messages.Holes;
+using LouisAgent.Api.Evals.Messages.Holes.Runs;
 using LouisAgent.Composition.Messages;
 
 namespace LouisAgent.Api.Evals.Messages;
@@ -22,8 +23,11 @@ public enum EvalsApiMessage
     [Holes(typeof(RepeatsNotOneOrThreeHoles))]
     RepeatsNotOneOrThree,
 
-    [Description("A replay can't be started on this host yet; only a live run can.")]
-    ReplayNotYet,
+    [Description("A replay plays the eval's last live run back, and this eval has no live run that finished.")]
+    NoLiveRunToReplay,
+
+    [Description("A live run records as it goes so it can be replayed, and this host keeps no recordings.")]
+    LiveNeedsRecordings,
 
     [Description("This host has nowhere to keep a run: set {Setting} to its data folder.")]
     [Holes(typeof(NowhereToKeepHoles))]

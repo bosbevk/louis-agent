@@ -1,4 +1,5 @@
 using LouisAgent.Composition.Messages;
+using LouisAgent.Core.Llm.Replay;
 using LouisAgent.Evals.Contracts.Runs;
 using LouisAgent.Evals.Files;
 using LouisAgent.Evals.Grading;
@@ -17,8 +18,9 @@ namespace LouisAgent.Evals.Runs;
 /// The second half of the pipeline: the player knows the sessions API, the runner knows repeats and stopping. A
 /// conversation passes only when all its repeats pass, chosen over at least one passing (Louis, 2026-11-22). The run
 /// stops when the judge can't mark, chosen over a third kind of mark and over a retry (Louis, 2026-11-23), and when
-/// the API refuses, since in both nothing was learnt about the agent. Only those two are caught: anything else is a
-/// bug and surfaces, and a cancellation stays a cancellation.
+/// the API refuses, since in both nothing was learnt about the agent, and a replay stops when its recording no
+/// longer answers, the agent's or the judge's. Only those are caught: anything else is a bug and surfaces, and a
+/// cancellation stays a cancellation.
 /// </remarks>
 /// <param name="player">What plays one conversation once.</param>
 /// <param name="clock">The time a run ends at.</param>
@@ -58,11 +60,19 @@ public sealed class EvalRunner(ConversationPlayer player, TimeProvider clock)
         {
             for (int repeat = 1; repeat <= started.Repeats; repeat++)
             {
-                var trial = new RunTrial(started.Id, conversation.Id, repeat);
+                var trial = new RunTrial(started.Id, conversation.Id, repeat, started.ReplayOf);
                 repeats.Add(await player.PlayAsync(file.Agent, conversation, trial, cancellationToken));
             }
 
             return new PlayedConversation(new ConversationRun(conversation.Id, started.Repeats, repeats), null);
+        }
+        catch (RecordingOutOfDateException outOfDate)
+        {
+            return Stopped(conversation, started, repeats, outOfDate.Message);
+        }
+        catch (JudgeFailedException failed) when (failed.InnerException is ModelReplayMissException miss)
+        {
+            return Stopped(conversation, started, repeats, miss.Message);
         }
         catch (JudgeFailedException failed)
         {
@@ -76,6 +86,15 @@ public sealed class EvalRunner(ConversationPlayer player, TimeProvider clock)
             return new PlayedConversation(new ConversationRun(conversation.Id, started.Repeats, repeats),
                 MessageText.Format(RunMessage.SessionRefused, sessionRefused));
         }
+    }
+
+    /// <summary>A replay stopped on a recording that no longer answers, with what changed.</summary>
+    private static PlayedConversation Stopped(Conversation conversation, EvalRun started, List<RepeatRun> repeats,
+        string changed)
+    {
+        var outOfDate = new RecordingOutOfDateHoles(changed);
+        return new PlayedConversation(new ConversationRun(conversation.Id, started.Repeats, repeats),
+            MessageText.Format(RunMessage.RecordingOutOfDate, outOfDate));
     }
 
     /// <summary>The run ended as it ended, at the clock's time, and kept once more.</summary>

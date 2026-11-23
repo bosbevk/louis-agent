@@ -19,6 +19,10 @@ public enum RunMessage
     [Holes(typeof(SessionRefusedHoles))]
     SessionRefused,
 
+    [Description("The recording no longer answers, so it is out of date and a live run is needed: {Changed}")]
+    [Holes(typeof(RecordingOutOfDateHoles))]
+    RecordingOutOfDate,
+
     [Description("'{Id}' is no run's id. A run's id is the UTC time it started and its eval's name, as " +
                  "20261123-043012-guide.")]
     [Holes(typeof(NotARunIdHoles))]

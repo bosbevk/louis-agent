@@ -2,6 +2,8 @@ using LouisAgent.Api.Endpoints.Admin;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Llm;
 using LouisAgent.Core.Llm.UsageMapping;
+using LouisAgent.Core.Sessions.Replay.Store;
+using LouisAgent.Evals.Runs;
 using LouisAgent.Evals.Files;
 using LouisAgent.Evals.Runs.Store;
 using Microsoft.AspNetCore.Builder;
@@ -44,7 +46,8 @@ public static class EvalsStartup
             var work = options.RunsFolder is { } folder
                 ? new RunWork(new RunStore(folder), judgeModel, () => api(provider), TimeProvider.System)
                 : null;
-            return new EvalHandlers(catalog, provider.GetRequiredService<RunDesk>(), work, TimeProvider.System);
+            return new EvalHandlers(catalog, provider.GetRequiredService<RunDesk>(), work, host.Agent.KeepsRecordings,
+                TimeProvider.System);
         });
         return builder;
     }
@@ -62,13 +65,17 @@ public static class EvalsStartup
     }
 
     /// <summary>
-    /// The judge's client: the host's provider on the judge's model, its cost on the host's ledger when the host keeps
-    /// one, under the grading purpose the judge sets.
+    /// The judge's client: the host's provider on the judge's model, recorded and replayed with the agent's answers,
+    /// its cost on the host's ledger when the host keeps one, under the grading purpose the judge sets; a replayed
+    /// answer is a known 0.
     /// </summary>
     public static IChatClient JudgeClient(AgentHostContext host, ILlmClientFactory clients, EvalsOptions options)
     {
         var llm = options.JudgeLlm(host.Llm);
-        var client = clients.Create(llm);
+        // Its answers are kept in each play's trial and replayed from it, when the host keeps recordings.
+        var client = ReplayStore.From(host.Agent) is { } recordings
+            ? new JudgeReplay(clients.Create(llm), recordings)
+            : clients.Create(llm);
         var ledger = UsageLedger.Open(host.Agent, host.Prices);
         return ledger is null
             ? client
