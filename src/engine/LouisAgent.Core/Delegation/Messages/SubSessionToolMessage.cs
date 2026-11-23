@@ -225,6 +225,12 @@ public enum SubSessionToolMessage
     [Description("{FirstMessage}\n\nThe step before you, {Address}, answered:\n\n{Answer}")]
     [Holes(typeof(SequenceStepInputHoles))]
     SequenceStepInput,
+    [Description("{FirstMessage}\n\nWhat the steps before you answered, in order:\n\n{Answers}")]
+    [Holes(typeof(SequenceStepsSoFarHoles))]
+    SequenceStepsSoFar,
+    [Description("{Address} answered:\n{Answer}")]
+    [Holes(typeof(SequenceStepAnsweredHoles))]
+    SequenceStepAnswered,
     [Description("({Number}) {Address} did: {Did}")]
     [Holes(typeof(SequenceStepDidHoles))]
     SequenceStepDid,

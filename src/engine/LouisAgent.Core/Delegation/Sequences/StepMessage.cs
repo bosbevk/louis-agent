@@ -28,8 +28,25 @@ internal static class StepMessage
         return input switch
         {
             StepInput.FirstMessageAndPreviousAnswer => WithPrevious(firstMessage, answered[^1]),
-            _ => throw new NotImplementedException()
+            StepInput.WholeConversation => WithEvery(firstMessage, answered),
+            StepInput.PreviousAnswer => answered[^1].Answer,
+            _ => throw new ArgumentOutOfRangeException(nameof(input), input, null)
         };
+    }
+
+    /// <summary>The first message, then every answer so far in order, each under the step that gave it.</summary>
+    private static string WithEvery(string firstMessage, IReadOnlyList<StepOutcome> answered)
+    {
+        var answers = string.Join("\n\n", answered.Select(Answered));
+        var input = new SequenceStepsSoFarHoles(firstMessage, answers);
+        return MessageText.Format(SubSessionToolMessage.SequenceStepsSoFar, input);
+    }
+
+    /// <summary>One answer under the step that gave it.</summary>
+    private static string Answered(StepOutcome step)
+    {
+        var answered = new SequenceStepAnsweredHoles(step.Address, step.Answer);
+        return MessageText.Format(SubSessionToolMessage.SequenceStepAnswered, answered);
     }
 
     /// <summary>The first message with the answer of the step before under it.</summary>
