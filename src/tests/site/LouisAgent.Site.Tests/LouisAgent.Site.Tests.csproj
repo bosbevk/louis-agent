@@ -25,6 +25,8 @@
     <!-- The site's host, for its catalogue (F124). -->
     <ProjectReference Include="..\..\..\site\LouisAgent.SiteApi\LouisAgent.SiteApi.csproj" />
     <ProjectReference Include="..\..\..\site\LouisAgent.Identities.Guide\LouisAgent.Identities.Guide.csproj" />
+    <!-- F126.3.1: the guide's eval file is read as the evals read it. -->
+    <ProjectReference Include="..\..\..\evals\LouisAgent.Evals\LouisAgent.Evals.csproj" />
     <ProjectReference Include="..\..\..\site\LouisAgent.Identities.Showroom\LouisAgent.Identities.Showroom.csproj" />
     <!-- The fixture replay, the stub API and the snapshot helper the web tests share; no test project references another. -->
     <ProjectReference Include="..\..\web\LouisAgent.Web.Testing\LouisAgent.Web.Testing.csproj" />

@@ -14,6 +14,7 @@ public class EvalMessagesTests
     public void EveryMessage_NamesItsHolesRecord_AndItMatches() =>
         Assert.That(MessageHoles.Problems([
             typeof(EvalFileMessage), typeof(FactMessage),
-            typeof(JudgeMessage), typeof(SessionMessage), typeof(RunMessage)
+            typeof(JudgeMessage), typeof(SessionMessage), typeof(RunMessage),
+            typeof(CatalogMessage)
         ]), Is.Empty);
 }
