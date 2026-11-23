@@ -238,6 +238,20 @@ Skill 4, Tool use: a follow-up proved to reach the same specialist (`continued`)
   no `judge` key, and the judge reads each tool result as the agent got it. `place` leaves the file with Puls, and
   `used {tool} with {field}={value}` waits with the triage evals. It is done, its design in
   [LouisAgent.Evals](../projects/LouisAgent.Evals.md).
+- **2026-11-23, what F126.3.1 settles.** Planning the third child, Louis picked nine things, each on a card.
+  "1. F126.3.1 runs, F126.3.2 the page": the third child is a parent of two, and F126.4 and F126.5 keep their
+  names. "1. One JSON file per run": a run is a file in the site's data folder behind a repository, which changes
+  this plan's one Mongo collection. "1. Start, then ask how it goes": a start answers 202 with the run's address
+  and the run is read from there, one run at a time. "1. A child of its own, after the runs": the page a
+  conversation names is F126.3.3, planned before F126.5 writes the guide's evals, and until then a run says it
+  sent none. "1. In the agent's own folder": an eval file is `agents/{identity}/{name}.eval.json`. "1. A new
+  LouisAgent.Evals.Contracts": a run's records are a shared contract the pages can reference. "1. The run stops
+  there, and says why": a judge that can't mark ends the run, and no third kind of mark exists. "1. Replay the
+  judge's answers too": a replay calls no model at all, and a reworded criterion stops it. "1.
+  src/site/recordings/evals/": where the guide's recordings for its replay test sit. The child also carries three
+  picks of the review of 2026-11-22: the eval part is a library the site's API maps and no host of its own, a
+  conversation passes only when all three repeats do, and a replay is one test. Its plan is
+  [F126.3.1 Runs](F126.3.1-runs.md).
 
 ---
 [Plans](README.md) · Related: [ADR 0029](../adr/0029-simulations-in-csharp.md) · [ADR 0058](../adr/0058-an-eval-is-a-folder-of-files.md) · [ADR 0104](../adr/0104-a-message-may-carry-the-page.md)

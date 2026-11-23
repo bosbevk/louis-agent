@@ -1,0 +1,35 @@
+{
+  "kind": "sequence",
+  "title": "F126.3.1 runs: one conversation of a live run",
+  "caption": "One conversation with a follow-up, played once. A session is opened, each turn is asked and written down, the session is closed, code tells the facts, the judge marks the criteria, and the run's file is written again.",
+  "sequence": {
+    "participants": [
+      { "id": "P", "icon": "user", "tone": "blue", "label": "The caller" },
+      { "id": "D", "icon": "server", "tone": "green", "label": "The run desk" },
+      { "id": "R", "icon": "play", "tone": "green", "label": "The runner and player" },
+      { "id": "A", "icon": "chip", "tone": "violet", "label": "The sessions API" },
+      { "id": "J", "icon": "scales", "tone": "green", "label": "The judge" },
+      { "id": "S", "icon": "file", "tone": "amber", "label": "The run store" }
+    ],
+    "steps": [
+      { "step": "message", "from": "P", "to": "D", "text": "POST /v1/admin/evals/guide/runs { live, 3 repeats }" },
+      { "step": "message", "from": "D", "to": "S", "text": "Save(the run, running, no conversation yet)" },
+      { "step": "reply", "from": "D", "to": "P", "text": "202, Location: /v1/admin/evals/runs/{id}" },
+      { "step": "message", "from": "D", "to": "R", "text": "RunAsync(the run, the file, kept), in the background" },
+      { "step": "message", "from": "R", "to": "A", "text": "POST /v1/sessions { identity, run tag, replay: record }" },
+      { "step": "reply", "from": "A", "to": "R", "text": "the session's id" },
+      { "step": "message", "from": "R", "to": "A", "text": "POST …/messages { the first turn's ask }" },
+      { "step": "reply", "from": "A", "to": "R", "text": "the stream: text, tool calls and results, the cost" },
+      { "step": "note", "over": ["R"], "text": "the turn's transcript is written down from the events" },
+      { "step": "message", "from": "R", "to": "A", "text": "POST …/messages { the follow-up }, same session" },
+      { "step": "reply", "from": "A", "to": "R", "text": "the stream of the second turn" },
+      { "step": "message", "from": "R", "to": "A", "text": "DELETE the session" },
+      { "step": "note", "over": ["R"], "text": "Facts.Tell for each fact of each turn, in code" },
+      { "step": "message", "from": "R", "to": "J", "text": "MarkAsync(a criterion, the turns up to this one)" },
+      { "step": "reply", "from": "J", "to": "R", "text": "a Mark, or it throws and the run stops with the reason" },
+      { "step": "message", "from": "R", "to": "S", "text": "kept: Save(the run, with this conversation's repeats)" },
+      { "step": "message", "from": "P", "to": "D", "text": "GET /v1/admin/evals/runs/{id}" },
+      { "step": "reply", "from": "D", "to": "P", "text": "the run as it is kept: running, then finished" }
+    ]
+  }
+}
