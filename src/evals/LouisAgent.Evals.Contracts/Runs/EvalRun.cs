@@ -65,6 +65,9 @@ public sealed record EvalRun(
     /// <summary>How long it took from its start to its end; none while it has no end.</summary>
     public TimeSpan? MeasureTime() => EndedAt - StartedAt;
 
+    /// <summary>How long it has gone by this moment: to now while it goes, to its end once it has ended.</summary>
+    public TimeSpan MeasureTimeSoFar(DateTimeOffset now) => (EndedAt ?? now) - StartedAt;
+
     /// <summary>The currency its costs are in, from its first priced turn; none while no turn is priced.</summary>
     public string? FindCurrency() =>
         AllRepeats().SelectMany(repeat => repeat.Turns).Select(turn => turn.Currency)

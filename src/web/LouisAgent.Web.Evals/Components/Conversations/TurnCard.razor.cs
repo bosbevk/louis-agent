@@ -1,6 +1,7 @@
 using LouisAgent.Evals.Contracts.Runs;
 using LouisAgent.Web.Evals.Words;
 using LouisAgent.Web.Evals.Words.Parts;
+using LouisAgent.Web.Usage;
 using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Web.Evals.Components.Conversations;
@@ -18,6 +19,19 @@ public partial class TurnCard
     /// <summary>The turn.</summary>
     [Parameter, EditorRequired]
     public TurnRun Turn { get; set; } = null!;
+
+    private static string AgentCostName => EvalsWords.Words[EvalsPart.AgentCostName];
+
+    private static string JudgeCostName => EvalsWords.Words[EvalsPart.JudgeCostName];
+
+    /// <summary>What the turn cost the agent, or unknown, never 0.</summary>
+    private string AgentCost => MoneyOf(Turn.Cost);
+
+    /// <summary>What judging the turn's criteria cost, or unknown, never 0 (F126.3.4).</summary>
+    private string JudgeCost => MoneyOf(Turn.JudgeCost);
+
+    private string MoneyOf(decimal? cost) =>
+        cost is { } amount ? UsageFormat.Money(amount, Turn.Currency) : EvalsWords.Words[EvalsPart.Unknown];
 
     /// <summary>"2 tool calls · ReadDoc, ShowPage": how many, and the tools by name, each once.</summary>
     private string CallsSummary =>

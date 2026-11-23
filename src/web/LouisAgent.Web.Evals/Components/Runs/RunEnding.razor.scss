@@ -1,0 +1,5 @@
+/* A run's ending, apart from the cards under it: a run that could not finish titled in the danger colour, a stopped
+   one in the page's own. */
+.run-ending { margin-bottom: 16px; }
+.run-ending p:last-child { margin-bottom: 0; }
+.run-stopped h2 { color: var(--bs-danger); }

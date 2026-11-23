@@ -41,6 +41,18 @@ public static class EvalsWords
         EvalsPart.GoingSince => "Going since {0}",
         EvalsPart.FollowTheRun => "Follow the run →",
         EvalsPart.Stopped => "Stopped",
+        EvalsPart.SoFar => "So far",
+        EvalsPart.Took => "Took",
+        EvalsPart.AgentCostName => "The agent's cost",
+        EvalsPart.JudgeCostName => "The judge's cost",
+        EvalsPart.StopTheRun => "Stop the run",
+        EvalsPart.RunGoingHead =>
+            "The run is going. {0} of {1} conversations are graded so far, and this page reads it again every few " +
+            "seconds.",
+        EvalsPart.RunStoppedHead => "{0} of {1} conversations were graded, then the run was stopped.",
+        EvalsPart.StoppedTitle => "The run was stopped",
+        EvalsPart.StoppedByAPerson => "A person stopped it. What was graded before is kept.",
+        EvalsPart.DidNotRun => "{0} did not run.",
         _ => throw new ArgumentOutOfRangeException(nameof(part), part, null)
     });
 

@@ -88,5 +88,35 @@ public enum EvalsPart
     FollowTheRun,
 
     /// <summary>A card whose last run a person stopped.</summary>
-    Stopped
+    Stopped,
+
+    /// <summary>The name of a running run's time figure (F126.3.4, the run's page).</summary>
+    SoFar,
+
+    /// <summary>The name of an ended run's time figure.</summary>
+    Took,
+
+    /// <summary>The name of what the agent's turns cost.</summary>
+    AgentCostName,
+
+    /// <summary>The name of what judging the turns cost.</summary>
+    JudgeCostName,
+
+    /// <summary>The button that stops a going run.</summary>
+    StopTheRun,
+
+    /// <summary>The line under a going run's heading, with what is graded of how many.</summary>
+    RunGoingHead,
+
+    /// <summary>The line under a stopped run's heading, with what was graded of how many.</summary>
+    RunStoppedHead,
+
+    /// <summary>The title of a stopped run's box.</summary>
+    StoppedTitle,
+
+    /// <summary>What a stopped run's box says first.</summary>
+    StoppedByAPerson,
+
+    /// <summary>How many conversations did not run, in a run's ending.</summary>
+    DidNotRun
 }

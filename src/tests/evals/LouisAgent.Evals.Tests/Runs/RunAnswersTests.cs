@@ -115,6 +115,17 @@ public class RunAnswersTests
         Assert.That(Run(new ConversationRun("a", 1, [Repeat(1, Turn(cost: null))])).SumCost(), Is.Null);
     }
 
+    /// <summary>F126.3.4: a run's time so far runs to now while it goes, and to its end once it ended.</summary>
+    [Test]
+    public void ARunsTimeSoFar_IsToNowWhileItGoes_AndToItsEndOnceEnded()
+    {
+        var now = Started.AddSeconds(158);
+
+        Assert.That(Run().MeasureTimeSoFar(now), Is.EqualTo(TimeSpan.FromSeconds(158)));
+        Assert.That((Run() with { EndedAt = Started.AddSeconds(30) }).MeasureTimeSoFar(now),
+            Is.EqualTo(TimeSpan.FromSeconds(30)));
+    }
+
     /// <summary>A run's currency is its first priced turn's, and none while no turn is priced.</summary>
     [Test]
     public void ARunsCurrency_IsItsFirstPricedTurns_OrNone()

@@ -1,9 +1,10 @@
 @page "/admin/evals/{Eval}/runs/{Run}"
 @layout AdminFrame
+@implements IDisposable
 
 @* A run's page (F126.3.2): the number first, then what the run ran with, then its conversations, the failed ones
-   first, and the eval's other runs at the foot. A run that stopped gives its reason first, one still running shows
-   what is graded so far, and a run the host doesn't have is one line. *@
+   first, and the eval's other runs at the foot. A run that ended early says how first; a going run is read again
+   every few seconds and can be stopped (F126.3.4); a run the host doesn't have is one line. *@
 
 <PageTitle>@Eval · Run · Admin</PageTitle>
 
@@ -23,13 +24,23 @@
             case RunStatus.CouldNotFinish:
                 <p>@Graded of @Held conversations were graded, then the run could not go on.</p>
                 break;
+            case RunStatus.Stopped:
+                <p>@StoppedHead</p>
+                break;
             case RunStatus.Running:
-                <p class="run-running">The run is still going. @Graded of @Held conversations are graded so far, and Reload reads what is graded since.</p>
+                <p class="run-running">@GoingHead</p>
                 break;
         }
     </div>
     <div class="page-actions">
-        <button class="header-button run-reload" type="button" @onclick="LoadAsync" disabled="@_loading"><span class="ic i-refresh" aria-hidden="true"></span>Reload</button>
+        @if (Going)
+        {
+            <button class="header-button run-stop" type="button" @onclick="StopAsync" disabled="@_stopping">@StopTheRun</button>
+        }
+        else
+        {
+            <button class="header-button run-reload" type="button" @onclick="LoadAsync" disabled="@_loading"><span class="ic i-refresh" aria-hidden="true"></span>Reload</button>
+        }
     </div>
 </div>
 
@@ -48,14 +59,7 @@ else if (_loading && _run is null)
 }
 else if (_run is { } run)
 {
-    @if (run.Status == RunStatus.CouldNotFinish)
-    {
-        <section class="card-p run-stopped">
-            <h2>The run could not finish</h2>
-            <p>@run.StoppedBecause</p>
-            <p>@NotRun did not run.</p>
-        </section>
-    }
+    <RunEnding Run="run" NotRun="@NotRun"/>
 
     <section class="card-p run-this">
         <h2>This run</h2>
@@ -63,8 +67,9 @@ else if (_run is { } run)
             <p class="run-score col-12 col-lg-auto"><span class="run-passed">@run.Passed</span> <span class="run-of">of @run.Conversations.Count @(run.Status == RunStatus.Finished ? "passed" : "graded passed")</span></p>
             <RunFigure Name="Kind">@Kind</RunFigure>
             <RunFigure Name="Repeats">@run.Repeats</RunFigure>
-            <RunFigure Name="Took">@Took</RunFigure>
-            <RunFigure Name="The agent's cost"><span class="run-cost">@Cost</span></RunFigure>
+            <RunFigure Name="@TimeName">@Time</RunFigure>
+            <RunFigure Name="@AgentCostName"><span class="run-cost">@Cost</span></RunFigure>
+            <RunFigure Name="@JudgeCostName"><span class="run-judge-cost">@JudgeCost</span></RunFigure>
             <RunFigure Name="Facts met">@run.CountFacts().Met of @run.CountFacts().Of</RunFigure>
             <RunFigure Name="Criteria met">@run.CountCriteria().Met of @run.CountCriteria().Of</RunFigure>
         </RunFigures>

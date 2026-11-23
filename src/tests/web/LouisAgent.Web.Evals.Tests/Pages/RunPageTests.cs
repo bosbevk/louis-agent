@@ -30,6 +30,61 @@ public class RunPageTests
             .And.Contain("$0.003").And.Contain("Facts met").And.Contain("Criteria met").And.Contain("7 of 8"));
     }
 
+    /// <summary>
+    /// F126.3.4: a running run's figures say how long it has gone so far by the page's clock, and what it has cost
+    /// the agent and the judge so far.
+    /// </summary>
+    [Test]
+    public void ARunningRunsFigures_SaySoFar_AndBothCostsSoFar()
+    {
+        using var ctx = new BunitContext();
+        var host = new EvalPagesHost(null);
+        var going = Run() with
+        {
+            Status = RunStatus.Running,
+            EndedAt = null,
+            StartedAt = host.Clock.GetUtcNow().AddSeconds(-158)
+        };
+        host.Answers(Judged(going));
+        var page = host.Render(ctx, Eval, going.Id);
+
+        string figures = page.Find(".run-this").TextContent;
+
+        Assert.That(figures, Does.Contain("So far").And.Contain("2 min 38 s").And.Contain("The agent's cost")
+            .And.Contain("$0.003").And.Contain("The judge's cost"));
+        Assert.That(page.Find(".run-judge-cost").TextContent.Trim(), Is.EqualTo("$0.003"));
+        Assert.That(figures, Does.Not.Contain("Took"));
+    }
+
+    /// <summary>A finished run shows how long it took and both its costs; a cost not known reads unknown.</summary>
+    [Test]
+    public void AFinishedRun_ShowsTook_AndBothCosts_AnUnknownOneAsUnknown()
+    {
+        using var ctx = new BunitContext();
+        var page = Render(ctx, Run());
+
+        string figures = page.Find(".run-this").TextContent;
+
+        Assert.That(figures, Does.Contain("Took").And.Contain("The judge's cost"));
+        Assert.That(page.Find(".run-judge-cost").TextContent.Trim(), Is.EqualTo("unknown"));
+    }
+
+    /// <summary>A run whose every priced turn cost the judge what it cost the agent.</summary>
+    private static EvalRun Judged(EvalRun run) => run with
+    {
+        Conversations =
+        [
+            .. run.Conversations.Select(c => c with
+            {
+                Repeats =
+                [
+                    .. c.Repeats.Select(r =>
+                        r with { Turns = [.. r.Turns.Select(t => t with { JudgeCost = t.Cost })] })
+                ]
+            })
+        ]
+    };
+
     /// <summary>A run whose turns have no price reads its cost as unknown, never as nothing spent.</summary>
     [Test]
     public void ACostWithNoPrice_ReadsUnknown()
