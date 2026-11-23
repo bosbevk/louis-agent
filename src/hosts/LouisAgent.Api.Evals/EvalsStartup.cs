@@ -53,7 +53,7 @@ public static class EvalsStartup
         return builder;
     }
 
-    /// <summary>The four routes, on the API's group, behind the admin key.</summary>
+    /// <summary>The five routes, on the API's group, behind the admin key.</summary>
     public static IEndpointRouteBuilder MapLouisAgentEvals(this IEndpointRouteBuilder v1, string? adminKey)
     {
         var handlers = v1.ServiceProvider.GetRequiredService<EvalHandlers>();
@@ -61,6 +61,7 @@ public static class EvalsStartup
         admin.MapGet("/evals", handlers.List);
         admin.MapPost("/evals/{name}/runs", handlers.StartAsync);
         admin.MapGet("/evals/runs/{id}", handlers.Find);
+        admin.MapDelete("/evals/runs/{id}", handlers.Stop);
         admin.MapGet("/evals/{name}/runs", handlers.RunsOf);
         return v1;
     }

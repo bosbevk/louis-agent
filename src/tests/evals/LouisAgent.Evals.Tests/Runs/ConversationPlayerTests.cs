@@ -206,6 +206,42 @@ public class ConversationPlayerTests
         Assert.That(repeat.Turns.Select(turn => turn.JudgeCost), Is.EqualTo(new decimal?[] { null, null }));
     }
 
+    /// <summary>
+    /// F126.3.4: a play stopped once its session is open still closes the session, with no token, so a stopped run
+    /// leaves none open.
+    /// </summary>
+    [Test]
+    public async Task APlayStopped_AfterItsSessionOpens_StillClosesIt()
+    {
+        var api = new FakeSessionsApi(Answered("A framework."), Answered("Yes."));
+        using var stop = new CancellationTokenSource();
+        var http = new HttpClient(new StopAfterOpening(api.Handler, stop))
+        {
+            BaseAddress = new Uri("http://api.test/")
+        };
+        var player = new ConversationPlayer(new SessionClient(http), api.Pages(), new Judge(Met()));
+
+        Assert.CatchAsync<OperationCanceledException>(() => player.PlayAsync(Guide, TwoTurns, Trial, stop.Token));
+
+        Assert.That(api.Calls(), Has.Some.StartsWith("DELETE"));
+        await Task.CompletedTask;
+    }
+
+    /// <summary>Stops the play as soon as the API has opened its session.</summary>
+    private sealed class StopAfterOpening(HttpMessageHandler inner, CancellationTokenSource stop)
+        : DelegatingHandler(inner)
+    {
+        /// <summary>Passes each request on, and cancels the play once a session has opened.</summary>
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
+            CancellationToken cancellationToken)
+        {
+            var response = await base.SendAsync(request, cancellationToken);
+            if (request.Method == HttpMethod.Post && request.RequestUri!.AbsolutePath == "/v1/sessions")
+                await stop.CancelAsync();
+            return response;
+        }
+    }
+
     /// <summary>A price table for the judge's model, so its calls are priced.</summary>
     private static readonly PriceTable Prices = new()
     {

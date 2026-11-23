@@ -1,6 +1,7 @@
 using System.Net;
 using LouisAgent.Core.Sessions.Replay.Store;
 using LouisAgent.Evals.Contracts.Runs;
+using Microsoft.Extensions.AI;
 using static LouisAgent.Api.Evals.Tests.EvalsTestHost;
 
 namespace LouisAgent.Api.Evals.Tests;
@@ -97,4 +98,28 @@ public class ReplayRunTests
     private static IReadOnlyList<(string, bool)> Marks(EvalRun run) =>
         run.Conversations.SelectMany(conversation => conversation.Repeats).SelectMany(repeat => repeat.Turns)
             .SelectMany(turn => turn.Facts.Concat(turn.Criteria)).Select(mark => (mark.Text, mark.Met)).ToList();
+
+    /// <summary>
+    /// F126.3.4: a stopped live run is not the run a replay plays back, nor an eval's last live run: a replay with
+    /// only a stopped live run behind it is refused.
+    /// </summary>
+    [Test]
+    public async Task AStoppedLiveRun_IsNotPlayedBack()
+    {
+        using var held = new ManualResetEventSlim();
+        await using var host = await StartAsync(new FakeChatClient(Enumerable.Repeat<Func<IList<ChatMessage>,
+            ChatResponse>>(_ =>
+        {
+            held.Wait(TimeSpan.FromSeconds(30));
+            return new ChatResponse(new ChatMessage(ChatRole.Assistant, "Hello."));
+        }, 5).ToArray()));
+        using var started = await host.StartRunAsync();
+        await host.Client.DeleteAsync(started.Headers.Location!);
+        await host.EndedAsync(started.Headers.Location!);
+        held.Set();
+
+        using var replay = await host.StartRunAsync(kind: RunKind.Replay);
+
+        Assert.That(replay.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
+    }
 }

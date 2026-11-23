@@ -19,6 +19,9 @@ using FoundRuns = Microsoft.AspNetCore.Http.HttpResults.Results<
     Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<System.Collections.Generic.IReadOnlyList<
         LouisAgent.Evals.Contracts.Api.RunRow>>,
     Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.ApiError>>;
+using StopAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
+    Microsoft.AspNetCore.Http.HttpResults.NoContent,
+    Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.ApiError>>;
 using StartAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
     Microsoft.AspNetCore.Http.HttpResults.Accepted,
     Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.ApiError>>;
@@ -106,6 +109,20 @@ public sealed class EvalHandlers(
     }
 
     /// <summary>The eval's runs in short, the newest first.</summary>
+    /// <summary>
+    /// <c>DELETE /v1/admin/evals/runs/{id}</c>: stops the run going here, which then keeps itself as stopped. A run
+    /// this host doesn't have is 404, and one that isn't going 409, with the reason.
+    /// </summary>
+    public StopAnswer Stop(string id)
+    {
+        if (!RunId.TryParse(id, out _)) return NoSuchRun(id);
+        if ((work?.Store.Find(id) ?? GoingAs(id)) is null) return NoSuchRun(id);
+        if (desk.TryStop(id)) return TypedResults.NoContent();
+
+        var notGoing = new RunNotGoingHoles(id);
+        return ApiErrors.Conflict(MessageText.Format(EvalsApiMessage.RunNotGoing, notGoing));
+    }
+
     public FoundRuns RunsOf(string name)
     {
         if (catalog.Find(name) is null) return Unknown(name);
