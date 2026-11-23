@@ -84,7 +84,8 @@ internal sealed class SessionHandlers(AgentHostContext host)
         // A visitor the door admitted (F109.3) gets the open identity it admitted, and that identity's own toolsets,
         // whatever the body asked.
         string? admitted = OpenDoor.AdmittedIdentity(context);
-        if (admitted is not null) request = NarrowToTheOpenIdentity(request, admitted, engines);
+        if (admitted is not null)
+            request = NarrowToTheOpenIdentity(request, admitted, engines, OpenDoor.IsOperatorsRun(context));
         if (request?.InvalidTag() is { } invalid)
         {
             var tooLong = new InvalidTagHoles(invalid, CreateSessionRequestReading.MaxTagLength);
@@ -235,14 +236,20 @@ internal sealed class SessionHandlers(AgentHostContext host)
     /// What a visitor's session is allowed to be: the open identity the door admitted, the toolsets of its own packs
     /// and, when it may ask other agents (F127.3.1), the <c>agents</c> toolset where this instance can reach them,
     /// nothing more, tagged for the ledger; the place they shared stays, since it only tells the agent where they are.
+    /// An operator's run gets the same agent, and keeps its run, its task and its recording, untagged as a visitor's.
     /// </summary>
     private static CreateSessionRequest NarrowToTheOpenIdentity(CreateSessionRequest? request, string identity,
-        AgentEngineFactory engines)
+        AgentEngineFactory engines, bool operatorsRun)
     {
         var who = engines.Catalog.Identity(identity);
         List<string> toolsets = who is null ? [] : [.. engines.Catalog.ToolsetsOf(who)];
         // Optional: an instance with no AGENT_PEERS leaves it out, and the visitor still gets the identity.
         if (who is { Calls.Count: > 0 }) toolsets.Add(AgentSessions.AgentsToolset + ToolsetCatalog.OptionalMark);
+        // An operator's run (F126.3.1, an eval) keeps its run, its task and its recording, and is no visitor's session.
+        if (operatorsRun)
+            return new CreateSessionRequest(request?.Task, request?.Run, null, toolsets, Location: request?.Location,
+                TimeZone: request?.TimeZone, Replay: request?.Replay, Identity: identity);
+
         return new CreateSessionRequest(null, null, OpenDoorService, toolsets, Location: request?.Location,
             TimeZone: request?.TimeZone, Identity: identity);
     }

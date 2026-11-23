@@ -109,21 +109,23 @@ public class OpenDoorTests
     }
 
     /// <summary>
-    /// An operator's run (F126.3.1, an eval) presents the key and names its run: the door leaves it to the key, so it
-    /// opens the open identity as asked, run tag included. Without the key, or without a run, the door narrows it as
-    /// a visitor's, as the guide's own calls to the showroom are.
+    /// An operator's run (F126.3.1, an eval) presents the key and names its run: it gets the open identity exactly as
+    /// a visitor does, its own toolsets and nothing the body asks for, but keeps its run tag, and is no visitor's
+    /// session in the ledger. Without the key, or without a run, it is a visitor's, as the guide's own calls to the
+    /// showroom are.
     /// </summary>
     [TestCase(true, "20261123-061952-guide", "20261123-061952-guide", null)]
     [TestCase(true, null, null, "open-door")]
     [TestCase(false, "20261123-061952-guide", null, "open-door")]
-    public async Task AKeyedOpeningThatNamesARun_IsNoVisitors(bool keyed, string? run, string? keptRun,
-        string? service)
+    public async Task AKeyedOpeningThatNamesARun_KeepsItsRun_AndGetsTheIdentityAsAVisitorDoes(bool keyed,
+        string? run, string? keptRun, string? service)
     {
         await using var app = Host(Door);
         await app.StartAsync();
         var client = app.GetTestClient();
         if (keyed) client.DefaultRequestHeaders.Add("x-api-key", Key);
-        var asking = new CreateSessionRequest("guide-what-is.1", run, null, Identity: "guide");
+        var asking = new CreateSessionRequest("guide-what-is.1", run, null, [TestToolset.Files.Wire()],
+            Identity: "guide");
 
         using var opened = await OpenAsync(client, asking);
         using var body = JsonDocument.Parse(await opened.Content.ReadAsStringAsync());
@@ -131,6 +133,7 @@ public class OpenDoorTests
         Assert.That(opened.StatusCode, Is.EqualTo(HttpStatusCode.Created));
         Assert.That(body.RootElement.GetProperty("run").GetString(), Is.EqualTo(keptRun));
         Assert.That(body.RootElement.GetProperty("service").GetString(), Is.EqualTo(service));
+        Assert.That(body.RootElement.GetProperty("toolsets").EnumerateArray(), Is.Empty, "the identity's own: none");
     }
 
     /// <summary>Any identity the door doesn't name, or none, is behind the key as before.</summary>

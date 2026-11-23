@@ -68,10 +68,16 @@ public sealed class OpenDoor(OpenDoorOptions options, TimeProvider? clock = null
     /// <summary>The mark on a request the door admitted, holding the visitor it counts for.</summary>
     private const string VisitorMark = "louis-agent.open-door.visitor";
 
+    /// <summary>Where the gate marks a request as an operator's run, not a visitor's.</summary>
+    private const string OperatorMark = "louis-agent.open-door.operator";
+
     /// <summary>The settings the door was built with.</summary>
     public OpenDoorOptions Options { get; } = options;
 
     /// <summary>The identity the door admitted this request as; none for a request it didn't.</summary>
+    /// <summary>Whether the door let this request through as an operator's run (F126.3.1), not a visitor's.</summary>
+    internal static bool IsOperatorsRun(HttpContext context) => context.Items.ContainsKey(OperatorMark);
+
     internal static string? AdmittedIdentity(HttpContext context) =>
         context.Items.TryGetValue(Mark, out object? identity) ? identity as string : null;
 
@@ -91,8 +97,14 @@ public sealed class OpenDoor(OpenDoorOptions options, TimeProvider? clock = null
         if (!IsOpeningASession(context.Request)) return OpenDoorAnswer.NotMine;
         if (await OpeningAsync(context.Request) is not { Identity: { } identity } opening)
             return OpenDoorAnswer.NotMine;
-        // An operator's run (F126.3.1, an eval) presents the key and names its run: no visitor, so the key decides.
-        if (keyed && opening.Run is not null) return OpenDoorAnswer.NotMine;
+        // An operator's run (F126.3.1, an eval) presents the key and names its run: it gets the identity as a visitor
+        // does, but is no visitor, so nothing is counted and it keeps what it asked of the run.
+        if (keyed && opening.Run is not null)
+        {
+            context.Items[Mark] = identity;
+            context.Items[OperatorMark] = true;
+            return OpenDoorAnswer.Pass;
+        }
 
         // One more for this visitor today, unless the day's cap is reached; other days' counts go as they're met.
         string visitor = VisitorOf(opening.ParentSession) ?? AddressOf(context);
