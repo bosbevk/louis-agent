@@ -212,6 +212,34 @@ which says what every Acme lookup agent is. Its one name is its address, `acme.{
 recipe search and price lookup, in [its own repository](https://github.com/bosbevk/puls), are the worked examples
 when you need one.
 
+### When the order is fixed: a sequence
+
+Usually the mode decides whom to ask and when. When the work must always go through the same agents in the same
+order, declare a sequence instead, and the engine holds the order in code. Say Acme always has the estimator price
+a job and then the planner book it:
+
+```csharp
+public IReadOnlyList<string> Calls => ["acme.estimator", "acme.planner"];
+
+public IReadOnlyList<AgentSequence> Sequences =>
+    [new AgentSequence("price-and-book", ["acme.estimator", "acme.planner"])];
+```
+
+The mode now asks `acme.estimator` as before, and that ask runs the whole sequence: the estimator gets the mode's
+message, the planner gets the same message with the estimator's answer under it, and the mode gets the planner's
+answer with a line naming both steps. It costs the mode one of its three asks. Asking `acme.planner` on its own is
+refused, naming `acme.estimator` as the address to ask.
+
+Two choices change that. `Input:` says what each step after the first is given: `StepInput.WholeConversation` for
+every answer so far, or `StepInput.PreviousAnswer` for only the answer before. `Failure:` says what a failed step
+does: `StepFailure.RetryOnce` asks it once more, and `StepFailure.Skip` leaves it out and names it in the answer.
+Without them a sequence passes on the first message with the answer before, and stops at the first step that fails.
+
+The rules are checked before a step opens. A sequence has at least two steps, and every step is in `Calls`. No
+address comes twice in one sequence, and an address is in one sequence only. A step is a voice or a subagent, here or
+on another server, never a lookup agent. The whole path is in
+[How the agents talk](../AGENT_COMMUNICATION.md#a-fixed-order-sequences).
+
 ### Your names are an enum
 
 The agents the identity calls (`acme.estimator`) are written in its class, its tests, a request and the stream, so
@@ -367,6 +395,7 @@ is built.
 - [ ] The mode opens with its voice; the routing starts at the second `# ` heading and routes only this identity's work.
 - [ ] Every subagent is a folder inside the identity's, named by its address; its header says `level: subagent` and
   names the toolsets it always needs.
+- [ ] Each sequence, if it has any, has at least two steps, every one in `Calls`, and shares no address with another.
 - [ ] Registered in the program's catalogue with its project reference; every pack it names in the same catalogue.
 - [ ] A prompts fixture, an identity test, prompt tests and a session golden, reviewed.
 - [ ] `ROLES_ENABLED` lists only the roles that have passed their check.

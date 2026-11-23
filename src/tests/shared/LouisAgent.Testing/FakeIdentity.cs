@@ -1,4 +1,5 @@
 using LouisAgent.Composition.Packs;
+using LouisAgent.Composition.Packs.Sequences;
 using Microsoft.Extensions.FileProviders;
 
 namespace LouisAgent.Testing;
@@ -16,7 +17,8 @@ public sealed class FakeIdentity(
     bool demonstration = false,
     IReadOnlyList<string>? calls = null,
     bool relaysAnswersWhole = false,
-    IFileProvider? provider = null) : IAgentIdentity
+    IFileProvider? provider = null,
+    IReadOnlyList<AgentSequence>? sequences = null) : IAgentIdentity
 {
     public string Name => name;
 
@@ -39,4 +41,7 @@ public sealed class FakeIdentity(
     /// Whether an agent this test identity asks has its answer shown whole (F127.3.1), off unless said.
     /// </summary>
     public bool RelaysAnswersWhole => relaysAnswersWhole;
+
+    /// <summary>The fixed orders of agents this test identity runs, none unless the test says.</summary>
+    public IReadOnlyList<AgentSequence> Sequences => sequences ?? [];
 }
