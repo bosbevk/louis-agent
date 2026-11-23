@@ -4,6 +4,7 @@ using LouisAgent.Api.Testing;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
+using LouisAgent.Core.Sessions.Replay.Store;
 using LouisAgent.Evals.Contracts.Runs;
 using LouisAgent.Evals.Files;
 using LouisAgent.Evals.Grading;
@@ -94,7 +95,8 @@ public static class EvalReplay
         {
             ReplayOf = replayOf
         };
-        var player = new ConversationPlayer(new SessionClient(http), new Judge(new NoJudge()));
+        var player = new ConversationPlayer(new SessionClient(http), new PageClient(http, new ReplayStore(kept)),
+            new Judge(new NoJudge()));
         return await new EvalRunner(player, TimeProvider.System).RunAsync(started, factsOnly, _ => Task.CompletedTask);
     }
 

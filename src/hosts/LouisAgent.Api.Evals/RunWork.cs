@@ -1,6 +1,7 @@
 using LouisAgent.Evals.Contracts.Runs;
 using LouisAgent.Evals.Files;
 using LouisAgent.Evals.Grading;
+using LouisAgent.Core.Sessions.Replay.Store;
 using LouisAgent.Evals.Runs;
 using LouisAgent.Evals.Runs.Store;
 using LouisAgent.Evals.Sessions;
@@ -16,9 +17,18 @@ namespace LouisAgent.Api.Evals;
 /// <param name="store">Where runs are kept.</param>
 /// <param name="judgeModel">The model the judge marks criteria with.</param>
 /// <param name="agentApi">A client of the API the agent is asked over, with its address and key.</param>
+/// <param name="recordings">
+/// Where a live play keeps the page its conversation names, beside the judge's answers, and a replay reads it back;
+/// none when the host keeps no recordings.
+/// </param>
 /// <param name="clock">The time a run ends at.</param>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0134-an-eval-is-one-file-of-conversations.md">ADR 0134: an eval is one file of conversations</seealso>
-public sealed class RunWork(RunStore store, IChatClient judgeModel, Func<HttpClient> agentApi, TimeProvider clock)
+public sealed class RunWork(
+    RunStore store,
+    IChatClient judgeModel,
+    Func<HttpClient> agentApi,
+    ReplayStore? recordings,
+    TimeProvider clock)
 {
     /// <summary>Where this host keeps its runs.</summary>
     public RunStore Store => store;
@@ -35,7 +45,9 @@ public sealed class RunWork(RunStore store, IChatClient judgeModel, Func<HttpCli
         store.Save(started);
 
         using var http = agentApi();
-        var player = new ConversationPlayer(new SessionClient(http), new Judge(judgeModel), clock);
+        // The page a conversation names is asked of the same API and kept with the judge's answers (F126.3.3).
+        var pages = new PageClient(http, recordings);
+        var player = new ConversationPlayer(new SessionClient(http), pages, new Judge(judgeModel), clock);
         try
         {
             await new EvalRunner(player, clock).RunAsync(started, file, run =>

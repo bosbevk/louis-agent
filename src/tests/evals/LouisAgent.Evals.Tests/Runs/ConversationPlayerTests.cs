@@ -149,9 +149,36 @@ public class ConversationPlayerTests
         Assert.That(repeat.Passed, Is.False);
     }
 
-    /// <summary>The player over this API, with a judge on this model.</summary>
+    /// <summary>
+    /// F126.3.3: a conversation that names a page asks for it once, and sends it with its first ask and no other, as
+    /// the widget does for a visitor who stays on one page.
+    /// </summary>
+    [Test]
+    public async Task APageNamed_IsAskedOnce_AndSentWithTheFirstAskOnly()
+    {
+        var api = new FakeSessionsApi(Answered("A framework."), Answered("Yes."));
+
+        await Player(api, Met()).PlayAsync(Guide, TwoTurns with { Page = "/" }, Trial);
+
+        Assert.That(api.PagesAsked(), Is.EqualTo(new[] { "/" }));
+        Assert.That(api.PagesSent(), Is.EqualTo(new[] { "/", null }));
+    }
+
+    /// <summary>A conversation that names no page asks for none and sends none.</summary>
+    [Test]
+    public async Task NoPageNamed_AsksForNone_AndSendsNone()
+    {
+        var api = new FakeSessionsApi(Answered("A framework."), Answered("Yes."));
+
+        await Player(api, Met()).PlayAsync(Guide, TwoTurns, Trial);
+
+        Assert.That(api.PagesAsked(), Is.Empty);
+        Assert.That(api.PagesSent(), Is.EqualTo(new string?[] { null, null }));
+    }
+
+    /// <summary>The player over this API and its page route, with a judge on this model.</summary>
     private static ConversationPlayer Player(FakeSessionsApi api, FakeChatClient judgeModel) =>
-        new(api.Client(), new Judge(judgeModel));
+        new(api.Client(), api.Pages(), new Judge(judgeModel));
 
     /// <summary>A judge's model that marks every criterion it is asked about met.</summary>
     private static FakeChatClient Met() => new(_ => Judged(true), _ => Judged(true), _ => Judged(true));

@@ -15,7 +15,8 @@ namespace LouisAgent.Evals.Runs;
 
 /// <summary>
 /// Plays one conversation once against the agent, as a person would: one session, each ask in turn, the session
-/// closed. Then it grades every turn, its facts by code and its criteria by the judge, and hands back the repeat.
+/// closed. A conversation that names a page sends it with its first ask, as the site's widget would (F126.3.3). Then
+/// it grades every turn, its facts by code and its criteria by the judge, and hands back the repeat.
 /// </summary>
 /// <remarks>
 /// A pipeline: a conversation goes in and a graded repeat comes out, asking first and grading after, so one place
@@ -28,7 +29,11 @@ namespace LouisAgent.Evals.Runs;
 /// <param name="judge">The judge that marks each criterion.</param>
 /// <param name="clock">What times each turn; the system's clock unless a test gives its own.</param>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0134-an-eval-is-one-file-of-conversations.md">ADR 0134: an eval is one file of conversations</seealso>
-public sealed class ConversationPlayer(SessionClient sessions, Judge judge, TimeProvider? clock = null)
+public sealed class ConversationPlayer(
+    SessionClient sessions,
+    PageClient pages,
+    Judge judge,
+    TimeProvider? clock = null)
 {
     private readonly TimeProvider _clock = clock ?? TimeProvider.System;
 
@@ -65,9 +70,18 @@ public sealed class ConversationPlayer(SessionClient sessions, Judge judge, Time
         string session = await sessions.OpenAsync(opening, cancellationToken);
         try
         {
+            // The page goes with the first ask only, as the widget sends it once for a visitor who stays on one page.
+            // It is asked after the session opens, since opening a recording session starts its trial afresh.
+            var page = conversation.Page is { } address
+                ? await pages.FindAsync(address, trial, cancellationToken)
+                : null;
             var asked = new List<AskedTurn>();
             foreach (var turn in conversation.Turns)
-                asked.Add(await AskAsync(session, turn.Ask, cancellationToken));
+            {
+                asked.Add(await AskAsync(session, turn.Ask, page, cancellationToken));
+                page = null;
+            }
+
             return asked;
         }
         finally
@@ -76,12 +90,13 @@ public sealed class ConversationPlayer(SessionClient sessions, Judge judge, Time
         }
     }
 
-    /// <summary>One ask sent, its stream read whole and timed, and written down.</summary>
-    private async Task<AskedTurn> AskAsync(string session, string ask, CancellationToken cancellationToken)
+    /// <summary>One ask sent, with its page if it has one, its stream read whole and timed, and written down.</summary>
+    private async Task<AskedTurn> AskAsync(string session, string ask, PageRequest? page,
+        CancellationToken cancellationToken)
     {
         long started = _clock.GetTimestamp();
         var events = new List<SessionEvent>();
-        await foreach (var streamEvent in sessions.SendAsync(session, ask, cancellationToken: cancellationToken))
+        await foreach (var streamEvent in sessions.SendAsync(session, ask, page, cancellationToken))
             events.Add(streamEvent);
 
         // A recording that no longer answers is the harness failing, not the agent: it stops the run.

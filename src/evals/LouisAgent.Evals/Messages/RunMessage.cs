@@ -23,6 +23,11 @@ public enum RunMessage
     [Holes(typeof(RecordingOutOfDateHoles))]
     RecordingOutOfDate,
 
+    [Description("The page {Address} that a conversation names is not a page of this site, so the agent couldn't " +
+                 "be asked with it.")]
+    [Holes(typeof(PageNotOnTheSiteHoles))]
+    PageNotOnTheSite,
+
     [Description("'{Id}' is no run's id. A run's id is the UTC time it started and its eval's name, as " +
                  "20261123-043012-guide.")]
     [Holes(typeof(NotARunIdHoles))]

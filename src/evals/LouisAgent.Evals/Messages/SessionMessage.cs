@@ -21,8 +21,7 @@ public enum SessionMessage
     PageMissing,
 
     /// <summary>F126.3.3: a replay found no kept page for its trial, so its recording is out of date.</summary>
-    [Description("The recording holds no page {Address} for this conversation, so it is out of date and a live run " +
-                 "is needed.")]
+    [Description("The recording holds no page at {Address} for this conversation.")]
     [Holes(typeof(PageNotRecordedHoles))]
     PageNotRecorded
 }
