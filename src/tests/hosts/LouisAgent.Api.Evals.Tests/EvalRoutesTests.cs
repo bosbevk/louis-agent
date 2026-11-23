@@ -63,6 +63,25 @@ public class EvalRoutesTests
         Assert.That(evals!.Evals.Single().LastRun, Is.EqualTo(RunRow.Of(run)));
     }
 
+    /// <summary>
+    /// F126.3.4: the list names each eval's last live run that finished apart from its last run, so after a replay the
+    /// live run it played back is still named; an eval never run live names none.
+    /// </summary>
+    [Test]
+    public async Task TheList_NamesTheLastLiveRun_ApartFromTheLastRun()
+    {
+        await using var host = await StartAsync(Answering("Hello."));
+        var before = await host.Client.GetFromJsonAsync<EvalsReply>("/v1/admin/evals", RunJson.Options);
+
+        var live = await host.RunToTheEndAsync();
+        var replay = await host.RunToTheEndAsync(RunKind.Replay);
+        var after = await host.Client.GetFromJsonAsync<EvalsReply>("/v1/admin/evals", RunJson.Options);
+
+        Assert.That(before!.Evals.Single().LastLiveRun, Is.Null);
+        Assert.That(after!.Evals.Single().LastRun!.Id, Is.EqualTo(replay.Id));
+        Assert.That(after.Evals.Single().LastLiveRun!.Id, Is.EqualTo(live.Id));
+    }
+
     /// <summary>A second start while one runs is a 409; a model that waits for the test holds the first open.</summary>
     [Test]
     public async Task ASecondStart_WhileOneRuns_IsAConflict()

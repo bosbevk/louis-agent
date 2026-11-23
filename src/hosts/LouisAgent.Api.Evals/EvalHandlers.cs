@@ -130,12 +130,13 @@ public sealed class EvalHandlers(
     /// <summary>The run going here, when it has this id.</summary>
     private EvalRun? GoingAs(string id) => desk.Current?.Id == id ? desk.Current : null;
 
-    /// <summary>An eval's row, with its newest run.</summary>
+    /// <summary>An eval's row, with its newest run and its newest live run that finished.</summary>
     private EvalRow Row(string name, EvalFile file)
     {
         var last = RunsIn(name).FirstOrDefault();
+        var lastLive = work is null ? null : LastLiveRun(work.Store, name);
         return new EvalRow(name, file.Agent.ToString(), file.Conversations.Count,
-            last is null ? null : RunRow.Of(last));
+            last is null ? null : RunRow.Of(last), lastLive is null ? null : RunRow.Of(lastLive));
     }
 
     /// <summary>The eval's runs as they really are, the newest first; none without a data folder.</summary>
