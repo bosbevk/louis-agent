@@ -61,6 +61,9 @@ properties:
           # What the site's host keeps of its own (F142): Louis's CV as the admin's editor saved it.
           - name: SITE_DATA_DIRECTORY
             value: /data
+          # An eval's recordings (F126.3.1), on the data volume; nothing is recorded unless a session asks to.
+          - name: REPLAY_DIRECTORY
+            value: /data/recordings
           - name: USAGE_IN_CHAT
             value: 'true'
           # The engine paces the guide's words and says so, so the page leaves its own pacer off: paced once (F156).

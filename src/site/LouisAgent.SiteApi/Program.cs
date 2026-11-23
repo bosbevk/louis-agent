@@ -1,5 +1,6 @@
 using LouisAgent.Api;
 using LouisAgent.Api.Config;
+using LouisAgent.Api.Evals;
 using LouisAgent.Api.Site;
 using LouisAgent.Core.Anthropic;
 using LouisAgent.Core.Hosting;
@@ -11,10 +12,14 @@ using LouisAgent.SiteApi.Resumes;
 
 // The framework's site's host (F124): the site's pages as HTML, and the API the guide in the corner runs on. It loads
 // the guide and its three packs, so a visitor reaches nothing else.
-var host = AgentHost.Build(SiteCatalog.Create(), new HostServices(WebAccess.Create, OtlpTelemetry.Instance,
-    Providers: [AnthropicProvider.Instance]));
+var services = new HostServices(WebAccess.Create, OtlpTelemetry.Instance, Providers: [AnthropicProvider.Instance]);
+var host = AgentHost.Build(SiteCatalog.Create(), services);
 var builder = WebApplication.CreateBuilder(args);
 builder.AddLouisAgentApi(host);
+// The evals of the site's agents (F126.3.1): read at start-up, run one at a time in the background, the judge on the
+// host's provider and its ledger.
+var evals = EvalsOptions.FromEnvironment();
+builder.AddLouisAgentEvals(host, EvalsStartup.JudgeClient(host, services.ClientFactory(), evals), evals);
 var app = builder.Build();
 
 // The key check comes before any route; the open door (OPEN_IDENTITIES: the guide and the showroom's businesses)
@@ -35,6 +40,8 @@ app.MapLouisAgentSite(typeof(LouisAgent.Site.App).Assembly,
 
 app.MapLouisAgentApi(host);
 
-// The site's own routes, on the API's group: the CV, read by anyone and saved from the admin.
-app.MapLouisAgentHostGroup().MapSiteResume(resumes, AdminOptions.FromEnvironment().AdminKey);
+// The site's own routes, on the API's group: the CV, read by anyone and saved from the admin, and the evals, the
+// admin's alone.
+string? adminKey = AdminOptions.FromEnvironment().AdminKey;
+app.MapLouisAgentHostGroup().MapSiteResume(resumes, adminKey).MapLouisAgentEvals(adminKey);
 app.Run();

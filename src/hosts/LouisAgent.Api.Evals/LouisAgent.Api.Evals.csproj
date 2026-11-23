@@ -10,6 +10,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- A library, so ASP.NET comes as a framework reference, as the API's does. -->
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
     <InternalsVisibleTo Include="LouisAgent.Api.Evals.Tests" />
   </ItemGroup>
 

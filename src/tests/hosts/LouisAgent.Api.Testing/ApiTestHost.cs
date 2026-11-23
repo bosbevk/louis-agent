@@ -38,12 +38,14 @@ internal static class ApiTestHost
     /// <summary>
     /// Starts the API in memory the way ApiStartup builds it, on a test server with no port. Give it an admin key to
     /// open the admin portal. A test that writes or commits gives its own workspace folder, and one that sends a
-    /// message gives the model that answers it.
+    /// message gives the model that answers it. A library a site's API maps beside the API's own adds its services
+    /// and its routes on the API's group, as the site's program does.
     /// </summary>
     public static WebApplication Build(string? apiKey = null, string? workspaceRoot = null, string? adminKey = null,
         IChatClient? model = null, IReadOnlyList<IAgentPack>? morePacks = null,
         IReadOnlyList<IAgentIdentity>? moreIdentities = null, OpenDoorOptions? openDoor = null,
-        IReadOnlyDictionary<string, Uri>? agentPeers = null, bool streamPace = false)
+        IReadOnlyDictionary<string, Uri>? agentPeers = null, bool streamPace = false,
+        Action<WebApplicationBuilder, AgentHostContext>? services = null, Action<IEndpointRouteBuilder>? routes = null)
     {
         // The same services as ApiStartup, on an in-memory test server instead of a port.
         var host = HostContext(workspaceRoot ?? RepoRoot, model ?? new NoModel(), morePacks, moreIdentities,
@@ -51,11 +53,13 @@ internal static class ApiTestHost
         var builder = WebApplication.CreateBuilder();
         builder.WebHost.UseTestServer();
         builder.Services.AddApi(host, openDoor ?? OpenDoorOptions.Shut);
+        services?.Invoke(builder, host);
         var app = builder.Build();
 
         if (apiKey is not null) app.UseAgentKey(apiKey, app.Services.GetRequiredService<OpenDoor>());
         var api = app.MapApi(host);
         api.MapAdmin(adminKey);
+        routes?.Invoke(api);
         return app;
     }
 

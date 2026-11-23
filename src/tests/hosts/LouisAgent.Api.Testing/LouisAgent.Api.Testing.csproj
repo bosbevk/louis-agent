@@ -26,6 +26,8 @@
     <!-- ApiTestHost builds on internals of the API, so it stays internal and is shown to the two API test projects. -->
     <InternalsVisibleTo Include="LouisAgent.Api.Tests" />
     <InternalsVisibleTo Include="LouisAgent.Api.IntegrationTests" />
+    <!-- F126.3.1: the eval routes' tests run on the API in memory too. -->
+    <InternalsVisibleTo Include="LouisAgent.Api.Evals.Tests" />
   </ItemGroup>
 
   <ItemGroup>

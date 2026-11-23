@@ -67,11 +67,11 @@ public class SiteCatalogTests
     }
 
     /// <summary>
-    /// The program serves the site as HTML and the API the guide's chat uses, and opts into nothing else: no
-    /// accounts, no eval studio.
+    /// The program serves the site as HTML, the API the guide's chat uses, and the evals of its agents behind the
+    /// admin key (ADR 0134), and opts into nothing else: no accounts.
     /// </summary>
     [Test]
-    public void TheProgram_ServesTheSite_AndNothingElse()
+    public void TheProgram_ServesTheSiteAndItsEvals_AndNothingElse()
     {
         string program = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
             "src/site/LouisAgent.SiteApi/Program.cs"));
@@ -80,7 +80,8 @@ public class SiteCatalogTests
         {
             Assert.That(program, Does.Contain("MapLouisAgentSite(typeof(LouisAgent.Site.App).Assembly"));
             Assert.That(program, Does.Contain("MapLouisAgentApi(host)").And.Contain("SiteCatalog.Create()"));
-            Assert.That(program, Does.Not.Contain("Accounts").And.Not.Contain("Evals"));
+            Assert.That(program, Does.Contain("AddLouisAgentEvals(host").And.Contain("MapLouisAgentEvals(adminKey)"));
+            Assert.That(program, Does.Not.Contain("Accounts"));
         });
     }
 }
