@@ -1,0 +1,37 @@
+{
+  "kind": "classes",
+  "title": "F126.3.3 the page a conversation names: the interface design",
+  "caption": "The API reads a rendered page into the wire's own page and answers it at a route. The run's page client asks that route, or the replay store on a replay, and the player sends the page with the first ask. The number is the step; violet is there already.",
+  "classes": {
+    "types": [
+      { "id": "reader", "name": "PageReader", "kind": "static, step 3", "members": ["PageRequest Read(page, address,", "  under, focus)"] },
+      { "id": "text", "name": "MarkupText", "kind": "static, step 3", "members": ["the words of some markup", "taken out of PlaceReader"] },
+      { "id": "links", "name": "PageLinks", "kind": "static, step 3", "members": ["links within the site, each once"] },
+      { "id": "places", "name": "PlaceReader", "kind": "static, F127.7", "tone": "violet", "members": ["Read(html, under)"] },
+      { "id": "focus", "name": "SiteFocuses", "kind": "record, moved in step 2", "members": ["string? Of(string path)"] },
+      { "id": "pages", "name": "ReadPages", "kind": "step 4", "members": ["Task<PageRequest?> FindAsync(address)", "a page per address, rendered once"] },
+      { "id": "route", "name": "SitePageRoute", "kind": "step 4", "members": ["GET /v1/site/page?address=", "200 the page, 404 no page"] },
+      { "id": "render", "name": "PagePrerenderer", "kind": "F121", "tone": "violet", "members": ["Task<RenderedPage?> RenderAsync(type, address)"] },
+      { "id": "wire", "name": "PageRequest", "kind": "record, F115", "tone": "violet", "members": ["Url, Title, Text", "Areas, Links, Focus"] },
+      { "id": "client", "name": "PageClient", "kind": "step 5", "members": ["Task<PageRequest> FindAsync(address,", "  trial, ct)"] },
+      { "id": "store", "name": "ReplayStore", "kind": "the engine's", "tone": "violet", "members": ["SaveAnswerAsync(trial, ask, answer)", "FindAsync(trial, ask)"] },
+      { "id": "sessions", "name": "SessionClient", "kind": "changed in step 5", "members": ["SendAsync(session, message, page)"] },
+      { "id": "player", "name": "ConversationPlayer", "kind": "changed in step 6", "members": ["PlayAsync(agent, conversation, trial)"] },
+      { "id": "missing", "name": "PageMissingException", "kind": "step 5", "members": ["the address the site has no page for"] }
+    ],
+    "relations": [
+      { "from": "reader", "to": "text", "kind": "uses" },
+      { "from": "reader", "to": "links", "kind": "uses" },
+      { "from": "reader", "to": "places", "kind": "uses" },
+      { "from": "reader", "to": "wire", "kind": "creates" },
+      { "from": "pages", "to": "render", "kind": "holds" },
+      { "from": "pages", "to": "focus", "kind": "holds" },
+      { "from": "pages", "to": "reader", "kind": "uses" },
+      { "from": "route", "to": "pages", "kind": "holds" },
+      { "from": "client", "to": "store", "kind": "holds" },
+      { "from": "client", "to": "missing", "kind": "creates" },
+      { "from": "player", "to": "client", "kind": "holds" },
+      { "from": "player", "to": "sessions", "kind": "holds" }
+    ]
+  }
+}

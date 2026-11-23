@@ -1,0 +1,28 @@
+{
+  "kind": "sequence",
+  "title": "F126.3.3 the page a conversation names: a live play",
+  "caption": "One conversation that names the page /, played live. The run asks the site for the page, keeps it under the play's trial, and sends it with the first ask and no later one. On a replay the page comes from the store and the route is never called.",
+  "sequence": {
+    "participants": [
+      { "id": "P", "icon": "play", "tone": "green", "label": "The player" },
+      { "id": "C", "icon": "search", "tone": "green", "label": "The page client" },
+      { "id": "R", "icon": "server", "tone": "green", "label": "The page route" },
+      { "id": "S", "icon": "database", "tone": "amber", "label": "The replay store" },
+      { "id": "A", "icon": "chip", "tone": "violet", "label": "The sessions API" }
+    ],
+    "steps": [
+      { "step": "message", "from": "P", "to": "C", "text": "FindAsync(\"/\", the trial)" },
+      { "step": "message", "from": "C", "to": "R", "text": "GET /v1/site/page?address=/" },
+      { "step": "note", "over": ["R"], "text": "the page is rendered once, then read: title, words, places, links, focus" },
+      { "step": "reply", "from": "R", "to": "C", "text": "200, the page as PageRequest, or 404" },
+      { "step": "message", "from": "C", "to": "S", "text": "SaveAnswerAsync(the trial, the page)" },
+      { "step": "reply", "from": "C", "to": "P", "text": "the page, or it throws and the run stops with the address" },
+      { "step": "message", "from": "P", "to": "A", "text": "POST /v1/sessions, recording under the trial" },
+      { "step": "message", "from": "P", "to": "A", "text": "POST …/messages { the first ask, the page }" },
+      { "step": "reply", "from": "A", "to": "P", "text": "the stream: the agent answers with the page in its prompt" },
+      { "step": "message", "from": "P", "to": "A", "text": "POST …/messages { the follow-up }, no page" },
+      { "step": "reply", "from": "A", "to": "P", "text": "the stream of the second turn" },
+      { "step": "note", "over": ["P"], "text": "then the facts and the judge, as before" }
+    ]
+  }
+}
