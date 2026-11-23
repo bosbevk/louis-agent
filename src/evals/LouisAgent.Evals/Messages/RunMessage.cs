@@ -17,5 +17,19 @@ public enum RunMessage
 
     [Description("The sessions API refused, so the agent couldn't be asked: {Reason}")]
     [Holes(typeof(SessionRefusedHoles))]
-    SessionRefused
+    SessionRefused,
+
+    [Description("'{Id}' is no run's id. A run's id is the UTC time it started and its eval's name, as " +
+                 "20261123-043012-guide.")]
+    [Holes(typeof(NotARunIdHoles))]
+    NotARunId,
+
+    [Description("'{File}' in the runs' folder is no run: {Reason}")]
+    [Holes(typeof(NotARunHoles))]
+    NotARun,
+
+    [Description("Its name is no run's id.")]
+    NotNamedForARun,
+
+    [Description("It holds no run.")] HoldsNoRun
 }
