@@ -27,7 +27,10 @@ the code is, and says what is wrong and what is missing. Five stops come first.
    and `/plan-a-feature` for the shape a plan must have.
 2. **Pass one, proofread.** Read it top to bottom and list what is untrue or out of step (*What pass one checks*).
 3. **Check the names in the code.** Every type, file, project, test and setting the plan says exists today, opened
-   in `origin/main` after `git fetch origin main`. Every one it adds is marked new and absent today.
+   in `origin/main` after `git fetch origin main`. Every one it adds is marked new and absent today, and held to
+   [ADR 0126](../../../src/docs/adr/0126-a-name-says-what-it-is-by-its-kind.md): a method a verb, a factory named by
+   what it is made from, a type a noun with no empty word, and plain enough that a reader knows what it is without
+   looking it up. A doubtful name is a finding (Louis, 2026-11-23, of `Tally`: "tally of what?").
 4. **Pass two, gaps.** Walk the main case end to end as the person it is for, then the cross-cutting concerns
    (*What pass two asks*), then run the pre-mortem.
 5. **Research each gap**: what we found with its source, three ways to close it with the pattern each follows, and
