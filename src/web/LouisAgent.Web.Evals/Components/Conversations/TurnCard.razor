@@ -1,5 +1,6 @@
 @* One turn of a repeat: what was asked, the tool calls folded away with each input and result, the answer as the
-   agent sent it, the agent's error when it ended in one, and the turn's marks, two to a row on a wide screen. *@
+   agent sent it, the agent's error when it ended in one, and the turn's marks, two to a row on a wide screen, each
+   criterion with its Flip. *@
 
 <section class="card-p turn-card">
     <h2>Turn @Number</h2>
@@ -33,9 +34,9 @@
         {
             <div class="col-12 col-lg-6"><MarkLine Mark="fact" Kind="MarkKind.Fact"/></div>
         }
-        @foreach (var criterion in Turn.Criteria)
+        @foreach (var (criterion, number) in Turn.Criteria.Select((criterion, at) => (criterion, at + 1)))
         {
-            <div class="col-12 col-lg-6"><MarkLine Mark="criterion" Kind="MarkKind.Criterion"/></div>
+            <div class="col-12 col-lg-6"><MarkLine Mark="criterion" Kind="MarkKind.Criterion" Place="PlaceOf(number)" OnFlip="OnFlip" OnUndo="OnUndo" History="History"/></div>
         }
     </div>
 </section>

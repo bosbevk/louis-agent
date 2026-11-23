@@ -14,5 +14,8 @@ public enum RunKind
     [JsonStringEnumMemberName("live")] Live,
 
     /// <summary>The answers came from a live run's recording.</summary>
-    [JsonStringEnumMemberName("replay")] Replay
+    [JsonStringEnumMemberName("replay")] Replay,
+
+    /// <summary>A run's stored answers graded again against the eval file as it is now, no agent asked.</summary>
+    [JsonStringEnumMemberName("re-grade")] Regrade
 }

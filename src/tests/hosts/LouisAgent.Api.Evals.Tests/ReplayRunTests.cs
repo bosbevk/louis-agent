@@ -1,6 +1,8 @@
 using System.Net;
 using LouisAgent.Core.Sessions.Replay.Store;
+using LouisAgent.Evals.Contracts.Grading;
 using LouisAgent.Evals.Contracts.Runs;
+using LouisAgent.Evals.Runs.Store;
 using Microsoft.Extensions.AI;
 using static LouisAgent.Api.Evals.Tests.EvalsTestHost;
 
@@ -46,6 +48,23 @@ public class ReplayRunTests
         Assert.That(Marks(replay), Is.EqualTo(Marks(live)));
         Assert.That((agentCalls.Calls, judgeCalls.Calls), Is.EqualTo(called), "no model was called again");
         Assert.That(File.Exists(Path.Combine(host.RunsFolder, replay.Id + ".json")), Is.True);
+    }
+
+    /// <summary>
+    /// F126.4: a replay started of a live run with a flip shows that flip, since the agent answered the same and the
+    /// criterion's words are the same.
+    /// </summary>
+    [Test]
+    public async Task AReplay_OfALiveRunWithAFlip_ShowsTheFlip()
+    {
+        await using var host = await StartAsync(Answering("Hello."), Judging(), criterion: Criterion);
+        var live = await host.RunToTheEndAsync();
+        var flip = new Flip(live.StartedAt.AddMinutes(5), "It greets back.");
+        new RunStore(host.RunsFolder).Change(live.Id, run => run.WithFlip("hello", 1, 1, 1, flip));
+
+        var replay = await host.RunToTheEndAsync(RunKind.Replay);
+
+        Assert.That(replay.Conversations[0].Repeats[0].Turns[0].Criteria[0].Flip, Is.EqualTo(flip));
     }
 
     /// <summary>A replay with no finished live run of the eval before it is refused, saying so.</summary>

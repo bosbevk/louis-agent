@@ -1,4 +1,4 @@
-<svg viewBox="-24 -24 1545 725" width="1545" height="725" role="img" aria-label="LouisAgent.Api.Evals: its classes" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 1545 767" width="1545" height="767" role="img" aria-label="LouisAgent.Api.Evals: its classes" xmlns="http://www.w3.org/2000/svg">
   <title>LouisAgent.Api.Evals: its classes</title>
   <style>svg {
   --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #e2dfff; --violet-line: #6b4dff; --violet-ink: #3a22c4; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
@@ -201,51 +201,51 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <stop class="mrq-glass-1" offset="1" />
     </linearGradient>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="1545" height="725" rx="14" />
+  <rect class="ground" x="-24" y="-24" width="1545" height="767" rx="14" />
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a772.5 190 0 1 0 1545 0a772.5 190 0 1 0 -1545 0Z" />
     <text class="mrq-title" x="16" y="14" text-anchor="start">LouisAgent.Api.Evals: its classes</text>
     <text class="pic-group" x="1481" y="14" text-anchor="end">Class diagram</text>
     <rect class="mrq-rule" x="0" y="26" width="1497" height="1" rx="0" />
     <g class="cls-drawing" transform="translate(0 44)">
-      <path class="cls-line uses" d="M357 246L453 246" marker-end="url(#open)" />
-      <path class="cls-line creates" d="M357 246L369 246Q381 246 381 234L381 100Q381 76 405 76L453 76" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M357 246L369 246Q381 246 381 234L381 100Q381 76 405 76L453 76" />
-      <path class="cls-line creates" d="M357 246L369 246Q381 246 381 258L381 401Q381 425 405 425L453 425L747 425L827 425" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M357 246L369 246Q381 246 381 258L381 401Q381 425 405 425L453 425L747 425L827 425" />
-      <path class="cls-line creates" d="M1142 76L1238 76" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M1142 76L1238 76" />
-      <path class="cls-line holds" d="M747 76L779 76Q803 76 803 100L803 395Q803 407 815 407L827 407" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M747 76L779 76Q803 76 803 100L803 395Q803 407 815 407L827 407" />
-      <path class="cls-line holds" d="M747 76L827 76" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M747 76L827 76" />
-      <path class="cls-line holds" d="M747 76L779 76Q803 76 803 100L803 234Q803 246 815 246L827 246" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M747 76L779 76Q803 76 803 100L803 234Q803 246 815 246L827 246" />
-      <path class="cls-line holds" d="M1142 76L1154 76Q1166 76 1166 88L1166 222Q1166 246 1190 246L1238 246" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M1142 76L1154 76Q1166 76 1166 88L1166 222Q1166 246 1190 246L1238 246" />
-      <rect class="pic-pill cls-chip creates" x="388.5" y="67" width="57" height="18" rx="9" />
-      <text class="pic-pill-word cls-word" x="417" y="79" text-anchor="middle">creates</text>
-      <rect class="pic-pill cls-chip uses" x="399" y="237" width="36" height="18" rx="9" />
-      <text class="pic-pill-word cls-word quiet" x="417" y="249" text-anchor="middle">uses</text>
-      <rect class="pic-pill cls-chip holds" x="765" y="67" width="43" height="18" rx="9" />
-      <text class="pic-pill-word cls-word" x="786.5" y="79" text-anchor="middle">holds</text>
-      <rect class="pic-pill cls-chip creates" x="1173.5" y="67" width="57" height="18" rx="9" />
-      <text class="pic-pill-word cls-word" x="1202" y="79" text-anchor="middle">creates</text>
-      <rect class="pic-pill cls-chip holds" x="1180.5" y="237" width="43" height="18" rx="9" />
-      <text class="pic-pill-word cls-word" x="1202" y="249" text-anchor="middle">holds</text>
-      <rect class="cls-cover" x="0" y="177" width="357" height="138" rx="14" />
-      <rect class="mrq-glass" x="0" y="177" width="357" height="138" rx="14" />
-      <rect class="cls-badge tone-green" x="14" y="195" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="28" y="213.5" text-anchor="middle">S</text>
-      <text class="pic-name" x="52" y="205" text-anchor="start">EvalsStartup</text>
-      <text class="pic-note" x="52" y="221" text-anchor="start">static</text>
-      <path class="cls-divide" d="M14 241H343" />
-      <text class="cls-member" x="14" y="259" text-anchor="start">AddLouisAgentEvals(builder, host,</text>
-      <text class="cls-member" x="14" y="273" text-anchor="start">judgeModel, options, agentApi)</text>
-      <text class="cls-member" x="14" y="287" text-anchor="start">MapLouisAgentEvals(v1, adminKey)</text>
-      <text class="cls-member" x="14" y="301" text-anchor="start">IChatClient JudgeClient(host, clients, options)</text>
-      <rect class="cls-cover" x="453" y="0" width="294" height="152" rx="14" />
-      <rect class="mrq-glass" x="453" y="0" width="294" height="152" rx="14" />
+      <path class="cls-line uses" d="M357 267L453 267" marker-end="url(#open)" />
+      <path class="cls-line creates" d="M357 267L369 267Q381 267 381 255L381 107Q381 83 405 83L453 83" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M357 267L369 267Q381 267 381 255L381 107Q381 83 405 83L453 83" />
+      <path class="cls-line creates" d="M357 267L369 267Q381 267 381 279L381 436Q381 460 405 460L453 460L747 460L827 460" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M357 267L369 267Q381 267 381 279L381 436Q381 460 405 460L453 460L747 460L827 460" />
+      <path class="cls-line creates" d="M1142 83L1238 83" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M1142 83L1238 83" />
+      <path class="cls-line holds" d="M747 83L779 83Q803 83 803 107L803 430Q803 442 815 442L827 442" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M747 83L779 83Q803 83 803 107L803 430Q803 442 815 442L827 442" />
+      <path class="cls-line holds" d="M747 83L827 83" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M747 83L827 83" />
+      <path class="cls-line holds" d="M747 83L779 83Q803 83 803 107L803 255Q803 267 815 267L827 267" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M747 83L779 83Q803 83 803 107L803 255Q803 267 815 267L827 267" />
+      <path class="cls-line holds" d="M1142 83L1154 83Q1166 83 1166 95L1166 243Q1166 267 1190 267L1238 267" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M1142 83L1154 83Q1166 83 1166 95L1166 243Q1166 267 1190 267L1238 267" />
+      <rect class="pic-pill cls-chip creates" x="388.5" y="74" width="57" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="417" y="86" text-anchor="middle">creates</text>
+      <rect class="pic-pill cls-chip uses" x="399" y="258" width="36" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="417" y="270" text-anchor="middle">uses</text>
+      <rect class="pic-pill cls-chip holds" x="765" y="74" width="43" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="786.5" y="86" text-anchor="middle">holds</text>
+      <rect class="pic-pill cls-chip creates" x="1173.5" y="74" width="57" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="1202" y="86" text-anchor="middle">creates</text>
+      <rect class="pic-pill cls-chip holds" x="1180.5" y="258" width="43" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="1202" y="270" text-anchor="middle">holds</text>
+      <rect class="cls-cover" x="0" y="198" width="357" height="138" rx="14" />
+      <rect class="mrq-glass" x="0" y="198" width="357" height="138" rx="14" />
+      <rect class="cls-badge tone-green" x="14" y="216" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="28" y="234.5" text-anchor="middle">S</text>
+      <text class="pic-name" x="52" y="226" text-anchor="start">EvalsStartup</text>
+      <text class="pic-note" x="52" y="242" text-anchor="start">static</text>
+      <path class="cls-divide" d="M14 262H343" />
+      <text class="cls-member" x="14" y="280" text-anchor="start">AddLouisAgentEvals(builder, host,</text>
+      <text class="cls-member" x="14" y="294" text-anchor="start">judgeModel, options, agentApi)</text>
+      <text class="cls-member" x="14" y="308" text-anchor="start">MapLouisAgentEvals(v1, adminKey)</text>
+      <text class="cls-member" x="14" y="322" text-anchor="start">IChatClient JudgeClient(host, clients, options)</text>
+      <rect class="cls-cover" x="453" y="0" width="294" height="166" rx="14" />
+      <rect class="mrq-glass" x="453" y="0" width="294" height="166" rx="14" />
       <rect class="cls-badge tone-green" x="467" y="18" width="28" height="28" rx="9" />
       <text class="cls-mark" x="481" y="36.5" text-anchor="middle">C</text>
       <text class="pic-name" x="505" y="28" text-anchor="start">EvalHandlers</text>
@@ -255,64 +255,65 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="cls-member" x="467" y="96" text-anchor="start">StartAsync(name, body)</text>
       <text class="cls-member" x="467" y="110" text-anchor="start">Find(id)</text>
       <text class="cls-member" x="467" y="124" text-anchor="start">Stop(id)</text>
-      <text class="cls-member" x="467" y="138" text-anchor="start">RunsOf(name)</text>
-      <rect class="cls-cover" x="453" y="184" width="294" height="124" rx="14" />
-      <rect class="mrq-glass" x="453" y="184" width="294" height="124" rx="14" />
-      <rect class="mrq-edge" x="477" y="183.5" width="246" height="1.6" rx="0" />
-      <rect class="cls-badge tone-teal" x="467" y="202" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="481" y="220.5" text-anchor="middle">R</text>
-      <text class="pic-name" x="505" y="212" text-anchor="start">EvalsOptions</text>
-      <text class="pic-note" x="505" y="228" text-anchor="start">record</text>
-      <path class="cls-divide" d="M467 248H733" />
-      <text class="cls-member" x="467" y="266" text-anchor="start">string? DataFolder, JudgeModel, ApiKey</text>
-      <text class="cls-member" x="467" y="280" text-anchor="start">Uri? ApiUrl</text>
-      <text class="cls-member" x="467" y="294" text-anchor="start">string? RunsFolder</text>
-      <rect class="cls-cover" x="827" y="21" width="315" height="110" rx="14" />
-      <rect class="mrq-glass" x="827" y="21" width="315" height="110" rx="14" />
-      <rect class="cls-badge tone-green" x="841" y="39" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="855" y="57.5" text-anchor="middle">C</text>
-      <text class="pic-name" x="879" y="49" text-anchor="start">RunWork</text>
-      <text class="pic-note" x="879" y="65" text-anchor="start">class</text>
-      <path class="cls-divide" d="M841 85H1128" />
-      <text class="cls-member" x="841" y="103" text-anchor="start">RunStore Store</text>
-      <text class="cls-member" x="841" y="117" text-anchor="start">Func&lt;RunSignals, Task&gt; For(started, file)</text>
-      <rect class="cls-cover" x="827" y="198" width="315" height="96" rx="14" />
-      <rect class="mrq-glass" x="827" y="198" width="315" height="96" rx="14" />
-      <rect class="cls-badge tone-violet" x="841" y="216" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="855" y="234.5" text-anchor="middle">C</text>
-      <text class="pic-name" x="879" y="226" text-anchor="start">EvalCatalog</text>
-      <text class="pic-note" x="879" y="242" text-anchor="start">LouisAgent.Evals</text>
-      <path class="cls-divide" d="M841 262H1128" />
-      <text class="cls-member" x="841" y="280" text-anchor="start">Find(name), Names</text>
-      <rect class="cls-cover" x="827" y="347" width="315" height="138" rx="14" />
-      <rect class="mrq-glass" x="827" y="347" width="315" height="138" rx="14" />
-      <rect class="cls-badge tone-green" x="841" y="365" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="855" y="383.5" text-anchor="middle">C</text>
-      <text class="pic-name" x="879" y="375" text-anchor="start">RunDesk</text>
-      <text class="pic-note" x="879" y="391" text-anchor="start">BackgroundService</text>
-      <path class="cls-divide" d="M841 411H1128" />
-      <text class="cls-member" x="841" y="429" text-anchor="start">EvalRun? Current</text>
-      <text class="cls-member" x="841" y="443" text-anchor="start">bool TryStart(started, work)</text>
-      <text class="cls-member" x="841" y="457" text-anchor="start">bool TryStop(id)</text>
-      <text class="cls-member" x="841" y="471" text-anchor="start">EvalRun Read(stored)</text>
-      <rect class="cls-cover" x="1238" y="28" width="259" height="96" rx="14" />
-      <rect class="mrq-glass" x="1238" y="28" width="259" height="96" rx="14" />
-      <rect class="cls-badge tone-violet" x="1252" y="46" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="1266" y="64.5" text-anchor="middle">C</text>
-      <text class="pic-name" x="1290" y="56" text-anchor="start">EvalRunner</text>
-      <text class="pic-note" x="1290" y="72" text-anchor="start">LouisAgent.Evals</text>
-      <path class="cls-divide" d="M1252 92H1483" />
-      <text class="cls-member" x="1252" y="110" text-anchor="start">RunAsync(started, file, kept, ct)</text>
-      <rect class="cls-cover" x="1238" y="198" width="259" height="96" rx="14" />
-      <rect class="mrq-glass" x="1238" y="198" width="259" height="96" rx="14" />
-      <rect class="cls-badge tone-violet" x="1252" y="216" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="1266" y="234.5" text-anchor="middle">C</text>
-      <text class="pic-name" x="1290" y="226" text-anchor="start">RunStore</text>
-      <text class="pic-note" x="1290" y="242" text-anchor="start">LouisAgent.Evals</text>
-      <path class="cls-divide" d="M1252 262H1483" />
-      <text class="cls-member" x="1252" y="280" text-anchor="start">Save, Find, Of</text>
+      <text class="cls-member" x="467" y="138" text-anchor="start">Regrade(id)</text>
+      <text class="cls-member" x="467" y="152" text-anchor="start">RunsOf(name)</text>
+      <rect class="cls-cover" x="453" y="205" width="294" height="124" rx="14" />
+      <rect class="mrq-glass" x="453" y="205" width="294" height="124" rx="14" />
+      <rect class="mrq-edge" x="477" y="204.5" width="246" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="467" y="223" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="481" y="241.5" text-anchor="middle">R</text>
+      <text class="pic-name" x="505" y="233" text-anchor="start">EvalsOptions</text>
+      <text class="pic-note" x="505" y="249" text-anchor="start">record</text>
+      <path class="cls-divide" d="M467 269H733" />
+      <text class="cls-member" x="467" y="287" text-anchor="start">string? DataFolder, JudgeModel, ApiKey</text>
+      <text class="cls-member" x="467" y="301" text-anchor="start">Uri? ApiUrl</text>
+      <text class="cls-member" x="467" y="315" text-anchor="start">string? RunsFolder</text>
+      <rect class="cls-cover" x="827" y="28" width="315" height="110" rx="14" />
+      <rect class="mrq-glass" x="827" y="28" width="315" height="110" rx="14" />
+      <rect class="cls-badge tone-green" x="841" y="46" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="855" y="64.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="879" y="56" text-anchor="start">RunWork</text>
+      <text class="pic-note" x="879" y="72" text-anchor="start">class</text>
+      <path class="cls-divide" d="M841 92H1128" />
+      <text class="cls-member" x="841" y="110" text-anchor="start">RunStore Store</text>
+      <text class="cls-member" x="841" y="124" text-anchor="start">Func&lt;RunSignals, Task&gt; For(started, file)</text>
+      <rect class="cls-cover" x="827" y="219" width="315" height="96" rx="14" />
+      <rect class="mrq-glass" x="827" y="219" width="315" height="96" rx="14" />
+      <rect class="cls-badge tone-violet" x="841" y="237" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="855" y="255.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="879" y="247" text-anchor="start">EvalCatalog</text>
+      <text class="pic-note" x="879" y="263" text-anchor="start">LouisAgent.Evals</text>
+      <path class="cls-divide" d="M841 283H1128" />
+      <text class="cls-member" x="841" y="301" text-anchor="start">Find(name), Names</text>
+      <rect class="cls-cover" x="827" y="382" width="315" height="138" rx="14" />
+      <rect class="mrq-glass" x="827" y="382" width="315" height="138" rx="14" />
+      <rect class="cls-badge tone-green" x="841" y="400" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="855" y="418.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="879" y="410" text-anchor="start">RunDesk</text>
+      <text class="pic-note" x="879" y="426" text-anchor="start">BackgroundService</text>
+      <path class="cls-divide" d="M841 446H1128" />
+      <text class="cls-member" x="841" y="464" text-anchor="start">EvalRun? Current</text>
+      <text class="cls-member" x="841" y="478" text-anchor="start">bool TryStart(started, work)</text>
+      <text class="cls-member" x="841" y="492" text-anchor="start">bool TryStop(id)</text>
+      <text class="cls-member" x="841" y="506" text-anchor="start">EvalRun Read(stored)</text>
+      <rect class="cls-cover" x="1238" y="35" width="259" height="96" rx="14" />
+      <rect class="mrq-glass" x="1238" y="35" width="259" height="96" rx="14" />
+      <rect class="cls-badge tone-violet" x="1252" y="53" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="1266" y="71.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="1290" y="63" text-anchor="start">EvalRunner</text>
+      <text class="pic-note" x="1290" y="79" text-anchor="start">LouisAgent.Evals</text>
+      <path class="cls-divide" d="M1252 99H1483" />
+      <text class="cls-member" x="1252" y="117" text-anchor="start">RunAsync(started, file, kept, ct)</text>
+      <rect class="cls-cover" x="1238" y="219" width="259" height="96" rx="14" />
+      <rect class="mrq-glass" x="1238" y="219" width="259" height="96" rx="14" />
+      <rect class="cls-badge tone-violet" x="1252" y="237" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="1266" y="255.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="1290" y="247" text-anchor="start">RunStore</text>
+      <text class="pic-note" x="1290" y="263" text-anchor="start">LouisAgent.Evals</text>
+      <path class="cls-divide" d="M1252 283H1483" />
+      <text class="cls-member" x="1252" y="301" text-anchor="start">Save, Find, Of</text>
     </g>
-    <g class="cls-legend" transform="translate(0 562)">
+    <g class="cls-legend" transform="translate(0 604)">
       <rect class="mrq-rule" x="0" y="0" width="1497" height="1" rx="0" />
       <text class="pic-group" x="0" y="22" text-anchor="start">How to read it</text>
       <rect class="cls-badge tone-green" x="0" y="39" width="18" height="18" rx="6" />
@@ -338,16 +339,16 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="pic-means" x="1102.2" y="52.5" text-anchor="start">uses</text>
     </g>
     <g class="pic-brand" transform="translate(0 0)">
-      <text class="pic-name" x="1481" y="584" text-anchor="end" aria-label="louis-agent">l<tspan class="pic-mark" dy="1.5">•</tspan><tspan dy="-1.5">uis-agent</tspan></text>
+      <text class="pic-name" x="1481" y="626" text-anchor="end" aria-label="louis-agent">l<tspan class="pic-mark" dy="1.5">•</tspan><tspan dy="-1.5">uis-agent</tspan></text>
     </g>
   </g>
-  <rect class="notebar" x="0" y="640" width="1497" height="37" rx="8" />
-  <g class="note-icon" transform="translate(12 650) scale(0.6667)">
+  <rect class="notebar" x="0" y="682" width="1497" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 692) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />
     <path d="M11 12h1v4h1" />
   </g>
-  <text class="notes" x="38" y="662">
+  <text class="notes" x="38" y="704">
     <tspan class="note-rest">The startup registers the desk and the handlers; a handler checks a start and hands the desk the work, which plays the run with the evals' runner and keeps it in the store.</tspan>
   </text>
 </svg>

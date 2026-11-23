@@ -31,7 +31,9 @@ public class EvalsApiTests
         var reply = await api.ListAsync();
 
         Assert.That(stub.Requests.Single().Url, Is.EqualTo("http://localhost/v1/admin/evals"));
-        Assert.That(reply.Evals, Is.EqualTo(new[] { row }));
+        // Compared as their JSON: a row holds a list, which a record's own equality compares by reference.
+        Assert.That(JsonSerializer.Serialize(reply.Evals, RunJson.Options),
+            Is.EqualTo(JsonSerializer.Serialize(new[] { row }, RunJson.Options)));
     }
 
     /// <summary>A run comes back whole, equal to what the API wrote, compared as its JSON.</summary>
@@ -144,6 +146,71 @@ public class EvalsApiTests
 
         Assert.ThrowsAsync<AgentApiException>(() => api.StartAsync("guide", RunKind.Live, 1));
         Assert.ThrowsAsync<AgentApiException>(() => api.StopAsync("20261123-063633-guide"));
+    }
+
+    /// <summary>
+    /// F126.4: a flip puts the note to the mark's own address, written as the routes read it, and an undo deletes
+    /// there; both answer no refusal when the API says yes.
+    /// </summary>
+    [Test]
+    public async Task AFlipAndAnUndo_CallTheMarksAddress()
+    {
+        var (api, stub) = Api(_ => Status(HttpStatusCode.NoContent));
+        var place = new MarkPlace("20261123-063633-guide", "guide-what-is", 2, 1, 3);
+
+        var flipped = await api.FlipAsync(place, "It does say so.");
+        var undone = await api.UndoFlipAsync(place);
+
+        const string address =
+            "http://localhost/v1/admin/evals/runs/20261123-063633-guide/guide-what-is/2/1/criteria/3/flip";
+        Assert.That(stub.Requests.Select(request => (request.Method, request.Url)),
+            Is.EqualTo(new[] { (HttpMethod.Put, address), (HttpMethod.Delete, address) }));
+        Assert.That(JsonDocument.Parse(stub.Requests[0].Body!).RootElement.GetProperty("note").GetString(),
+            Is.EqualTo("It does say so."));
+        Assert.That((flipped, undone), Is.EqualTo(((string?)null, (string?)null)));
+    }
+
+    /// <summary>A flip or an undo the API refuses answers the API's own reason, word for word.</summary>
+    [TestCase(HttpStatusCode.BadRequest)]
+    [TestCase(HttpStatusCode.Conflict)]
+    [TestCase(HttpStatusCode.NotFound)]
+    public async Task ARefusedFlip_AnswersTheApisReason(HttpStatusCode status)
+    {
+        var refusal = new ApiError("error", new ApiErrorDetail("a-refusal", "The run is going."));
+        var (api, _) = Api(_ => new HttpResponseMessage(status)
+        {
+            Content = JsonContent.Create(refusal, options: JsonSerializerOptions.Web)
+        });
+        var place = new MarkPlace("20261123-063633-guide", "guide-what-is", 1, 1, 1);
+
+        Assert.That(await api.FlipAsync(place, null), Is.EqualTo("The run is going."));
+        Assert.That(await api.UndoFlipAsync(place), Is.EqualTo("The run is going."));
+    }
+
+    /// <summary>
+    /// F126.4: a re-grade posts to the run's re-grade address and answers the new run's id, or the API's reason when
+    /// it refused.
+    /// </summary>
+    [Test]
+    public async Task ARegrade_PostsToTheRunsRegradeAddress_AndAnswersTheNewRun_OrTheRefusal()
+    {
+        var (api, stub) = Api(_ => new HttpResponseMessage(HttpStatusCode.Accepted)
+        {
+            Headers = { Location = new Uri("/v1/admin/evals/runs/20261123-170000-guide", UriKind.Relative) }
+        });
+        var refusal = new ApiError("error", new ApiErrorDetail("a-refusal", "A run is already going."));
+        var (refusing, _) = Api(_ => new HttpResponseMessage(HttpStatusCode.Conflict)
+        {
+            Content = JsonContent.Create(refusal, options: JsonSerializerOptions.Web)
+        });
+
+        var started = await api.RegradeAsync("20261123-063633-guide");
+        var refused = await refusing.RegradeAsync("20261123-063633-guide");
+
+        Assert.That((stub.Requests.Single().Method, stub.Requests.Single().Url), Is.EqualTo((HttpMethod.Post,
+            "http://localhost/v1/admin/evals/runs/20261123-063633-guide/regrade")));
+        Assert.That(started, Is.EqualTo(new RunStart("20261123-170000-guide", null)));
+        Assert.That(refused, Is.EqualTo(new RunStart(null, "A run is already going.")));
     }
 
     /// <summary>The client over a stub of the API.</summary>

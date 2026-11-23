@@ -1,6 +1,8 @@
 using LouisAgent.Composition.Agents;
 using LouisAgent.Core.Sessions.Replay.Store;
+using LouisAgent.Evals.Contracts.Grading;
 using LouisAgent.Evals.Contracts.Runs;
+using LouisAgent.Evals.Contracts.Transcripts;
 using LouisAgent.Evals.Files;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Runs;
@@ -128,7 +130,7 @@ public class EvalRunnerTests
         cancelled.Cancel();
 
         Assert.CatchAsync<OperationCanceledException>(() =>
-            Runner(api).RunAsync(StartedRun(1), TwoConversations, Kept([]), cancelled.Token));
+            Runner(api).RunAsync(StartedRun(1), TwoConversations, Kept([]), cancellationToken: cancelled.Token));
     }
 
     /// <summary>F126.3.3: three repeats ask for a conversation's page under three trials, kept in each.</summary>
@@ -194,6 +196,42 @@ public class EvalRunnerTests
 
         Assert.That((sent.PageSent, none.PageSent), Is.EqualTo((true, false)));
     }
+
+    /// <summary>
+    /// F126.4: a replay handed the live run it plays keeps that run's flips where its answers are the same; a run
+    /// handed none, as a live run is, keeps the judge's marks as they are.
+    /// </summary>
+    [Test]
+    public async Task AReplayHandedItsLiveRun_KeepsTheLiveRunsFlips_AndOneHandedNoneDoesNot()
+    {
+        var file = new EvalFile(TwoConversations.Agent,
+            [new Conversation("guide-what-is", [new Turn("What is louis-agent?") { Criteria = ["Says it plainly"] }])]);
+        var said = new TurnTranscript("What is louis-agent?", "Yes.", [], TimeSpan.FromSeconds(3));
+        var flip = new Flip(Started.AddMinutes(-30), "It does.");
+        var flipped = new Mark("Says it plainly", false, "Read the answer.") { Flip = flip };
+        var liveTurn = new TurnRun(said, [], [flipped], null, null);
+        var live = StartedRun(1) with
+        {
+            Id = "20261123-040000-guide",
+            Conversations = [new ConversationRun("guide-what-is", 1, [new RepeatRun(1, [liveTurn])])]
+        };
+        var replay = StartedRun(1) with
+        {
+            Kind = RunKind.Replay,
+            ReplayOf = live.Id
+        };
+
+        var carried = await Runner(new FakeSessionsApi(Answered("Yes.")), NotMet())
+            .RunAsync(replay, file, Kept([]), live);
+        var none = await Runner(new FakeSessionsApi(Answered("Yes.")), NotMet()).RunAsync(replay, file, Kept([]));
+
+        Assert.That(carried.Conversations[0].Repeats[0].Turns[0].Criteria[0].Flip, Is.EqualTo(flip));
+        Assert.That((carried.Passed, none.Passed, none.CountFlips()), Is.EqualTo((1, 0, 0)));
+    }
+
+    /// <summary>A judge's model that marks the one criterion it is asked about not met.</summary>
+    private static FakeChatClient NotMet() => new(_ =>
+        new ChatResponse(new ChatMessage(ChatRole.Assistant, """{"reason":"Read the answer.","met":false}""")));
 
     /// <summary>The runner over this API and its page route, a judge on this model, a clock at the run's end.</summary>
     private static EvalRunner Runner(FakeSessionsApi api, FakeChatClient? judgeModel = null,

@@ -1,0 +1,5 @@
+/* A re-grade's changes: each line's sign in the monospace face, what happened over its quieter why. */
+.regrade-changes { margin-bottom: 16px; }
+.regrade-change { padding: 12px 0; border-top: 1px solid var(--bs-border-color); }
+.regrade-sign { font-family: var(--bs-font-monospace); width: 1ch; }
+.regrade-why, .regrade-replay { font-size: 14px; color: var(--bs-secondary-color); }

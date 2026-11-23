@@ -1,3 +1,6 @@
+using LouisAgent.Evals.Contracts.Grading;
+using LouisAgent.Evals.Contracts.Runs.Answers;
+
 namespace LouisAgent.Evals.Contracts.Runs;
 
 /// <summary>
@@ -33,6 +36,31 @@ public sealed record ConversationRun(string Id, int Asked, IReadOnlyList<RepeatR
     public RepeatRun? FindRepeat(int? number) => number is { } asked
         ? Repeats.FirstOrDefault(repeat => repeat.Number == asked)
         : FindFirstFailedRepeat() ?? Repeats.FirstOrDefault();
+
+    /// <summary>It passed, but only because a person flipped a mark: as the judge said, a repeat had failed.</summary>
+    public bool PassedAfterAFlip() => Passed && !Repeats.All(repeat => repeat.PassedAsJudged());
+
+    /// <summary>
+    /// This conversation with one criterion of one turn of one repeat flipped, or put back with none; none for a
+    /// repeat it doesn't hold, or a turn or a criterion that repeat doesn't have.
+    /// </summary>
+    public ConversationRun? WithFlip(int repeat, int turn, int criterion, Flip? flip)
+    {
+        int at = Repeats.ToList().FindIndex(played => played.Number == repeat);
+        if (at < 0 || Repeats[at].WithFlip(turn, criterion, flip) is not { } flipped) return null;
+        return this with { Repeats = TurnRun.Replace(Repeats, at, flipped) };
+    }
+
+    /// <summary>
+    /// How one criterion of one turn, from 1, went over its repeats: met, as the answer counts, of how many repeats had
+    /// it (F126.4).
+    /// </summary>
+    public MarkCount CountCriterion(int turn, string criterion)
+    {
+        var marks = Repeats.Where(repeat => turn <= repeat.Turns.Count)
+            .SelectMany(repeat => repeat.Turns[turn - 1].Criteria.Where(mark => mark.Text == criterion)).ToList();
+        return new MarkCount(marks.Count(mark => mark.CountsAsMet()), marks.Count);
+    }
 
     /// <summary>What its first turn asked, from its first repeat; none when it holds no turn.</summary>
     public string? FindFirstAsk() => Repeats.FirstOrDefault()?.Turns.FirstOrDefault()?.Transcript.Ask;

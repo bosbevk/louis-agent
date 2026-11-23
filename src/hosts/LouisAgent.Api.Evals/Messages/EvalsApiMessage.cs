@@ -6,7 +6,8 @@ using LouisAgent.Composition.Messages;
 namespace LouisAgent.Api.Evals.Messages;
 
 /// <summary>
-/// The eval routes' words: why a start is refused, what a cut-off run says, and the log line of a run that failed
+/// The eval routes' words: why a start or a flip is refused, what a cut-off run says, and the log line of a run that
+/// failed
 /// (ADR 0009: a text is a member of a message enum, its <c>[Description]</c> a template with named holes).
 /// </summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
@@ -47,6 +48,25 @@ public enum EvalsApiMessage
     [Description("The run {Id} isn't going, so there is nothing to stop.")]
     [Holes(typeof(RunNotGoingHoles))]
     RunNotGoing,
+
+    [Description("The run {Id} is going, and its file is being written: flip its marks once it has ended.")]
+    [Holes(typeof(RunStillGoingHoles))]
+    RunStillGoing,
+
+    [Description("The run {Id} has no criterion {Criterion} on turn {Turn} of repeat {Repeat} of '{Conversation}'.")]
+    [Holes(typeof(NoSuchMarkHoles))]
+    NoSuchMark,
+
+    [Description("The run {Id} has no conversation '{Conversation}'.")]
+    [Holes(typeof(NoSuchConversationHoles))]
+    NoSuchConversation,
+
+    [Description("A flip's note is one line of at most {Most} characters.")]
+    [Holes(typeof(NoteNotOneLineHoles))]
+    NoteNotOneLine,
+
+    [Description("A flip's body is JSON with its note, or nothing.")]
+    FlipNotRead,
 
     [Description("The run was cut off before it ended, as when the host restarts.")]
     CutOff,

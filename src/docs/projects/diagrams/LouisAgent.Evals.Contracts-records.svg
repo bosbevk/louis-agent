@@ -271,16 +271,17 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="cls-member" x="684" y="117" text-anchor="start">int Asked</text>
       <text class="cls-member" x="684" y="131" text-anchor="start">IReadOnlyList&lt;RepeatRun&gt; Repeats</text>
       <text class="cls-member" x="684" y="145" text-anchor="start">bool Passed</text>
-      <rect class="cls-cover" x="670" y="233" width="252" height="110" rx="14" />
-      <rect class="mrq-glass" x="670" y="233" width="252" height="110" rx="14" />
-      <rect class="mrq-edge" x="694" y="232.5" width="204" height="1.6" rx="0" />
-      <rect class="cls-badge tone-teal" x="684" y="251" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="698" y="269.5" text-anchor="middle">E</text>
-      <text class="pic-name" x="722" y="261" text-anchor="start">RunKind</text>
-      <text class="pic-note" x="722" y="277" text-anchor="start">enum</text>
-      <path class="cls-divide" d="M684 297H908" />
-      <text class="cls-member" x="684" y="315" text-anchor="start">Live</text>
-      <text class="cls-member" x="684" y="329" text-anchor="start">Replay</text>
+      <rect class="cls-cover" x="670" y="226" width="252" height="124" rx="14" />
+      <rect class="mrq-glass" x="670" y="226" width="252" height="124" rx="14" />
+      <rect class="mrq-edge" x="694" y="225.5" width="204" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="684" y="244" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="698" y="262.5" text-anchor="middle">E</text>
+      <text class="pic-name" x="722" y="254" text-anchor="start">RunKind</text>
+      <text class="pic-note" x="722" y="270" text-anchor="start">enum</text>
+      <path class="cls-divide" d="M684 290H908" />
+      <text class="cls-member" x="684" y="308" text-anchor="start">Live</text>
+      <text class="cls-member" x="684" y="322" text-anchor="start">Replay</text>
+      <text class="cls-member" x="684" y="336" text-anchor="start">Regrade</text>
       <rect class="cls-cover" x="670" y="417" width="252" height="138" rx="14" />
       <rect class="mrq-glass" x="670" y="417" width="252" height="138" rx="14" />
       <rect class="mrq-edge" x="694" y="416.5" width="204" height="1.6" rx="0" />
@@ -329,17 +330,19 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="cls-member" x="1673" y="117" text-anchor="start">IReadOnlyList&lt;ToolCallTranscript&gt; Calls</text>
       <text class="cls-member" x="1673" y="131" text-anchor="start">TimeSpan Took</text>
       <text class="cls-member" x="1673" y="145" text-anchor="start">string? Error</text>
-      <rect class="cls-cover" x="1659" y="226" width="301" height="124" rx="14" />
-      <rect class="mrq-glass" x="1659" y="226" width="301" height="124" rx="14" />
-      <rect class="mrq-edge" x="1683" y="225.5" width="253" height="1.6" rx="0" />
-      <rect class="cls-badge tone-teal" x="1673" y="244" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="1687" y="262.5" text-anchor="middle">R</text>
-      <text class="pic-name" x="1711" y="254" text-anchor="start">Mark</text>
-      <text class="pic-note" x="1711" y="270" text-anchor="start">record</text>
-      <path class="cls-divide" d="M1673 290H1946" />
-      <text class="cls-member" x="1673" y="308" text-anchor="start">string Text</text>
-      <text class="cls-member" x="1673" y="322" text-anchor="start">bool Met</text>
-      <text class="cls-member" x="1673" y="336" text-anchor="start">string Reason</text>
+      <rect class="cls-cover" x="1659" y="212" width="301" height="152" rx="14" />
+      <rect class="mrq-glass" x="1659" y="212" width="301" height="152" rx="14" />
+      <rect class="mrq-edge" x="1683" y="211.5" width="253" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="1673" y="230" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="1687" y="248.5" text-anchor="middle">R</text>
+      <text class="pic-name" x="1711" y="240" text-anchor="start">Mark</text>
+      <text class="pic-note" x="1711" y="256" text-anchor="start">record</text>
+      <path class="cls-divide" d="M1673 276H1946" />
+      <text class="cls-member" x="1673" y="294" text-anchor="start">string Text</text>
+      <text class="cls-member" x="1673" y="308" text-anchor="start">bool Met</text>
+      <text class="cls-member" x="1673" y="322" text-anchor="start">string Reason</text>
+      <text class="cls-member" x="1673" y="336" text-anchor="start">Flip? Flip</text>
+      <text class="cls-member" x="1673" y="350" text-anchor="start">bool CountsAsMet()</text>
       <rect class="cls-cover" x="2040" y="35" width="210" height="110" rx="14" />
       <rect class="mrq-glass" x="2040" y="35" width="210" height="110" rx="14" />
       <rect class="mrq-edge" x="2064" y="34.5" width="162" height="1.6" rx="0" />

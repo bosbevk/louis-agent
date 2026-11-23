@@ -1,5 +1,10 @@
-/* A mark: its text, then its why quieter; a mark not met in the danger colour. */
+/* A mark: its text, then its why quieter; a mark that counts as not met in the danger colour; a flipped one set off
+   by a rule in the theme's blue, with what it was flipped to in that blue. */
 .mark-line-text { font-weight: 600; }
 code.mark-line-text { font-weight: 400; color: var(--bs-body-color); }
 .mark-line-why { font-size: 14px; color: var(--bs-secondary-color); }
 .mark-line-not-met .mark-line-text { color: var(--bs-danger); }
+.mark-line-flipped { border-left: 3px solid var(--bs-info); padding-left: 12px; }
+.mark-line-flipped-to { color: var(--bs-info); }
+.mark-line-note { font-size: 14px; margin-top: 2px; }
+.mark-line-lately { font-size: 13px; color: var(--bs-secondary-color); margin-top: 2px; }

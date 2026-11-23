@@ -1,4 +1,7 @@
+using LouisAgent.Evals.Contracts.Api;
 using LouisAgent.Evals.Contracts.Runs;
+using LouisAgent.Web.Evals.Client;
+using LouisAgent.Web.Evals.Components.Marks;
 using LouisAgent.Web.Evals.Words;
 using LouisAgent.Web.Evals.Words.Parts;
 using LouisAgent.Web.Usage;
@@ -19,6 +22,33 @@ public partial class TurnCard
     /// <summary>The turn.</summary>
     [Parameter, EditorRequired]
     public TurnRun Turn { get; set; } = null!;
+
+    /// <summary>The run the turn is in, its id.</summary>
+    [Parameter, EditorRequired]
+    public string Run { get; set; } = "";
+
+    /// <summary>The conversation the turn is in, its id.</summary>
+    [Parameter, EditorRequired]
+    public string Conversation { get; set; } = "";
+
+    /// <summary>The repeat the turn is in, its number.</summary>
+    [Parameter, EditorRequired]
+    public int Repeat { get; set; }
+
+    /// <summary>Hands up a flip of one of its criteria (F126.4).</summary>
+    [Parameter]
+    public EventCallback<FlipAsk> OnFlip { get; set; }
+
+    /// <summary>Hands up an undo of one of its criteria's flip.</summary>
+    [Parameter]
+    public EventCallback<MarkPlace> OnUndo { get; set; }
+
+    /// <summary>The eval's runs, so a flipped mark says how often it was flipped lately (F126.4); or none.</summary>
+    [Parameter]
+    public RunHistory? History { get; set; }
+
+    /// <summary>Where its criterion, counted from 1, is in the run.</summary>
+    private MarkPlace PlaceOf(int criterion) => new(Run, Conversation, Repeat, Number, criterion);
 
     private static string AgentCostName => EvalsWords.Words[EvalsPart.AgentCostName];
 

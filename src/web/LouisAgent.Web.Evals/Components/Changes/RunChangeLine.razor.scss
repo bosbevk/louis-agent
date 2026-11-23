@@ -1,0 +1,4 @@
+/* Better in the theme's green, worse in its red. */
+.run-change-count { font-weight: 600; }
+.run-change-count.is-better { color: var(--web-ok); }
+.run-change-count.is-worse { color: var(--bs-danger); }

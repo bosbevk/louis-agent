@@ -1,0 +1,27 @@
+@* A re-graded run's own part (F126.4): what it is, the run it re-graded, its judge calls and the marks it kept, then
+   what changed in the file and what it did, one line each. *@
+
+<section class="card-p regrade-changes">
+    <h2>@Title</h2>
+    <p class="regrade-said">@Said <a class="regrade-of" href="@GradedPage">@GradedName</a>@Now</p>
+    <RunFigures>
+        <RunFigure Name="@JudgeCalls"><span class="regrade-judge-calls">@Change.CriteriaJudged</span></RunFigure>
+        <RunFigure Name="@MarksKept"><span class="regrade-kept">@Kept</span></RunFigure>
+    </RunFigures>
+    <ul class="list-unstyled regrade-list mt-3 mb-0">
+        @foreach (var line in Lines)
+        {
+            <li class="regrade-change d-flex gap-3">
+                <span class="regrade-sign" aria-hidden="true">@line.Sign</span>
+                <div>
+                    <div class="regrade-what">@line.What</div>
+                    <div class="regrade-why">@line.Why</div>
+                </div>
+            </li>
+        }
+    </ul>
+    @if (Change.CriteriaJudged > 0)
+    {
+        <p class="regrade-replay mt-3 mb-0">@Replay</p>
+    }
+</section>

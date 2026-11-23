@@ -174,7 +174,8 @@ turn's last usage, as a `TurnCost`; a cost nobody could price is null, never 0.
 and its role when it names one, sends each ask in the file's order, times each turn and writes it down, and closes
 the session whatever happens. Then it grades: each fact by code from the turn and the turns before it, each
 criterion by the judge from the turns up to and including that one, never a later one. Asking first and grading
-after keeps one place that opens and closes the session. A turn's judge cost is its criteria's costs added with
+after keeps one place that opens and closes the session. A turn is graded by `TurnGrader`, the one place a turn's
+marks are made, which the re-grade in section 10 shares. A turn's judge cost is its criteria's costs added with
 `KnownCost`, kept on the turn beside the agent's, so a run has its two bills apart. The player grades under the
 play's own run and task, so the judge's rows in the ledger name their run as the agent's rows do. A turn that ends
 in the agent's own error is still a turn:
@@ -256,6 +257,42 @@ tries to know when its recording went stale; the miss is how we find out.
 *Decided in:* F126.3.1, F126.3.3, [ADR 0134](../adr/0134-an-eval-is-one-file-of-conversations.md),
 [ADR 0104](../adr/0104-a-message-may-carry-the-page.md).
 
+### 10. The same answer keeps the same mark, and a re-grade
+
+A person may flip a criterion's mark when the judge got it wrong (the contracts' doc tells how). Two things then
+want to know whether an earlier mark still holds: a replay, and a re-grade. They ask one rule, written once. A turn
+says the same as another, `TurnTranscript.SaysTheSameAs`, when its ask, its answer, its error and every tool call
+(the tool, what it was sent, what it gave back, whether it failed) are the same, compared as the text kept. How long
+it took is left out, since a replay takes another time to say the same thing. The rule is asked by name, never by
+the record's own equality, which compares the calls' lists by reference. Where a turn says the same and a
+criterion's words are word for word the same, `MarkReuse.FindReusable` gives back the earlier mark, flip and note
+with it.
+
+A replay carries the live run's flips. The runner is handed the live run it plays, and after each repeat is graded,
+`MarkReuse.CarryFlips` copies a flip onto each mark whose turn says the same and whose judge's answer is the live
+one's. A flip is a person's word on one answer, so it holds only for that answer.
+
+A re-grade grades a run's stored answers again, against the eval file as it is now, with no agent asked. `Regrader`
+goes through the file's conversations in order. One the run doesn't hold, or whose asks aren't the same in every
+repeat, is left out, since no answer to it is stored. For every repeat of the rest it grades each turn from its
+stored transcript through the same `TurnGrader` the player uses, handing it the stored turn: facts are told again
+in code, which is free, a mark is kept wherever `MarkReuse` finds it, and the judge is asked only for a criterion
+that is new or reworded. A re-graded turn's agent cost is a known 0, since no agent was asked, a kept mark's judge
+cost a known 0, and a judge that can't mark ends the re-grade as could not finish, keeping what it graded.
+
+The judge's answers go into the live run's own recording, which is what lets a replay play again after a criterion
+is reworded. A re-grade grades each repeat under `JudgeReplay.Begin` with the live run's play,
+`{live run}/{conversation}.{repeat}`, which records since it replays nothing, and the store appends the new answer
+to that play's index beside the old ones, as VCR's new-episodes mode does. A later replay of the live run then
+finds the reworded criterion's answer where it looks. A re-grade of a re-grade, or of a replay, names the same live
+run, so its answers join the same plays.
+
+A run's conversation can also be made back into one of the eval file, to copy into it and change: `Conversation.Of`
+takes each turn's ask, its facts' words and its criteria's words from the first repeat, and `ToJson` writes it with
+the file's own options, so `EvalFileReader` reads it back.
+
+*Decided in:* F126.4, [ADR 0134](../adr/0134-an-eval-is-one-file-of-conversations.md).
+
 ## Structure
 
 ```
@@ -263,11 +300,13 @@ src/evals/LouisAgent.Evals/
 ├── eval.schema.json           # the eval file's schema, made from the records; a golden file
 ├── Files/                     # EvalFile, Conversation, Turn; Fact and FactKind; EvalCatalog, the evals found
 │   └── Json/                  # EvalFileReader, EvalFileException, EvalJson, EvalSchema, the two converters
-├── Grading/                   # Facts, Judge, JudgeAnswer, JudgeFailedException
+├── Grading/                   # Facts, Judge, JudgeAnswer, JudgeFailedException, JudgedMark
+│   └── Turns/                 # TurnGrader, a turn's marks made; MarkReuse, the same answer keeps its mark
 ├── Sessions/                  # SessionClient, SessionRefusedException: the agent asked over the sessions API;
 │                              # PageClient, PageMissingException: the page a conversation names
 ├── Transcripts/               # TurnTranscripts and TurnCost: a turn's stream written down
-├── Runs/                      # ConversationPlayer, EvalRunner, RunTrial, JudgeReplay, RecordingOutOfDateException
+├── Runs/                      # ConversationPlayer, EvalRunner, Regrader, RunTrial, JudgeReplay,
+│                              # RecordingOutOfDateException
 │   └── Store/                 # RunStore, RunId: a run kept as one file
 └── Messages/                  # EvalFileMessage, FactMessage, JudgeMessage, SessionMessage, RunMessage,
                                # CatalogMessage, and their Holes/
@@ -292,7 +331,11 @@ are the settings of [LouisAgent.Api.Evals](LouisAgent.Api.Evals.md).
 handler and a replay store of its own (`PageClientTests`) come next; then one
 conversation played over a fake sessions API (`ConversationPlayerTests`), the pass rule (`RunRecordsTests`), a run's
 repeats and its stops (`EvalRunnerTests`), the store over a folder of its own (`RunStoreTests`) and the evals found
-in file providers built in memory (`EvalCatalogTests`). `EvalMessagesTests` holds every message's holes.
+in file providers built in memory (`EvalCatalogTests`). When two turns say the same (`SaysTheSameTests`), when a
+mark carries over (`MarkReuseTests`), a re-grade over a recordings folder of its own with a judge that counts its
+calls (`RegraderTests`), a run's flips, comparison and history (`RunFlipsTests`, `RunChangeTests`,
+`RunHistoryTests`), and a conversation copied back to a file (`ConversationOfTests`) follow.
+`EvalMessagesTests` holds every message's holes.
 
 `LouisAgent.Evals.IntegrationTests` calls a real Claude model: `StructuredAnswerProofTests` proves the model answers as
 a typed record, and `JudgeLiveTests` has the judge mark two criteria. Both ask for the key with `Outside.Key`, so they
@@ -301,11 +344,10 @@ skip without one, in CI too. The judge's replay and a whole run on the API in me
 
 ## Limits and plans
 
-A run is started by calling its route with the admin key; starting one from the admin is the next child. The page
-sent is read on the server, so what only a screen knows (the section in view, an open card) is never in it, and
-words a site hides with CSS alone are. A person can't flip a mark, and a
-reworded criterion can't be marked again without a live run. Those are the next children of
-[the evals' plan](../plans/F126-evals-redesigned.md).
+The page sent is read on the server, so what only a screen knows (the section in view, an open card) is never in
+it, and words a site hides with CSS alone are. A re-grade can only grade what was stored: a conversation whose asks
+changed needs a live run. A person's flips correct a run's numbers and say which criterion wants rewording; they
+aren't handed to the judge as examples. The guide's new evals are the next child of [the evals' plan](../plans/F126-evals-redesigned.md).
 
 ## Related docs
 

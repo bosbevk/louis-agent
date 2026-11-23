@@ -25,6 +25,18 @@ public partial class ConversationRow
     [Parameter, EditorRequired]
     public ConversationRun Conversation { get; set; } = null!;
 
+    /// <summary>The run against the one before, so a row says it now passes or now fails (F126.4); or none.</summary>
+    [Parameter]
+    public RunChange? Change { get; set; }
+
+    private bool NowPasses => Change?.NowPass.Contains(Conversation.Id) == true;
+
+    private bool NowFails => Change?.NowFail.Contains(Conversation.Id) == true;
+
+    private static string NowPassesTag => EvalsWords.Words[EvalsPart.NowPassesTag];
+
+    private static string NowFailsTag => EvalsWords.Words[EvalsPart.NowFailsTag];
+
     private string Open => EvalAddress.ConversationPageOf(Eval, Run, Conversation.Id);
 
     private string? Ask => Conversation.FindFirstAsk();
@@ -36,6 +48,8 @@ public partial class ConversationRow
     /// <summary>"fact not met" for a fact, "not met" for a criterion, whose own words say what it asked.</summary>
     private string MissWords =>
         EvalsWords.Words[FirstMiss?.Kind == MarkKind.Fact ? EvalsPart.FactNotMet : EvalsPart.NotMet];
+
+    private static string PassedAfterYourFlip => EvalsWords.Words[EvalsPart.PassedAfterYourFlip];
 
     private string Repeats => EvalsWords.Count(Conversation.Asked, EvalsPart.Repeat, EvalsPart.Repeats);
 }

@@ -1,13 +1,24 @@
-@* A conversation in a run: whether it passed, its id and its first ask, why it failed, and how many repeats passed.
+@* A conversation in a run: whether it passed, its id and its first ask, that it passed only after a person's flip,
+   why it failed, and how many repeats passed.
    The whole row is the link to the conversation's page. *@
 
 <a class="conversation-row d-flex gap-3 align-items-start" href="@Open">
     <MarkDot Met="@Conversation.Passed"/>
     <div class="conversation-row-text flex-grow-1">
-        <div class="conversation-row-id">@Conversation.Id</div>
+        <div class="conversation-row-id">@Conversation.Id@if (NowPasses)
+            {
+                <span class="conversation-row-now-passes ms-2">@NowPassesTag</span>
+            }@if (NowFails)
+            {
+                <span class="conversation-row-now-fails ms-2">@NowFailsTag</span>
+            }</div>
         @if (Ask is { } ask)
         {
             <div class="conversation-row-ask">"@ask"</div>
+        }
+        @if (Conversation.PassedAfterAFlip())
+        {
+            <div class="conversation-row-flipped">@PassedAfterYourFlip</div>
         }
         @if (FirstMiss is { } miss)
         {

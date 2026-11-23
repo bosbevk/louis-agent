@@ -174,15 +174,15 @@ public class RunAnswersTests
 
     /// <summary>
     /// A run's file holds only the fields declared: its JSON's names are exactly these, a turn's judge cost the one
-    /// F126.3.4 added.
+    /// F126.3.4 added, and a mark's flip, with its time and note, and a re-grade's run, the ones F126.4 added.
     /// </summary>
     [Test]
     public void ARunsFile_HoldsNoNewField()
     {
         var call = new ToolCallTranscript("ReadDoc", "{}", "# Docs", Failed: true);
         var transcript = new TurnTranscript("Ask?", "Answer.", [call], TimeSpan.FromSeconds(3), "An error.");
-        var turn = new TurnRun(transcript, [new Mark("no-error", false, "Why.")], [new Mark("c", true, "Why.")],
-            0.001m, "USD");
+        var flipped = new Mark("c", true, "Why.") { Flip = new Flip(Started, "Why not.") };
+        var turn = new TurnRun(transcript, [new Mark("no-error", false, "Why.")], [flipped], 0.001m, "USD");
         var run = Run(new ConversationRun("a", 1, [new RepeatRun(1, [turn])])) with
         {
             Status = RunStatus.Finished,
@@ -202,6 +202,7 @@ public class RunAnswersTests
             "answer",
             "ask",
             "asked",
+            "at",
             "calls",
             "conversations",
             "cost",
@@ -212,15 +213,18 @@ public class RunAnswersTests
             "eval",
             "facts",
             "failed",
+            "flip",
             "id",
             "input",
             "judgeCost",
             "kind",
             "met",
+            "note",
             "number",
             "pageSent",
             "passed",
             "reason",
+            "regradeOf",
             "repeats",
             "replayOf",
             "result",

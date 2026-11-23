@@ -46,7 +46,8 @@
         "kind": "page, /admin/evals/{eval}/runs/{run}",
         "members": [
           "reads the run once, and every 3 s while it goes",
-          "stops a going run",
+          "stops a going run, re-grades an ended one",
+          "reads the run before, and compares",
           "asks the run for every figure"
         ]
       },
@@ -77,7 +78,10 @@
           "Task<EvalRun?> FindRunAsync(id)",
           "Task<IReadOnlyList<RunRow>> ListRunsAsync(eval)",
           "Task<RunStart> StartAsync(eval, kind, repeats)",
-          "Task StopAsync(run)"
+          "Task StopAsync(run)",
+          "Task<string?> FlipAsync(place, note)",
+          "Task<RunStart> RegradeAsync(run)",
+          "Task<string> FindAsFileAsync(run, conversation)"
         ]
       },
       {

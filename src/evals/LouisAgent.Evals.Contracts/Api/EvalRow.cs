@@ -11,6 +11,12 @@ namespace LouisAgent.Evals.Contracts.Api;
 /// <param name="LastLiveRun">Its newest live run that finished, the one a replay plays back, or null.</param>
 public sealed record EvalRow(string Name, string Agent, int Conversations, RunRow? LastRun, RunRow? LastLiveRun = null)
 {
+    /// <summary>The run its last run is compared with (<see cref="RunHistory.FindBefore" />), or none.</summary>
+    public RunRow? RunBefore { get; init; }
+
+    /// <summary>How many more conversations its last run passed than the run before; none without one.</summary>
+    public int? CountChange() => LastRun?.Passed - RunBefore?.Passed;
+
     /// <summary>
     /// What a live run of this many repeats is likely to cost: what the last live run spent a repeat, the agent's and
     /// the judge's added, times the repeats. None with no live run, or when that run had no price, never 0. When only

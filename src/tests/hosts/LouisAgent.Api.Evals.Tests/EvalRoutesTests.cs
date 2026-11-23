@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
+using System.Text.Json;
 using LouisAgent.Evals.Contracts.Api;
 using LouisAgent.Evals.Contracts.Runs;
 using LouisAgent.Evals.Contracts.Runs.Json;
@@ -61,7 +62,9 @@ public class EvalRoutesTests
             RunJson.Options);
         Assert.That(runs!.Select(row => row.Id), Is.EqualTo(new[] { run.Id }));
         var evals = await host.Client.GetFromJsonAsync<EvalsReply>("/v1/admin/evals", RunJson.Options);
-        Assert.That(evals!.Evals.Single().LastRun, Is.EqualTo(RunRow.Of(run)));
+        // Compared as their JSON: a row holds a list, which a record's own equality compares by reference.
+        Assert.That(JsonSerializer.Serialize(evals!.Evals.Single().LastRun, RunJson.Options),
+            Is.EqualTo(JsonSerializer.Serialize(RunRow.Of(run), RunJson.Options)));
     }
 
     /// <summary>
@@ -167,6 +170,32 @@ public class EvalRoutesTests
         held.Wait(TimeSpan.FromSeconds(30));
         return new ChatResponse(new ChatMessage(ChatRole.Assistant, "Hello."));
     }, 5).ToArray());
+
+    /// <summary>
+    /// F126.4: the list gives an eval's row its run before, and an eval's runs carry each row's criteria missed or
+    /// flipped, and the run a re-grade re-graded.
+    /// </summary>
+    [Test]
+    public async Task TheListAndTheRuns_CarryTheRunBefore_TheCriteria_AndARegradesRun()
+    {
+        await using var host = await StartAsync(Answering("Hello."),
+            Answering("""{"reason":"It doesn't.","met":false}"""), criterion: "Greets the person");
+        var first = await host.RunToTheEndAsync();
+        var second = await host.RunToTheEndAsync();
+        using var regrade = await host.Client.PostAsync($"/v1/admin/evals/runs/{second.Id}/regrade", null);
+        var regraded = await host.EndedAsync(regrade.Headers.Location!);
+
+        var reply = await host.Client.GetFromJsonAsync<EvalsReply>("/v1/admin/evals", RunJson.Options);
+        var rows = await host.Client.GetFromJsonAsync<IReadOnlyList<RunRow>>($"/v1/admin/evals/{Eval}/runs",
+            RunJson.Options);
+
+        var row = reply!.Evals.Single();
+        Assert.That((row.LastRun!.Id, row.RunBefore!.Id), Is.EqualTo((regraded.Id, second.Id)));
+        Assert.That(row.CountChange(), Is.Zero);
+        Assert.That(rows![0].RegradeOf, Is.EqualTo(second.Id));
+        Assert.That(rows.Single(r => r.Id == first.Id).Criteria,
+            Is.EqualTo(new[] { new CriterionTally("Greets the person", 1, 0) }));
+    }
 
     /// <summary>An eval the host doesn't have is a 404.</summary>
     [Test]

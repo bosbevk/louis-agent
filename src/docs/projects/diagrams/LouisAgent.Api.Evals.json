@@ -1,7 +1,7 @@
 {
   "kind": "cards",
   "title": "LouisAgent.Api.Evals: the overview",
-  "caption": "What a site's API program takes for its agents' evals: five routes behind the admin key, a desk that runs one run at a time in the background and stops it on a person's word, and the work that plays a run over the sessions API.",
+  "caption": "What a site's API program takes for its agents' evals: its routes behind the admin key, a desk that runs one run or re-grade at a time in the background and stops it on a person's word, and the work that plays a run over the sessions API.",
   "cards": {
     "rows": [
       {
@@ -21,9 +21,9 @@
           {
             "id": "routes",
             "icon": "server",
-            "title": "The five routes",
-            "code": "EvalHandlers",
-            "text": "The host's evals, a run started, read and stopped at its address, an eval's runs."
+            "title": "The routes",
+            "code": "EvalHandlers, ConversationHandlers",
+            "text": "The host's evals, a run started, read, stopped and re-graded at its address, an eval's runs, a mark flipped, a conversation as a block for its file."
           },
           {
             "id": "desk",
@@ -37,7 +37,7 @@
             "icon": "checks",
             "title": "A run played and kept",
             "code": "RunWork",
-            "text": "The agent asked at the program's own address with its key, the run kept after every conversation."
+            "text": "The agent asked at the program's own address with its key, or for a re-grade no agent, the run kept after every conversation."
           },
           {
             "id": "options",

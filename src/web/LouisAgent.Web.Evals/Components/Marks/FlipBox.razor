@@ -1,0 +1,13 @@
+@* The box under a criterion's mark that flips it (F126.4): what a flip does, a one-line note, and two buttons named
+   for what they do. A part of the page, not a dialog. *@
+
+<div class="flip-box">
+    <p class="flip-box-ask"><strong>@FlipTo?</strong> @Counts</p>
+    <label class="visually-hidden" for="@NoteId">@NoteLabel</label>
+    <input id="@NoteId" class="form-control flip-box-note" type="text" maxlength="200" placeholder="@NoteLabel"
+           value="@_note" @oninput="OnNote"/>
+    <div class="d-flex flex-wrap gap-2 mt-2">
+        <button type="button" class="header-button flip-box-go" @onclick="FlipAsync">@FlipTo</button>
+        <button type="button" class="header-button flip-box-cancel" @onclick="OnClose">@DontFlip</button>
+    </div>
+</div>

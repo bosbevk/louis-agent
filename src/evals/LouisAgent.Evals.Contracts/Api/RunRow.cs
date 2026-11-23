@@ -28,7 +28,20 @@ public sealed record RunRow(
     decimal? JudgeCost = null,
     string? Currency = null)
 {
+    /// <summary>The run a re-grade re-graded, or none (F126.4).</summary>
+    public string? RegradeOf { get; init; }
+
+    /// <summary>
+    /// Each criterion the run missed or a person flipped, once, so an eval's history adds them up from its rows and
+    /// reads no run whole (Louis's pick, 2026-11-23, "On each run's row in the list").
+    /// </summary>
+    public IReadOnlyList<CriterionTally> Criteria { get; init; } = [];
+
     /// <summary>The run, in short.</summary>
     public static RunRow Of(EvalRun run) => new(run.Id, run.Kind, run.Status, run.Repeats, run.StartedAt, run.EndedAt,
-        run.Passed, run.Conversations.Count, run.SumCost(), run.SumJudgeCost(), run.FindCurrency());
+        run.Passed, run.Conversations.Count, run.SumCost(), run.SumJudgeCost(), run.FindCurrency())
+    {
+        RegradeOf = run.RegradeOf,
+        Criteria = run.TallyCriteria()
+    };
 }

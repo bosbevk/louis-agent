@@ -1,3 +1,6 @@
+using System.Text.Json;
+using LouisAgent.Evals.Contracts.Runs;
+using LouisAgent.Evals.Files.Json;
 using System.ComponentModel;
 
 namespace LouisAgent.Evals.Files;
@@ -16,4 +19,28 @@ public sealed record Conversation(
     [property: Description("The turns the person takes, in order.")]
     IReadOnlyList<Turn> Turns,
     [property: Description("The page the person is on when the agent is a site's guide, starting with /.")]
-    string? Page = null);
+    string? Page = null)
+{
+    /// <summary>
+    /// A run's conversation made back into one of the eval file, to copy into it and change (F126.4): each turn's ask,
+    /// its facts' words and its criteria's words, from its first repeat, on the page the file gives it.
+    /// </summary>
+    /// <param name="run">The run's conversation.</param>
+    /// <param name="page">The page the eval file gives the conversation, or none.</param>
+    public static Conversation Of(ConversationRun run, string? page)
+    {
+        var turns = run.Repeats.FirstOrDefault()?.Turns.Select(turn => new Turn(turn.Transcript.Ask)
+        {
+            // A fact's mark keeps the fact's own words, so they read back as the fact.
+            Facts = [.. turn.Facts.Select(mark => Fact.Parse(mark.Text))],
+            Criteria = [.. turn.Criteria.Select(mark => mark.Text)]
+        });
+        return new Conversation(run.Id, [.. turns ?? []], page);
+    }
+
+    /// <summary>
+    /// The conversation as the eval file writes it, with the file's own options, so the shape is said once and the
+    /// file's reader reads it back (ADR 0134).
+    /// </summary>
+    public string ToJson() => JsonSerializer.Serialize(this, EvalJson.Options);
+}

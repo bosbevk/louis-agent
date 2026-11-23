@@ -10,7 +10,7 @@ namespace LouisAgent.Evals.Runs.Store;
 /// <summary>
 /// Keeps each run as one JSON file in its folder, named by the run's id, so a person can open a run in their editor
 /// and a folder listing is already in order. A file is written beside itself and moved into place, so a reader never
-/// meets half a run.
+/// meets half a run, and a run is changed in place under the same lock, so two changes at once both stay.
 /// </summary>
 /// <remarks>
 /// Fowler's Repository: whoever asks for runs doesn't know they are files. One file per run was picked over MongoDB
@@ -49,6 +49,39 @@ public sealed class RunStore(string folder)
         {
             return File.Exists(path) ? Read(path) : null;
         }
+    }
+
+    /// <summary>
+    /// Reads the run, changes it and saves what the change gives back, as one step under the store's lock, so two
+    /// changes at once can't lose one. False, and nothing saved, for a run it doesn't have or a change that gives none.
+    /// </summary>
+    public bool Change(string id, Func<EvalRun, EvalRun?> change)
+    {
+        string path = PathOf(id);
+        lock (_gate)
+        {
+            if (!File.Exists(path) || change(Read(path)) is not { } changed) return false;
+
+            Save(changed);
+            return true;
+        }
+    }
+
+    /// <summary>
+    /// The id a run of this eval starting now takes: the time to the second, UTC, and the eval's name. A run already
+    /// kept in that second moves it on a second, so an id names one run, whether a start or a re-grade makes it.
+    /// </summary>
+    public RunId NextId(string eval, DateTimeOffset at)
+    {
+        var utc = at.ToUniversalTime();
+        var second = new DateTimeOffset(utc.Year, utc.Month, utc.Day, utc.Hour, utc.Minute, utc.Second,
+            TimeSpan.Zero);
+        lock (_gate)
+        {
+            while (File.Exists(PathOf(new RunId(second, eval).Text))) second = second.AddSeconds(1);
+        }
+
+        return new RunId(second, eval);
     }
 
     /// <summary>The eval's runs, the newest first.</summary>

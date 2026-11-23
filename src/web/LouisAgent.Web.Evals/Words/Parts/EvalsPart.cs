@@ -118,5 +118,200 @@ public enum EvalsPart
     StoppedByAPerson,
 
     /// <summary>How many conversations did not run, in a run's ending.</summary>
-    DidNotRun
+    DidNotRun,
+
+    /// <summary>The button on a criterion that opens its flip (F126.4).</summary>
+    Flip,
+
+    /// <summary>The flip box's button, and its question, for a mark the judge said was not met.</summary>
+    FlipToMet,
+
+    /// <summary>The same for a mark the judge said was met.</summary>
+    FlipToNotMet,
+
+    /// <summary>What a flip does, said beside its question.</summary>
+    FlipCounts,
+
+    /// <summary>The label of the flip's note.</summary>
+    FlipNoteLabel,
+
+    /// <summary>The flip box's button that closes it and sends nothing.</summary>
+    DontFlip,
+
+    /// <summary>What a flipped mark was flipped to: met or not met.</summary>
+    FlippedTo,
+
+    /// <summary>What the judge said of a flipped mark, and why.</summary>
+    JudgeSaid,
+
+    /// <summary>The note a person left with a flip.</summary>
+    YourNote,
+
+    /// <summary>The button that puts the judge's answer back.</summary>
+    UndoTheFlip,
+
+    /// <summary>A conversation that passed only because of a person's flip.</summary>
+    PassedAfterYourFlip,
+
+    /// <summary>A conversation that passed.</summary>
+    Passed,
+
+    /// <summary>A conversation that failed.</summary>
+    Failed,
+
+    /// <summary>The line under a conversation's heading: how it went, its repeats, the one on show.</summary>
+    ConversationHead,
+
+    /// <summary>The name of how many marks of a repeat a person flipped.</summary>
+    YourFlips,
+
+    /// <summary>Under a fact's mark: who checked it.</summary>
+    FactInCode,
+
+    /// <summary>Under a criterion's mark: the judge's line of why.</summary>
+    TheJudge,
+
+    /// <summary>The title of a repeat's own figures.</summary>
+    ThisRepeat,
+
+    /// <summary>The name of how many facts were met.</summary>
+    FactsMet,
+
+    /// <summary>The name of how many criteria were met.</summary>
+    CriteriaMet,
+
+    /// <summary>How many of how many: "3 of 5".</summary>
+    MetOf,
+
+    /// <summary>The link to the conversation before, in the run's order.</summary>
+    Previous,
+
+    /// <summary>The link to the next conversation that failed.</summary>
+    NextFailed,
+
+    /// <summary>The button that reads the page's run again.</summary>
+    Reload,
+
+    /// <summary>The link to the same conversation in the run before.</summary>
+    InTheRunBefore,
+
+    /// <summary>A run the host doesn't have.</summary>
+    NoRun,
+
+    /// <summary>A conversation the run doesn't hold.</summary>
+    NoConversation,
+
+    /// <summary>A repeat the conversation doesn't hold.</summary>
+    NoRepeat,
+
+    /// <summary>The button that re-grades a run that has ended (F126.4).</summary>
+    Regrade,
+
+    /// <summary>The title of a re-graded run's changes.</summary>
+    RegradeTitle,
+
+    /// <summary>What a re-graded run is, before the link to the run it re-graded.</summary>
+    RegradeSaid,
+
+    /// <summary>The link to the run it re-graded.</summary>
+    RegradeOfRun,
+
+    /// <summary>After the link: what they were graded with.</summary>
+    RegradeNow,
+
+    /// <summary>The name of how many judge calls a re-grade made.</summary>
+    JudgeCalls,
+
+    /// <summary>The name of how many marks a re-grade kept.</summary>
+    MarksKept,
+
+    /// <summary>A criterion added to a turn.</summary>
+    CriterionAdded,
+
+    /// <summary>How an added criterion was judged.</summary>
+    CriterionJudged,
+
+    /// <summary>A criterion taken out of a turn.</summary>
+    CriterionTakenOut,
+
+    /// <summary>What a criterion taken out leaves.</summary>
+    CriterionTakenOutWhy,
+
+    /// <summary>The marks a re-grade kept, and the flips with them.</summary>
+    MarksKeptLine,
+
+    /// <summary>Why a mark is kept.</summary>
+    MarksKeptWhy,
+
+    /// <summary>The facts a re-grade checked again.</summary>
+    FactsAgain,
+
+    /// <summary>Why facts are checked again.</summary>
+    FactsAgainWhy,
+
+    /// <summary>A conversation a re-grade left out.</summary>
+    LeftOut,
+
+    /// <summary>Why it was left out.</summary>
+    LeftOutWhy,
+
+    /// <summary>What a re-grade leaves for a replay.</summary>
+    RegradeReplay,
+
+    /// <summary>A run that passed more than the run before (F126.4).</summary>
+    ChangeMore,
+
+    /// <summary>A run that passed fewer.</summary>
+    ChangeFewer,
+
+    /// <summary>A run that passed as many.</summary>
+    ChangeSame,
+
+    /// <summary>The conversations that now pass, named.</summary>
+    NowPasses,
+
+    /// <summary>The conversations that now fail, named.</summary>
+    NowFails,
+
+    /// <summary>The tag on a row that now passes.</summary>
+    NowPassesTag,
+
+    /// <summary>The tag on a row that now fails.</summary>
+    NowFailsTag,
+
+    /// <summary>The title of a run's conversations.</summary>
+    ConversationsTitle,
+
+    /// <summary>The title of the last runs' trend.</summary>
+    LastRuns,
+
+    /// <summary>What the trend's bars are.</summary>
+    TrendNote,
+
+    /// <summary>The title of the criteria missed most.</summary>
+    MissedMost,
+
+    /// <summary>How often a criterion was missed lately.</summary>
+    MissedIn,
+
+    /// <summary>How often a person flipped it lately.</summary>
+    FlippedIn,
+
+    /// <summary>What a criterion flipped again and again asks for.</summary>
+    KeepFlipping,
+
+    /// <summary>On a flipped mark: how often its criterion was flipped lately.</summary>
+    FlippedLately,
+
+    /// <summary>The button that copies a conversation for the eval file (F126.4).</summary>
+    CopyAsConversation,
+
+    /// <summary>The button once the copy was made.</summary>
+    CopiedMark,
+
+    /// <summary>What was copied, and where it goes.</summary>
+    Copied,
+
+    /// <summary>A copy the browser didn't allow.</summary>
+    CopyRefused
 }

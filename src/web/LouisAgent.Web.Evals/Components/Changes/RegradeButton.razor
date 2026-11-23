@@ -1,0 +1,8 @@
+@* Re-grade on a run's page that has ended (F126.4): it starts at once, with no ask, and goes to the new run's page;
+   a refusal is a line in the API's words. *@
+
+<button class="header-button run-regrade" type="button" @onclick="RegradeAsync" disabled="@_starting">@Regrade</button>
+@if (_refused is { } refused)
+{
+    <p class="run-regrade-refused text-danger w-100 mb-0">@refused</p>
+}

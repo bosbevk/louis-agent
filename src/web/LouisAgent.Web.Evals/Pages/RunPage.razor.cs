@@ -2,6 +2,7 @@ using System.Net;
 using LouisAgent.Choices;
 using LouisAgent.Evals.Contracts.Api;
 using LouisAgent.Evals.Contracts.Runs;
+using LouisAgent.Evals.Contracts.Runs.Answers;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Evals.Client;
 using LouisAgent.Web.Evals.Words;
@@ -15,7 +16,8 @@ namespace LouisAgent.Web.Evals.Pages;
 /// <summary>
 /// A run's page. It reads the run whole, the host's evals and this eval's runs when it opens and on Reload, and asks
 /// the run's own records for every figure it shows: passed, the marks met, both costs and the time. A going run is
-/// read again every few seconds and can be stopped (F126.3.4).
+/// read again every few seconds and can be stopped (F126.3.4); one that has ended can be re-graded, and a re-grade is
+/// read beside the run it re-graded, to say what it did (F126.4).
 /// </summary>
 /// <remarks>
 /// The page only draws. What a run knows about itself (its counts, its order failed first) is the record's to
@@ -24,10 +26,10 @@ namespace LouisAgent.Web.Evals.Pages;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0042-the-web-shows-the-live-results.md">ADR 0042: the web shows the live results</seealso>
 public partial class RunPage
 {
-    private EvalRun? _run;
+    private EvalRun? _run, _before;
     private EvalRow? _eval;
     private IReadOnlyList<RunRow> _runs = [];
-    private string? _error;
+    private string? _error, _read;
     private bool _needsKey, _loading, _missing, _stopping, _gone;
     private ITimer? _timer;
 
@@ -54,6 +56,9 @@ public partial class RunPage
 
     private int Passed => _run?.Passed ?? 0;
 
+    /// <summary>The run against the run before, asked of the run (F126.4); none with no run before.</summary>
+    private RunChange? Change => _run is { } run && _before is { } before ? run.CompareWith(before) : null;
+
     /// <summary>How many conversations the run has graded.</summary>
     private int Graded => _run?.Conversations.Count ?? 0;
 
@@ -68,7 +73,6 @@ public partial class RunPage
     /// <summary>The run's kind, as its file writes it.</summary>
     private string Kind => _run?.Kind.Wire() ?? "";
 
-    /// <summary>How long the run took, or unknown while it has no end.</summary>
     /// <summary>"So far" while the run goes, "Took" once it has ended.</summary>
     private string TimeName => EvalsWords.Words[Going ? EvalsPart.SoFar : EvalsPart.Took];
 
@@ -97,10 +101,16 @@ public partial class RunPage
 
     private static string Unknown => EvalsWords.Words[EvalsPart.Unknown];
 
-    /// <summary>Loads the admin key, then reads the run.</summary>
-    protected override async Task OnInitializedAsync()
+    /// <summary>
+    /// Loads the admin key, then reads the run when the address names one not read yet: Blazor keeps this page when
+    /// only the run in its address changes, as after a re-grade, so the run is read on its parameters, not once.
+    /// </summary>
+    protected override async Task OnParametersSetAsync()
     {
         if (!Store.Loaded) await Store.LoadAsync();
+        if (_read == Run) return;
+
+        StopFollowing();
         await LoadAsync();
         Follow();
     }
@@ -154,6 +164,18 @@ public partial class RunPage
     }
 
     /// <summary>
+    /// The run this one is compared with, read whole (F126.4): for a re-grade the run it re-graded, else the newest
+    /// earlier run that finished, as the eval's history finds it; none when there is no such run.
+    /// </summary>
+    private async Task<EvalRun?> ReadBeforeAsync()
+    {
+        if (_runs.FirstOrDefault(row => row.Id == Run) is not { } row) return null;
+        if (new RunHistory(_runs).FindBefore(row) is not { } before) return null;
+
+        return await Api.FindRunAsync(before.Id);
+    }
+
+    /// <summary>
     /// Reads the run, the eval's line in the host's list and the eval's runs. A run the host doesn't have is one line;
     /// a refused key shows the frame's key box, and a host that can't be reached says so in a line.
     /// </summary>
@@ -167,6 +189,8 @@ public partial class RunPage
             _missing = _run is null;
             _eval = (await Api.ListAsync()).Evals.FirstOrDefault(row => row.Name == Eval);
             _runs = await Api.ListRunsAsync(Eval);
+            _before = await ReadBeforeAsync();
+            _read = Run;
         }
         catch (AgentApiException ex)
         {
