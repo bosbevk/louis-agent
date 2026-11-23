@@ -47,24 +47,17 @@ public class LandingStoryTests
     }
 
     /// <summary>
-    /// Two free websites, told in one line under the hero (Louis, 2026-11-18: "why not just have this and link to
-    /// page?", then his pick of a framework strip): the whole line leads to the offer's own page.
+    /// FX227: the offer of two free websites is closed (Louis, 2026-11-23: "remove this then asap"), so the hero ends
+    /// at its two buttons and no line under them leads anywhere.
     /// </summary>
     [Test]
-    public void TheFreeWebsites_AreOneLineUnderTheHero_LeadingToTheirPage()
+    public void TheHero_EndsAtItsButtons_WithNoLineUnderThem()
     {
         using var ctx = new BunitContext();
 
-        var strip = ctx.Render<HomePage>().Find("section#top a.announcement-strip");
+        var hero = ctx.Render<HomePage>().Find("section#top");
 
-        Assert.Multiple(() =>
-        {
-            Assert.That(strip.GetAttribute("href"), Is.EqualTo("/free-websites"));
-            Assert.That(strip.QuerySelector(".status-pill")!.TextContent, Is.EqualTo("Entries open"));
-            Assert.That(strip.QuerySelector(".announcement-text")!.TextContent,
-                Is.EqualTo("Two businesses get a free website."));
-            Assert.That(strip.QuerySelector(".announcement-go")!.TextContent, Is.EqualTo("See how it works"));
-        });
+        Assert.That(hero.QuerySelectorAll("a.announcement-strip"), Is.Empty);
     }
 
     /// <summary>
