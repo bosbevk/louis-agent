@@ -73,7 +73,9 @@ public sealed record FrameworkFamily(
         "Measure an agent. They are being rebuilt from scratch, starting with the eval file and how a turn is graded.",
         DiagramIcon.Checks, DiagramTone.Green,
         [
-            new("LouisAgent.Evals", "The eval file and how a turn is graded.")
+            new("LouisAgent.Evals", "The eval file and how a turn is graded."),
+            new("LouisAgent.Evals.Contracts", "What happened in a turn, and its marks, as records."),
+            new("LouisAgent.Api.Evals", "The eval routes a site's API maps, being built.")
         ]);
 
     /// <summary>The tools, which draw the docs' pictures and read a provider's usage.</summary>

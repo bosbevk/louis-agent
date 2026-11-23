@@ -1,9 +1,10 @@
 using System.Text.Json;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Usage.Records;
+using LouisAgent.Evals.Contracts.Grading;
+using LouisAgent.Evals.Contracts.Transcripts;
 using LouisAgent.Evals.Messages;
 using LouisAgent.Evals.Messages.Holes.Judging;
-using LouisAgent.Evals.Transcripts;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Evals.Grading;

@@ -1,8 +1,8 @@
 using LouisAgent.Core.Anthropic;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Llm;
+using LouisAgent.Evals.Contracts.Transcripts;
 using LouisAgent.Evals.Grading;
-using LouisAgent.Evals.Transcripts;
 
 namespace LouisAgent.Evals.IntegrationTests.Grading;
 

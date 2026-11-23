@@ -3,10 +3,11 @@ using System.Text.Json;
 using LouisAgent.Composition.Agents;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Delegation.Agents;
+using LouisAgent.Evals.Contracts.Grading;
+using LouisAgent.Evals.Contracts.Transcripts;
 using LouisAgent.Evals.Files;
 using LouisAgent.Evals.Messages;
 using LouisAgent.Evals.Messages.Holes.Grading;
-using LouisAgent.Evals.Transcripts;
 
 namespace LouisAgent.Evals.Grading;
 
@@ -136,7 +137,9 @@ public static class Facts
                          value.ValueKind == JsonValueKind.String;
             if (!named) return null;
             return AgentAddress.TryParse(arguments.RootElement.GetProperty(AddressParameter).GetString(),
-                out var address) ? address : null;
+                out var address)
+                ? address
+                : null;
         }
         catch (JsonException)
         {

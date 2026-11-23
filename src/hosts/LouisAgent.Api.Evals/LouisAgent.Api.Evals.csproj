@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Api.Evals</RootNamespace>
+    <!-- Not a package yet (ADR 0130): no product outside this repository runs an eval before F171.4. -->
+    <IsPackable>false</IsPackable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="LouisAgent.Api.Evals.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- F126.3.1: the eval routes a site's own API maps (ADR 0134), on the evals and on the API they run over. -->
+    <ProjectReference Include="..\..\evals\LouisAgent.Evals\LouisAgent.Evals.csproj" />
+    <ProjectReference Include="..\LouisAgent.Api\LouisAgent.Api.csproj" />
+  </ItemGroup>
+
+</Project>

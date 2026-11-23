@@ -1,4 +1,4 @@
-namespace LouisAgent.Evals.Grading;
+namespace LouisAgent.Evals.Contracts.Grading;
 
 /// <summary>
 /// One mark on a turn, the same for a fact and for a criterion: what was checked, whether it was met, and why, in one

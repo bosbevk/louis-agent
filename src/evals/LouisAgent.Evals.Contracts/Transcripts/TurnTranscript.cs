@@ -1,4 +1,4 @@
-namespace LouisAgent.Evals.Transcripts;
+namespace LouisAgent.Evals.Contracts.Transcripts;
 
 /// <summary>
 /// What happened in one turn: what was asked, what the agent answered as it sent it, each tool it called, how long the

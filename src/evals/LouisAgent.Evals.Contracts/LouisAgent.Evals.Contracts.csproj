@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Evals.Contracts</RootNamespace>
+    <!-- Not a package yet (ADR 0130): no product outside this repository reads an eval before F171.4. -->
+    <IsPackable>false</IsPackable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <!-- F126.3.1, as LouisAgent.Api.Contracts (ADR 0045): the records of a run, which the evals write, the API sends
+       and a page in the browser reads. It references no project and no package, so a browser project takes it
+       without the engine. -->
+
+</Project>

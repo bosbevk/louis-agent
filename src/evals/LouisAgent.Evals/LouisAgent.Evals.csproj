@@ -18,6 +18,8 @@
     <!-- F126.2: the evals stand on the engine alone, for the model client, an agent's address and the ledger's
          scope; no pack and no identity knows them (ADR 0134). -->
     <ProjectReference Include="..\..\engine\LouisAgent.Core\LouisAgent.Core.csproj" />
+    <!-- F126.3.1: the records of a run, which a page in the browser reads too. -->
+    <ProjectReference Include="..\LouisAgent.Evals.Contracts\LouisAgent.Evals.Contracts.csproj" />
   </ItemGroup>
 
   <ItemGroup>

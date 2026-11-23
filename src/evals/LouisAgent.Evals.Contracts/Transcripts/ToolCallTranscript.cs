@@ -1,4 +1,4 @@
-namespace LouisAgent.Evals.Transcripts;
+namespace LouisAgent.Evals.Contracts.Transcripts;
 
 /// <summary>
 /// One tool call in a turn: the tool, what the agent sent it, and what it gave back as the agent got it.

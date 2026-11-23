@@ -1,6 +1,6 @@
 # LouisAgent.Evals — design
 
-> **Kind:** library (`net10.0`) · **Path:** `src/evals/LouisAgent.Evals/` · **References:** LouisAgent.Core ·
+> **Kind:** library (`net10.0`) · **Path:** `src/evals/LouisAgent.Evals/` · **References:** LouisAgent.Core, LouisAgent.Evals.Contracts ·
 > **Used by:** its tests today; the runs of the evals, once they are built
 > **Also shows:** `component`, `object`
 
@@ -154,9 +154,11 @@ src/evals/LouisAgent.Evals/
 ├── eval.schema.json           # the eval file's schema, made from the records; a golden file
 ├── Files/                     # EvalFile, Conversation, Turn; Fact and FactKind, the seven facts
 │   └── Json/                  # EvalFileReader, EvalFileException, EvalJson, EvalSchema, the two converters
-├── Transcripts/               # TurnTranscript and ToolCallTranscript: what happened in a turn
-├── Grading/                   # Mark, Facts, Judge, JudgeAnswer, JudgeFailedException
+├── Grading/                   # Facts, Judge, JudgeAnswer, JudgeFailedException
 └── Messages/                  # EvalFileMessage, FactMessage, JudgeMessage, and their Holes/
+src/evals/LouisAgent.Evals.Contracts/                # on nothing of ours, so a page in the browser can read it
+├── Grading/                   # Mark: a fact's or a criterion's mark
+└── Transcripts/               # TurnTranscript and ToolCallTranscript: what happened in a turn
 src/tests/evals/LouisAgent.Evals.Tests/              # the facts, the reader and its faults, the schema, the judge
 src/tests/evals/LouisAgent.Evals.IntegrationTests/   # the structured answer proved, and the judge on a real model
 ```
