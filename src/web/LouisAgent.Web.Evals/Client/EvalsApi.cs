@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Http.Json;
 using LouisAgent.Evals.Contracts.Api;
 using LouisAgent.Evals.Contracts.Runs;
 using LouisAgent.Evals.Contracts.Runs.Json;
@@ -36,6 +37,48 @@ public sealed class EvalsApi(AgentApi api)
     }
 
     /// <summary>The eval's runs in short, the newest first, as the API sends them.</summary>
+    /// <summary>
+    /// Starts a run of the eval: its kind and its repeats posted to the eval's runs, written as the routes read them.
+    /// Answers the run's id from the address the API gave, or, when the API said no, its own reason word for word. A
+    /// refused key throws, as every call here does.
+    /// </summary>
+    public async Task<RunStart> StartAsync(string eval, RunKind kind, int repeats)
+    {
+        var asked = new StartRunRequest(kind, repeats);
+        using var start = new HttpRequestMessage(HttpMethod.Post, EvalAddress.RunsRouteOf(eval));
+        start.Content = JsonContent.Create(asked, options: RunJson.Options);
+        try
+        {
+            using var started = await api.SendAsync(start);
+            return new RunStart(EvalAddress.FindRunId(started.Headers.Location?.OriginalString ?? ""), null);
+        }
+        catch (AgentApiException refused) when (IsARefusal(refused.Status))
+        {
+            return new RunStart(null, refused.Message);
+        }
+    }
+
+    /// <summary>
+    /// Stops the run. A run the host doesn't have, or one that has already ended, needs no stop, so neither throws;
+    /// a refused key does.
+    /// </summary>
+    public async Task StopAsync(string run)
+    {
+        using var stop = new HttpRequestMessage(HttpMethod.Delete, EvalAddress.RunRouteOf(run));
+        try
+        {
+            using var _ = await api.SendAsync(stop);
+        }
+        catch (AgentApiException over) when (over.Status is HttpStatusCode.NotFound or HttpStatusCode.Conflict)
+        {
+            // Nothing to stop: the page reads the run again and shows how it ended.
+        }
+    }
+
+    /// <summary>A start the API turned down for a reason it says, as against a key it refused.</summary>
+    private static bool IsARefusal(HttpStatusCode status) =>
+        status is HttpStatusCode.BadRequest or HttpStatusCode.NotFound or HttpStatusCode.Conflict;
+
     public Task<IReadOnlyList<RunRow>> ListRunsAsync(string eval) =>
         api.GetAsync<IReadOnlyList<RunRow>>(EvalAddress.RunsRouteOf(eval), RunJson.Options);
 }

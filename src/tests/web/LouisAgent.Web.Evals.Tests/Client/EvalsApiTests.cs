@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
+using LouisAgent.Api.Contracts;
 using LouisAgent.Evals.Contracts.Api;
 using LouisAgent.Evals.Contracts.Grading;
 using LouisAgent.Evals.Contracts.Runs;
@@ -79,6 +80,69 @@ public class EvalsApiTests
         var refused = Assert.ThrowsAsync<AgentApiException>(() => api.FindRunAsync("20261123-063633-guide"));
 
         Assert.That(refused!.Status, Is.EqualTo(HttpStatusCode.Unauthorized));
+    }
+
+    /// <summary>
+    /// F126.3.4: a start posts the kind and the repeats to the eval's runs, written as the routes read them, and
+    /// answers the run's id from the address the API gave.
+    /// </summary>
+    [Test]
+    public async Task AStart_PostsTheKindAndRepeats_AndAnswersTheRunsId()
+    {
+        var (api, stub) = Api(_ => new HttpResponseMessage(HttpStatusCode.Accepted)
+        {
+            Headers = { Location = new Uri("/v1/admin/evals/runs/20261123-063633-guide", UriKind.Relative) }
+        });
+
+        var start = await api.StartAsync("guide", RunKind.Live, 3);
+
+        var (method, url, body) = stub.Requests.Single();
+        Assert.That((method, url), Is.EqualTo((HttpMethod.Post, "http://localhost/v1/admin/evals/guide/runs")));
+        Assert.That(JsonSerializer.Deserialize<StartRunRequest>(body!, RunJson.Options),
+            Is.EqualTo(new StartRunRequest(RunKind.Live, 3)));
+        Assert.That(start, Is.EqualTo(new RunStart("20261123-063633-guide", null)));
+    }
+
+    /// <summary>A start the API refuses answers no run and the API's own reason, word for word.</summary>
+    [TestCase(HttpStatusCode.BadRequest)]
+    [TestCase(HttpStatusCode.Conflict)]
+    [TestCase(HttpStatusCode.NotFound)]
+    public async Task ARefusedStart_AnswersTheApisReason(HttpStatusCode status)
+    {
+        var refusal = new ApiError("error", new ApiErrorDetail("invalid_request_error", "A run is already going."));
+        var (api, _) = Api(_ => new HttpResponseMessage(status)
+        {
+            Content = JsonContent.Create(refusal, options: JsonSerializerOptions.Web)
+        });
+
+        var start = await api.StartAsync("guide", RunKind.Replay, 1);
+
+        Assert.That(start, Is.EqualTo(new RunStart(null, "A run is already going.")));
+    }
+
+    /// <summary>A stop sends DELETE to the run's address; a run not there, or not going, throws nothing.</summary>
+    [TestCase(HttpStatusCode.NoContent)]
+    [TestCase(HttpStatusCode.NotFound)]
+    [TestCase(HttpStatusCode.Conflict)]
+    public async Task AStop_SendsDeleteToTheRun_AndAMissOrAnEndedRunThrowsNothing(HttpStatusCode status)
+    {
+        var (api, stub) = Api(_ => Status(status));
+
+        await api.StopAsync("20261123-063633-guide");
+
+        Assert.That(stub.Requests.Single().Method, Is.EqualTo(HttpMethod.Delete));
+        Assert.That(stub.Requests.Single().Url,
+            Is.EqualTo("http://localhost/v1/admin/evals/runs/20261123-063633-guide"));
+    }
+
+    /// <summary>A refused key throws on a start and on a stop, as on every other call.</summary>
+    [Test]
+    public void ARefusedKey_ThrowsOnAStartAndOnAStop()
+    {
+        var (api, _) = Api(_ => Status(HttpStatusCode.Unauthorized));
+
+        Assert.ThrowsAsync<AgentApiException>(() => api.StartAsync("guide", RunKind.Live, 1));
+        Assert.ThrowsAsync<AgentApiException>(() => api.StopAsync("20261123-063633-guide"));
     }
 
     /// <summary>The client over a stub of the API.</summary>
