@@ -103,6 +103,35 @@ public class RunStoreTests
             Does.Contain("\"note\": \"It does say so.\""));
     }
 
+    /// <summary>F126.4: Change reads the run, changes it and saves what the change gives back.</summary>
+    [Test]
+    public void Change_ReadsChangesAndSavesTheRun()
+    {
+        var store = new RunStore(_folder);
+        var run = Run("20261123-043012-guide", Started);
+        store.Save(run);
+        var flip = new Flip(Started.AddHours(1));
+
+        bool changed = store.Change(run.Id, kept => kept.WithFlip("guide-what-is", 1, 1, 1, flip));
+
+        Assert.That(changed, Is.True);
+        Assert.That(store.Find(run.Id)!.CountFlips(), Is.EqualTo(1));
+    }
+
+    /// <summary>A run the store doesn't have, or a change that gives back none, changes nothing and says so.</summary>
+    [Test]
+    public void Change_OfARunItDoesNotHave_OrToNone_ChangesNothing()
+    {
+        var store = new RunStore(_folder);
+        var run = Run("20261123-043012-guide", Started);
+        store.Save(run);
+        string before = File.ReadAllText(Path.Combine(_folder, "20261123-043012-guide.json"));
+
+        Assert.That(store.Change("20261123-043013-guide", kept => kept), Is.False);
+        Assert.That(store.Change(run.Id, _ => null), Is.False);
+        Assert.That(File.ReadAllText(Path.Combine(_folder, "20261123-043012-guide.json")), Is.EqualTo(before));
+    }
+
     /// <summary>Saving a run with the same id again replaces it.</summary>
     [Test]
     public void SavingTheSameIdAgain_ReplacesIt()

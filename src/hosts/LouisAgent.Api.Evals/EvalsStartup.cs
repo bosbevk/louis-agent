@@ -12,12 +12,13 @@ using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
+using LouisAgent.Api.Evals.Conversations;
 
 namespace LouisAgent.Api.Evals;
 
 /// <summary>
-/// How a site's API program takes the evals: their services beside the API's, and their four routes on the API's
-/// group behind the admin key. The host's eval files are read here, so a wrong one stops it at start-up.
+/// How a site's API program takes the evals: their services beside the API's, and their routes on the API's group
+/// behind the admin key. The host's eval files are read here, so a wrong one stops it at start-up.
 /// </summary>
 /// <remarks>
 /// The evals ask the agent over HTTP at the program's own address, with the instance's key, as any app does, so the
@@ -28,6 +29,10 @@ public static class EvalsStartup
 {
     /// <summary>How long one ask may take before its answer starts, as long as a slow turn needs.</summary>
     private static readonly TimeSpan TurnLimit = TimeSpan.FromMinutes(10);
+
+    /// <summary>A criterion's flip, at its mark's own address; the turn and the criterion count from 1.</summary>
+    private const string FlipRoute =
+        "/evals/runs/{id}/{conversation}/{repeat:int}/{turn:int}/criteria/{criterion:int}/flip";
 
     /// <summary>
     /// The evals' services: the host's eval files, the desk that runs one run at a time in the background, and the
@@ -50,10 +55,16 @@ public static class EvalsStartup
             return new EvalHandlers(catalog, provider.GetRequiredService<RunDesk>(), work, host.Agent.KeepsRecordings,
                 TimeProvider.System);
         });
+        // A conversation's routes change a kept run through the same store the eval routes keep it in.
+        builder.Services.AddSingleton(provider => new ConversationHandlers(provider.GetRequiredService<RunDesk>(),
+            provider.GetRequiredService<EvalHandlers>().Work, TimeProvider.System));
         return builder;
     }
 
-    /// <summary>The five routes, on the API's group, behind the admin key.</summary>
+    /// <summary>
+    /// The routes, on the API's group, behind the admin key: the five of the evals and their runs, and a kept run's
+    /// two of a criterion's flip.
+    /// </summary>
     public static IEndpointRouteBuilder MapLouisAgentEvals(this IEndpointRouteBuilder v1, string? adminKey)
     {
         var handlers = v1.ServiceProvider.GetRequiredService<EvalHandlers>();
@@ -63,6 +74,9 @@ public static class EvalsStartup
         admin.MapGet("/evals/runs/{id}", handlers.Find);
         admin.MapDelete("/evals/runs/{id}", handlers.Stop);
         admin.MapGet("/evals/{name}/runs", handlers.RunsOf);
+        var conversations = v1.ServiceProvider.GetRequiredService<ConversationHandlers>();
+        admin.MapPut(FlipRoute, conversations.FlipAsync);
+        admin.MapDelete(FlipRoute, conversations.UndoFlip);
         return v1;
     }
 

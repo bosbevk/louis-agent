@@ -29,9 +29,9 @@ using StartAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
 namespace LouisAgent.Api.Evals;
 
 /// <summary>
-/// The four eval routes' answers: the host's evals, a run started, a run read at its own address, and an eval's
-/// runs. A start is refused with its reason before anything runs. What is sent is what is kept, in the run's own
-/// JSON.
+/// The five eval routes' answers: the host's evals, a run started, a run read at its own address, a run stopped,
+/// and an eval's runs. A start is refused with its reason before anything runs. What is sent is what is kept, in
+/// the run's own JSON.
 /// </summary>
 /// <remarks>
 /// Named handlers returning typed results, their checks first as guard clauses (ADR 0051). A start answers 202 with
@@ -54,6 +54,9 @@ public sealed class EvalHandlers(
 {
     /// <summary>Where a run is read, by its id.</summary>
     public const string RunAddress = "/v1/admin/evals/runs/";
+
+    /// <summary>How a run is played and kept, which a conversation's routes change a kept run through.</summary>
+    public RunWork? Work => work;
 
     /// <summary>Every eval this host has, with its last run in short.</summary>
     public JsonHttpResult<EvalsReply> List()
@@ -108,7 +111,6 @@ public sealed class EvalHandlers(
         return TypedResults.Json(desk.Read(run), RunJson.Options);
     }
 
-    /// <summary>The eval's runs in short, the newest first.</summary>
     /// <summary>
     /// <c>DELETE /v1/admin/evals/runs/{id}</c>: stops the run going here, which then keeps itself as stopped. A run
     /// this host doesn't have is 404, and one that isn't going 409, with the reason.
@@ -123,6 +125,7 @@ public sealed class EvalHandlers(
         return ApiErrors.Conflict(MessageText.Format(EvalsApiMessage.RunNotGoing, notGoing));
     }
 
+    /// <summary>The eval's runs in short, the newest first.</summary>
     public FoundRuns RunsOf(string name)
     {
         if (catalog.Find(name) is null) return Unknown(name);
@@ -186,8 +189,8 @@ public sealed class EvalHandlers(
         return ApiErrors.NotFound(MessageText.Format(EvalsApiMessage.UnknownEval, unknown));
     }
 
-    /// <summary>The answer for an id that names no run.</summary>
-    private static JsonHttpResult<ApiError> NoSuchRun(string id)
+    /// <summary>The answer for an id that names no run, which a conversation's routes give too.</summary>
+    internal static JsonHttpResult<ApiError> NoSuchRun(string id)
     {
         var none = new NoSuchRunHoles(id);
         return ApiErrors.NotFound(MessageText.Format(EvalsApiMessage.NoSuchRun, none));

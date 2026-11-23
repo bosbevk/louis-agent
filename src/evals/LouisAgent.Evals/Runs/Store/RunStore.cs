@@ -10,7 +10,7 @@ namespace LouisAgent.Evals.Runs.Store;
 /// <summary>
 /// Keeps each run as one JSON file in its folder, named by the run's id, so a person can open a run in their editor
 /// and a folder listing is already in order. A file is written beside itself and moved into place, so a reader never
-/// meets half a run.
+/// meets half a run, and a run is changed in place under the same lock, so two changes at once both stay.
 /// </summary>
 /// <remarks>
 /// Fowler's Repository: whoever asks for runs doesn't know they are files. One file per run was picked over MongoDB
@@ -48,6 +48,22 @@ public sealed class RunStore(string folder)
         lock (_gate)
         {
             return File.Exists(path) ? Read(path) : null;
+        }
+    }
+
+    /// <summary>
+    /// Reads the run, changes it and saves what the change gives back, as one step under the store's lock, so two
+    /// changes at once can't lose one. False, and nothing saved, for a run it doesn't have or a change that gives none.
+    /// </summary>
+    public bool Change(string id, Func<EvalRun, EvalRun?> change)
+    {
+        string path = PathOf(id);
+        lock (_gate)
+        {
+            if (!File.Exists(path) || change(Read(path)) is not { } changed) return false;
+
+            Save(changed);
+            return true;
         }
     }
 
