@@ -6,6 +6,59 @@
       "turns": [
         { "ask": "What is louis-agent, in one minute?",
           "facts": ["no-error", "used ReadSkill", "under 30s"],
-          "criteria": ["Says what louis-agent does for a business, in plain words", "Ends with one small nudge: a page, a question or the chat"] } ] }
+          "criteria": ["Says what louis-agent does for a business, in plain words", "Ends with one small nudge: a page, a question or the chat"] } ] },
+    { "id": "guide-greets-first", "page": "/",
+      "turns": [
+        { "ask": "Hi, what is this site about?",
+          "facts": ["no-error", "under 30s"],
+          "criteria": ["Opens with a greeting before anything else"] } ] },
+    { "id": "guide-short-answers", "page": "/",
+      "turns": [
+        { "ask": "Tell me everything about louis-agent: what it is, what it costs, how it works and who made it.",
+          "facts": ["no-error", "never-says ;"],
+          "criteria": ["Answers in three short sentences or fewer, a question back included", "Uses no colon and no bracket"] } ] },
+    { "id": "guide-names-no-doc", "page": "/",
+      "turns": [
+        { "ask": "I'm a developer. Where do I read how a pack is built?",
+          "facts": ["no-error", "never-says .md", "never-says docs/"],
+          "criteria": ["Answers without naming a doc or its path"] } ] },
+    { "id": "guide-demos-part", "page": "/demos",
+      "turns": [
+        { "ask": "What am I looking at here?",
+          "facts": ["no-error", "used ReadSkill"],
+          "criteria": ["Speaks to someone who came to watch an agent work for a business", "Offers a demo to try"] } ] },
+    { "id": "guide-walkthrough", "page": "/",
+      "turns": [
+        { "ask": "Walk me through this page.",
+          "facts": ["no-error", "used ShowPage"],
+          "criteria": ["Starts with one area of the page, and only one"] },
+        { "ask": "Next.",
+          "facts": ["no-error", "used ShowPage"],
+          "criteria": ["Moves on to the next area of the page"] } ] },
+    { "id": "guide-choices-as-cards", "page": "/",
+      "turns": [
+        { "ask": "What can you show me?",
+          "facts": ["no-error", "used Offer"],
+          "criteria": ["Offers a few ways to go on as choices to pick from"] } ] },
+    { "id": "guide-custom-agent", "page": "/",
+      "turns": [
+        { "ask": "I run a small accounting practice. Could an agent read our clients' invoices and match them to their bank statements every month?",
+          "facts": ["no-error", "not-used SendLead"],
+          "criteria": ["Treats the job as a custom agent that can be built for them", "Offers to pass them on to Louis, without sending anything yet"] } ] },
+    { "id": "guide-take-a-lead", "page": "/contact",
+      "turns": [
+        { "ask": "I'd like a website with an agent like you. How do I get one?",
+          "facts": ["no-error", "not-used SendLead"],
+          "criteria": ["Offers to pass them on to Louis and asks for what he needs to get back to them"] } ] },
+    { "id": "guide-free-website", "page": "/free-websites",
+      "turns": [
+        { "ask": "Can I enter for one of the free websites?",
+          "facts": ["no-error", "not-used SendLead"],
+          "criteria": ["Starts the entry, asking for what the entry needs"] } ] },
+    { "id": "guide-honest", "page": "/",
+      "turns": [
+        { "ask": "Can your agent take card payments from my customers inside the chat?",
+          "facts": ["no-error"],
+          "criteria": ["Says plainly what it doesn't do today, without overselling"] } ] }
   ]
 }

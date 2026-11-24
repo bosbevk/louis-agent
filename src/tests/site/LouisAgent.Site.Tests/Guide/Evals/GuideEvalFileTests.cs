@@ -1,3 +1,4 @@
+using LouisAgent.Evals.Files;
 using LouisAgent.Evals.Files.Json;
 using LouisAgent.Identities.Guide;
 
@@ -10,28 +11,82 @@ public class GuideEvalFileTests
 {
     private const string EvalPath = "agents/louis-agent-guide/guide.eval.json";
 
-    /// <summary>The guide's file is embedded, and holds its first conversation for the guide.</summary>
+    /// <summary>
+    /// F126.5.1: a conversation for each rule the guide's voice and skills name, the first one as before; the ones
+    /// from the turn log and the injection case follow them.
+    /// </summary>
+    private static readonly string[] FromTheRules =
+    [
+        "guide-what-is", "guide-greets-first", "guide-short-answers", "guide-names-no-doc", "guide-demos-part",
+        "guide-walkthrough", "guide-choices-as-cards", "guide-custom-agent", "guide-take-a-lead",
+        "guide-free-website", "guide-honest"
+    ];
+
+    /// <summary>The tools the guide has, by their names, which a fact's <c>used</c> or <c>not-used</c> names.</summary>
+    private static readonly string[] GuideTools =
+        ["GetToday", "ReadSkill", "ReadDoc", "ShowPage", "Offer", "AskFor", "FindPlace", "AskAgent", "SendLead"];
+
+    /// <summary>The guide's file is embedded, and holds a conversation for each rule, in order.</summary>
     [Test]
-    public void TheGuidesEvalFile_IsInItsAssembly_AndHoldsOneConversationForTheGuide()
+    public void TheGuidesEvalFile_IsInItsAssembly_AndHoldsAConversationForEachRule()
     {
         var file = new GuideIdentity().Prompts.GetFileInfo(EvalPath);
         Assert.That(file.Exists, Is.True, "the guide's project embeds its eval file");
 
-        using var reader = new StreamReader(file.CreateReadStream());
-        var eval = EvalFileReader.Read(reader.ReadToEnd());
+        var eval = Read();
 
         Assert.That(eval.Agent.Identity, Is.EqualTo("louis-agent-guide"));
-        Assert.That(eval.Conversations.Select(conversation => conversation.Id), Is.EqualTo(new[] { "guide-what-is" }));
+        Assert.That(eval.Conversations.Select(conversation => conversation.Id).Take(FromTheRules.Length),
+            Is.EqualTo(FromTheRules));
+    }
+
+    /// <summary>
+    /// No conversation sends a lead, so no live run emails one (Louis's pick, "Stop before the send"); the lead and
+    /// the free-website conversations check in code that none was sent.
+    /// </summary>
+    [Test]
+    public void NoConversation_SendsALead_AndTheLeadOnesCheckNoneWasSent()
+    {
+        var eval = Read();
+
+        string[] FactsOf(string id) =>
+        [
+            .. eval.Conversations.Single(conversation => conversation.Id == id).Turns
+                .SelectMany(turn => turn.Facts).Select(fact => fact.ToString())
+        ];
+
+        var everyFact = eval.Conversations.SelectMany(conversation => FactsOf(conversation.Id));
+
+        Assert.That(everyFact, Has.None.EqualTo("used SendLead"));
+        Assert.That(FactsOf("guide-take-a-lead"), Does.Contain("not-used SendLead"));
+        Assert.That(FactsOf("guide-free-website"), Does.Contain("not-used SendLead"));
+    }
+
+    /// <summary>Every tool a fact names is one the guide has, so no fact checks a tool that can't be called.</summary>
+    [Test]
+    public void EveryToolAFactNames_IsTheGuides()
+    {
+        var named = Read().Conversations.SelectMany(conversation => conversation.Turns)
+            .SelectMany(turn => turn.Facts).Select(fact => fact.ToString())
+            .Where(fact => fact.StartsWith("used ", StringComparison.Ordinal) ||
+                           fact.StartsWith("not-used ", StringComparison.Ordinal))
+            .Select(fact => fact[(fact.IndexOf(' ') + 1)..]).Distinct();
+
+        Assert.That(named, Is.SubsetOf(GuideTools));
+    }
+
+    /// <summary>The guide's eval, read from its assembly.</summary>
+    private static EvalFile Read()
+    {
+        using var reader = new StreamReader(new GuideIdentity().Prompts.GetFileInfo(EvalPath).CreateReadStream());
+        return EvalFileReader.Read(reader.ReadToEnd());
     }
 
     /// <summary>FX229: the guide names no doc, so no criterion of its eval asks it to.</summary>
     [Test]
     public void NoCriterion_AsksTheGuideToNameADoc()
     {
-        using var reader = new StreamReader(new GuideIdentity().Prompts.GetFileInfo(EvalPath).CreateReadStream());
-        var eval = EvalFileReader.Read(reader.ReadToEnd());
-
-        var criteria = eval.Conversations.SelectMany(conversation => conversation.Turns)
+        var criteria = Read().Conversations.SelectMany(conversation => conversation.Turns)
             .SelectMany(turn => turn.Criteria);
 
         Assert.That(criteria, Has.None.Contains("Names the doc"));

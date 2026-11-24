@@ -42,8 +42,16 @@ public class GuideEvalReplayTests
     /// <summary>What the site's program composes besides its catalogue: the web and its one model provider.</summary>
     private static readonly HostServices Services = new(WebAccess.Create, Providers: [AnthropicProvider.Instance]);
 
-    /// <summary>Every fact of every turn of the guide's eval is met in the replay.</summary>
+    /// <summary>
+    /// Every fact of every turn of the guide's eval is met in the replay, of each conversation its recordings hold:
+    /// guide-what-is until the baseline's first repeats are kept (F126.5.1).
+    /// </summary>
     [Test]
-    public Task TheGuidesEval_ReplayedFromItsRecordings_MeetsEveryFact() =>
-        EvalReplay.AssertFactsMetAsync(SiteCatalog.Create, Services, SiteSettings, "guide", Recordings);
+    public async Task TheGuidesEval_ReplayedFromItsRecordings_MeetsEveryFact()
+    {
+        var replayed = await EvalReplay.AssertFactsMetAsync(SiteCatalog.Create, Services, SiteSettings, "guide",
+            Recordings);
+
+        Assert.That(replayed, Is.EqualTo(new[] { "guide-what-is" }));
+    }
 }
