@@ -158,7 +158,7 @@ public class AgentEngine
     {
         SupportsTools = supportsTools;
         WorkspaceRoot = Path.GetFullPath(options.WorkspaceRoot);
-        _registry = new ToolRegistry(supportsTools);
+        _registry = new ToolRegistry(supportsTools, replay);
         var python = new PythonRunner(WorkspaceRoot);
         var powerShell = new PowerShellRunner(WorkspaceRoot);
         _skillTools = new SkillTools(skillProvider, options, WorkspaceRoot, python, powerShell);

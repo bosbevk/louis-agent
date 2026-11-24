@@ -147,8 +147,8 @@ the judge for the reworded criterion alone and adds its answer to the live run's
 again.
 
 The guide's eval is also one test, `GuideEvalReplayTests`, which replays every conversation's first repeat of a
-live run from `src/site/recordings/evals/` with no key, over a docs folder built the way the site's image builds
-`/app/docs`. When it turns red after a change to the guide, copy a new live run's first repeats there: each trial's
+live run from `src/site/recordings/evals/` with no key, over an empty docs folder, since what the tools answered
+is played back too. When it turns red after a change to the guide, copy a new live run's first repeats there: each trial's
 file from `src/site/data/recordings/trials/` whose name starts with the run's id and ends in `_1-…`, and each file
 in `src/site/data/recordings/answers/` that their lines name by their `hash`. Delete the
 old run's files, read every new file before you stage it, since the repository is public, and run the test again.

@@ -1,7 +1,8 @@
-
 using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Agent.Messages.Holes.Catalog;
+using LouisAgent.Core.Agent.Messages.Holes.Replay;
 using System.ComponentModel;
+using LouisAgent.Core.Agent.Messages.Holes.Toolsets;
 
 namespace LouisAgent.Core.Agent.Messages;
 // The message enums (src/docs/CLAUDE.md, *Messages and logging*). Each member is named for what happened, and its
@@ -12,12 +13,15 @@ namespace LouisAgent.Core.Agent.Messages;
 public enum AgentErrorMessage
 {
     [Description("Two tools are named '{Name}'; tool names must be unique across all toolsets.")]
+    [Holes(typeof(DuplicateToolNameHoles))]
     DuplicateToolName,
 
     [Description("Unknown toolset(s): {Names}. Valid names: {Valid}.")]
+    [Holes(typeof(UnknownToolsetsHoles))]
     UnknownToolsets,
 
     [Description("Toolset '{Name}' needs {Settings} to be set on this instance.")]
+    [Holes(typeof(ToolsetSettingsMissingHoles))]
     ToolsetSettingsMissing,
 
     [Description("'{Name}' is registered twice as a {Kind}: a pack, toolset, feed, role or prompt path has one home.")]
@@ -40,4 +44,10 @@ public enum AgentErrorMessage
     [Description("Tool '{Tool}' in toolset '{Toolset}' takes the engine's own tool name.")]
     [Holes(typeof(CatalogToolNameIsTheEnginesHoles))]
     CatalogToolNameIsTheEngines,
+
+    // A tool's answers replayed (FX235). A miss never runs the tool.
+    [Description(
+        "No recorded answer for the tool '{Tool}' with these arguments in trial '{Trial}'. The tool was not run.")]
+    [Holes(typeof(ToolReplayMissHoles))]
+    ToolReplayMiss,
 }

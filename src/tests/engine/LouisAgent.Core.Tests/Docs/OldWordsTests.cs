@@ -22,8 +22,9 @@ public class OldWordsTests
 
     /// <summary>
     /// The places that keep the words on purpose: Louis's own CV, which says what the Puls specialists are; the coding
-    /// agent's persona, whose name is his, with the golden file that pins its prompt; and the tests whose job is the
-    /// words: this one, the framework pages' check, and the headers' check that the old levels are refused.
+    /// agent's persona, whose name is his, with the golden file that pins its prompt; the guide's eval recordings,
+    /// which keep what its docs tools read, history rows included; and the tests whose job is the words: this one,
+    /// the framework pages' check, and the headers' check that the old levels are refused.
     /// </summary>
     private static readonly string[] Kept =
     [
@@ -33,6 +34,7 @@ public class OldWordsTests
         "src/tests/web/LouisAgent.Web.Framework.Tests/SubagentWordTests.cs",
         "src/tests/engine/LouisAgent.Core.Tests/Skills/Headers/PromptHeadersTests.cs",
         "demos/louis-agent/tests/LouisAgent.Coding.Catalog.Tests/Golden/ModelRequestSnapshot.json",
+        "src/site/recordings/evals/",
     ];
 
     /// <summary>No <c>[Description]</c> says the old words: what a tool, a message or a setting tells.</summary>

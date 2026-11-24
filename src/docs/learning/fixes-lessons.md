@@ -513,6 +513,16 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX235 · A replay that runs the world again isn't a replay
+
+The guide's free replay played back the model but ran its tools, so it read the docs as they are today, and a line
+added to the TODO made a recorded search find more and the replay stop. A recording should hold everything that
+crossed the agent's edge, not only the model's side of it, so each tool now records what it answered and a free
+replay plays that back, with the guide given an empty docs folder to prove it. The first live run made to record
+it found the lesson again one layer down: the tools' keys were indented JSON, which breaks its lines with the
+system's own newline, so a key recorded on Linux missed on Windows. A key is compact, or it isn't a key. Skill 18
+(testing and shipping).
+
 ## FX230 · A recording is only as portable as every tool it holds
 
 The guide's eval replay, recorded in the Linux container and replayed on Windows, stopped on a docs search. Two
