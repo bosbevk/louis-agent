@@ -42,18 +42,10 @@ public partial class ChatWidget : IAsyncDisposable
     private KeptGuide _kept = new();
 
     /// <summary>Whether the panel is open, kept with the guide.</summary>
-    private bool Open
-    {
-        get => _kept.Open;
-        set => _kept.Open = value;
-    }
+    private bool Open { get => _kept.Open; set => _kept.Open = value; }
 
     /// <summary>How big the panel is, kept with the guide.</summary>
-    private ChatWindowSize Size
-    {
-        get => _kept.Size;
-        set => _kept.Size = value;
-    }
+    private ChatWindowSize Size { get => _kept.Size; set => _kept.Size = value; }
 
     [Inject] private AgentApi Api { get; set; } = default!;
     [Inject] private IJSRuntime JS { get; set; } = default!;
@@ -166,7 +158,8 @@ public partial class ChatWidget : IAsyncDisposable
         Runner.Changed += OnRunnerChanged;
         Runner.ToolCalled += OnToolCalled;
         Currency.Changed += Redraw;
-        if (Door is { } door) door.Asked += OnAsked;    }
+        if (Door is { } door) door.Asked += OnAsked;
+    }
 
     /// <summary>The way in from a button anywhere on the site (F118), when the site has one.</summary>
     private GuideDoor? Door => Services.GetService<GuideDoor>();
@@ -329,7 +322,8 @@ public partial class ChatWidget : IAsyncDisposable
         Runner.Changed -= OnRunnerChanged;
         Runner.ToolCalled -= OnToolCalled;
         Currency.Changed -= Redraw;
-        if (Door is { } door) door.Asked -= OnAsked;        if (_module is not null) await _module.DisposeAsync();
+        if (Door is { } door) door.Asked -= OnAsked;
+        if (_module is not null) await _module.DisposeAsync();
     }
 
     /// <summary>
