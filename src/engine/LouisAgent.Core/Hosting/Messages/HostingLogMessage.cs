@@ -1,10 +1,11 @@
 using LouisAgent.Composition.Messages;
+using LouisAgent.Core.Hosting.Messages.Holes;
 using System.ComponentModel;
 
 namespace LouisAgent.Core.Hosting.Messages;
 // The message enums (src/docs/CLAUDE.md, *Messages and logging*). Each member is named for what happened, and its
-// [Description] is the text, with named holes filled by MessageText.Format (or by the structured logger). Members are added
-// as code is written or moved; the refactor after F4 moves the existing messages here.
+// [Description] is the text, with named holes filled by MessageText.Format (or by the structured logger). Members are
+// added as code is written or moved; the refactor after F4 moves the existing messages here.
 
 /// <summary>Log lines for the host's start-up and sessions, written to the console and the run file.</summary>
 public enum HostingLogMessage
@@ -13,16 +14,19 @@ public enum HostingLogMessage
     LlmProfileMissing,
 
     [Description("Display currency: {Display}")]
+    [Holes(typeof(DisplayCurrencyChosenHoles))]
     DisplayCurrencyChosen,
 
     [Description("LLM: {Llm}; tools={Tools}; thinking={Thinking}")]
+    [Holes(typeof(LlmChosenHoles))]
     LlmChosen,
 
     [Description("A session may also name LLM profile '{Name}': {Llm}; tools={Tools}; thinking={Thinking}")]
     SessionLlmLoaded,
 
     [Description(
-        "Usage ledger off: LOG_DIRECTORY is not set. Set it to record token usage, or USAGE_LEDGER=off to silence this.")]
+        "Usage ledger off: LOG_DIRECTORY is not set. Set it to record token usage, or USAGE_LEDGER=off to silence " +
+        "this.")]
     LedgerOff,
 
     [Description("Usage ledger: {Path}")] LedgerAt,
@@ -33,7 +37,9 @@ public enum HostingLogMessage
     SkillFileEmbedded,
 
     [Description(
-        "Toolsets {Toolsets}: {Tools} tools, a {PromptChars}-character system prompt, about {PrefixTokens} tokens of fixed prefix")]
+        "Toolsets {Toolsets}: {Tools} tools, a {PromptChars}-character system prompt, about {PrefixTokens} tokens " +
+        "of fixed prefix")]
+    [Holes(typeof(ToolsetProfileBuiltHoles))]
     ToolsetProfileBuilt,
 
     [Description("Toolsets {Toolsets}: dropped from the cache, the least recently used of {Capacity} profiles")]

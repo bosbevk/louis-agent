@@ -15,6 +15,7 @@ public enum HostingErrorMessage
     ToolHostHasNoModel,
 
     [Description("No '{Tool}' tool in the toolsets {Toolsets}.")]
+    [Holes(typeof(ToolNotInToolsetsHoles))]
     ToolNotInToolsets,
 
     [Description(
