@@ -227,10 +227,18 @@ public class OrbiVoiceTests
         Assert.That(Voice(), Does.Contain("asks several things at once"));
 
     /// <summary>
-    /// FX231: the first answer's greeting is one of its three sentences, not three more on top: a live run of the fix
-    /// greeted in one or two sentences and then answered in three, four or five in all.
+    /// FX231: the first answer's greeting is one of its three sentences, not three more on top: a live run of the
+    /// fix greeted in one or two sentences and then answered in three, four or five in all.
     /// </summary>
     [Test]
     public void TheFirstAnswersGreeting_IsOneOfItsThreeSentences() =>
         Assert.That(Voice(), Does.Contain("the greeting is one of the three").And.Contain("then two more at most"));
+
+    /// <summary>
+    /// FX232: no doc is named anywhere in an answer, by its title or its path, and asked where to read, the guide says
+    /// what the docs teach and offers to take them through it; it had said "the guide called Build a pack".
+    /// </summary>
+    [Test]
+    public void ADoc_IsNamedNowhere_ByItsTitleOrItsPath() =>
+        Assert.That(Voice(), Does.Contain("by its title or its path, anywhere in an answer"));
 }
