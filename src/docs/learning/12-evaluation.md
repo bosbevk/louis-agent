@@ -659,8 +659,9 @@ was done here and the baseline recorded the prompt as it stays. And the replay o
 search, which answered other lines on Windows than in the Linux container, from a different folder and in a
 different order (FX230). A free replay is only as free as every tool in it gives the same bytes everywhere. Writing
 this child's own records then showed the other side of that: a replay that runs the docs tools over today's docs goes
-stale as soon as a docs line matching a recorded search changes, even a row in the TODO. So the next fix records what
-each tool answered in a live run and plays it back, as the recording already does for the model (FX235).
+stale as soon as a docs line matching a recorded search changes, even a row in the TODO. So FX235 records what each
+tool answered in a live run and plays it back, as the recording already does for the model, and the guide's replay
+now runs over an empty docs folder.
 
 **F126.4's re-grade, proved against the real provider.** With a working key, one criterion was reworded in a working
 copy and the baseline re-graded: three judge calls, one a repeat, $0.00087, the other 48 marks kept. Then Replay free
