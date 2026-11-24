@@ -20,7 +20,8 @@
         "OPEN_IDENTITIES": "louis-agent-guide",
         "OPEN_SESSIONS_PER_DAY": "50",
         "SITE_DATA_DIRECTORY": "../../data",
-        "REPLAY_DIRECTORY": "../../data/recordings"
+        "REPLAY_DIRECTORY": "../../data/recordings",
+        "AGENT_PEERS": "self=http://127.0.0.1:5081"
       }
     }
   }

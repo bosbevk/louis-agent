@@ -19,11 +19,20 @@ public class TriageToolsetsTests
         return PromptHeaders.Split(path, reader.ReadToEnd()).Header!;
     }
 
-    /// <summary>The manager loads the team's tools and the toolset that asks a role; each role what its voice says.</summary>
+    /// <summary>The manager loads the team's tools and the toolset that asks; each role what its prose says.</summary>
     [TestCase("agents/triage/voice.md", "triage, agents")]
     [TestCase("agents/triage/subagents/sorter/voice.md", "triage")]
     [TestCase("agents/triage/subagents/investigator/voice.md", "triage, files, git, dotnet")]
     [TestCase("agents/triage/subagents/reviewer/voice.md", "triage, files, git")]
     public void EachVoice_DeclaresTheToolsetsItAlwaysLoads(string path, string toolsets) =>
         Assert.That(string.Join(", ", HeaderOf(path).Toolsets), Is.EqualTo(toolsets));
+
+    /// <summary>
+    /// The manager may ask its three roles and no one else, the coder never: a peer list that names this host lets it
+    /// ask, and its calls keep an eval's auto-fix at the decision (Louis's pick, "Stop at the decision").
+    /// </summary>
+    [Test]
+    public void TheManagersCalls_AreItsRoles_NeverTheCoder() =>
+        Assert.That(new TriageIdentity().Calls,
+            Is.EquivalentTo(new[] { "triage.sorter", "triage.investigator", "triage.reviewer" }));
 }

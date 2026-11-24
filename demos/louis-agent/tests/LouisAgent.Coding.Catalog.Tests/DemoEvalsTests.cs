@@ -28,15 +28,20 @@ public class DemoEvalsTests
         });
     }
 
-    /// <summary>The compose service keeps the evals' runs and recordings under the demo's git-ignored data.</summary>
+    /// <summary>
+    /// The compose service keeps the evals' runs and recordings under the demo's git-ignored data, and names itself as
+    /// a peer, so the triage manager can ask its roles on the same host (Louis's pick, "Self as the demo's peer").
+    /// </summary>
     [TestCase("SITE_DATA_DIRECTORY: /workspace/demos/louis-agent/data")]
     [TestCase("REPLAY_DIRECTORY: /workspace/demos/louis-agent/data/recordings")]
+    [TestCase("AGENT_PEERS: ${AGENT_PEERS:-self=http://localhost:8080}")]
     public void TheService_KeepsTheEvalsData(string line) =>
         Assert.That(Lines("demos/louis-agent/docker/docker-compose.yml"), Does.Contain(line));
 
     /// <summary>The run profile keeps them in the same folder, so a debug run sees what the container does.</summary>
     [TestCase("\"SITE_DATA_DIRECTORY\": \"../../data\",")]
-    [TestCase("\"REPLAY_DIRECTORY\": \"../../data/recordings\"")]
+    [TestCase("\"REPLAY_DIRECTORY\": \"../../data/recordings\",")]
+    [TestCase("\"AGENT_PEERS\": \"self=http://127.0.0.1:5081\"")]
     public void TheRunProfile_KeepsTheEvalsData(string line) =>
         Assert.That(Lines("demos/louis-agent/hosts/LouisAgent.CodingApi/Properties/launchSettings.json"),
             Does.Contain(line));
