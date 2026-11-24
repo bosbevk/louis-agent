@@ -13,23 +13,15 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 166 | 74 |
-| Fixes (`FX`) | 228 | 12 |
+| Fixes (`FX`) | 236 | 4 |
 | Cleanups (`CL`) | 47 | 24 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (110 in the TODO)
+## Open (102 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
-| FX231 | Asked to be told everything, the guide on louis-agent.dev writes about fifteen sentences, where its voice allows three short ones (the guide's eval, `guide-short-answers`, 0 of 3 in the baseline 20261124-072625-guide) | Now, next |
-| FX232 | Asked where to read how a pack is built, the guide names the packs' how-to by its title and two design decisions by number, where its voice says name no doc (`guide-names-no-doc`, 1 of 3 in the baseline) | Now, next |
-| FX233 | Once in three, the guide answered with no words at all, only a choice card (`guide-honest`, its visible reply empty, in the baseline) | Now, next |
-| FX234 | The ask before a live run estimates from the last live run's cost a repeat, whatever conversations that run held, so after the guide's eval grew from one conversation to twelve it said "About $0.012 for 3 repeats" for a run that cost $0.090 | Now, next |
-| FX236 | Asked for the whole program to start an agent, the framework Orbi names one setting under the code, not each one it needs on its own line (`framework-code-when-asked`, 1 of 3 in its baseline 20261124-104107-framework) | Now, next |
-| FX237 | Once in three, the framework Orbi answered a walkthrough with no words, only a page shown and choices (`framework-walkthrough`, its visible reply empty, in its baseline) | Now, next |
-| FX238 | The framework Orbi sometimes writes a sentence after the doc's path, and once summed a listing up in two sentences where its skill asks for one (`framework-from-the-docs` and `framework-explain-code`, 2 of 3 each, in its baseline) | Now, next |
-| FX245 | One triage criterion reads as words the manager must say: "Says nothing will be changed in the code" failed a payments repeat that raised the case to payments and said no automatic fix is allowed (`triage-payments-go-to-a-person`, 2 of 3 in the baseline 20261124-153431-triage) | Now, next |
 | F171 | The bill checker (Louis, 2026-11-21; 2026-11-22: "this feature is next"): a phone app that reads a Western Cape municipal account from a photo or a PDF, checks every line against Cape Town's, Swartland's and Overstrand's own tariffs and drafts the dispute, free to download with one subscription; the product in its own private `bill-checker` repository on the framework's packages, the framework's parts here: F171.1 a photo or PDF reaches a tool (started 2026-11-22); F171.2 the bills pack reads and checks; F171.3 the dispute letter; F171.4 the identity and evals; F171.5 the account, consent and our own subscriptions part; F171.6 the phone app; F171.7 the stores; F171.8 the monthly report | Now, F171.1 after F126; F171.2 on after F140 |
 | F43 | Accounts, tenants and durable sessions; its first child, durable sessions, after F171.1 and before F157 | Now, its first child after F171.1 |
 | FX4 | Append-only history | Now, after F43's first child |
@@ -304,12 +296,20 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (228 done)
+## Fixes (236 done)
 
 | Id | When | What |
 |---|---|---|
 | FX247 | 2026-11-24 | On a page of slides the guide's bar stands as the corner button, so a slide has the whole screen |
 | FX246 | 2026-11-24 | A long slide keeps its heading on its first page: a row of tiles or a list breaks between its items |
+| FX245 | 2026-11-24 | The triage payments criterion asks for the rule, not the words |
+| FX238 | 2026-11-24 | The framework Orbi ends its words with the doc's path, and sums a listing up in one sentence |
+| FX237 | 2026-11-24 | The framework Orbi always writes words before a choice card |
+| FX236 | 2026-11-24 | The framework Orbi names every setting under the code, one a line |
+| FX234 | 2026-11-24 | The live estimate scales with an eval's conversations |
+| FX233 | 2026-11-24 | The guide writes its words before any card |
+| FX232 | 2026-11-24 | The guide names no doc anywhere, by its title or its path |
+| FX231 | 2026-11-24 | Asked several things at once, the guide answers one part at a time, the greeting not counted |
 | FX244 | 2026-11-24 | A search can stay inside one folder, such as the repository a triage case names, and the investigator and reviewer search there |
 | FX243 | 2026-11-24 | A search hit shows a giant line only around its match, marked as cut, so a search's answer stays small and is never summarised |
 | FX242 | 2026-11-24 | The triage manager raises a person's case as well as deciding it, since a decision alone gives it to nobody |

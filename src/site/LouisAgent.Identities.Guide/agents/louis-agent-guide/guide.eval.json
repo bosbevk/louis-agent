@@ -16,7 +16,7 @@
       "turns": [
         { "ask": "Tell me everything about louis-agent: what it is, what it costs, how it works and who made it.",
           "facts": ["no-error", "never-says ;"],
-          "criteria": ["Answers in three short sentences or fewer, a question back included", "Uses no colon and no bracket"] } ] },
+          "criteria": ["After its greeting, its words are three short sentences or fewer, counting any question it asks in them; the greeting and a choice card are not part of the count", "Uses no colon and no bracket"] } ] },
     { "id": "guide-names-no-doc", "page": "/",
       "turns": [
         { "ask": "I'm a developer. Where do I read how a pack is built?",

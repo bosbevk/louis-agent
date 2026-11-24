@@ -139,7 +139,7 @@
             "under 60s"
           ],
           "criteria": [
-            "Says in one sentence what the whole listing does",
+            "Opens with one sentence that says what the whole listing does",
             "Explains only lines the listing has, naming CodingCatalog.Create, HostServices and CliHost.RunAsync"
           ]
         }

@@ -17,7 +17,7 @@ code in general.
 
 ## Steps
 
-1. Say in one sentence what the whole listing does.
+1. Say what the whole listing does in one sentence, never two.
 2. Go through the lines that matter, in order, each in a sentence: what it calls and why it is there.
 3. Name where in the framework each type lives, from the doc that says so, and end with that doc's path.
 
