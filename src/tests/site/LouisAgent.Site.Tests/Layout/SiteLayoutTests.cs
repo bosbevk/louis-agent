@@ -34,6 +34,7 @@ public class SiteLayoutTests
     /// and only its, is the active one, in the menu's row or in a group's list, so the rail can draw it pressed.
     /// </summary>
     [TestCase("/contact", "Contact")]
+    [TestCase("/work-with-us", "Work with us")]
     [TestCase("/demos", "All demos")]
     public void TheMenu_MarksThePageYouAreOn(string page, string link)
     {
@@ -88,6 +89,7 @@ public class SiteLayoutTests
     /// <summary>The menu leads to each page, from every page.</summary>
     [TestCase("/demos")]
     [TestCase("/contact")]
+    [TestCase("/work-with-us")]
     [TestCase("/")]
     [TestCase("/framework/theme")]
     public void TheMenu_LeadsToThePage(string address)
@@ -105,6 +107,7 @@ public class SiteLayoutTests
     /// group, since the framework's pages left for their own site (F164.1); a link of its own leads there instead,
     /// between Demos and Theme (F164.3, Louis's pick B of three). Home comes first (Louis, 2026-11-18, on the privacy
     /// page: "there is no clear way from here back to main layout"), since the name alone isn't seen as a way home.
+    /// Work with us stands before Contact (F177, Louis's pick of three), the page before the step it ends on.
     /// </summary>
     [Test]
     public void TheMenu_LeadsWithWhatWeSell()
@@ -115,7 +118,7 @@ public class SiteLayoutTests
 
         var items = cut.Find(".site-nav").Children
             .Select(item => (item.QuerySelector(".site-drop-label") ?? item).TextContent.Trim());
-        Assert.That(items, Is.EqualTo(new[] { "Home", "Demos", "Framework", "Theme", "Contact" }));
+        Assert.That(items, Is.EqualTo(new[] { "Home", "Demos", "Framework", "Theme", "Work with us", "Contact" }));
     }
 
     /// <summary>
@@ -147,7 +150,7 @@ public class SiteLayoutTests
 
         var shown = cut.Find(".site-nav").Children.Where(item => !item.HasAttribute("hidden"))
             .Select(item => (item.QuerySelector(".site-drop-label") ?? item).TextContent.Trim());
-        Assert.That(shown, Is.EqualTo(new[] { "Home", "Demos", "Framework", "Theme", "Contact" }));
+        Assert.That(shown, Is.EqualTo(new[] { "Home", "Demos", "Framework", "Theme", "Work with us", "Contact" }));
     }
 
     /// <summary>No page of the site answers at /what-we-build any more (FX171).</summary>
