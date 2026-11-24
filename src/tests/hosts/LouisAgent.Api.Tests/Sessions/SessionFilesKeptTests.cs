@@ -74,6 +74,8 @@ public class SessionFilesKeptTests
             Assert.That(answer.StatusCode, Is.EqualTo(HttpStatusCode.OK));
             Assert.That(kept?.MediaType, Is.EqualTo(FileMediaType.Jpeg));
             Assert.That(kept?.Bytes.Length, Is.EqualTo(Megabyte));
+            Assert.That(Session(app, id).Files.Find("ACCOUNT.JPG"), Is.SameAs(kept),
+                "whatever the case of its letters");
         });
     }
 
