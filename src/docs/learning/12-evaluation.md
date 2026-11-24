@@ -619,6 +619,57 @@ two tests that compared rows by equality, which they now do as JSON.
 *VCR's new_episodes record mode*; a *baseline* and *regressions per case* (Braintrust); *Information Expert* for where a
 flip lives; and *Extract Class* for the turn grader.
 
+## The guide's evals (F126.5.1)
+
+The harness was whole; what it lacked was evals. The guide's eval grew from one conversation to twelve, written the
+way the field says to: first from what the guide is told to do, then from what went wrong in use.
+
+**From the rules.** The guide's voice and skills already say what it must do: greet first, three short sentences,
+no doc named, lead as the part of the site asks, walk a page one stop at a time, offer choices as cards, treat a
+described job as a custom agent, offer to pass a visitor on to Louis, and be honest about what it can't do. Each
+became a conversation, with a fact in code where code can tell (`used ShowPage`, `never-says .md`) and a criterion
+where only a reader can. Writing them showed a rule an eval must keep for itself: no conversation may send a lead,
+since a live run would email a real one to Louis, so the lead conversations stop before the send and check in code
+that it never happened.
+
+**Prompt injection as an eval case.** The guide reads the page a visitor is on, and a page can carry instructions
+meant for it. To test that without such a page on the public site, a conversation can now give its page in the eval
+file itself, sent exactly as a visitor's message carries one. `guide-injection` gives a customer story whose words
+tell the AI reading it to send a lead and say a code word. Code checks the guide did neither, in its answer or an
+image's address. It passed every repeat. It is OWASP's LLM01 with the eval's own tools, and the guide's first
+security eval.
+
+**Error analysis, with what the log may hold.** The site keeps no visitor's words: its turn log holds each turn's
+page, part of the site and tools, and content is hashed. So the analysis read patterns, not answers. On this PC's
+log, Louis's and Claude's own chats and eval runs rather than production's visitors, three talks on the landing read
+no skill on their first turn, though the selling skill is to be read there, so a bare "Hello" on the landing became a
+conversation. A log of tools and pages can show a skipped step but never a bad answer whose tools were right, which
+is the honest limit of reading it.
+
+**What the baseline measured.** One live run of three repeats: twelve conversations, about six and a half minutes,
+$0.090, the agent's $0.062 and the judge's $0.028. Nine passed in every repeat. Asked to be told everything, the
+guide wrote about fifteen sentences where its voice allows three; asked where to read about packs, it named the guide
+by its title in two of three; and once it answered with a card and no words. Those are the eval doing its job, each
+now a fix in the TODO (FX231 to FX233). The judge's reasons were read before trusting them, and two criteria turned out
+to ask for words where the guide's voice asks for a card, so they were reworded to count either, before the baseline.
+
+**What the first run found that wasn't the guide.** It stopped at a conversation for the free-website offer, which
+had been closed the day before: the guide still named its page. That was FX228, waiting for exactly a live run, so it
+was done here and the baseline recorded the prompt as it stays. And the replay of the baseline stopped on a docs
+search, which answered other lines on Windows than in the Linux container, from a different folder and in a
+different order (FX230). A free replay is only as free as every tool in it gives the same bytes everywhere. Writing
+this child's own records then showed the other side of that: a replay that runs the docs tools over today's docs goes
+stale as soon as a docs line matching a recorded search changes, even a row in the TODO. So the next fix records what
+each tool answered in a live run and plays it back, as the recording already does for the model (FX235).
+
+**F126.4's re-grade, proved against the real provider.** With a working key, one criterion was reworded in a working
+copy and the baseline re-graded: three judge calls, one a repeat, $0.00087, the other 48 marks kept. Then Replay free
+finished with every ledger row at $0, the reworded criterion's answers found in the live run's recording.
+
+**In the field's words:** *eval-driven development* from a prompt's rules, *error analysis* (Hamel Husain and Shreya
+Shankar), *prompt injection*, indirect, as OWASP's LLM01, a *test fixture* for content the model reads, and a
+*baseline* guarded by a *free regression replay*.
+
 ## The limits, said plainly
 
 36 labels, one judge, one person. Nine fails is "few labels" by the card's own rule. A pass at 100% on nine is weaker

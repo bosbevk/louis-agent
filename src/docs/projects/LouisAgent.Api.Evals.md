@@ -179,7 +179,9 @@ serves the judge's typed call, and `ReplayRunTests` holds a live run recording a
 with no model called, or stopping when its recording is out of date.
 
 `LouisAgent.Api.Evals.Testing` holds `EvalReplay`, which a site's tests use to replay an eval from recordings kept
-in git, on the site's own API in memory, facts only, with no key. The guide's is
+in git, on the site's own API in memory, facts only, with no key. It replays each conversation its recordings hold
+and answers their ids, so a test says which it expects and an eval that grew past its recordings can't pass by
+replaying nothing. The guide's is
 `GuideEvalReplayTests` in `LouisAgent.Site.Tests`.
 
 ## Limits and plans

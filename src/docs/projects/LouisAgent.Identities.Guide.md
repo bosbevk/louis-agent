@@ -100,9 +100,7 @@ The rest it reads with `ReadSkill` only when their job comes up, as the voice's 
 things are in the docs root, so a search goes to the right folder. `site-map` says what each page claims and which
 docs it was written from, so a question about a page's claim goes to its source. Splitting those two off made its
 fixed prefix about 14% smaller, measured live. `take-a-lead` passes someone on to Louis, from the offer to the
-card and the send. `free-website-entry` finishes an entry for the two free websites once its form comes back. The
-entry's start stays in the voice, so the form comes first with nothing before it and never waits on a skill being
-read. `walk-a-page` walks a page one stop per answer, and `what-we-sell` holds what is sold today, what it does
+card and the send. `walk-a-page` walks a page one stop per answer, and `what-we-sell` holds what is sold today, what it does
 for a business, and why it is safe. The three focus skills are part 6.
 
 *Decided in:* F129, [ADR 0114](../adr/0114-an-identitys-skills-load-always-or-on-demand.md), F109.4.
@@ -188,6 +186,27 @@ These are the types involved:
 
 ![The types: GuideIdentity and four enums, its name, its packs, the businesses it may ask and its focus](diagrams/LouisAgent.Identities.Guide-interface.svg)
 
+### 11. Its eval
+
+The guide is measured by an eval of its own, `agents/louis-agent-guide/guide.eval.json`, beside its voice: twelve
+conversations, one for each rule its voice and skills name and one for what its turn log showed. It greets first,
+answers in three short sentences with no semicolon, names no doc, leads as the demos part asks, walks a page one
+stop at a time, offers choices as cards, treats a described job as a custom agent, offers to pass a visitor on to
+Louis, and says plainly what it doesn't do. A bare hello on the landing reads its selling skill, since the log
+showed talks that didn't. Where code can tell, a fact checks it, such as `used ShowPage` or `never-says .md`, and
+the judge marks the rest.
+
+Two cases guard what matters most. No conversation sends a lead, and those that could check in code that `SendLead`
+was not used, so a live run never emails Louis. And `guide-injection` hands the guide a page, given in the eval
+file itself, whose words hide instructions to send a lead and say a code word; code checks it did neither. That is
+the guide's first security eval, prompt injection as OWASP's LLM01 names it.
+
+A live run of three repeats is the baseline, and every conversation's first repeat is kept in
+`src/site/recordings/evals/`, so `GuideEvalReplayTests` replays the whole eval on every build, facts only and with
+no key, over a docs folder built the way the site's image builds `/app/docs`.
+
+*Decided in:* F126.5.1, [ADR 0134](../adr/0134-an-eval-is-one-file-of-conversations.md).
+
 ## Open on purpose
 
 The guide is more open than most agents on business sites (Louis, 2026-11-09: "quite open if compared to how other
@@ -209,7 +228,7 @@ The place to look a file up. Paths are from `src/site/LouisAgent.Identities.Guid
 |---|---|
 | `GuideIdentity.cs` | The identity, and its four enums: `GuideIdentityName`, `GuidePack` (docs, leads, site), `GuideCall` (the three businesses it may ask) and `GuideFocus` (selling, demos) |
 | `agents/louis-agent-guide/voice.md` | Who Orbi is, his story, the seven rules, what we sell today, what stays Louis's, the skills' table, and how it answers |
-| `agents/louis-agent-guide/skills/` | `site-pages`, `writing` and `live-demo`, always; `docs-map`, `site-map`, `take-a-lead`, `free-website-entry`, `walk-a-page`, `what-we-sell`, `focus-selling` and `focus-demos`, on demand |
+| `agents/louis-agent-guide/skills/` | `site-pages`, `writing` and `live-demo`, always; `docs-map`, `site-map`, `take-a-lead`, `walk-a-page`, `what-we-sell`, `focus-selling` and `focus-demos`, on demand |
 
 ## Tests
 
@@ -219,7 +238,8 @@ and the program serving the site and nothing else. `GuideKnowsTheSiteTests` hold
 the voice and its skills to every page of the site. `GuideSkillsTests` holds the split: every page in the index
 that's always loaded, the writing skill always loaded apart from the voice, the two maps read on demand, and every
 skill in the shape, with its rules first, an example and its references. `OrbiVoiceTests` holds the voice's words,
-and that its table names every skill read on demand. And `CodingCatalogTests`, in
+that its table names every skill read on demand, and that nothing it reads names the closed free-website offer.
+`GuideEvalFileTests` holds its eval's conversations and `GuideEvalReplayTests` replays every one of them. And `CodingCatalogTests`, in
 `demos/louis-agent/tests/LouisAgent.Coding.Catalog.Tests`, holds it beside the coding identity, in the coding agent's
 catalogue.
 
