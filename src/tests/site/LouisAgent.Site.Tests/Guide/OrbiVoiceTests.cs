@@ -228,12 +228,14 @@ public class OrbiVoiceTests
         Assert.That(Voice(), Does.Contain("asks several things at once"));
 
     /// <summary>
-    /// FX231: the first answer's greeting is one of its three sentences, not three more on top: a live run of the
-    /// fix greeted in one or two sentences and then answered in three, four or five in all.
+    /// FX231: the first answer's greeting doesn't count toward the three short sentences; the three come after it
+    /// (Louis, of a judge that counted it: "greeting does not count as a short sentence, so that is correct judge is
+    /// not").
     /// </summary>
     [Test]
-    public void TheFirstAnswersGreeting_IsOneOfItsThreeSentences() =>
-        Assert.That(Voice(), Does.Contain("the greeting is one of the three").And.Contain("then two more at most"));
+    public void TheFirstAnswersGreeting_DoesNotCount_TheThreeComeAfterIt() =>
+        Assert.That(Voice(),
+            Does.Contain("The greeting doesn't count").And.Not.Contain("the greeting is one of the three"));
 
     /// <summary>
     /// FX232: no doc is named anywhere in an answer, by its title or its path, and asked where to read, the guide says
