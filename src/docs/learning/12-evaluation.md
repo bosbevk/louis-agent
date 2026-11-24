@@ -706,15 +706,15 @@ Each case is briefed as the feed would brief it, on the sample order service, wi
 no case can reach the coder: the manager's calls name only its three roles, so an auto-fix stops at the decision.
 
 **Five live runs, five findings.** The first ended 0 of 6 for three cents: an eval opens a session by identity alone,
-and the team's voices named their toolsets only in prose, so the manager had none (FX239). The next stopped before it
+and the team's voices named their toolsets only in prose, so the manager had none (FX240). The next stopped before it
 began, the agents toolset needing a peer. Then two real faults in the manager's prompt, each found in one repeat in
-three: it didn't decide again when a case came back (FX240), and it decided "person" without raising the case
-(FX241). Each fix was a sentence, and each said why.
+three: it didn't decide again when a case came back (FX241), and it decided "person" without raising the case
+(FX242). Each fix was a sentence, and each said why.
 
 **Then the cost.** Those runs cost $1.84 each, $0.10 a chat, against a fifth of a cent for the guide. The ledger's
 split by purpose showed $0.84 of it was summaries, and every one was the files pack's search returning megabyte-long
-lines from the repository's one-line files. Showing a window around the match (FX242), and letting the investigator
-search only the repository it was given (FX243), brought the next run to $0.12, $0.0067 a chat, sixteen times less,
+lines from the repository's one-line files. Showing a window around the match (FX243), and letting the investigator
+search only the repository it was given (FX244), brought the next run to $0.12, $0.0067 a chat, sixteen times less,
 and it passed better too: 5 of 6 in every repeat. Cost per chat is the number to watch: it made a $1.84 run look
 reasonable until it sat beside the guide's.
 

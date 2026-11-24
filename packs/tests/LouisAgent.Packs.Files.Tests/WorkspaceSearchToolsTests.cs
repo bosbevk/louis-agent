@@ -4,7 +4,7 @@ namespace LouisAgent.Packs.Files.Tests;
 
 /// <summary>
 /// The files toolset's search across the tree (CL15): text in files, and files by name. A hit shows where the text is,
-/// and a giant line shows only the part around the match, marked as cut (FX242).
+/// and a giant line shows only the part around the match, marked as cut (FX243).
 /// </summary>
 public class WorkspaceSearchToolsTests
 {
@@ -144,7 +144,7 @@ public class WorkspaceSearchToolsTests
     }
 
     /// <summary>
-    /// FX242: a line longer than a hit shows, such as a recording's one-line JSON, comes back as the part around the
+    /// FX243: a line longer than a hit shows, such as a recording's one-line JSON, comes back as the part around the
     /// match, marked as cut with its full length, so one hit can't flood the answer; a normal line comes back whole.
     /// </summary>
     [Test]
@@ -178,7 +178,7 @@ public class WorkspaceSearchToolsTests
     }
 
     /// <summary>
-    /// FX243: a search can stay inside one folder, such as the department's repository a case names, so it finds only
+    /// FX244: a search can stay inside one folder, such as the department's repository a case names, so it finds only
     /// what's there; a folder outside the workspace is refused.
     /// </summary>
     [Test]

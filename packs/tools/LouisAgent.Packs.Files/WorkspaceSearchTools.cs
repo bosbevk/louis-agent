@@ -38,7 +38,7 @@ public sealed class WorkspaceSearchTools
     }
 
     /// <summary>
-    /// Every line under a folder of the workspace holding the text, case ignored, up to the most asked for (FX243: a
+    /// Every line under a folder of the workspace holding the text, case ignored, up to the most asked for (FX244: a
     /// folder, so an agent searches the repository it was given and not the whole tree).
     /// </summary>
     [Description(

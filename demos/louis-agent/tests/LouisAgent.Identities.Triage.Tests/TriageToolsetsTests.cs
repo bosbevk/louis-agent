@@ -3,7 +3,7 @@ using LouisAgent.Core.Skills.Headers;
 namespace LouisAgent.Identities.Triage.Tests;
 
 /// <summary>
-/// FX239: each voice of the triage team declares the toolsets it always loads in its header (ADR 0025), so a session
+/// FX240: each voice of the triage team declares the toolsets it always loads in its header (ADR 0025), so a session
 /// opened as the manager, or as one of its roles, has its tools whoever opens it. Before, an eval's session opened as
 /// the manager had only the instance's default, and the manager could neither ask a role nor end a case (Louis's pick,
 /// "Each voice declares its toolsets").
@@ -37,7 +37,7 @@ public class TriageToolsetsTests
             Is.EquivalentTo(new[] { "triage.sorter", "triage.investigator", "triage.reviewer" }));
 
     /// <summary>
-    /// FX243: the roles that read the department's repository search inside it, passing it as the search's folder,
+    /// FX244: the roles that read the department's repository search inside it, passing it as the search's folder,
     /// not the whole workspace, so their results are the service's own lines.
     /// </summary>
     [TestCase("agents/triage/subagents/investigator/voice.md")]

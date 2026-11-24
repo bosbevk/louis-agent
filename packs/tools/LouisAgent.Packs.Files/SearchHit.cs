@@ -12,7 +12,7 @@ namespace LouisAgent.Packs.Files;
 /// </summary>
 /// <remarks>
 /// Ask the type (ADR 0123): what a hit shows is decided here, once, and tested on its own, rather than in the search's
-/// loop. A hit says where text is; the whole file is ReadWorkspaceFile's to show (FX242: whole giant lines made a
+/// loop. A hit says where text is; the whole file is ReadWorkspaceFile's to show (FX243: whole giant lines made a
 /// search's answer megabytes long, which a second model then had to summarise).
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0123-ask-the-type.md">ADR 0123: ask the type</seealso>

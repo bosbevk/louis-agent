@@ -40,7 +40,7 @@ public enum WorkspaceToolMessage
     [Description("No matches found.")]
     NoMatches,
 
-    // A line too long for a hit, such as a recording's one-line JSON, shown around the match (FX242).
+    // A line too long for a hit, such as a recording's one-line JSON, shown around the match (FX243).
     [Description("{Shown} [the line is {Length} characters, cut here; read the file for all of it]")]
     [Holes(typeof(HitLineCutHoles))]
     HitLineCut,
