@@ -203,7 +203,8 @@ the guide's first security eval, prompt injection as OWASP's LLM01 names it.
 
 A live run of three repeats is the baseline, and every conversation's first repeat is kept in
 `src/site/recordings/evals/`, so `GuideEvalReplayTests` replays the whole eval on every build, facts only and with
-no key, over a docs folder built the way the site's image builds `/app/docs`.
+no key, over an empty docs folder: the docs tools' answers are played back from the recording, so a doc edited
+since can't make it stale.
 
 *Decided in:* F126.5.1, [ADR 0134](../adr/0134-an-eval-is-one-file-of-conversations.md).
 

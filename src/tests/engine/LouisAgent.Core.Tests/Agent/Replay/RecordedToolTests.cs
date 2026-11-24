@@ -101,6 +101,22 @@ public class RecordedToolTests
         Assert.That(_runs, Is.EqualTo(1));
     }
 
+    /// <summary>
+    /// A call is keyed by compact JSON, with no line break in it, so a recording made on Linux answers on Windows:
+    /// indented JSON breaks its lines with the system's own newline, and a key with arguments then missed.
+    /// </summary>
+    [Test]
+    public async Task ACallsKey_HoldsNoLineBreak_SoItAnswersOnEverySystem()
+    {
+        using (Flow(WebReplayMode.Record, model: false))
+            await Recorded(Search("3 lines")).InvokeAsync(Query("payment"));
+
+        string index = File.ReadAllText(_folder.Trials.Single());
+        string key = System.Text.Json.Nodes.JsonNode.Parse(index)!["key"]!.GetValue<string>();
+        // The arguments sit in the key as a JSON string, so a line break in them reads there as an escape.
+        Assert.That(key, Does.Not.Contain(@"\n").And.Not.Contain(@"\r"), key);
+    }
+
     /// <summary>A tool that failed on the live run fails again on the replay, with the same message, unrun.</summary>
     [Test]
     public async Task AFailure_IsPlayedBackWithItsMessage()

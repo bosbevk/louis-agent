@@ -10,8 +10,9 @@ namespace LouisAgent.Site.Tests.Guide.Evals;
 
 /// <summary>
 /// The guide's eval, replayed from the recordings kept in git: every fact of every turn is met, with no key and no
-/// model. A change to the guide's prompt, its tools or a doc it reads asks the recording something it doesn't hold,
-/// and this turns red until a live run records again.
+/// model. A change to the guide's prompt or its tools asks the recording something it doesn't hold, and this turns red
+/// until a live run records again. A change to what a tool reads doesn't: the tools' answers are played back too
+/// (FX235).
 /// </summary>
 public class GuideEvalReplayTests
 {
@@ -19,11 +20,16 @@ public class GuideEvalReplayTests
     private static readonly string Recordings = Path.Combine(TestPaths.RepoRoot, "src", "site", "recordings", "evals");
 
     /// <summary>
-    /// The settings the site's container runs the guide with (its compose file and its tracked model settings), with
-    /// the docs where the repository keeps them and a key that is never used, since nothing calls a model.
+    /// A docs folder with nothing in it: the replay plays back what the docs tools answered on the live run, so the
+    /// guide must never need a doc here (FX235: a docs edit once turned this red).
     /// </summary>
-    private static readonly Lazy<string> ImageDocs = new(MakeImageDocs);
+    private static readonly Lazy<string> NoDocs = new(() =>
+        Directory.CreateTempSubdirectory("guide-no-docs-").FullName);
 
+    /// <summary>
+    /// The settings the site's container runs the guide with (its compose file and its tracked model settings), with
+    /// an empty docs folder and a key that is never used, since nothing calls a model.
+    /// </summary>
     private static readonly IReadOnlyDictionary<string, string> SiteSettings = new Dictionary<string, string>
     {
         ["LLM_PROVIDER"] = "anthropic",
@@ -38,7 +44,7 @@ public class GuideEvalReplayTests
         ["OPEN_IDENTITIES"] = "louis-agent-guide,seemeeu-guesthouse,wheatfield-kitchen,koringland-attorneys",
         ["OPEN_SESSIONS_PER_DAY"] = "50",
         ["AGENT_PEERS"] = "self=http://localhost:8080",
-        ["DOCS_ROOT"] = ImageDocs.Value,
+        ["DOCS_ROOT"] = NoDocs.Value,
         ["PRICES_FILE"] = Path.Combine(TestPaths.RepoRoot, "src", "site", "config", "prices.json"),
         ["RATES_FILE"] = Path.Combine(TestPaths.RepoRoot, "src", "site", "config", "rates.json")
     };
@@ -48,11 +54,11 @@ public class GuideEvalReplayTests
 
     /// <summary>
     /// Every fact of every turn of the guide's eval is met in the replay, and every conversation of the eval is
-    /// replayed: the baseline's first repeat of each is kept, so a conversation with no recording fails here
-    /// (F126.5.1).
+    /// replayed, over no docs at all: the baseline's first repeat of each is kept, so a conversation with no recording
+    /// fails here (F126.5.1), and so does one whose tools' answers weren't recorded (FX235).
     /// </summary>
     [Test]
-    public async Task TheGuidesEval_ReplayedFromItsRecordings_MeetsEveryFact_InEveryConversation()
+    public async Task TheGuidesEval_ReplayedFromItsRecordings_MeetsEveryFact_InEveryConversation_OverNoDocs()
     {
         var replayed = await EvalReplay.AssertFactsMetAsync(SiteCatalog.Create, Services, SiteSettings, "guide",
             Recordings);
@@ -61,37 +67,5 @@ public class GuideEvalReplayTests
             .GetFileInfo("agents/louis-agent-guide/guide.eval.json").CreateReadStream());
         var every = EvalFileReader.Read(file.ReadToEnd()).Conversations.Select(conversation => conversation.Id);
         Assert.That(replayed, Is.EqualTo(every));
-    }
-
-    /// <summary>
-    /// The docs as the site's image holds them, at <c>/app/docs</c>: the root's README, ROADMAP and TODO, the
-    /// framework's docs without the films, the demo's docs and the packs' docs (<c>src/site/docker/Dockerfile</c>). The
-    /// guide's search reads whatever folder it is given, so the replay gives it the folder the recording was made over
-    /// (F126.5.1: over the whole repository a search found other lines, and the replay stopped). Made once, in a temp
-    /// folder.
-    /// </summary>
-    private static string MakeImageDocs()
-    {
-        string root = TestPaths.RepoRoot;
-        string docs = Directory.CreateTempSubdirectory("guide-image-docs-").FullName;
-        foreach (string file in new[] { "README.md", "ROADMAP.md", "TODO.md" })
-            File.Copy(Path.Combine(root, file), Path.Combine(docs, file));
-        CopyFolder(Path.Combine(root, "src", "docs"), Path.Combine(docs, "src", "docs"));
-        CopyFolder(Path.Combine(root, "demos", "louis-agent", "docs"),
-            Path.Combine(docs, "demos", "louis-agent", "docs"));
-        CopyFolder(Path.Combine(root, "packs", "docs"), Path.Combine(docs, "packs", "docs"));
-        Directory.Delete(Path.Combine(docs, "src", "docs", "films"), recursive: true);
-        return docs;
-    }
-
-    /// <summary>A folder copied whole, as the image's COPY does.</summary>
-    private static void CopyFolder(string from, string to)
-    {
-        foreach (string file in Directory.EnumerateFiles(from, "*", SearchOption.AllDirectories))
-        {
-            string target = Path.Combine(to, Path.GetRelativePath(from, file));
-            Directory.CreateDirectory(Path.GetDirectoryName(target)!);
-            File.Copy(file, target);
-        }
     }
 }

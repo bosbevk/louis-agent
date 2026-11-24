@@ -7,6 +7,10 @@ using Microsoft.Extensions.AI;
 using LouisAgent.Core.Logging;
 using Microsoft.Extensions.Logging;
 using LouisAgent.Core.Agent.Messages;
+using LouisAgent.Core.Agent.Messages.Holes.Discovery;
+using LouisAgent.Core.Agent.Messages.Holes.Toolsets;
+using LouisAgent.Core.Agent.Replay;
+using LouisAgent.Core.Sessions.Replay.Store;
 
 namespace LouisAgent.Core.Agent;
 
@@ -15,9 +19,11 @@ namespace LouisAgent.Core.Agent;
 /// same bytes from one run to the next (F4: the prompt cache is keyed by the exact prefix, and reflection's method
 /// order isn't guaranteed). A tool added later (an agent-built one) still changes the list, as any change must. Tool
 /// names are unique across all toolsets: a second tool with a name already in the list throws. When the model takes no
-/// tools (<paramref name="supportsTools"/> false), it won't register tools discovered elsewhere either.
+/// tools (<paramref name="supportsTools"/> false), it won't register tools discovered elsewhere either. When the engine
+/// keeps recordings (<paramref name="replay"/>), every tool is recorded around as it comes in (FX235), so a free replay
+/// plays back what each tool answered.
 /// </summary>
-internal sealed class ToolRegistry(bool supportsTools = true)
+internal sealed class ToolRegistry(bool supportsTools = true, ReplayStore? replay = null)
 {
     private static readonly ILogger Log = AgentLogging.For<ToolRegistry>();
 
@@ -33,17 +39,20 @@ internal sealed class ToolRegistry(bool supportsTools = true)
     /// <summary>How many tools there are.</summary>
     public int Count => Live.Count;
 
-    /// <summary>Adds a tool at its place in name order; a name already in the list throws.</summary>
+    /// <summary>
+    /// Adds a tool at its place in name order, recorded around when the engine keeps recordings; a name already in the
+    /// list throws.
+    /// </summary>
     public void Add(AITool tool)
     {
         int at = Live.BinarySearch(tool, ByName);
         if (at >= 0)
-            throw new InvalidOperationException(MessageText.Format(AgentErrorMessage.DuplicateToolName,
-                new
-                {
-                    tool.Name
-                }));
-        Live.Insert(~at, tool);
+        {
+            var twice = new DuplicateToolNameHoles(tool.Name);
+            throw new InvalidOperationException(MessageText.Format(AgentErrorMessage.DuplicateToolName, twice));
+        }
+
+        Live.Insert(~at, RecordedTool.Around(tool, replay));
     }
 
     /// <summary>
@@ -57,8 +66,12 @@ internal sealed class ToolRegistry(bool supportsTools = true)
             Add(AgentCatalog.FunctionOf(method, _ => target));
     }
 
-    /// <summary>Takes a tool out of the list; false when it wasn't there.</summary>
-    public bool Remove(AITool tool) => Live.Remove(tool);
+    /// <summary>
+    /// Takes a tool out of the list, the one given or the recorded tool around it; false when it wasn't there.
+    /// </summary>
+    public bool Remove(AITool tool) =>
+        Live.RemoveAll(live => ReferenceEquals(live, tool) ||
+                               live is RecordedTool recorded && recorded.Wraps(tool)) > 0;
 
     /// <summary>
     /// Keeps the one tool named and drops every other, the clock and <c>ExecuteSkill</c> included (F30: a lookup agent
@@ -77,38 +90,27 @@ internal sealed class ToolRegistry(bool supportsTools = true)
         Live.Any(t => t.Name.Equals(name, comparison));
 
     /// <summary>
-    /// Register a tool discovered from an external source (e.g., Rider MCP).
-    /// Currently logs the discovery; full invocation requires MCP protocol implementation.
-    /// Returns true if not already registered, false if duplicate or if the model takes no tools.
+    /// Notes a tool found outside the engine, such as one of Rider's. It only logs it for now, since running one needs
+    /// a whole MCP client; false when its name is taken or the model takes no tools.
     /// </summary>
     public bool RegisterDiscovered(string name, string description)
     {
         if (!supportsTools)
         {
-            Log.Log(LogLevel.Warning, AgentLogMessage.McpCannotRegister, new
-            {
-                Name = name
-            }, tag: "MCP");
+            var refused = new McpCannotRegisterHoles(name);
+            Log.Log(LogLevel.Warning, AgentLogMessage.McpCannotRegister, refused, tag: "MCP");
             return false;
         }
 
         if (Contains(name))
         {
-            Log.Log(LogLevel.Information, AgentLogMessage.McpToolAlreadyRegistered, new
-            {
-                Name = name
-            }, tag: "MCP");
+            var taken = new McpToolAlreadyRegisteredHoles(name);
+            Log.Log(LogLevel.Information, AgentLogMessage.McpToolAlreadyRegistered, taken, tag: "MCP");
             return false;
         }
 
-        // Log discovered tool for informational purposes
-        // Full MCP tool invocation would require a complete MCP protocol client
-        Log.Log(LogLevel.Information, AgentLogMessage.McpToolDiscovered, new
-        {
-            Name = name,
-            Description = description
-        },
-            tag: "MCP");
+        var found = new McpToolDiscoveredHoles(name, description);
+        Log.Log(LogLevel.Information, AgentLogMessage.McpToolDiscovered, found, tag: "MCP");
         return true;
     }
 }

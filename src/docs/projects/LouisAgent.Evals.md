@@ -249,15 +249,16 @@ reads its answers from it, so nothing calls a model and a replayed answer is pri
 back from the trial too, and the page route is never asked. The result is a run
 like any other, of the kind replay, with `ReplayOf` naming the live run, in a file of its own.
 
-A recording answers only the request it was made from. When a prompt, a doc the agent reads or a criterion's words
-have changed, it holds no answer, and the replay stops as could not finish: the recording is out of date and a live
-run is needed. The agent's miss ends its turn in the stream's `replay_miss_error`, which the player turns into a
+What the agent's tools answered is played back too, so a replay never reads the world again: a doc that changed
+since the live run, or a file that has gone, hands the model what it got then. A recording answers only the request
+it was made from. When a prompt, a tool or a criterion's words have changed, it holds no answer, and the replay
+stops as could not finish: the recording is out of date and a live run is needed. The agent's miss ends its turn in the stream's `replay_miss_error`, which the player turns into a
 `RecordingOutOfDateException`, the one place a harness failure is told apart from the agent's own error; the judge's
 miss comes as a `JudgeFailedException` over the engine's miss, and a trial with no kept page is out of date the
 same way, `PageClient` throwing the same exception. It is Fowler's self-initializing fake, which never
 tries to know when its recording went stale; the miss is how we find out.
 
-*Decided in:* F126.3.1, F126.3.3, [ADR 0134](../adr/0134-an-eval-is-one-file-of-conversations.md),
+*Decided in:* F126.3.1, F126.3.3, FX235, [ADR 0134](../adr/0134-an-eval-is-one-file-of-conversations.md),
 [ADR 0104](../adr/0104-a-message-may-carry-the-page.md).
 
 ### 10. The same answer keeps the same mark, and a re-grade

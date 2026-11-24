@@ -28,11 +28,21 @@ namespace LouisAgent.Core.Agent.Replay;
 public sealed class RecordedTool(AIFunction inner, ReplayStore store) : DelegatingAIFunction(inner)
 {
     /// <summary>
+    /// Microsoft's options, written compact: indented JSON breaks its lines with the system's own newline, so a key
+    /// recorded on Linux would miss on Windows.
+    /// </summary>
+    private static readonly JsonSerializerOptions Compact =
+        new(AIJsonUtilities.DefaultOptions) { WriteIndented = false };
+
+    /// <summary>
     /// The tool, recorded around when the engine keeps recordings. A tool that is only declared, such as one Rider
     /// runs, isn't ours to run, so it stays as it is.
     /// </summary>
     public static AITool Around(AITool tool, ReplayStore? store) =>
         store is not null && tool is AIFunction function ? new RecordedTool(function, store) : tool;
+
+    /// <summary>Whether this records around that tool, so the registry can take it out by the tool it added.</summary>
+    public bool Wraps(AITool tool) => ReferenceEquals(InnerFunction, tool);
 
     /// <summary>Records, plays back or just runs the call, by what the session's trial is doing.</summary>
     protected override async ValueTask<object?> InvokeCoreAsync(AIFunctionArguments arguments,
@@ -49,7 +59,7 @@ public sealed class RecordedTool(AIFunction inner, ReplayStore store) : Delegati
     private ReplayAsk AskOf(AIFunctionArguments arguments)
     {
         var written = new Dictionary<string, object?>(arguments);
-        var key = new ToolKey(Name, JsonSerializer.Serialize(written, AIJsonUtilities.DefaultOptions));
+        var key = new ToolKey(Name, JsonSerializer.Serialize(written, Compact));
         return ReplayAsk.Of(ReplayKind.Tool, key);
     }
 
