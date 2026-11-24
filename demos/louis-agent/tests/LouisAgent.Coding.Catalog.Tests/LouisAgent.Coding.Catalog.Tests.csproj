@@ -20,6 +20,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\hosts\LouisAgent.Coding.Catalog\LouisAgent.Coding.Catalog.csproj" />
+    <!-- The triage team's eval read as an eval, and replayed from its recordings (F126.5.3). -->
+    <ProjectReference Include="..\..\..\..\src\evals\LouisAgent.Evals\LouisAgent.Evals.csproj" />
+    <ProjectReference Include="..\..\..\..\src\tests\hosts\LouisAgent.Api.Evals.Testing\LouisAgent.Api.Evals.Testing.csproj" />
     <ProjectReference Include="..\..\..\..\src\tests\shared\LouisAgent.Testing\LouisAgent.Testing.csproj" />
   </ItemGroup>
 
