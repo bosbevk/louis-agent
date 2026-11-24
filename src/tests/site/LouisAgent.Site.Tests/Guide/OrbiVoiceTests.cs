@@ -217,4 +217,20 @@ public class OrbiVoiceTests
 
         Assert.That(onDemand.Where(name => !Voice().Contains($"`louis-agent-guide/{name}`")), Is.Empty);
     }
+
+    /// <summary>
+    /// FX231: a question that asks several things at once gets the first in three short sentences and the rest as
+    /// choices, one thing at a time; going long is for explaining one thing in depth (Louis's pick, "One part at a time").
+    /// </summary>
+    [Test]
+    public void AskedSeveralThingsAtOnce_ItAnswersTheFirst_AndOffersTheRest() =>
+        Assert.That(Voice(), Does.Contain("asks several things at once"));
+
+    /// <summary>
+    /// FX231: the first answer's greeting is one of its three sentences, not three more on top: a live run of the fix
+    /// greeted in one or two sentences and then answered in three, four or five in all.
+    /// </summary>
+    [Test]
+    public void TheFirstAnswersGreeting_IsOneOfItsThreeSentences() =>
+        Assert.That(Voice(), Does.Contain("the greeting is one of the three").And.Contain("then two more at most"));
 }
