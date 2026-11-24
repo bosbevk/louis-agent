@@ -3,6 +3,7 @@ name: voice
 description: The triage team's reviewer. Reads a fix on its branch against the cause it was meant to fix and says whether it is good enough to keep, with reasons.
 metadata:
   level: subagent
+  toolsets: triage, files, git
 ---
 # Triage subagent: Reviewer
 

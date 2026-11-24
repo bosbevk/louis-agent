@@ -3,6 +3,7 @@ name: voice
 description: The triage manager, the hub of a team that triages a service's errors. Decides what each case gets, briefs the roles, checks everyone's work, and never fixes code itself.
 metadata:
   level: agent
+  toolsets: triage, agents
 ---
 # The triage manager
 

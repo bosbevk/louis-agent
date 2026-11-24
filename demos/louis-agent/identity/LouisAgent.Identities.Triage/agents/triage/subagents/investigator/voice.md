@@ -3,6 +3,7 @@ name: voice
 description: The triage team's investigator. Digs into one error in the department's repository and reports where the cause is, what it is, whose area it is and how sure it is.
 metadata:
   level: subagent
+  toolsets: triage, files, git, dotnet
 ---
 # Triage subagent: Investigator
 
