@@ -79,4 +79,20 @@ public class FrameworkSkillsTests
                 "every on-demand skill in the table");
         });
     }
+
+    /// <summary>
+    /// F126.5.3: the pages Orbi opens tell the evals as they are built, so its map of them does too, never as being
+    /// rebuilt or redesigned: one file of conversations each, the guide's, Orbi's own and the triage team's.
+    /// </summary>
+    [Test]
+    public void TheSitePages_TellTheEvalsAsTheyAre()
+    {
+        string text = Skill("site-pages");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(text, Does.Not.Contain("rebuilt").And.Not.Contain("redesign"));
+            Assert.That(text, Does.Contain("one file of conversations").And.Contain("one page per run"));
+        });
+    }
 }
