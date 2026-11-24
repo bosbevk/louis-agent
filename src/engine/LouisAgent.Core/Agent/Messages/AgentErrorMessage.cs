@@ -1,6 +1,6 @@
-
 using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Agent.Messages.Holes.Catalog;
+using LouisAgent.Core.Agent.Messages.Holes.Replay;
 using System.ComponentModel;
 
 namespace LouisAgent.Core.Agent.Messages;
@@ -40,4 +40,10 @@ public enum AgentErrorMessage
     [Description("Tool '{Tool}' in toolset '{Toolset}' takes the engine's own tool name.")]
     [Holes(typeof(CatalogToolNameIsTheEnginesHoles))]
     CatalogToolNameIsTheEngines,
+
+    // A tool's answers replayed (FX235). A miss never runs the tool.
+    [Description(
+        "No recorded answer for the tool '{Tool}' with these arguments in trial '{Trial}'. The tool was not run.")]
+    [Holes(typeof(ToolReplayMissHoles))]
+    ToolReplayMiss,
 }
