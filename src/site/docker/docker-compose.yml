@@ -73,8 +73,13 @@ services:
       # the same cap as the live sites (F164.3, Louis's pick A of three).
       OPEN_IDENTITIES: louis-agent-framework
       OPEN_SESSIONS_PER_DAY: "20"
+      # The framework Orbi's evals (F126.5.2): their runs in the data folder, and the recordings a live run makes, so
+      # it can be replayed for free. Nothing is recorded unless a session asks to; a visitor's session never does.
+      SITE_DATA_DIRECTORY: /data
+      REPLAY_DIRECTORY: /data/recordings
     # Localhost only: the review copy. AGENT_API_KEY in .env.secrets is required (FX18), or the host refuses to start.
     ports:
       - "127.0.0.1:${FRAMEWORK_PORT:-5084}:8080"
     volumes:
       - ../logs/framework:/logs
+      - ../data/framework:/data

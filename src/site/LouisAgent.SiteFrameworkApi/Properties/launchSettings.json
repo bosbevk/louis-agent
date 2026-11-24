@@ -14,7 +14,9 @@
         "RATES_FILE": "../config/rates.json",
         "DOCS_ROOT": "../../..",
         "OPEN_IDENTITIES": "louis-agent-framework",
-        "OPEN_SESSIONS_PER_DAY": "20"
+        "OPEN_SESSIONS_PER_DAY": "20",
+        "SITE_DATA_DIRECTORY": "../data/framework",
+        "REPLAY_DIRECTORY": "../data/framework/recordings"
       }
     }
   }

@@ -24,12 +24,16 @@ public class FrameworkImageTests
 
     /// <summary>
     /// The compose service gives the host the model, the open door to the framework Orbi at the cap the live site
-    /// has, 20 sessions a day (F164.3, Louis's pick A of three), and pacing.
+    /// has, 20 sessions a day (F164.3, Louis's pick A of three), and pacing; and a data folder of its own on the PC,
+    /// where its evals keep their runs and their recordings (F126.5.2).
     /// </summary>
     [TestCase("- path: ../config/.env.anthropic")]
     [TestCase("OPEN_IDENTITIES: louis-agent-framework")]
     [TestCase("OPEN_SESSIONS_PER_DAY: \"20\"")]
     [TestCase("STREAM_PACE: 'on'")]
+    [TestCase("SITE_DATA_DIRECTORY: /data")]
+    [TestCase("REPLAY_DIRECTORY: /data/recordings")]
+    [TestCase("- ../data/framework:/data")]
     public void TheService_RunsTheFrameworkOrbi(string line)
     {
         string[] compose = Lines("src/site/docker/docker-compose.yml");
@@ -39,12 +43,14 @@ public class FrameworkImageTests
     }
 
     /// <summary>
-    /// The run profile reads the repo's docs and opens the same door, at the same cap, so a debug run sees what the
-    /// image does.
+    /// The run profile reads the repo's docs, opens the same door at the same cap, and keeps its evals' data in the
+    /// same folder the container mounts, so a debug run sees what the image does.
     /// </summary>
     [TestCase("\"DOCS_ROOT\": \"../../..\",")]
     [TestCase("\"OPEN_IDENTITIES\": \"louis-agent-framework\",")]
-    [TestCase("\"OPEN_SESSIONS_PER_DAY\": \"20\"")]
+    [TestCase("\"OPEN_SESSIONS_PER_DAY\": \"20\",")]
+    [TestCase("\"SITE_DATA_DIRECTORY\": \"../data/framework\",")]
+    [TestCase("\"REPLAY_DIRECTORY\": \"../data/framework/recordings\"")]
     public void TheRunProfile_ReadsTheDocs_AndOpensTheDoor(string line) =>
         Assert.That(Lines("src/site/LouisAgent.SiteFrameworkApi/Properties/launchSettings.json"),
             Does.Contain(line));

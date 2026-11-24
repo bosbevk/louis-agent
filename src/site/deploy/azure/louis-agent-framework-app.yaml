@@ -3,8 +3,8 @@
 # -App louis-agent-framework-app (the how-to is src/docs/guides/deploy-the-sites.md).
 # One container: the framework site's host (src/site/LouisAgent.SiteFrameworkApi), on the image
 # src/site/docker/Dockerfile.framework builds, with the framework Orbi on the docs and site packs and nothing else. It
-# carries the docs Orbi reads and its price tables. It reads the vault with louis-agent.dev's identity and logs to its
-# share, in a folder of its own (Louis's pick A of three). No secret value lives here: deploy.ps1 update writes the
+# carries the docs Orbi reads and its price tables. It reads the vault with louis-agent.dev's identity and keeps its
+# logs and its evals' runs on that share, in a folder of its own (Louis's pick A of three). No secret value lives here: deploy.ps1 update writes the
 # `secrets:` block from the names the vault holds; this app's own keys carry the suffix -framework, and the model's
 # key is the one both sites share.
 name: louis-agent-framework-app
@@ -56,6 +56,12 @@ properties:
             value: en-ZA
           - name: LOG_DIRECTORY
             value: /logs
+          # The evals' runs (F126.5.2), on the data volume, and their recordings; nothing is recorded unless a session
+          # asks to.
+          - name: SITE_DATA_DIRECTORY
+            value: /data
+          - name: REPLAY_DIRECTORY
+            value: /data/recordings
           # The engine paces Orbi's words and says so, so the page leaves its own pacer off: paced once (F156).
           - name: STREAM_PACE
             value: 'on'
@@ -88,11 +94,15 @@ properties:
           # Container Apps ties the disk to the CPU: half a CPU allows 2 GiB.
           ephemeralStorage: 2Gi
         # louis-agent.dev's share, louis-agent-workspace (storage louis-agent-vol on the environment): the framework's
-        # run files and usage ledger in framework/logs, apart from louis-agent.dev's logs/, kept across revisions.
+        # run files and usage ledger in framework/logs, and its evals' runs and recordings in framework/data (F126.5.2),
+        # apart from louis-agent.dev's logs/ and data/, kept across revisions.
         volumeMounts:
           - volumeName: louis-agent-vol
             subPath: framework/logs
             mountPath: /logs
+          - volumeName: louis-agent-vol
+            subPath: framework/data
+            mountPath: /data
         probes:
           - type: Startup
             tcpSocket:
