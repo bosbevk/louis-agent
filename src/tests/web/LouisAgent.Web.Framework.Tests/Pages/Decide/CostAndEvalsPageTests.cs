@@ -9,7 +9,7 @@ namespace LouisAgent.Web.Framework.Tests.Pages.Decide;
 /// <summary>
 /// F164.1, step 12: Cost and evals, at <c>/cost-and-evals</c>, tells how a turn's cost is worked out, from the ledger
 /// and the price table to the rand, with one request worked through, its numbers read from the real files; and the
-/// evals' places, each saying what the approved redesign (F126) plans, as planned, with its plan linked.
+/// evals' places, each saying what is built (F126.5.3), held to the eval files and the docs they link.
 /// </summary>
 public class CostAndEvalsPageTests
 {
@@ -92,28 +92,57 @@ public class CostAndEvalsPageTests
     }
 
     /// <summary>
-    /// Each of the evals' places says what the approved redesign plans, as planned, and claims nothing of how today's
-    /// evals work: no list of terms, and its one link is the plan itself, so the plan's going (when the work is done)
-    /// fails here and brings the page along.
+    /// Each of the evals' places says what is built, not what is planned, and links the decision and the how-to:
+    /// ADR 0134 and the guide to running an eval, both of which are there.
     /// </summary>
     [TestCase("the-evals")]
     [TestCase("the-eval-studio")]
-    public void AnEvalsPlace_SaysWhatThePlanBuilds(string place)
+    public void AnEvalsPlace_LinksTheDecisionAndTheHowTo(string place)
     {
         using var ctx = Context();
 
         var section = ctx.Render<CostAndEvalsPage>().Find($"section#{place}");
+        var links = section.QuerySelectorAll("a.doc-link").Select(link => link.GetAttribute("href")).ToList();
 
         Assert.Multiple(() =>
         {
-            Assert.That(section.TextContent, Does.Contain("plan"));
-            Assert.That(section.QuerySelectorAll("ul.terms"), Is.Empty, "no claim of how today's evals work");
-            var links = section.QuerySelectorAll("a.doc-link").Select(link => link.GetAttribute("href")).ToList();
-            Assert.That(links, Has.Count.EqualTo(1).And.All.EndsWith(PlanPath), "the plan, and only the plan");
-            Assert.That(File.Exists(Path.Combine(TestPaths.RepoRoot, PlanPath)), PlanPath);
+            Assert.That(section.TextContent, Does.Not.Contain("plan").And.Not.Contain("being"));
+            Assert.That(links, Has.Some.EndsWith(Decision).And.Some.EndsWith(HowTo));
+            Assert.That(File.Exists(Path.Combine(TestPaths.RepoRoot, Decision)), Decision);
+            Assert.That(File.Exists(Path.Combine(TestPaths.RepoRoot, HowTo)), HowTo);
         });
     }
 
-    /// <summary>The approved plan that redesigns the evals.</summary>
-    private const string PlanPath = "src/docs/plans/F126-evals-redesigned.md";
+    /// <summary>
+    /// The evals' place names the agents that have an eval today, and each one's file is there, so an eval removed
+    /// fails here and brings the page along.
+    /// </summary>
+    [Test]
+    public void TheEvalsPlace_NamesTheAgentsThatHaveOne_EachFileThere()
+    {
+        using var ctx = Context();
+
+        string text = ctx.Render<CostAndEvalsPage>().Find("section#the-evals").TextContent;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(text, Does.Contain("guide").And.Contain("Orbi").And.Contain("triage team"));
+            foreach (string file in EvalFiles)
+                Assert.That(File.Exists(Path.Combine(TestPaths.RepoRoot, file)), file);
+        });
+    }
+
+    /// <summary>The decision the evals are built on.</summary>
+    private const string Decision = "src/docs/adr/0134-an-eval-is-one-file-of-conversations.md";
+
+    /// <summary>How to run one, from the admin or the API.</summary>
+    private const string HowTo = "src/docs/guides/run-an-eval.md";
+
+    /// <summary>The evals the page names, one per agent, each beside the agent it proves.</summary>
+    private static readonly string[] EvalFiles =
+    [
+        "src/site/LouisAgent.Identities.Guide/agents/louis-agent-guide/guide.eval.json",
+        "src/site/LouisAgent.Identities.Framework/agents/louis-agent-framework/framework.eval.json",
+        "demos/louis-agent/identity/LouisAgent.Identities.Triage/agents/triage/triage.eval.json"
+    ];
 }

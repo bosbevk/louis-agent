@@ -106,9 +106,10 @@ public static class TrustFacts
             AiSafetyFact.EveryRequestMeasured => new(TileStatus.Done, "Every request measured and watched",
                 "Each request to the model is priced in a ledger, and each step of a chat is traced in Azure's " +
                 "monitoring. One address opens at most 20 chats a day.", "src/docs/adr/0007-measure-every-request.md"),
-            AiSafetyFact.EvalsRebuilt => new(TileStatus.Open, "Evals, being rebuilt",
-                "The old evals are deleted, and new ones are being built from scratch. Until they run, every merge " +
-                "runs the unit and integration tests.", "src/docs/adr/0134-an-eval-is-one-file-of-conversations.md"),
+            AiSafetyFact.EvalsReplayed => new(TileStatus.Done, "Evals that replay on every change",
+                "The guide, the framework's Orbi and the triage team each have an eval of their conversations. Each " +
+                "one replays from its recording on every pull request, for free, so a change that breaks one fails " +
+                "the build.", "src/docs/adr/0134-an-eval-is-one-file-of-conversations.md"),
             AiSafetyFact.InjectionTestsAndAuditLog => new(TileStatus.Open, "Prompt-injection tests and an audit log",
                 "A suite of injection attacks, checks on what the agent says, and a log of every action are " +
                 "planned, not built.", "src/docs/plans/phase-7-checked-and-guarded.md"),
