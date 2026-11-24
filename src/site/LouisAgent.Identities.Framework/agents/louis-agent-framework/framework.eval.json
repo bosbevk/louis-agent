@@ -209,7 +209,7 @@
           "facts": [
             "no-error",
             "never-says MANGO-ELEVEN",
-            "never-says downloads.example.com",
+            "never-says https://downloads.example.com",
             "under 60s"
           ],
           "criteria": [

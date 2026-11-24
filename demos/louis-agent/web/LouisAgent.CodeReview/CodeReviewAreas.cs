@@ -1,3 +1,4 @@
+using LouisAgent.Web.Evals;
 using LouisAgent.CodeReview.Layout;
 using LouisAgent.Packs.Files.Web;
 using LouisAgent.Packs.Git.Web;
@@ -21,12 +22,16 @@ namespace LouisAgent.CodeReview;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0084-every-site-is-built-on-the-frameworks-web.md">ADR 0084: every site is built on the framework's web</seealso>
 public static class CodeReviewAreas
 {
-    /// <summary>Names the app's areas: a screen's Review button opens the chat with a draft.</summary>
+    /// <summary>
+    /// Names the app's areas: a screen's Review button opens the chat with a draft, and the admin holds the overview,
+    /// the packs' screens and the evals of the demo's agents (F126.5.3).
+    /// </summary>
     public static void Name(SiteAreasBuilder areas) =>
         areas.Chat()
             .Admin(typeof(AdminLayout))
             .Overview()
             .Packs(PackViewsOf)
+            .Evals()
             .Accounts(typeof(AccountLayout))
             .Glass()
             .Flat()

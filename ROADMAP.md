@@ -189,8 +189,9 @@ builder so a first agent takes a few lines (F106.1), the framework's own docs (F
 (F74, the [Phase 10 draft](src/docs/plans/phase-10-engine-package.md)'s Stage A). The engine's own repo (Stage B) still
 waits for the engine features; a developer's product, never a business's. Built so far: the example's service and
 pack (F106.3.1), its identity (F106.3.2) and its recorded demo (F106.3.4); its workflow in code (F106.3.3) and its
-second department (F106.3.5) remain. The builder returns as F140, one builder a host names its parts with, and the
-evals are redesigned in F126 ([plan](src/docs/plans/F126-evals-redesigned.md)).
+second department (F106.3.5) remain. The builder returns as F140, one builder a host names its parts with. The evals
+were redesigned in F126: one file of conversations beside each agent, replayed free
+([ADR 0134](src/docs/adr/0134-an-eval-is-one-file-of-conversations.md)).
 
 **The site** ([ADR 0112](src/docs/adr/0112-the-site-sells-first.md)). Louis, 2026-11-09: "Our goal is to sell websites
 with agents, and custom agents, for now. The framework takes second place to that." louis-agent.dev is that offer,

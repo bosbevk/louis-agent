@@ -75,16 +75,17 @@ public class TrustPageTests
     }
 
     /// <summary>
-    /// The evals are one tile, and it is open: they are being rebuilt from scratch, so the page shows them as planned,
-    /// never as in place (F126.1, Louis's pick, "One open tile that says so"; ADR 0100).
+    /// The evals are one tile, and it is done: the site's agents each have an eval that replays on every pull request
+    /// (F126.5.3), and the tile rests on the decision they are built on (ADR 0134, ADR 0100).
     /// </summary>
     [Test]
-    public void TheEvals_AreOneOpenTile()
+    public void TheEvals_AreOneDoneTile_OnTheirDecision()
     {
         var evals = TrustFacts.All.Where(fact => fact.Title.Contains("eval", StringComparison.OrdinalIgnoreCase))
             .ToList();
 
-        Assert.That(evals.Select(fact => fact.Status), Is.EqualTo(new[] { TileStatus.Open }));
+        Assert.That(evals.Select(fact => fact.Status), Is.EqualTo(new[] { TileStatus.Done }));
+        Assert.That(evals.Single().Source, Is.EqualTo("src/docs/adr/0134-an-eval-is-one-file-of-conversations.md"));
     }
 
     /// <summary>

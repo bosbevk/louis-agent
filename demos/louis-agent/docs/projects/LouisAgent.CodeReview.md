@@ -30,6 +30,10 @@ turns those off, along with what only says it's coming.
 
 A session gets every toolset the API can load.
 
+The admin, in this app's admin frame, holds the overview, the packs' screens and the evals of the demo's agents, the
+triage team's among them: the framework's eval pages, named with `.Evals()` in `CodeReviewAreas`, reading the eval
+routes the coding agent's API maps behind the admin key.
+
 ### 1. Files, Changes and Branches aren't this app's
 
 They're the files and git packs' views, under `packs/web/`, and open as admin screens at `/admin/screens/{name}`.
@@ -87,7 +91,8 @@ framework ([ADR 0084](../../../../src/docs/adr/0084-every-site-is-built-on-the-f
 
 `demos/louis-agent/tests/LouisAgent.CodeReview.Tests`, NUnit with bUnit: `Pages/ChatPageTests` renders the whole page
 against the stub API, pins the empty page and the page with a turn to golden files, and holds that the chat is the
-root and stays; `Pages/SiteRoutesTests` opens a screen's address through this app's router; `Styles/ThemeTests` and
+root and stays; `Pages/SiteRoutesTests` opens a screen's address through this app's router and holds the admin's
+sidebar and cards, the evals' among them; `Styles/ThemeTests` and
 `Styles/SettingsStyleTests` read what the build made. The packs' views are tested in `packs/tests/`.
 
 ## Limits and plans

@@ -1,0 +1,1 @@
+"demos/louis-agent/samples/order-service/src/OrderService/Api/ShippingCost.cs:5: private const decimal FreeShippingFrom = 100m;\ndemos/louis-agent/samples/order-service/src/OrderService/Api/ShippingCost.cs:12: if (subtotal \u003E= FreeShippingFrom) return 0m;"

@@ -22,6 +22,8 @@
     <ProjectReference Include="..\..\..\..\src\web\LouisAgent.Web.Accounts\LouisAgent.Web.Accounts.csproj" />
     <!-- F151.5: the framework's themes, glass and flat; the app's own, retro, is in this project. -->
     <ProjectReference Include="..\..\..\..\src\web\LouisAgent.Web.Themes\LouisAgent.Web.Themes.csproj" />
+    <!-- F126.5.3: the admin's eval pages, the area it names with .Evals(). -->
+    <ProjectReference Include="..\..\..\..\src\web\LouisAgent.Web.Evals\LouisAgent.Web.Evals.csproj" />
     <ProjectReference Include="..\..\..\..\packs\web\LouisAgent.Packs.Files.Web\LouisAgent.Packs.Files.Web.csproj" />
     <ProjectReference Include="..\..\..\..\packs\web\LouisAgent.Packs.Git.Web\LouisAgent.Packs.Git.Web.csproj" />
   </ItemGroup>

@@ -56,6 +56,30 @@ public class TriageIdentityTests
     }
 
     /// <summary>
+    /// A case that comes back with something new after the manager decided gets a new decision (F126.5.3: in the eval's
+    /// follow-up, the manager asked the investigator again and never decided again).
+    /// </summary>
+    [Test]
+    public void TheManager_DecidesAgain_WhenACaseComesBackWithSomethingNew()
+    {
+        var (voice, _) = RoleCatalog.ModeParts(Mode());
+
+        Assert.That(voice, Does.Contain("decide again with `DecideCase`"));
+    }
+
+    /// <summary>
+    /// A case the manager gives a person reaches one: deciding person alone gives it to nobody, so it raises it too
+    /// (F126.5.3: once in three, the no-runbook case ended with DecideCase alone).
+    /// </summary>
+    [Test]
+    public void APersonsCase_IsRaised_NotOnlyDecided()
+    {
+        var (voice, _) = RoleCatalog.ModeParts(Mode());
+
+        Assert.That(voice, Does.Contain("`DecideCase` alone gives it to nobody"));
+    }
+
+    /// <summary>
     /// The manager asks its three subagents by their addresses (F127.3.1), the one name each has (ADR 0133); that each
     /// reaches its subagent is held where the catalogue is, in the coding catalogue's tests.
     /// </summary>

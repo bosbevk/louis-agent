@@ -112,9 +112,10 @@ services:
       PRICES_FILE: /workspace/demos/louis-agent/config/prices.json
       # Exchange rates' fallback when RATES_URL (Frankfurter by default) can't be reached (F14)
       RATES_FILE: /workspace/demos/louis-agent/config/rates.json
-      # Peers AskAgent may ask (F127.3.1), from config/.env (empty: none). This is the code-review app, with every
-      # toolset.
-      AGENT_PEERS: ${AGENT_PEERS:-}
+      # Peers AskAgent may ask (F127.3.1): itself by default, so the triage manager asks its roles on this host
+      # (F126.5.3); config/.env may name others. Who may ask whom is each identity's calls, so the manager's reach its
+      # three roles and never the coder.
+      AGENT_PEERS: ${AGENT_PEERS:-self=http://localhost:8080}
       # The docs the expert reads (F109.3): the repo, mounted at /workspace, holds them as the image's /app/docs does.
       DOCS_ROOT: /workspace
       # The guide's lead mail (F112): the same addresses as the release's; RESEND_API_KEY comes from .env.secrets when it
@@ -126,6 +127,10 @@ services:
       TRIAGE_RUNS: /workspace/demos/louis-agent/data/triage/runs
       TRIAGE_PEOPLE: /workspace/demos/louis-agent/data/triage/people
       TRIAGE_DEPARTMENTS: /workspace/demos/louis-agent/config/departments.yaml
+      # The evals (F126.5.3): their runs under the demo's data, and the recordings a live run makes, so it can be
+      # replayed for free. Nothing is recorded unless a session asks to.
+      SITE_DATA_DIRECTORY: /workspace/demos/louis-agent/data
+      REPLAY_DIRECTORY: /workspace/demos/louis-agent/data/recordings
       # The guide's door (F109.3): the guide answers a visitor without a sign-in, this many times a day per address.
       OPEN_IDENTITIES: louis-agent-guide
       OPEN_SESSIONS_PER_DAY: "50"

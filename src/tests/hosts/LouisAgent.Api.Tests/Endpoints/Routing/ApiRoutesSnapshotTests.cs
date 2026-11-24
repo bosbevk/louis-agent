@@ -21,13 +21,14 @@ public partial class ApiRoutesSnapshotTests
             "ApiRoutesSnapshot.json");
 
     /// <summary>
-    /// The framework's own mapping calls. The last two (F142) hand a host the <c>/v1</c> group for routes of its own,
-    /// which that host's tests hold, as louis-agent.dev's hold its CV's.
+    /// The framework's own mapping calls. The host group's two (F142) hand a host the <c>/v1</c> group for routes of
+    /// its own, which that host's tests hold, as louis-agent.dev's hold its CV's; the evals' (F126.5.3) puts their
+    /// routes on it, which <c>LouisAgent.Api.Evals.Tests</c> holds.
     /// </summary>
     private static readonly string[] AllowedInProgram =
     [
         "MapStaticAssets", "MapLouisAgentSite", "MapApi", "MapLouisAgentApi", "MapAdmin", "MapLouisAgentAccounts",
-        "MapHostGroup", "MapLouisAgentHostGroup"
+        "MapHostGroup", "MapLouisAgentHostGroup", "MapLouisAgentEvals"
     ];
 
     /// <summary>Every route as "METHOD /pattern (Access)", sorted, as the golden file holds it.</summary>

@@ -12,8 +12,8 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 162 | 75 |
-| Fixes (`FX`) | 221 | 11 |
+| Features (`F`) | 165 | 74 |
+| Fixes (`FX`) | 226 | 12 |
 | Cleanups (`CL`) | 47 | 24 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -29,7 +29,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | FX236 | Asked for the whole program to start an agent, the framework Orbi names one setting under the code, not each one it needs on its own line (`framework-code-when-asked`, 1 of 3 in its baseline 20261124-104107-framework) | Now, next |
 | FX237 | Once in three, the framework Orbi answered a walkthrough with no words, only a page shown and choices (`framework-walkthrough`, its visible reply empty, in its baseline) | Now, next |
 | FX238 | The framework Orbi sometimes writes a sentence after the doc's path, and once summed a listing up in two sentences where its skill asks for one (`framework-from-the-docs` and `framework-explain-code`, 2 of 3 each, in its baseline) | Now, next |
-| F126 | Evals, redesigned: one `.eval.json` of conversations with turns, seven facts in code, criteria a judge marks, flips to correct it, its own eval host, six screens; today's evals deleted, not ported; five children since 2026-11-22: F126.1 delete the old evals (done 2026-11-22); F126.2 the file and the grading (done 2026-11-22; closeness of meaning is a criterion the judge marks, F93 folded in); F126.3 runs and the run page, split 2026-11-23 into F126.3.1 runs (done 2026-11-23), F126.3.2 the run pages, which read a run (done 2026-11-23), F126.3.3 the page a conversation names, read on the server and sent with the first ask (done 2026-11-23), and F126.3.4 starting, following and stopping a run from the admin (done 2026-11-23); F126.3 is whole; F126.4 flips, re-grade, better-or-worse and Copy as conversation (done 2026-11-23); F126.5 new evals, a parent of three since 2026-11-24 ([plan](plans/F126.5-new-evals.md)): F126.5.1 the guide's evals (done 2026-11-24), F126.5.2 the framework's Orbi (done 2026-11-24), F126.5.3 the triage team | Now |
+| FX245 | One triage criterion reads as words the manager must say: "Says nothing will be changed in the code" failed a payments repeat that raised the case to payments and said no automatic fix is allowed (`triage-payments-go-to-a-person`, 2 of 3 in the baseline 20261124-153431-triage) | Now, next |
 | F171 | The bill checker (Louis, 2026-11-21; 2026-11-22: "this feature is next"): a phone app that reads a Western Cape municipal account from a photo or a PDF, checks every line against Cape Town's, Swartland's and Overstrand's own tariffs and drafts the dispute, free to download with one subscription; the product in its own private `bill-checker` repository on the framework's packages, the framework's parts here: F171.1 a photo or PDF reaches a tool (started 2026-11-22); F171.2 the bills pack reads and checks; F171.3 the dispute letter; F171.4 the identity and evals; F171.5 the account, consent and our own subscriptions part; F171.6 the phone app; F171.7 the stores; F171.8 the monthly report | Now, F171.1 after F126; F171.2 on after F140 |
 | F43 | Accounts, tenants and durable sessions; its first child, durable sessions, after F171.1 and before F157 | Now, its first child after F171.1 |
 | FX4 | Append-only history | Now, after F43's first child |
@@ -133,11 +133,14 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups |
 | CL61 | `ToolCallGuards` past 200 lines once laid out: split it, holes into records (ADR 0119), and end the turn through `TurnEnding.Ends` | Cleanups |
 
-## Features (162 done)
+## Features (165 done)
 
 | Id | When | What |
 |---|---|---|
 | F176 | 2026-11-23 | Sequences: an identity may declare a fixed order of agents from its own `Calls`; asking a sequence's first step runs the whole sequence in code for one of the turn's asks, and a later step can't be asked alone; each step held to one ask's checks, given the first message with the answer before (or the whole conversation, or only the answer before), and on a failure stopping (or asking once more, or skipping it, named); the rules checked before a step opens |
+| F126 | 2026-11-24 | Evals, redesigned, closed: one `.eval.json` of conversations beside each agent, facts in code and criteria a judge marks, runs started, followed, flipped and re-graded from an admin page, replays that play back the model's and the tools' answers for free; the guide, the framework's Orbi and the triage team each measured, ADR 0134 |
+| F126.5 | 2026-11-24 | New evals, closed: the guide's, the framework Orbi's and the triage team's, each on its own host with an admin page, each baseline replayed free |
+| F126.5.3 | 2026-11-24 | The triage team's evals: the demo's host takes the eval routes, a data folder and the evals' admin page, the manager measured with its team on the sample service with routing proved in code, a baseline at $0.0067 a chat replayed free; the evals' pages tell them as they are; FX240 to FX244 done in it |
 | F126.5.2 | 2026-11-24 | The framework Orbi's evals: the framework site's host takes the eval routes and a data folder here and on the Azure share, an admin page with the evals in the framework's frame, twelve conversations from Orbi's rules with an injection case, a live baseline (8 of 12, $0.066) replayed free over no docs; the recordings a folder per eval |
 | F126.5.1 | 2026-11-24 | The guide's evals, F126.5's first child: twelve conversations from its rules and its turn log, a prompt-injection case on a page given in the eval file (`GivenPage`), no lead ever sent, a live baseline of three repeats (9 of 12, $0.090) and every conversation's first repeat replayed free; FX228 and FX230 done in it |
 | F126.4 | 2026-11-23 | Flips, re-grade, better-or-worse and Copy as conversation, F126's fourth child: a person flips a judge's mark, a re-grade asks the judge only for what changed, a run is compared with the one before, and a played conversation is copied back as eval JSON; the re-grade proved against the real provider on 2026-11-24 |
@@ -300,10 +303,15 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (221 done)
+## Fixes (226 done)
 
 | Id | When | What |
 |---|---|---|
+| FX244 | 2026-11-24 | A search can stay inside one folder, such as the repository a triage case names, and the investigator and reviewer search there |
+| FX243 | 2026-11-24 | A search hit shows a giant line only around its match, marked as cut, so a search's answer stays small and is never summarised |
+| FX242 | 2026-11-24 | The triage manager raises a person's case as well as deciding it, since a decision alone gives it to nobody |
+| FX241 | 2026-11-24 | The triage manager decides again when a case comes back with something new |
+| FX240 | 2026-11-24 | Each triage voice declares the toolsets it always loads, and the demo names itself as a peer, so the team has its tools however a session opens |
 | FX239 | 2026-11-24 | A failed chat turn tells the visitor sorry and to try again, never the exception's name and text; the exception stays in the log |
 | FX235 | 2026-11-24 | A free replay plays back what each tool answered, keyed by compact JSON, so a docs edit or a system's newline can't make a recording stale |
 | FX230 | 2026-11-24 | A docs search goes through the docs in the order of their paths with `/`, so it answers the same on Windows and Linux |

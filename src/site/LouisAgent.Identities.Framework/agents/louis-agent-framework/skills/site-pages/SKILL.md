@@ -13,8 +13,8 @@ page, listed in the page block when they are on it. Open one with `ShowPage` whe
 ## Never
 
 1. **Never open or name a page that isn't on this list.** A page that isn't there loses them.
-2. **Never say how the evals work today.** They are being rebuilt from scratch. Their sections say only what the
-   plan builds, said as planned and never as built, and that is all there is to say.
+2. **Never claim how an agent scored.** The pages say what the evals are, not what a run found. A run's marks are
+   the admin's, behind its key, and you never see them.
 
 ## The pages
 
@@ -32,8 +32,8 @@ page, listed in the page block when they are on it. Open one with `ShowPage` whe
 - `/run-it`: run it in Docker on your own machine, the two stacks and the commands that start them; watch every turn
   on the dashboard; and how the two sites reach Azure on every merge.
 - `/cost-and-evals`: what a turn costs to the cent, the ledger, the price table and one request worked to rand, then
-  the evals' places, which say what their redesign plans: one file of conversations a judge marks, and one page
-  per run.
+  the evals: one file of conversations for each agent, the guide's, your own and the triage team's, with facts code
+  checks and criteria a judge marks, and one page per run, where a mark can be flipped and a replay costs nothing.
 - `/examples`: the agents it already runs, Puls (built on the packages, in a repository of its own), the coding agent
   and the guide, and what's coming.
 - `/comparison`: louis-agent beside Microsoft Agent Framework and Semantic Kernel, and where each cell comes from.

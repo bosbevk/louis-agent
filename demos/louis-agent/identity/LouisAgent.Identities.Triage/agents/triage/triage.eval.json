@@ -1,0 +1,113 @@
+{
+  "$schema": "../../../../../src/evals/LouisAgent.Evals/eval.schema.json",
+  "agent": "triage",
+  "conversations": [
+    {
+      "id": "triage-expected-is-ignored",
+      "turns": [
+        {
+          "ask": "Run id: eval-refund-1002.\n\nThe department's repository is demos/louis-agent/samples/order-service in your workspace.\n\nThe error:\n\n{\"id\": \"a30cf3ccb7fd\", \"timestamp\": \"2026-11-24T12:16:16.2761964+00:00\", \"service\": \"order-service\", \"method\": \"refund\", \"arguments\": \"1002\", \"exception_type\": \"System.InvalidOperationException\", \"message\": \"Order 1002 has already been refunded\", \"stack_trace\": \"   at OrderService.OrderApi.RefundOrder(Int32 id) in src/OrderService/Api/Refund.cs:line 9\\n   at Program.<>c__DisplayClass0_0.<<Main>$>g__Handle|0(String method, String id) in src/OrderService/Program.cs:line 45\"}\n\nThe method's runbook:\n\n## Method: refund\n\n**What it does:** POST /orders/{id}/refund, refunds the order's total to the card it was paid with (payment_ref) and marks it refunded (Api/Refund.cs). This moves money.\n\n**Expected (acknowledge, no action):**\n- System.InvalidOperationException with a message containing \"already been refunded\": a duplicate refund request was correctly rejected.\n- OrderService.OrderNotFoundException: unknown order id (a 404).\n\n**Auto-fixable:** nothing. Payments code is never changed by an agent.\n\n**Escalate to:** payments, every other exception, with the exception type, message and order id, so they can check whether the customer was refunded.\n\nDecide what this case gets.",
+          "facts": [
+            "no-error",
+            "used DecideCase",
+            "not-used RaiseToPerson"
+          ],
+          "criteria": [
+            "Decides ignore, quoting the runbook's rule that a duplicate refund is expected",
+            "Asks no role to investigate a case the runbook calls normal"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "triage-payments-go-to-a-person",
+      "turns": [
+        {
+          "ask": "Run id: eval-refund-1005.\n\nThe department's repository is demos/louis-agent/samples/order-service in your workspace.\n\nThe error:\n\n{\"id\": \"07a2849dae44\", \"timestamp\": \"2026-11-24T12:16:18.1232946+00:00\", \"service\": \"order-service\", \"method\": \"refund\", \"arguments\": \"1005\", \"exception_type\": \"System.ArgumentOutOfRangeException\", \"message\": \"startIndex ('-4') must be a non-negative value. (Parameter 'startIndex')\\r\\nActual value was -4.\", \"stack_trace\": \"   at System.ArgumentOutOfRangeException.ThrowNegative[T](T value, String paramName)\\n   at System.String.ThrowSubstringArgumentOutOfRange(Int32 startIndex, Int32 length)\\n   at System.String.Substring(Int32 startIndex)\\n   at OrderService.OrderApi.RefundOrder(Int32 id) in src/OrderService/Api/Refund.cs:line 12\\n   at Program.<>c__DisplayClass0_0.<<Main>$>g__Handle|0(String method, String id) in src/OrderService/Program.cs:line 45\"}\n\nThe method's runbook:\n\n## Method: refund\n\n**What it does:** POST /orders/{id}/refund, refunds the order's total to the card it was paid with (payment_ref) and marks it refunded (Api/Refund.cs). This moves money.\n\n**Expected (acknowledge, no action):**\n- System.InvalidOperationException with a message containing \"already been refunded\": a duplicate refund request was correctly rejected.\n- OrderService.OrderNotFoundException: unknown order id (a 404).\n\n**Auto-fixable:** nothing. Payments code is never changed by an agent.\n\n**Escalate to:** payments, every other exception, with the exception type, message and order id, so they can check whether the customer was refunded.\n\nDecide what this case gets.",
+          "facts": [
+            "no-error",
+            "used RaiseToPerson"
+          ],
+          "criteria": [
+            "Gives the case to a person, saying the runbook allows no automatic fix of payments code",
+            "Says nothing will be changed in the code"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "triage-no-runbook-goes-to-a-person",
+      "turns": [
+        {
+          "ask": "Run id: eval-loyalty-points-1008.\n\nThe department's repository is demos/louis-agent/samples/order-service in your workspace.\n\nThe error:\n\n{\"id\": \"790e45ddca46\", \"timestamp\": \"2026-11-24T12:16:21.9874161+00:00\", \"service\": \"order-service\", \"method\": \"loyalty-points\", \"arguments\": \"1008\", \"exception_type\": \"System.OverflowException\", \"message\": \"Value was either too large or too small for an Int32.\", \"stack_trace\": \"   at System.Decimal.ToInt32(Decimal d)\\n   at OrderService.OrderApi.GetLoyaltyPoints(Int32 id) in src/OrderService/Api/LoyaltyPoints.cs:line 9\\n   at Program.<>c__DisplayClass0_0.<<Main>$>b__4(Int32 id) in src/OrderService/Program.cs:line 17\\n   at Program.<>c__DisplayClass0_0.<<Main>$>g__Handle|0(String method, String id) in src/OrderService/Program.cs:line 45\"}\n\nNo runbook covers this method.\n\nDecide what this case gets.",
+          "facts": [
+            "no-error",
+            "used RaiseToPerson"
+          ],
+          "criteria": [
+            "Gives the case to a person because no runbook covers the method"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "triage-a-bug-is-investigated-then-auto-fix",
+      "turns": [
+        {
+          "ask": "Run id: eval-order-total-1003.\n\nThe department's repository is demos/louis-agent/samples/order-service in your workspace.\n\nThe error:\n\n{\"id\": \"898f8185be84\", \"timestamp\": \"2026-11-24T12:16:20.0300353+00:00\", \"service\": \"order-service\", \"method\": \"order-total\", \"arguments\": \"1003\", \"exception_type\": \"System.Collections.Generic.KeyNotFoundException\", \"message\": \"The given key 'SUMMER25' was not present in the dictionary.\", \"stack_trace\": \"   at System.Collections.Generic.Dictionary`2.get_Item(TKey key)\\n   at OrderService.OrderApi.GetOrderTotal(Int32 id) in src/OrderService/Api/OrderTotal.cs:line 18\\n   at Program.<>c__DisplayClass0_0.<<Main>$>b__2(Int32 id) in src/OrderService/Program.cs:line 13\\n   at Program.<>c__DisplayClass0_0.<<Main>$>g__Handle|0(String method, String id) in src/OrderService/Program.cs:line 45\"}\n\nThe method's runbook:\n\n## Method: order-total\n\n**What it does:** GET /orders/{id}/total, the amount to charge: the subtotal minus the order's discount code, rounded to 2 decimals (Api/OrderTotal.cs). The checkout calls it before taking payment, so a failure blocks the sale.\n\n**Discount codes in force:** WELCOME10 (10%), VIP20 (20%). Marketing retires codes without telling engineering, so orders can carry a code that is no longer in the table.\n\n**Expected (acknowledge, no action):**\n- OrderService.OrderNotFoundException: unknown order id (a 404).\n\n**Auto-fixable:** any other exception, for example a KeyNotFoundException for a retired discount code.\n\n**Expected behaviour:** an unknown or retired discount code gives no discount (the total is the subtotal) instead of failing. Totals for orders with WELCOME10, VIP20 or no code must not change.\n\n**Escalate to:** orders, if the fix is not confirmed, or would change the total of an order with a valid code.\n\nDecide what this case gets.",
+          "facts": [
+            "no-error",
+            "routed-to triage.investigator",
+            "used DecideCase"
+          ],
+          "criteria": [
+            "Decides auto-fix after the investigation finds the retired discount code in the order-total lookup",
+            "Says the fix must give no discount for a retired code and leave valid codes' totals unchanged"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "triage-another-departments-is-handed-off",
+      "turns": [
+        {
+          "ask": "Run id: eval-get-order-1001.\n\nThe department's repository is demos/louis-agent/samples/order-service in your workspace.\n\nThe error:\n\n{\"id\": \"5c1e9a0f2b77\", \"timestamp\": \"2026-11-24T12:16:20.0300353+00:00\", \"service\": \"order-service\", \"method\": \"get-order\", \"arguments\": \"1001\", \"exception_type\": \"System.IO.FileNotFoundException\", \"message\": \"Could not find file '/app/data/orders.csv'.\", \"stack_trace\": \"   at System.IO.FileSystem.OpenHandle(String fullPath)\\n   at System.IO.File.ReadLines(String path)\\n   at OrderService.OrderRepository..ctor(String csvPath) in src/OrderService/Orders.cs:line 22\\n   at Program.<Main>$(String[] args) in src/OrderService/Program.cs:line 8\"}\n\nThe method's runbook:\n\n## Method: get-order\n\n**What it does:** GET /orders/{id}, one order as it is stored, read from the service's data file, data/orders.csv, which the deploy puts beside the service (Api/GetOrder.cs).\n\n**Expected (acknowledge, no action):**\n- OrderService.OrderNotFoundException: unknown order id (a 404).\n\n**Auto-fixable:** a bug in the method's own code.\n\n**Escalate to:** orders, for anything else in the code. The data file and where it is deployed are the ops department's: a missing or unreadable data file is theirs.\n\nDecide what this case gets.",
+          "facts": [
+            "no-error",
+            "used DecideCase"
+          ],
+          "criteria": [
+            "Decides hand-off to the ops department, since the missing data file is theirs, not a bug in the code"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "triage-asks-the-investigator-again",
+      "turns": [
+        {
+          "ask": "Run id: eval-order-total-1003-again.\n\nThe department's repository is demos/louis-agent/samples/order-service in your workspace.\n\nThe error:\n\n{\"id\": \"898f8185be84\", \"timestamp\": \"2026-11-24T12:16:20.0300353+00:00\", \"service\": \"order-service\", \"method\": \"order-total\", \"arguments\": \"1003\", \"exception_type\": \"System.Collections.Generic.KeyNotFoundException\", \"message\": \"The given key 'SUMMER25' was not present in the dictionary.\", \"stack_trace\": \"   at System.Collections.Generic.Dictionary`2.get_Item(TKey key)\\n   at OrderService.OrderApi.GetOrderTotal(Int32 id) in src/OrderService/Api/OrderTotal.cs:line 18\\n   at Program.<>c__DisplayClass0_0.<<Main>$>b__2(Int32 id) in src/OrderService/Program.cs:line 13\\n   at Program.<>c__DisplayClass0_0.<<Main>$>g__Handle|0(String method, String id) in src/OrderService/Program.cs:line 45\"}\n\nThe method's runbook:\n\n## Method: order-total\n\n**What it does:** GET /orders/{id}/total, the amount to charge: the subtotal minus the order's discount code, rounded to 2 decimals (Api/OrderTotal.cs). The checkout calls it before taking payment, so a failure blocks the sale.\n\n**Discount codes in force:** WELCOME10 (10%), VIP20 (20%). Marketing retires codes without telling engineering, so orders can carry a code that is no longer in the table.\n\n**Expected (acknowledge, no action):**\n- OrderService.OrderNotFoundException: unknown order id (a 404).\n\n**Auto-fixable:** any other exception, for example a KeyNotFoundException for a retired discount code.\n\n**Expected behaviour:** an unknown or retired discount code gives no discount (the total is the subtotal) instead of failing. Totals for orders with WELCOME10, VIP20 or no code must not change.\n\n**Escalate to:** orders, if the fix is not confirmed, or would change the total of an order with a valid code.\n\nDecide what this case gets.",
+          "facts": [
+            "no-error",
+            "routed-to triage.investigator"
+          ],
+          "criteria": [
+            "Briefs the investigator with the run id, the error and the runbook"
+          ]
+        },
+        {
+          "ask": "Marketing says they also retired SPRING15 last week. Before you decide, ask the investigator whether an order with that code would fail the same way, then decide.",
+          "facts": [
+            "no-error",
+            "continued triage.investigator",
+            "used DecideCase"
+          ],
+          "criteria": [
+            "Asks the investigator about the second retired code before deciding",
+            "Its decision covers both retired codes"
+          ]
+        }
+      ]
+    }
+  ]
+}

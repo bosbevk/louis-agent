@@ -11,10 +11,12 @@
 ![The triage team: the manager, and the sorter, the investigator, the reviewer and the coder who work for it](diagrams/LouisAgent.Identities.Triage.svg)
 
 A team that triages a service's errors: the **manager** decides what each case gets and checks everyone's work; the
-**sorter**, the **investigator** and the **reviewer** work for it; the **coder** is the coding identity on a peer.
-One identity with roles (F106.3.2, Louis's pick), because the three only ever work for the manager: the manager's
-voice is the mode, the three are its subagents, `agents/triage/subagents/{name}/voice.md`, each named by its address
-(`triage.sorter`), and the packs are names.
+**sorter**, the **investigator** and the **reviewer** work for it; the **coder** is the coding identity on a peer. One
+identity with roles (F106.3.2, Louis's pick), because the three only ever work for the manager: the manager's voice is
+the mode, the three are its subagents, `agents/triage/subagents/{name}/voice.md`, each named by its address
+(`triage.sorter`), and the packs are names. Each voice declares in its header the toolsets it always loads: the manager
+`triage` and `agents`, the sorter `triage`, the investigator `triage`, `files`, `git` and `dotnet`, and the reviewer
+`triage`, `files` and `git`, so a session opened as any of them has its tools whoever opens it.
 
 ## How it works
 
@@ -54,15 +56,31 @@ different: an unknown run starts with its first step instead, since a trial's fr
 
 ## What proves it
 
-Today the team is proved by its tests, below, and by no eval. The framework's evals are being rebuilt (F126): the
-old ones were deleted whole, this team's three among them, and the new evals, one file of conversations beside the
-identity they prove, are written in F126.5. Until then nothing runs the roles against a model to check their
-answers; the tests check their shape and their wiring.
+The manager is measured with its team by an eval of its own, `agents/triage/triage.eval.json`, beside its voice.
+Each conversation is a case on the sample order service, briefed as the feed would brief it: the run id, the
+department's repository, the error's JSON line and the method's runbook. There is a case for each path the voice
+names. A duplicate refund the runbook expects is ignored. A payments bug, and a method no runbook covers, go to a
+person. The retired discount code in `order-total` is investigated and decided auto-fix. A data file missing on the
+server is handed off to ops. And a follow-up asks the investigator again about a second retired code.
+
+Code checks what it can. `used DecideCase` or `used RaiseToPerson` says how a case ended, and two facts prove the
+routing itself: `routed-to triage.investigator` is met when the turn asked the investigator with `AskAgent`, and
+`continued triage.investigator` when it asked again after an earlier turn did. The judge marks the reasons and the
+briefs. No case reaches the coder: the coder is a peer, and the demo's host names none, so a live run stops at the
+manager's decision and writes no code.
+
+The demo's API host takes the evals, and the code-review app's admin shows their runs. A live baseline's first
+repeats are kept in `demos/louis-agent/recordings/evals/triage/`, and `TriageEvalReplayTests` replays every case on
+each build with no key, the roles' tool answers played back, so it reads nothing of the sample.
+
+*Decided in:* F126.5.3, [ADR 0134](../../../../src/docs/adr/0134-an-eval-is-one-file-of-conversations.md).
 
 ## Tests
 
 `demos/louis-agent/tests/LouisAgent.Identities.Triage.Tests`: the identity's shape, the voice as the roles catalogue
-reads it, and its routing naming its toolsets.
+reads it, and its routing naming its toolsets. The eval's tests sit beside the demo's catalogue, in
+`LouisAgent.Coding.Catalog.Tests/Evals/`: `TriageEvalFileTests` hold a case per path, the routing facts and no machine's
+path, and `TriageEvalReplayTests` replay every case from its recordings.
 
 ---
 [Docs index](../../../../src/docs/README.md) · Related: [Projects](../../../../src/docs/projects/README.md)
