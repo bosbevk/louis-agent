@@ -114,11 +114,22 @@ public class DeployFilesTests
 
     /// <summary>
     /// The framework's entry names the folders its share must hold before its revision mounts one (F164.3, Louis's pick
-    /// B of three): framework, then framework/logs, a parent before its child.
+    /// B of three): framework, then its logs and its data (F126.5.2), a parent before its children.
     /// </summary>
     [Test]
-    public void TheFrameworksEntry_NamesTheFoldersItsLogsNeed() =>
-        Assert.That(FrameworkEntry(), Does.Contain("Folders = @('framework', 'framework/logs')"));
+    public void TheFrameworksEntry_NamesTheFoldersItsMountsNeed() =>
+        Assert.That(FrameworkEntry(), Does.Contain("Folders = @('framework', 'framework/logs', 'framework/data')"));
+
+    /// <summary>
+    /// The framework's app keeps its evals' runs and recordings on the share, in a folder of its own beside its logs
+    /// (F126.5.2, Louis's pick "Also in Azure"), and tells its host where.
+    /// </summary>
+    [TestCase("subPath: framework/data")]
+    [TestCase("mountPath: /data")]
+    [TestCase("- name: SITE_DATA_DIRECTORY")]
+    [TestCase("value: /data/recordings")]
+    public void TheFrameworksApp_KeepsItsDataOnTheShare(string line) =>
+        Assert.That(FrameworkApp(), Does.Contain(line));
 
     /// <summary>
     /// A release makes the folders its app names on the share before the revision, so a first release finds its logs
@@ -220,15 +231,14 @@ public class DeployFilesTests
         Assert.That(FrameworkApp(), Does.Contain(line));
 
     /// <summary>
-    /// The framework's site sells nothing and keeps nothing of its own: no lead mail, no CV, no peers to ask, no VM
-    /// and no database, and only the logs on the share, never louis-agent.dev's own folders.
+    /// The framework's site sells nothing: no lead mail, no peers to ask, no VM and no database, and on the share only
+    /// its own folders, its logs and its evals' data (F126.5.2), never louis-agent.dev's logs/ or data/.
     /// </summary>
     [TestCase("LEADS_TO")]
     [TestCase("RESEND_API_KEY")]
-    [TestCase("SITE_DATA_DIRECTORY")]
     [TestCase("AGENT_PEERS")]
-    [TestCase("mountPath: /data")]
     [TestCase("subPath: logs")]
+    [TestCase("subPath: data")]
     [TestCase("VM_IP")]
     [TestCase("ACCOUNTS_SQL_URL")]
     public void TheFrameworksYaml_HoldsNothingItDoesntUse(string text) =>

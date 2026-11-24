@@ -12,13 +12,13 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 161 | 75 |
-| Fixes (`FX`) | 220 | 8 |
+| Features (`F`) | 162 | 75 |
+| Fixes (`FX`) | 220 | 11 |
 | Cleanups (`CL`) | 47 | 24 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (107 in the TODO)
+## Open (110 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
@@ -26,7 +26,10 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | FX232 | Asked where to read how a pack is built, the guide names the packs' how-to by its title and two design decisions by number, where its voice says name no doc (`guide-names-no-doc`, 1 of 3 in the baseline) | Now, next |
 | FX233 | Once in three, the guide answered with no words at all, only a choice card (`guide-honest`, its visible reply empty, in the baseline) | Now, next |
 | FX234 | The ask before a live run estimates from the last live run's cost a repeat, whatever conversations that run held, so after the guide's eval grew from one conversation to twelve it said "About $0.012 for 3 repeats" for a run that cost $0.090 | Now, next |
-| F126 | Evals, redesigned: one `.eval.json` of conversations with turns, seven facts in code, criteria a judge marks, flips to correct it, its own eval host, six screens; today's evals deleted, not ported; five children since 2026-11-22: F126.1 delete the old evals (done 2026-11-22); F126.2 the file and the grading (done 2026-11-22; closeness of meaning is a criterion the judge marks, F93 folded in); F126.3 runs and the run page, split 2026-11-23 into F126.3.1 runs (done 2026-11-23), F126.3.2 the run pages, which read a run (done 2026-11-23), F126.3.3 the page a conversation names, read on the server and sent with the first ask (done 2026-11-23), and F126.3.4 starting, following and stopping a run from the admin (done 2026-11-23); F126.3 is whole; F126.4 flips, re-grade, better-or-worse and Copy as conversation (done 2026-11-23); F126.5 new evals, a parent of three since 2026-11-24 ([plan](plans/F126.5-new-evals.md)): F126.5.1 the guide's evals (done 2026-11-24), F126.5.2 the framework's Orbi, F126.5.3 the triage team | Now |
+| FX236 | Asked for the whole program to start an agent, the framework Orbi names one setting under the code, not each one it needs on its own line (`framework-code-when-asked`, 1 of 3 in its baseline 20261124-104107-framework) | Now, next |
+| FX237 | Once in three, the framework Orbi answered a walkthrough with no words, only a page shown and choices (`framework-walkthrough`, its visible reply empty, in its baseline) | Now, next |
+| FX238 | The framework Orbi sometimes writes a sentence after the doc's path, and once summed a listing up in two sentences where its skill asks for one (`framework-from-the-docs` and `framework-explain-code`, 2 of 3 each, in its baseline) | Now, next |
+| F126 | Evals, redesigned: one `.eval.json` of conversations with turns, seven facts in code, criteria a judge marks, flips to correct it, its own eval host, six screens; today's evals deleted, not ported; five children since 2026-11-22: F126.1 delete the old evals (done 2026-11-22); F126.2 the file and the grading (done 2026-11-22; closeness of meaning is a criterion the judge marks, F93 folded in); F126.3 runs and the run page, split 2026-11-23 into F126.3.1 runs (done 2026-11-23), F126.3.2 the run pages, which read a run (done 2026-11-23), F126.3.3 the page a conversation names, read on the server and sent with the first ask (done 2026-11-23), and F126.3.4 starting, following and stopping a run from the admin (done 2026-11-23); F126.3 is whole; F126.4 flips, re-grade, better-or-worse and Copy as conversation (done 2026-11-23); F126.5 new evals, a parent of three since 2026-11-24 ([plan](plans/F126.5-new-evals.md)): F126.5.1 the guide's evals (done 2026-11-24), F126.5.2 the framework's Orbi (done 2026-11-24), F126.5.3 the triage team | Now |
 | F171 | The bill checker (Louis, 2026-11-21; 2026-11-22: "this feature is next"): a phone app that reads a Western Cape municipal account from a photo or a PDF, checks every line against Cape Town's, Swartland's and Overstrand's own tariffs and drafts the dispute, free to download with one subscription; the product in its own private `bill-checker` repository on the framework's packages, the framework's parts here: F171.1 a photo or PDF reaches a tool (started 2026-11-22); F171.2 the bills pack reads and checks; F171.3 the dispute letter; F171.4 the identity and evals; F171.5 the account, consent and our own subscriptions part; F171.6 the phone app; F171.7 the stores; F171.8 the monthly report | Now, F171.1 after F126; F171.2 on after F140 |
 | F43 | Accounts, tenants and durable sessions; its first child, durable sessions, after F171.1 and before F157 | Now, its first child after F171.1 |
 | FX4 | Append-only history | Now, after F43's first child |
@@ -130,11 +133,12 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups |
 | CL61 | `ToolCallGuards` past 200 lines once laid out: split it, holes into records (ADR 0119), and end the turn through `TurnEnding.Ends` | Cleanups |
 
-## Features (161 done)
+## Features (162 done)
 
 | Id | When | What |
 |---|---|---|
 | F176 | 2026-11-23 | Sequences: an identity may declare a fixed order of agents from its own `Calls`; asking a sequence's first step runs the whole sequence in code for one of the turn's asks, and a later step can't be asked alone; each step held to one ask's checks, given the first message with the answer before (or the whole conversation, or only the answer before), and on a failure stopping (or asking once more, or skipping it, named); the rules checked before a step opens |
+| F126.5.2 | 2026-11-24 | The framework Orbi's evals: the framework site's host takes the eval routes and a data folder here and on the Azure share, an admin page with the evals in the framework's frame, twelve conversations from Orbi's rules with an injection case, a live baseline (8 of 12, $0.066) replayed free over no docs; the recordings a folder per eval |
 | F126.5.1 | 2026-11-24 | The guide's evals, F126.5's first child: twelve conversations from its rules and its turn log, a prompt-injection case on a page given in the eval file (`GivenPage`), no lead ever sent, a live baseline of three repeats (9 of 12, $0.090) and every conversation's first repeat replayed free; FX228 and FX230 done in it |
 | F126.4 | 2026-11-23 | Flips, re-grade, better-or-worse and Copy as conversation, F126's fourth child: a person flips a judge's mark, a re-grade asks the judge only for what changed, a run is compared with the one before, and a played conversation is copied back as eval JSON; the re-grade proved against the real provider on 2026-11-24 |
 | F126.3.4 | 2026-11-23 | Starting, following and stopping a run from the admin, F126.3's fourth child: Run live with its estimate and a yes, Replay free, the run page following a run as it plays, and Stop |

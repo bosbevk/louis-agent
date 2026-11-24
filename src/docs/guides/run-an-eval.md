@@ -124,6 +124,21 @@ The same runs, with `curl`, from a terminal or a script.
      -H "content-type: application/json" -d '{"kind":"replay","repeats":1}'
    ```
 
+## On the framework site
+
+The framework site's host has the same routes and the same admin pages, for the framework Orbi's eval,
+`framework`: open `http://127.0.0.1:5084/admin/evals` and enter the admin key, or use the API on the review copy's
+port, 5084:
+
+```bash
+curl -s -i -X POST http://127.0.0.1:5084/v1/admin/evals/framework/runs -H "x-api-key: $KEY" \
+  -H "content-type: application/json" -d '{"kind":"live","repeats":3}'
+```
+
+Its runs are kept in `src/site/data/framework/evals/runs/` and its recordings in `src/site/data/framework/recordings/`.
+Its replay test, `FrameworkEvalReplayTests`, reads the first repeats kept in `src/site/recordings/evals/framework/`;
+copy a new live run's there the way the guide's are copied.
+
 ## Give a conversation a page that isn't on the site
 
 To hand the agent a page of your own, such as one with instructions hidden in it, give the page in the eval file
@@ -147,7 +162,7 @@ the judge for the reworded criterion alone and adds its answer to the live run's
 again.
 
 The guide's eval is also one test, `GuideEvalReplayTests`, which replays every conversation's first repeat of a
-live run from `src/site/recordings/evals/` with no key, over an empty docs folder, since what the tools answered
+live run from `src/site/recordings/evals/guide/` with no key, over an empty docs folder, since what the tools answered
 is played back too. When it turns red after a change to the guide, copy a new live run's first repeats there: each trial's
 file from `src/site/data/recordings/trials/` whose name starts with the run's id and ends in `_1-…`, and each file
 in `src/site/data/recordings/answers/` that their lines name by their `hash`. Delete the

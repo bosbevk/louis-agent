@@ -23,6 +23,9 @@
     <ProjectReference Include="..\..\..\site\LouisAgent.SiteFramework\LouisAgent.SiteFramework.csproj" />
     <!-- The site's host, for the list of what a page it draws is handed. -->
     <ProjectReference Include="..\..\..\site\LouisAgent.SiteFrameworkApi\LouisAgent.SiteFrameworkApi.csproj" />
+    <!-- The framework Orbi's eval file read as an eval, and replayed from its recordings (F126.5.2). -->
+    <ProjectReference Include="..\..\..\evals\LouisAgent.Evals\LouisAgent.Evals.csproj" />
+    <ProjectReference Include="..\..\hosts\LouisAgent.Api.Evals.Testing\LouisAgent.Api.Evals.Testing.csproj" />
     <ProjectReference Include="..\..\shared\LouisAgent.Testing\LouisAgent.Testing.csproj" />
     <!-- The web's test helpers, for the stylesheet the build made. -->
     <ProjectReference Include="..\..\web\LouisAgent.Web.Testing\LouisAgent.Web.Testing.csproj" />

@@ -16,8 +16,9 @@ namespace LouisAgent.Site.Tests.Guide.Evals;
 /// </summary>
 public class GuideEvalReplayTests
 {
-    /// <summary>Where the guide's eval recordings are kept, beside the pages' recordings.</summary>
-    private static readonly string Recordings = Path.Combine(TestPaths.RepoRoot, "src", "site", "recordings", "evals");
+    /// <summary>Where the guide's eval recordings are kept, a folder of its own beside each other eval's.</summary>
+    private static readonly string Recordings =
+        Path.Combine(TestPaths.RepoRoot, "src", "site", "recordings", "evals", "guide");
 
     /// <summary>
     /// A docs folder with nothing in it: the replay plays back what the docs tools answered on the live run, so the

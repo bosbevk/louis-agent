@@ -192,6 +192,7 @@ the films left out, and the price tables, at `/app/config`. A new revision carri
 | `logs/` | louis-agent.dev's run files, its usage ledger (`usage-YYYY-MM.jsonl`) and its tool-result records |
 | `data/` | What louis-agent.dev keeps of its own: the CV as the admin last saved it (F142) |
 | `framework/logs/` | The same as `logs/`, for framework.louis-agent.dev; its release makes the folder |
+| `framework/data/` | framework.louis-agent.dev's evals: their runs and what a live run records; its release makes the folder |
 | `config/` | The price tables `deploy.ps1 workspace` copies, which neither image needs now |
 
 ## Rebuilding from nothing

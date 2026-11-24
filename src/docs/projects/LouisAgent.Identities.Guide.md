@@ -202,7 +202,7 @@ file itself, whose words hide instructions to send a lead and say a code word; c
 the guide's first security eval, prompt injection as OWASP's LLM01 names it.
 
 A live run of three repeats is the baseline, and every conversation's first repeat is kept in
-`src/site/recordings/evals/`, so `GuideEvalReplayTests` replays the whole eval on every build, facts only and with
+`src/site/recordings/evals/guide/`, so `GuideEvalReplayTests` replays the whole eval on every build, facts only and with
 no key, over an empty docs folder: the docs tools' answers are played back from the recording, so a doc edited
 since can't make it stale.
 

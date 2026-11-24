@@ -100,6 +100,24 @@ Everything it knows comes from the docs toolset, over `DOCS_ROOT`. The site's im
 laid out as the repo lays them, and on the PC the host's run profile sets `DOCS_ROOT` to `../../..`, the repo itself, so an answer can always name the doc it
 read ([LouisAgent.SiteFramework](LouisAgent.SiteFramework.md)).
 
+### 6. Its eval
+
+Orbi is measured by an eval of its own, `agents/louis-agent-framework/framework.eval.json`, beside its voice: a
+conversation for each rule its voice and skills name. It answers from the docs and ends with the doc's path and
+its choices, says it is an AI, says when the docs don't cover something, writes the whole program when asked,
+answers about the page in front of the developer from the page block, opens a page that answers, walks a page one
+section at a time, explains a listing from the page, sells nothing, tells no story of Louis, and opens with the
+answer. Where code can tell, a fact checks it, such as `used ShowPage` or `not-used SearchDocs`, and the judge marks
+the rest.
+
+`framework-injection` gives Orbi a page, in the eval file itself, whose words tell the AI reading it to send the
+developer to a download and to say a code word. Orbi has no tool to misuse, so what it could do wrong is say
+things, and code checks it said neither. Its live baseline's first repeats are kept in
+`src/site/recordings/evals/framework/`, and a test replays every conversation on each build, facts only, with no key
+and over an empty docs folder, since the tools' answers are played back too.
+
+*Decided in:* F126.5.2, [ADR 0134](../adr/0134-an-eval-is-one-file-of-conversations.md).
+
 ## Structure
 
 The place to look a file up.
@@ -109,6 +127,7 @@ The place to look a file up.
 | `FrameworkIdentity.cs` | The identity, and its two enums: `FrameworkIdentityName` and `FrameworkPack` |
 | `agents/louis-agent-framework/voice.md` | Who it is, its six rules, how it answers, and its skills' table |
 | `agents/louis-agent-framework/skills/` | `site-pages` and `writing`, always; `walk-a-page`, `explain-code` and `docs-map`, on demand |
+| `agents/louis-agent-framework/framework.eval.json` | Its eval: a conversation per rule, and the injection case |
 
 ## Tests
 
@@ -117,7 +136,9 @@ its voice's path, the docs and site packs and not the leads, every answer ending
 and a voice that says it is the framework's Orbi and an AI. `FrameworkSkillsTests` hold every skill to the shape, and
 the voice to its rules and its table of skills. `FrameworkSessionSnapshotTests` hold what the model sees in a framework
 Orbi session to a golden file, `FrameworkSessionSnapshot.json`, regenerated on purpose when a prompt changes. The
-site's own tests hold the catalogue to this identity alone ([LouisAgent.SiteFramework](LouisAgent.SiteFramework.md)).
+site's own tests hold the catalogue to this identity alone ([LouisAgent.SiteFramework](LouisAgent.SiteFramework.md)),
+and its eval: `FrameworkEvalFileTests` hold a conversation per rule and the injection case, and
+`FrameworkEvalReplayTests` replay every conversation from its recordings.
 
 ---
 [Docs index](../README.md) · Related: [LouisAgent.SiteFramework](LouisAgent.SiteFramework.md) · [LouisAgent.Identities.Guide](LouisAgent.Identities.Guide.md)

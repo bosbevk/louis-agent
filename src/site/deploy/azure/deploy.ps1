@@ -65,7 +65,7 @@ $Apps = @{
         Config = 'src\site\config'; SecretsFile = '.env.secrets.framework'; Yaml = 'src\site\deploy\azure\louis-agent-framework-app.yaml'; IdentityOutput = 'codingAppIdentityId'
         Share = 'louis-agent-workspace'; Hostname = 'framework.louis-agent.dev'; Suffix = '-framework'
         # The folders its yaml mounts from the share, a parent before its child, which a release makes first.
-        Folders = @('framework', 'framework/logs')
+        Folders = @('framework', 'framework/logs', 'framework/data')
         WhenSet = @{}
     }
 }
