@@ -56,6 +56,18 @@ public class TriageIdentityTests
     }
 
     /// <summary>
+    /// A case that comes back with something new after the manager decided gets a new decision (F126.5.3: in the eval's
+    /// follow-up, the manager asked the investigator again and never decided again).
+    /// </summary>
+    [Test]
+    public void TheManager_DecidesAgain_WhenACaseComesBackWithSomethingNew()
+    {
+        var (voice, _) = RoleCatalog.ModeParts(Mode());
+
+        Assert.That(voice, Does.Contain("decide again with `DecideCase`"));
+    }
+
+    /// <summary>
     /// The manager asks its three subagents by their addresses (F127.3.1), the one name each has (ADR 0133); that each
     /// reaches its subagent is held where the catalogue is, in the coding catalogue's tests.
     /// </summary>
