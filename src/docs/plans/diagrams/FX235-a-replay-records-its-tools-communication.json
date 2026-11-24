@@ -1,0 +1,89 @@
+{
+  "kind": "sequence",
+  "title": "FX235 a replay records its tools: a tool call in a free replay",
+  "caption": "A free replay of one turn: the model's recorded answer asks for a tool, the recorded tool answers from the store without running it, and the next model request matches its recording.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "L",
+        "icon": "play",
+        "tone": "green",
+        "label": "The tool loop"
+      },
+      {
+        "id": "M",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "The model's replay"
+      },
+      {
+        "id": "R",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "RecordedTool"
+      },
+      {
+        "id": "S",
+        "icon": "database",
+        "tone": "amber",
+        "label": "The replay store"
+      },
+      {
+        "id": "T",
+        "icon": "box",
+        "tone": "green",
+        "label": "The real tool"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "L",
+        "to": "M",
+        "text": "the request"
+      },
+      {
+        "step": "reply",
+        "from": "M",
+        "to": "L",
+        "text": "recorded: call SearchDocs(build a pack)"
+      },
+      {
+        "step": "message",
+        "from": "L",
+        "to": "R",
+        "text": "InvokeAsync(arguments)"
+      },
+      {
+        "step": "message",
+        "from": "R",
+        "to": "S",
+        "text": "FindAsync(tool, SearchDocs + arguments)"
+      },
+      {
+        "step": "reply",
+        "from": "S",
+        "to": "R",
+        "text": "the answer as it was recorded"
+      },
+      {
+        "step": "reply",
+        "from": "R",
+        "to": "L",
+        "text": "that answer; the real tool is never run"
+      },
+      {
+        "step": "message",
+        "from": "L",
+        "to": "M",
+        "text": "the next request, the tool's answer in it"
+      },
+      {
+        "step": "reply",
+        "from": "M",
+        "to": "L",
+        "text": "matches its recording: the answer"
+      }
+    ]
+  }
+}

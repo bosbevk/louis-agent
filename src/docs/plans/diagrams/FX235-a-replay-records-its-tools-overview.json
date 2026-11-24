@@ -1,0 +1,71 @@
+{
+  "kind": "cards",
+  "title": "FX235 a replay records its tools: the overview",
+  "caption": "What FX235 builds: a recorded tool, every tool wrapped in it, the guide's baseline recorded again, and the close.",
+  "cards": {
+    "rows": [
+      {
+        "cards": [
+          {
+            "id": "top",
+            "icon": "play",
+            "title": "FX235 A replay records its tools",
+            "code": "ReplayKind.Tool",
+            "text": "A free replay plays back what each tool answered, so a docs edit can't make it stale.",
+            "look": "highlight"
+          }
+        ]
+      },
+      {
+        "cards": [
+          {
+            "id": "tool",
+            "icon": "chip",
+            "title": "A recorded tool",
+            "code": "RecordedTool",
+            "text": "Records a tool's answer, and plays it back when the model is replayed (2)."
+          },
+          {
+            "id": "reg",
+            "icon": "box",
+            "title": "Every tool, wrapped",
+            "code": "ToolRegistry.Add",
+            "text": "The one place every tool enters an engine, subagents' too (3)."
+          },
+          {
+            "id": "base",
+            "icon": "checks",
+            "title": "The baseline again",
+            "code": "GuideEvalReplayTests",
+            "text": "Recorded live once more, then replayed over an empty docs folder (4)."
+          },
+          {
+            "id": "close",
+            "icon": "file",
+            "title": "The close",
+            "code": "docs and records",
+            "text": "The design docs, the guide, the lesson, the plan deleted (5)."
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "from": "top",
+        "to": "tool"
+      },
+      {
+        "from": "top",
+        "to": "reg"
+      },
+      {
+        "from": "top",
+        "to": "base"
+      },
+      {
+        "from": "top",
+        "to": "close"
+      }
+    ]
+  }
+}

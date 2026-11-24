@@ -1,0 +1,134 @@
+{
+  "kind": "classes",
+  "title": "FX235 a replay records its tools: the types",
+  "caption": "RecordedTool is a DelegatingAIFunction over a tool; the registry makes one for each function when the engine has a store, and it records into or replays from the store by the trial. The number in brackets is the step.",
+  "classes": {
+    "types": [
+      {
+        "id": "ai",
+        "name": "AIFunction",
+        "kind": "Microsoft.Extensions.AI",
+        "members": [
+          "string Name",
+          "JsonElement JsonSchema",
+          "ValueTask<object?> InvokeAsync(args, ct)"
+        ]
+      },
+      {
+        "id": "deleg",
+        "name": "DelegatingAIFunction",
+        "kind": "Microsoft.Extensions.AI",
+        "members": [
+          "AIFunction InnerFunction",
+          "passes name, schema, method through"
+        ]
+      },
+      {
+        "id": "rec",
+        "name": "RecordedTool",
+        "kind": "class (2)",
+        "members": [
+          "static AITool Around(tool, store)",
+          "records the answer or the failure",
+          "replays with the model, never runs",
+          "a miss throws"
+        ]
+      },
+      {
+        "id": "miss",
+        "name": "ToolReplayMissException",
+        "kind": "exception (2)",
+        "members": [
+          "names the tool and the trial"
+        ]
+      },
+      {
+        "id": "key",
+        "name": "ToolKey",
+        "kind": "record (2)",
+        "members": [
+          "string Tool",
+          "string Arguments"
+        ]
+      },
+      {
+        "id": "reg",
+        "name": "ToolRegistry",
+        "kind": "class",
+        "members": [
+          "ToolRegistry(supportsTools, store) (3)",
+          "void Add(tool): wraps a function (3)"
+        ]
+      },
+      {
+        "id": "store",
+        "name": "ReplayStore",
+        "kind": "class",
+        "members": [
+          "SaveAnswerAsync, SaveFailureAsync",
+          "FindAsync<T>(trial, ask)",
+          "ReplayKind.Tool (2)"
+        ]
+      },
+      {
+        "id": "trial",
+        "name": "ReplayTrial, SessionReplay",
+        "kind": "the mode",
+        "members": [
+          "Current: Record or Replay",
+          "Model: true on a free replay"
+        ]
+      },
+      {
+        "id": "eng",
+        "name": "AgentEngine",
+        "kind": "class",
+        "members": [
+          "new ToolRegistry(.., replay) (3)"
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "from": "deleg",
+        "to": "ai",
+        "kind": "inherits"
+      },
+      {
+        "from": "rec",
+        "to": "deleg",
+        "kind": "inherits"
+      },
+      {
+        "from": "rec",
+        "to": "store",
+        "kind": "uses"
+      },
+      {
+        "from": "rec",
+        "to": "trial",
+        "kind": "uses"
+      },
+      {
+        "from": "rec",
+        "to": "key",
+        "kind": "creates"
+      },
+      {
+        "from": "rec",
+        "to": "miss",
+        "kind": "creates"
+      },
+      {
+        "from": "reg",
+        "to": "rec",
+        "kind": "creates"
+      },
+      {
+        "from": "eng",
+        "to": "reg",
+        "kind": "creates"
+      }
+    ]
+  }
+}
