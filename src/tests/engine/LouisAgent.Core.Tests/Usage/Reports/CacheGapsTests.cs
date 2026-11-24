@@ -121,6 +121,18 @@ public class CacheGapsTests
         Assert.That((g.Requests, g.From5To60m), Is.EqualTo((2, 1)));
     }
 
+    /// <summary>
+    /// A tool's reading of a file is left out too (F171.1, Louis's pick, "Like a summary"): it carries no marker, so it
+    /// neither reads nor writes the prefix.
+    /// </summary>
+    [Test]
+    public void ToolRequests_AreLeftOut()
+    {
+        CacheGapGroup g = One(Request(Min(0)), Request(Min(3), purpose: UsagePurpose.Tool), Request(Min(20)));
+
+        Assert.That((g.Requests, g.From5To60m), Is.EqualTo((2, 1)));
+    }
+
     [Test]
     public void SubSessionRollUps_AreLeftOut()
     {

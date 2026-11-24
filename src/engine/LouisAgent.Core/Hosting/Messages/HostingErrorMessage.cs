@@ -1,5 +1,6 @@
 
 using LouisAgent.Composition.Messages;
+using LouisAgent.Core.Hosting.Messages.Holes;
 using System.ComponentModel;
 
 namespace LouisAgent.Core.Hosting.Messages;
@@ -22,6 +23,7 @@ public enum HostingErrorMessage
     LookupLlmUnknown,
 
     [Description("Unknown LLM profile '{Name}'. Available: {Available}.")]
+    [Holes(typeof(UnknownSessionLlmHoles))]
     UnknownSessionLlm,
 
     [Description("LLM_SESSION_PROFILES names '{Name}', but {File} isn't there.")]

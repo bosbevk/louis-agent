@@ -91,6 +91,24 @@ public class SubSessionPromptBudgetTests
     }
 
     /// <summary>
+    /// A tool's reading of a file doesn't count against this prompt's size either (F171.1, Louis's pick, "Like a
+    /// summary"): it runs outside the loop, on its own prompt.
+    /// </summary>
+    [Test]
+    public async Task AToolsRequestInTheScope_DoesNotCountTowardTheBudget()
+    {
+        // Counted, a reading's 5,000 input tokens would already be over the budget before the first request.
+        var client = await RunAsync(budget: 1_000, parent: "sess_puls#1", before: scope => scope.Add(new UsageRecord(
+            DateTimeOffset.UtcNow, 0, UsagePurpose.Tool, "api", "sess_child", 1, null, null, null, "claude-haiku-5-5",
+            new UsageTokens(5_000, 0, 0, 100, null), 1, "end_turn")));
+
+        Assert.That(client.Requests[0].Options?.ToolMode, Is.Not.EqualTo(ChatToolMode.None),
+            "the first request keeps its tools");
+        Assert.That(client.Requests[3].Options?.ToolMode, Is.EqualTo(ChatToolMode.None),
+            "the budget still works on the real prompts");
+    }
+
+    /// <summary>
     /// Once the next prompt would go over the budget, the subagent has to answer, with its tool list left as it was.
     /// </summary>
     [Test]
