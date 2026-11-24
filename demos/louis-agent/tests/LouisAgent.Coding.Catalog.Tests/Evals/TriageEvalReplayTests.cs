@@ -45,7 +45,7 @@ public class TriageEvalReplayTests
         ["RATES_FILE"] = Path.Combine(TestPaths.RepoRoot, "demos", "louis-agent", "config", "rates.json")
     };
 
-    /// <summary>What the demo's program composes besides its catalogue: the web and the provider the team runs on.</summary>
+    /// <summary>What the demo's program composes besides its catalogue: the web and the team's provider.</summary>
     private static readonly HostServices Services = new(WebAccess.Create, Providers: [AnthropicProvider.Instance]);
 
     /// <summary>
@@ -55,8 +55,10 @@ public class TriageEvalReplayTests
     [Test]
     public async Task TheTriageEval_ReplayedFromItsRecordings_MeetsEveryFact_InEveryConversation()
     {
-        var replayed = await EvalReplay.AssertFactsMetAsync(CodingCatalog.Create, Services, DemoSettings, "triage",
-            Recordings);
+        // The catalogue the project's prompts were registered from: a new one would bring its prompts again after
+        // the first was read, which the engine refuses; the tools are played back, so its settings reach nothing.
+        var replayed = await EvalReplay.AssertFactsMetAsync(() => CodingPrompts.Catalog, Services, DemoSettings,
+            "triage", Recordings);
 
         using var file = new StreamReader(new TriageIdentity().Prompts.GetFileInfo("agents/triage/triage.eval.json")
             .CreateReadStream());

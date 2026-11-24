@@ -19,6 +19,13 @@
 
 Each says `ComesBeforeTheEngine`, so a session's tools keep their order: these, then the engine's, then a product's.
 
+**The files pack's search says where text is, briefly.** `SearchWorkspace` returns each hit as `path:line: text`,
+from the folder it's given (`searchPath`, the whole workspace by default), so an agent can search only the repository
+it was handed. A hit's line comes back whole up to 200 characters, as every line of ordinary code does; a longer one,
+such as a recording's one-line JSON, shows the part around the match, marked as cut with its full length, and
+`ReadWorkspaceFile` reads the file whole. So a search's answer stays small enough that the engine never has to
+summarise it.
+
 **The web pack holds only tools.** The browser, the search providers and the guards around every fetch stay in the engine,
 so a pack can't reach an internal address or skip a site's `robots.txt`. It keeps its own small PDF reader, because a pack
 references no other pack.

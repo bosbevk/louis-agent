@@ -1,7 +1,7 @@
 # LouisAgent.Api.Evals — design
 
 > **Kind:** library (`net10.0`) · **Path:** `src/hosts/LouisAgent.Api.Evals/` · **References:** LouisAgent.Evals,
-> LouisAgent.Api · **Used by:** LouisAgent.SiteApi, LouisAgent.SiteFrameworkApi, and their tests
+> LouisAgent.Api · **Used by:** LouisAgent.SiteApi, LouisAgent.SiteFrameworkApi, the demo's LouisAgent.CodingApi, and their tests
 > **Also shows:** `component`
 
 ![What a site's API takes for its agents' evals: its routes behind the admin key, a desk that runs one run at a time, the work that plays a run, and its settings](diagrams/LouisAgent.Api.Evals.svg)

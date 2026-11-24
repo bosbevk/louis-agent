@@ -139,6 +139,14 @@ Its runs are kept in `src/site/data/framework/evals/runs/` and its recordings in
 Its replay test, `FrameworkEvalReplayTests`, reads the first repeats kept in `src/site/recordings/evals/framework/`;
 copy a new live run's there the way the guide's are copied.
 
+## On the demo's host
+
+The demo's API host, the coding agent's, has the same routes for the demo's agents' evals, the triage team's
+`triage` among them, and the code-review admin shows them at `http://127.0.0.1:5082/admin/evals`. Its runs are kept
+in `demos/louis-agent/data/evals/runs/` and its recordings in `demos/louis-agent/data/recordings/`.
+`TriageEvalReplayTests` reads the first repeats kept in `demos/louis-agent/recordings/evals/triage/`; copy a new live
+run's there the way the guide's are copied.
+
 ## Give a conversation a page that isn't on the site
 
 To hand the agent a page of your own, such as one with instructions hidden in it, give the page in the eval file
