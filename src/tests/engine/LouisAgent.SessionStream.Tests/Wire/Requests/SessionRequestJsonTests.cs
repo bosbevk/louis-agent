@@ -41,6 +41,19 @@ public class SessionRequestJsonTests
         }
         """);
 
+    /// <summary>
+    /// A message with a file on the wire (F171.1 step 3): the file's bytes in base64, as the price import sends one,
+    /// and its media type; a file has no text content.
+    /// </summary>
+    private static readonly string FileMessageJson = Compact(
+        """
+        {
+          "message": "Check this", "attachments": [
+            { "name": "account.jpg", "content": null, "bytes": "AQID/w==", "mediaType": "image/jpeg" }
+          ]
+        }
+        """);
+
     /// <summary>A page on the wire, with one area that is also the one in view.</summary>
     private static readonly string PageJson = Compact(
         """
@@ -88,6 +101,38 @@ public class SessionRequestJsonTests
     public void AMessage_WritesItsAttachments_AndNoPage() =>
         Assert.That(Written(new SendMessageRequest("Plan three dinners", [new AttachmentRequest("list.txt", "eggs")])),
             Is.EqualTo(MessageJson));
+
+    /// <summary>
+    /// F171.1 step 3: an attachment that carries a file reads with its bytes whole and its media type, and writes back
+    /// the same.
+    /// </summary>
+    [Test]
+    public void AFile_ReadsWithItsBytesWhole_AndWritesBackTheSame()
+    {
+        var read = JsonSerializer.Deserialize<SendMessageRequest>(FileMessageJson, JsonSerializerOptions.Web)!;
+        var file = read.Attachments![0];
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(file.Bytes, Is.EqualTo(new byte[] { 1, 2, 3, 255 }));
+            Assert.That(file.MediaType, Is.EqualTo("image/jpeg"));
+            Assert.That(Written(read), Is.EqualTo(FileMessageJson));
+        });
+    }
+
+    /// <summary>A text attachment reads as it did before files came: no bytes and no media type.</summary>
+    [Test]
+    public void ATextAttachment_ReadsAsBefore_WithNoBytes()
+    {
+        var read = JsonSerializer.Deserialize<SendMessageRequest>(MessageJson, JsonSerializerOptions.Web)!;
+        var text = read.Attachments![0];
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(text, Is.EqualTo(new AttachmentRequest("list.txt", "eggs")));
+            Assert.That(Written(read), Is.EqualTo(MessageJson));
+        });
+    }
 
     /// <summary>
     /// A page travels by the names the browser's own page writes: <c>inView</c>, <c>open</c>, <c>links</c>.
