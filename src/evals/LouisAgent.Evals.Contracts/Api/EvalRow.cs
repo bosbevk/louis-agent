@@ -18,14 +18,16 @@ public sealed record EvalRow(string Name, string Agent, int Conversations, RunRo
     public int? CountChange() => LastRun?.Passed - RunBefore?.Passed;
 
     /// <summary>
-    /// What a live run of this many repeats is likely to cost: what the last live run spent a repeat, the agent's and
-    /// the judge's added, times the repeats. None with no live run, or when that run had no price, never 0. When only
-    /// one of the two costs was known, it is that one alone, as every sum of a run adds what is known
+    /// What a live run of this many repeats is likely to cost: what the last live run spent on one conversation played
+    /// once, the agent's and the judge's added, times this eval's conversations and the repeats, so an eval that grew
+    /// since is priced at its size now (FX234). None with no live run, or when that run had no price, never 0. When
+    /// only one of the two costs was known, it is that one alone, as every sum of a run adds what is known
     /// (<see cref="KnownCost" />), so it says less than the run will spend rather than nothing.
     /// </summary>
     public decimal? EstimateLive(int repeats) =>
-        LastLiveRun is { Repeats: > 0 } live && KnownCost.Sum([live.Cost, live.JudgeCost]) is { } spent
-            ? spent / live.Repeats * repeats
+        LastLiveRun is { Repeats: > 0, Conversations: > 0 } live &&
+        KnownCost.Sum([live.Cost, live.JudgeCost]) is { } spent
+            ? spent / (live.Repeats * live.Conversations) * Conversations * repeats
             : null;
 
     /// <summary>Whether it has a live run that finished, the one a replay plays back for free.</summary>

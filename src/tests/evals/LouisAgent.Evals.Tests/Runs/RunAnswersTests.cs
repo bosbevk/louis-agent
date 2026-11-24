@@ -297,6 +297,24 @@ public class RunAnswersTests
             Is.EqualTo(estimate));
     }
 
+    /// <summary>
+    /// FX234: the estimate scales with the conversations too. The guide's eval grew from one conversation to twelve,
+    /// and the estimate, from a one-conversation run, still said $0.012 for a run that cost $0.090.
+    /// </summary>
+    [Test]
+    public void AnEvalsEstimate_ScalesWithItsConversations_AsWellAsItsRepeats()
+    {
+        // The last live run: one conversation, three repeats, $0.012 in all, so $0.004 a conversation played once.
+        var lastLive = LastLive(3) with
+        {
+            Cost = 0.008m,
+            JudgeCost = 0.004m
+        };
+
+        Assert.That(new EvalRow("guide", "louis-agent-guide", 12, null, lastLive).EstimateLive(3),
+            Is.EqualTo(0.144m));
+    }
+
     /// <summary>With no live run, or one that had no price, there is no estimate, never 0.</summary>
     [Test]
     public void WithNoLiveRun_OrNoPrice_ThereIsNoEstimate()
