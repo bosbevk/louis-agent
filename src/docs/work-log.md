@@ -12,7 +12,7 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 165 | 74 |
+| Features (`F`) | 166 | 74 |
 | Fixes (`FX`) | 228 | 12 |
 | Cleanups (`CL`) | 47 | 24 |
 
@@ -133,10 +133,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups |
 | CL61 | `ToolCallGuards` past 200 lines once laid out: split it, holes into records (ADR 0119), and end the turn through `TurnEnding.Ends` | Cleanups |
 
-## Features (165 done)
+## Features (166 done)
 
 | Id | When | What |
 |---|---|---|
+| F177 | 2026-11-24 | Work with us: how a job with a client goes, as a page of slides at `/work-with-us`, in the menu before Contact; FX246 and FX247 fixed the slides layout for it |
 | F176 | 2026-11-23 | Sequences: an identity may declare a fixed order of agents from its own `Calls`; asking a sequence's first step runs the whole sequence in code for one of the turn's asks, and a later step can't be asked alone; each step held to one ask's checks, given the first message with the answer before (or the whole conversation, or only the answer before), and on a failure stopping (or asking once more, or skipping it, named); the rules checked before a step opens |
 | F126 | 2026-11-24 | Evals, redesigned, closed: one `.eval.json` of conversations beside each agent, facts in code and criteria a judge marks, runs started, followed, flipped and re-graded from an admin page, replays that play back the model's and the tools' answers for free; the guide, the framework's Orbi and the triage team each measured, ADR 0134 |
 | F126.5 | 2026-11-24 | New evals, closed: the guide's, the framework Orbi's and the triage team's, each on its own host with an admin page, each baseline replayed free |
