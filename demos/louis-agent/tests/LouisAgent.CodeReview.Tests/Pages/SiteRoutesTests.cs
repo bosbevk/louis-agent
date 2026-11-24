@@ -57,8 +57,8 @@ public class SiteRoutesTests
 
     /// <summary>
     /// F127.6: the app names its areas through the builder, the areas the program names too. Opening a screen's
-    /// address draws the framework's page in this site's admin frame, and no eval studio is in the admin's sidebar
-    /// since its old evals were deleted (F126.1).
+    /// address draws the framework's page in this site's admin frame, and the admin's sidebar has the evals' link
+    /// (F126.5.3: the demo's agents' evals, the triage team's among them).
     /// </summary>
     [Test]
     public void AScreensAddress_OpensTheFrameworksPage_InTheAdminFrame()
@@ -75,14 +75,14 @@ public class SiteRoutesTests
         app.WaitForAssertion(() =>
         {
             Assert.That(app.Find(".admin-main h1").TextContent, Is.EqualTo("Usage"));
-            Assert.That(app.FindAll(".sidebar a.side-link").Select(link => link.TextContent),
-                Has.None.EqualTo("Evals"));
+            Assert.That(app.FindAll(".sidebar a.side-link").Select(link => link.TextContent.Trim()),
+                Does.Contain("Evals"));
         }, TimeSpan.FromSeconds(10));
     }
 
     /// <summary>
-    /// F144: the admin's home draws a card for each of the app's admin areas, the overview and the packs, in the order
-    /// it names them.
+    /// F144: the admin's home draws a card for each of the app's admin areas, the overview, the packs and the evals
+    /// (F126.5.3), in the order it names them.
     /// </summary>
     [Test]
     public void TheAdminsHome_DrawsACardPerArea_InOrder()
@@ -98,7 +98,7 @@ public class SiteRoutesTests
 
         app.WaitForAssertion(() =>
             Assert.That(app.FindAll(".admin-card-title").Select(title => title.TextContent),
-                Is.EqualTo(new[] { "Overview", "Packs" })), TimeSpan.FromSeconds(10));
+                Is.EqualTo(new[] { "Overview", "Packs", "Evals" })), TimeSpan.FromSeconds(10));
     }
 
     /// <summary>The program names the areas the test above draws, through the same method.</summary>
