@@ -23,6 +23,14 @@
     <ProjectReference Include="..\..\..\..\src\tests\shared\LouisAgent.Testing\LouisAgent.Testing.csproj" />
     <!-- F18 step 7.6.3: the in-memory API host the unit tests share. -->
     <ProjectReference Include="..\LouisAgent.Api.Testing\LouisAgent.Api.Testing.csproj" />
+    <!-- The Anthropic provider, so the whole path's live test builds the model as a host does (F171.1 step 10). -->
+    <ProjectReference Include="..\..\..\..\src\engine\LouisAgent.Core.Anthropic\LouisAgent.Core.Anthropic.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The made-up account the core's proof reads, linked rather than copied, as a photo and as a PDF. -->
+    <None Include="..\..\engine\LouisAgent.Core.IntegrationTests\Llm\Documents\sample-account.*"
+          Link="Documents\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>
