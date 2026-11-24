@@ -513,6 +513,38 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX245 · A criterion names what the answer is for
+
+A criterion that names words gets marked on the words. "Says nothing will be changed" failed a manager that had done the right thing and said so differently. Name what the answer must achieve, and the judge marks the answer, not its phrasing. Skill 12 (evaluation).
+
+## FX238 · Say where a thing goes, and what may follow it
+
+"End with the doc" left room for a sentence after it. "The last line of your words, nothing after it but the choices" left none, and the next run kept it every time. A placement rule needs its boundary said. Skill 2 (prompt engineering).
+
+## FX237 · One agent's fix is another's
+
+The guide's empty replies (FX233) and Orbi's had one cause, Offer ending the turn, so one rule fixed both. Writing that rule as "before any page you show" then broke Orbi's own way of opening a page, whose result asks for a line after it: a rule copied across agents carries the first agent's assumptions with it, and the second agent's eval is what shows them. Skill 3 (agent design).
+
+## FX236 · A format the prompt forbids won't be used, so give it one it allows
+
+Orbi's writing skill says never explain in a list, so it put the settings in a sentence. A fenced block of NAME=value lines isn't an explanation, and naming it gave Orbi a shape it was allowed to use. Skill 5 (structured outputs).
+
+## FX234 · An estimate is only as good as the unit it scales by
+
+The estimate scaled by repeats and forgot conversations, so it was right until the eval grew. Price the smallest unit, one conversation played once, and multiply by everything that varies. Skill 13 (cost and token economics).
+
+## FX233 · Planning the words is not writing them
+
+The recorded answer showed the model planning its reply in its thinking, then sending only the card. A rule in the voice cut the empty replies to two in 36; the same rule in the always-loaded writing skill took them to none. Where a rule sits decides how often it's read. Skill 2 (prompt engineering).
+
+## FX232 · A rule's loophole is its exact words
+
+"Never end with a doc's name" forbade one place and left the rest open, and the model found the rest. The rule meant never name one at all, and saying that closed it in every repeat. Skill 2 (prompt engineering).
+
+## FX231 · Ask the person what the rule means before writing it twice
+
+The first live run showed the guide counting its greeting on top of three, and the fix made the greeting count. Louis read the run and said the opposite: the greeting never counts, and the judge was wrong. The eval is a tool for finding where a prompt and its author disagree; the author decides which is right, and a criterion is rewritten as often as the prompt. Skill 12 (evaluation).
+
 ## FX244 · Give a search the scope the task already has
 
 Each triage case names the department's repository, and the investigator searched the whole workspace anyway,
