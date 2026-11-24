@@ -23,6 +23,9 @@
     <!-- The triage team's eval read as an eval, and replayed from its recordings (F126.5.3). -->
     <ProjectReference Include="..\..\..\..\src\evals\LouisAgent.Evals\LouisAgent.Evals.csproj" />
     <ProjectReference Include="..\..\..\..\src\tests\hosts\LouisAgent.Api.Evals.Testing\LouisAgent.Api.Evals.Testing.csproj" />
+    <!-- The web and the provider the demo's program composes, for the replay's host. -->
+    <ProjectReference Include="..\..\..\..\src\engine\LouisAgent.Core.Web\LouisAgent.Core.Web.csproj" />
+    <ProjectReference Include="..\..\..\..\src\engine\LouisAgent.Core.Anthropic\LouisAgent.Core.Anthropic.csproj" />
     <ProjectReference Include="..\..\..\..\src\tests\shared\LouisAgent.Testing\LouisAgent.Testing.csproj" />
   </ItemGroup>
 

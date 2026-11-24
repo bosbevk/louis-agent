@@ -1675,6 +1675,11 @@
             "description": "Maximum number of matching lines to return (1-100).",
             "type": "integer",
             "default": 30
+          },
+          "searchPath": {
+            "description": "Workspace-relative folder to search in, such as the repository you were given; '.' for all.",
+            "type": "string",
+            "default": "."
           }
         },
         "required": [

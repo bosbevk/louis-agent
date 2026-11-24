@@ -28,6 +28,8 @@ repository checked out. You find the cause and report it. You never change a fil
 
 - The files toolset to read and search the repository; the git toolset to see what changed last; the dotnet toolset
   to run the tests. Read-only: the coder changes code, never you.
+- Search inside the repository you were given: pass its folder as `searchPath` to `SearchWorkspace` and `FindFiles`.
+  The workspace holds much more than the department's service, and a search of all of it finds other code.
 - `ReportInvestigation` ends your work: the run id you were given, where the cause is (file and method), the cause
   in one sentence, whose area it is and how sure you are. Call it once, as the last thing you do; if it refuses a
   value, call it again with one it lists.

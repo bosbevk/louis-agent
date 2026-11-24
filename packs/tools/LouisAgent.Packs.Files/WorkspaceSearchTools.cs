@@ -37,7 +37,10 @@ public sealed class WorkspaceSearchTools
         _root = _boundary.Root;
     }
 
-    /// <summary>Every line under the workspace holding the text, case ignored, up to the most asked for.</summary>
+    /// <summary>
+    /// Every line under a folder of the workspace holding the text, case ignored, up to the most asked for (FX243: a
+    /// folder, so an agent searches the repository it was given and not the whole tree).
+    /// </summary>
     [Description(
         """
         Recursively search source and documentation files under the workspace root for a case-insensitive literal
@@ -51,14 +54,17 @@ public sealed class WorkspaceSearchTools
     public string SearchWorkspace(
         [Description("Text to find.")] string query,
         [Description("Maximum number of matching lines to return (1-100).")]
-        int maxResults = 30)
+        int maxResults = 30,
+        [Description("Workspace-relative folder to search in, such as the repository you were given; '.' for all.")]
+        string searchPath = ".")
     {
         if (string.IsNullOrWhiteSpace(query)) return MessageText.Format(WorkspaceToolMessage.WorkspaceSearchQueryEmpty);
 
         maxResults = Math.Clamp(maxResults, 1, MostMatches);
         var matches = new List<string>();
+        // From the folder asked for, held inside the workspace; hits keep their paths from the workspace's root.
         var pending = new Stack<string>();
-        pending.Push(_root);
+        pending.Push(_boundary.Resolve(searchPath));
 
         // Depth first through the folders, skipping what's excluded, until enough lines are found.
         while (pending.Count > 0 && matches.Count < maxResults)

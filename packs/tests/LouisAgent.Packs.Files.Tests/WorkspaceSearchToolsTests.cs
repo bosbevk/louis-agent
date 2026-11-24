@@ -176,4 +176,33 @@ public class WorkspaceSearchToolsTests
             Directory.Delete(root, recursive: true);
         }
     }
+
+    /// <summary>
+    /// FX243: a search can stay inside one folder, such as the department's repository a case names, so it finds only
+    /// what's there; a folder outside the workspace is refused.
+    /// </summary>
+    [Test]
+    public void ASearchInAFolder_FindsOnlyWhatIsInside_AndNeverOutside()
+    {
+        string root = Path.Combine(Path.GetTempPath(), $"louis-agent-{Guid.NewGuid():N}");
+        Directory.CreateDirectory(Path.Combine(root, "service"));
+        File.WriteAllText(Path.Combine(root, "service", "OrderTotal.cs"), "var rate = Codes[code];");
+        File.WriteAllText(Path.Combine(root, "notes.md"), "Codes are retired by marketing.");
+
+        try
+        {
+            var tools = new WorkspaceSearchTools(root);
+            string inside = tools.SearchWorkspace("Codes", searchPath: "service");
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(inside, Does.Contain("OrderTotal.cs:1").And.Not.Contain("notes.md"));
+                Assert.That(() => tools.SearchWorkspace("Codes", searchPath: ".."), Throws.ArgumentException);
+            });
+        }
+        finally
+        {
+            Directory.Delete(root, recursive: true);
+        }
+    }
 }

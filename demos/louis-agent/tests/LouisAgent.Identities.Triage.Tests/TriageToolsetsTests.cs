@@ -35,4 +35,18 @@ public class TriageToolsetsTests
     public void TheManagersCalls_AreItsRoles_NeverTheCoder() =>
         Assert.That(new TriageIdentity().Calls,
             Is.EquivalentTo(new[] { "triage.sorter", "triage.investigator", "triage.reviewer" }));
+
+    /// <summary>
+    /// FX243: the roles that read the department's repository search inside it, passing it as the search's folder,
+    /// not the whole workspace, so their results are the service's own lines.
+    /// </summary>
+    [TestCase("agents/triage/subagents/investigator/voice.md")]
+    [TestCase("agents/triage/subagents/reviewer/voice.md")]
+    public void ARoleThatReadsTheRepository_SearchesInsideIt(string path)
+    {
+        var file = new TriageIdentity().Prompts.GetFileInfo(path);
+        using var reader = new StreamReader(file.CreateReadStream());
+
+        Assert.That(reader.ReadToEnd(), Does.Contain("`searchPath`"));
+    }
 }
