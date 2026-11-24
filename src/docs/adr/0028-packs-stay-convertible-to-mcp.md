@@ -35,7 +35,10 @@ when a session opens; doing nothing.
 - **A tool that needs a model takes `IChatClient`** (Microsoft.Extensions.AI) in its constructor, never a provider
   of ours, so someone using the tool on its own hands in their own model and our hosts hand in theirs. No pack
   references `LouisAgent.Core` or a provider (`.Anthropic`, `.Ollama`, `.OpenAi`); the pack that needs a model takes
-  `Microsoft.Extensions.AI.Abstractions`, which the engine already uses.
+  `Microsoft.Extensions.AI.Abstractions`, which the engine already uses. Our hosts hand that model through the
+  program's catalogue: `AgentHost.Build` calls the catalogue's function with the instance's models, each already
+  traced, replayed and written to the ledger, and the catalogue picks one for each pack by its profile's name. No
+  pack context carries a model.
 - **Tool names** are unique across the catalogue, MCP-safe, and come from one function, `AgentCatalog.NamesOf`.
 - **A server is pinned** by its version when it reports one, and always by a hash of the listed tools; an allowlisted
   tool missing from the list counts as drift. The `ReadOnly` hint comes from a tool's declared effect (`ToolEffect`),
