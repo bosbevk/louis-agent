@@ -513,6 +513,39 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX243 · Give a search the scope the task already has
+
+Each triage case names the department's repository, and the investigator searched the whole workspace anyway,
+because its search tool had no way to say where. The task held the scope; the tool couldn't take it. A tool that
+can narrow, and a prompt that says to, keep an agent inside the problem it was given. Skill 4 (tool use).
+
+## FX242 · A tool's answer is part of the prompt, so size it like one
+
+A search returned each matching line whole, and a one-line JSON file turned one hit into half a megabyte. The engine
+caught it and paid a second model to summarise, which made the run sixteen times dearer and handed the agent a
+retelling instead of the lines. Showing a window around the match, marked as cut, kept the evidence true and the
+answer small. The ledger's breakdown by purpose is what pointed at it: $0.84 of a run's $1.84 was summaries, all of
+one tool. Skill 13 (cost and token economics).
+
+## FX241 · Say why a rule exists, and a model keeps it more often
+
+"A case for a person ends with RaiseToPerson" was in the voice, and once in three the manager decided "person" and
+stopped. Adding the reason, that a decision alone gives the case to nobody, is the cheapest fix there is, and the
+next run kept it every time. Skill 2 (prompt engineering).
+
+## FX240 · A prompt has to say what happens when the work comes back
+
+The manager's voice told it how to decide a case, and nothing about a case that returns after it decided, so a
+follow-up got an answer but no new decision. Conversations with more than one turn find the gaps a single ask never
+does. Skill 12 (evaluation).
+
+## FX239 · Who opens a session decides what it can do
+
+The triage team worked when the orchestrator opened its sessions with their toolsets named, and had nothing when an
+eval opened them by identity alone: the instance's default applied, and the voices named their toolsets only in
+prose, which the engine never reads. Declaring them in each header makes the team the same whoever opens it. A
+harness that opens sessions its own way is a good test of what a prompt only implies. Skill 3 (agent design).
+
 ## FX235 · A replay that runs the world again isn't a replay
 
 The guide's free replay played back the model but ran its tools, so it read the docs as they are today, and a line

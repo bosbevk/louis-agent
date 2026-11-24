@@ -352,7 +352,7 @@ skip without one, in CI too. The judge's replay and a whole run on the API in me
 The page sent is read on the server, so what only a screen knows (the section in view, an open card) is never in
 it, and words a site hides with CSS alone are. A re-grade can only grade what was stored: a conversation whose asks
 changed needs a live run. A person's flips correct a run's numbers and say which criterion wants rewording; they
-aren't handed to the judge as examples. The guide's new evals are the next child of [the evals' plan](../plans/F126-evals-redesigned.md).
+aren't handed to the judge as examples.
 
 ## Related docs
 

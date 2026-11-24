@@ -697,6 +697,38 @@ louis-agent.dev". A criterion is an instruction to a reader as literal as a mode
 case was written, so it held eleven conversations, not twelve, and a second run was needed. A live run measures the
 build it runs on, not the branch; rebuild before you pay.
 
+## The triage team's evals, and F126 closed (F126.5.3)
+
+The third agent was the hardest to measure, because the triage manager doesn't answer alone: it asks a sorter and an
+investigator, by their addresses, and decides. So its eval proves routing in code for the first time: `routed-to
+triage.investigator` is met when the turn asked the investigator, and `continued` when a follow-up asked it again.
+Each case is briefed as the feed would brief it, on the sample order service, with errors made by running it, and
+no case can reach the coder: the manager's calls name only its three roles, so an auto-fix stops at the decision.
+
+**Five live runs, five findings.** The first ended 0 of 6 for three cents: an eval opens a session by identity alone,
+and the team's voices named their toolsets only in prose, so the manager had none (FX239). The next stopped before it
+began, the agents toolset needing a peer. Then two real faults in the manager's prompt, each found in one repeat in
+three: it didn't decide again when a case came back (FX240), and it decided "person" without raising the case
+(FX241). Each fix was a sentence, and each said why.
+
+**Then the cost.** Those runs cost $1.84 each, $0.10 a chat, against a fifth of a cent for the guide. The ledger's
+split by purpose showed $0.84 of it was summaries, and every one was the files pack's search returning megabyte-long
+lines from the repository's one-line files. Showing a window around the match (FX242), and letting the investigator
+search only the repository it was given (FX243), brought the next run to $0.12, $0.0067 a chat, sixteen times less,
+and it passed better too: 5 of 6 in every repeat. Cost per chat is the number to watch: it made a $1.84 run look
+reasonable until it sat beside the guide's.
+
+**The pages caught up.** Closing F126 meant the framework site's page, louis-agent.dev's trust tile and the
+framework Orbi's map of the site could no longer say the evals were being rebuilt. They say what is built now, each
+claim held by a test, and Orbi's baseline was recorded again for its changed prompt; its injection case then caught
+the eval out rather than the agent, when a warning that named the download site failed a fact meant for obeying.
+
+**F126 in one paragraph.** The evals were deleted and rebuilt as one file of conversations beside each agent, with
+facts that code checks and criteria a judge marks, a person's flip when the judge is wrong, runs started and read on
+an admin page, re-grades that ask the judge only what changed, and replays that play back the model's and the tools'
+answers for nothing. Three agents on three hosts are measured by it, each with a baseline that every pull request
+replays.
+
 ## The limits, said plainly
 
 36 labels, one judge, one person. Nine fails is "few labels" by the card's own rule. A pass at 100% on nine is weaker
