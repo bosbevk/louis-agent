@@ -56,4 +56,13 @@ public class OutsideTests
     public void AKeyThatIsNotSet_SkipsTheTest_SayingTheKeyIsMissing() =>
         Assert.That(() => Outside.Key(NotSet, "the judge's model"),
             Throws.InstanceOf<IgnoreException>().With.Message.Contains(NotSet).And.Message.Contains("key"));
+
+    /// <summary>
+    /// A file kept on this machine and never in the repository, such as a real bill (F171.1), skips when its path
+    /// isn't set, and says it is a file on this machine.
+    /// </summary>
+    [Test]
+    public void ALocalFileThatIsNotSet_SkipsTheTest_SayingItIsAFileOnThisMachine() =>
+        Assert.That(() => Outside.LocalFile(NotSet, "real bill"),
+            Throws.InstanceOf<IgnoreException>().With.Message.Contains(NotSet).And.Message.Contains("this machine"));
 }

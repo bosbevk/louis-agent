@@ -52,8 +52,7 @@ public class DocumentAdapterProofTests
     [Test]
     public async Task ARealBill_IsReadIntoARecord()
     {
-        string? path = Environment.GetEnvironmentVariable("BILL_PDF");
-        if (string.IsNullOrEmpty(path)) Assert.Ignore("BILL_PDF isn't set: no real bill to read.");
+        string path = Outside.LocalFile("BILL_PDF", "real bill");
 
         var reading = await Read(path, "application/pdf");
 

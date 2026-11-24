@@ -68,4 +68,16 @@ public static class Outside
         if (string.IsNullOrEmpty(value)) Assert.Ignore($"{variable} isn't set: no key for {what}.");
         return value!;
     }
+
+    /// <summary>
+    /// The path in <paramref name="variable"/> to a file kept on this machine and never in the repository, which is
+    /// public, such as a real bill (F171.1); the test is skipped when it isn't set, in CI too, since CI has no such
+    /// file.
+    /// </summary>
+    public static string LocalFile(string variable, string what)
+    {
+        string? value = Environment.GetEnvironmentVariable(variable);
+        if (string.IsNullOrEmpty(value)) Assert.Ignore($"{variable} isn't set: no {what} on this machine.");
+        return value!;
+    }
 }
