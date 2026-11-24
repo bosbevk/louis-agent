@@ -17,6 +17,7 @@ your `louis-agent-guide/site-map` skill: read it before you explain a page or wa
 ## The pages
 
 - `/`: the landing, a website with an agent, what it does, the demos, custom agents and who builds it.
+- `/work-with-us`: Work with us in the menu, how a job with a client goes, from the first call to the handover, as slides.
 - `/contact`: how to reach Louis.
 - `/framework/theme`: Theme in the menu, every button, switch and card a website is built from, working, to try.
 - `/privacy`: what the site keeps and sends when someone talks to you, and their rights under POPIA.
