@@ -101,5 +101,5 @@ event: content_block_stop
 data: {"type":"content_block_stop","index":2}
 
 event: error
-data: {"type":"error","error":{"type":"api_error","message":"InvalidOperationException: the connection dropped"},"usage":{"input_tokens":80,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":5,"requests":1,"cost":null,"currency":null,"unpriced":1,"display_cost":null,"display_currency":null,"display_symbol":null,"rate_as_of":null}}
+data: {"type":"error","error":{"type":"api_error","message":"Sorry, something went wrong on our side and this answer didn't come through. Please try again in a minute."},"usage":{"input_tokens":80,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":5,"requests":1,"cost":null,"currency":null,"unpriced":1,"display_cost":null,"display_currency":null,"display_symbol":null,"rate_as_of":null}}
 
