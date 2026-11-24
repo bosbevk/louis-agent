@@ -25,6 +25,8 @@
     <ProjectReference Include="..\..\web\LouisAgent.Web.Framework\LouisAgent.Web.Framework.csproj" />
     <!-- Every place's own address, the area it names with .Places(). -->
     <ProjectReference Include="..\..\web\LouisAgent.Web.Places\LouisAgent.Web.Places.csproj" />
+    <!-- The admin's eval pages, the area it names with .Evals() (F126.5.2). -->
+    <ProjectReference Include="..\..\web\LouisAgent.Web.Evals\LouisAgent.Web.Evals.csproj" />
   </ItemGroup>
 
   <ItemGroup>

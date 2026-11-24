@@ -41,7 +41,7 @@ public class FrameworkEvalReplayTests
         ["RATES_FILE"] = Path.Combine(TestPaths.RepoRoot, "src", "site", "config", "rates.json")
     };
 
-    /// <summary>What the framework site's program composes besides its catalogue: the web and its one provider.</summary>
+    /// <summary>What the framework site's program composes besides its catalogue: the web and one provider.</summary>
     private static readonly HostServices Services = new(WebAccess.Create, Providers: [AnthropicProvider.Instance]);
 
     /// <summary>
