@@ -1,0 +1,51 @@
+{
+  "kind": "cards",
+  "title": "F126.5 new evals: the overview",
+  "caption": "F126.5 in three children: the guide's evals on louis-agent.dev, the framework's Orbi on the framework site, and the triage team on the demo, each with its baseline.",
+  "cards": {
+    "rows": [
+      {
+        "cards": [
+          {
+            "id": "top",
+            "icon": "checks",
+            "title": "F126.5 New evals",
+            "code": "{agent}.eval.json",
+            "text": "The first real evals on the harness F126 built, one per agent, each with a live baseline.",
+            "look": "highlight"
+          }
+        ]
+      },
+      {
+        "cards": [
+          {
+            "id": "guide",
+            "icon": "message",
+            "title": "F126.5.1 The guide",
+            "code": "guide.eval.json",
+            "text": "Its rules, the injection case on a page given in the file, then what the turn log shows."
+          },
+          {
+            "id": "orbi",
+            "icon": "code",
+            "title": "F126.5.2 The framework's Orbi",
+            "code": "LouisAgent.SiteFrameworkApi",
+            "text": "Its host maps the evals, and Orbi gains an eval of its own."
+          },
+          {
+            "id": "triage",
+            "icon": "branch",
+            "title": "F126.5.3 The triage team",
+            "code": "routed-to, continued",
+            "text": "The demo's host maps the evals, and routing is proved in code."
+          }
+        ]
+      }
+    ],
+    "links": [
+      { "from": "top", "to": "guide" },
+      { "from": "top", "to": "orbi" },
+      { "from": "top", "to": "triage" }
+    ]
+  }
+}
