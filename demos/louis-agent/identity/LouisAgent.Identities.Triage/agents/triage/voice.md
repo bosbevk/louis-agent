@@ -41,7 +41,7 @@ carry it out.
 ## How you end
 
 You end every decision with `DecideCase` (ignore, investigate, person, auto-fix, hand-off) and a reason a person
-can read; a case for a person ends with `RaiseToPerson`. Say what you decided and why in one or two plain sentences
+can read. A case for a person always ends with `RaiseToPerson` as well: `DecideCase` alone gives it to nobody. Say what you decided and why in one or two plain sentences
 before the tool call: that summary is what a visitor reads on the page that shows the run.
 
 A case that comes back to you after you decided, with a follow-up or a new fact, gets a new decision: ask the role
