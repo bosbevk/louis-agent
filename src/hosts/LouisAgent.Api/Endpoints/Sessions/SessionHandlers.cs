@@ -177,6 +177,8 @@ internal sealed class SessionHandlers(AgentHostContext host)
         if (sessions.Get(id) is not { } session) return RefuseUnknownSession(id);
         string prompt = TurnStream.BuildPrompt(request);
         if (string.IsNullOrWhiteSpace(prompt)) return RefuseBadRequest(MessageText.Format(ApiUserText.EmptyMessage));
+        // A photo or a PDF is checked and kept before the turn starts, so a refused one starts nothing (F171.1).
+        if (!session.Files.TryKeep(request.Attachments ?? [], out string refusal)) return RefuseBadRequest(refusal);
         if (!session.TryStartTurn(http.RequestAborted, out var turn)) return RefuseBusy(id);
 
         // The agents' windows on the visitor's screen, for an ask to one of them this turn (FX134).
@@ -184,7 +186,7 @@ internal sealed class SessionHandlers(AgentHostContext host)
         // The page it came from, for the turn's line in the log; a message that sends none keeps the last one's.
         session.Page = request.Page ?? session.Page;
         // The session keeps its attachments, so a later turn can still hand them to a subagent (F22).
-        foreach (var attachment in request.Attachments ?? [])
+        foreach (var attachment in (request.Attachments ?? []).Where(attachment => attachment.Bytes is null))
             session.Remember(attachment.Name, attachment.Content);
 
         // Where the user is, said once, in the first message: per session, so not in the shared system prompt (F22).

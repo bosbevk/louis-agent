@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using LouisAgent.Api.Messages.Holes.Admin;
 using LouisAgent.Api.Messages.Holes.Door;
+using LouisAgent.Api.Messages.Holes.Files;
 using LouisAgent.Api.Messages.Holes.Sessions;
 using LouisAgent.Composition.Messages;
 
@@ -165,6 +166,18 @@ public enum ApiUserText
     [Description("Unknown stream format '{Format}'. Use one of: {Supported}.")]
     [Holes(typeof(UnknownStreamFormatHoles))]
     UnknownStreamFormat,
+
+    [Description("'{Name}' is a file of kind '{Kind}', which a model can't read. Send one of: {Supported}.")]
+    [Holes(typeof(UnknownFileKindHoles))]
+    UnknownFileKind,
+
+    [Description("'{Name}' is {Megabytes} MB; a file may be at most {Max} MB.")]
+    [Holes(typeof(SessionFileTooLargeHoles))]
+    SessionFileTooLarge,
+
+    [Description("'{Name}' would take this chat's files to {Megabytes} MB; a chat keeps at most {Max} MB of files.")]
+    [Holes(typeof(SessionFilesFullHoles))]
+    SessionFilesFull,
 
     [Description(
         "'replay' is only for an eval session: send a 'run' tag with it. A live chat is never recorded or replayed.")]
