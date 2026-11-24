@@ -29,7 +29,6 @@ public enum WorkspaceToolMessage
     DirectoryNotFound,
 
     [Description("Directory is empty.")]
-
     DirectoryEmpty,
 
     [Description("File is larger than the 1 MB reading limit.")]
@@ -39,8 +38,12 @@ public enum WorkspaceToolMessage
     WorkspaceSearchQueryEmpty,
 
     [Description("No matches found.")]
-
     NoMatches,
+
+    // A line too long for a hit, such as a recording's one-line JSON, shown around the match (FX242).
+    [Description("{Shown} [the line is {Length} characters, cut here; read the file for all of it]")]
+    [Holes(typeof(HitLineCutHoles))]
+    HitLineCut,
 
     [Description("Writing this sensitive file is not allowed.")]
     SensitiveWrite,
@@ -63,7 +66,6 @@ public enum WorkspaceToolMessage
     [Description("Deleted file: {Path}")]
 
     [Holes(typeof(FileDeletedHoles))]
-
     FileDeleted,
 
     [Description("This directory contains a sensitive file and cannot be deleted.")]
@@ -106,10 +108,13 @@ public enum WorkspaceToolMessage
     [Holes(typeof(NoFilesMatchingHoles))]
     NoFilesMatching,
 
+    [Description("Found {Count} file(s) matching '{Pattern}':\n")]
+    [Holes(typeof(FilesFoundHoles))]
+    FilesFound,
+
     [Description("File exists: {Path}")]
 
     [Holes(typeof(FileExistsHoles))]
-
     FileExists,
 
     [Description("Directory exists: {Path}")]

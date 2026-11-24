@@ -843,7 +843,7 @@
     },
     {
       "Name": "FindFiles",
-      "Description": "Recursively search the workspace for files whose name matches a wildcard pattern (* for any characters, ? for a single character), such as '*.cs' or 'test*.txt' — this matches file names only, not file content. Excluded directories (.git, node_modules, bin, obj, etc.) are skipped and results are capped at 500 files. Use SearchWorkspace instead when you're looking for a piece of text inside files rather than files by name.",
+      "Description": "Recursively search the workspace for files whose name matches a wildcard pattern (* for any characters, ? for\na single character), such as '*.cs' or 'test*.txt'; this matches file names only, not file content. Excluded\ndirectories (.git, node_modules, bin, obj, etc.) are skipped and results are capped at 500 files. Use\nSearchWorkspace instead when you're looking for a piece of text inside files rather than files by name.",
       "Schema": {
         "type": "object",
         "properties": {
@@ -1663,7 +1663,7 @@
     },
     {
       "Name": "SearchWorkspace",
-      "Description": "Recursively search source and documentation files under the workspace root for a case-insensitive literal text match, returning each hit as path:line: text. Only a fixed set of extensions is searched (code, config, markdown, etc.), and sensitive files, files over 1 MB, and excluded directories (.git, node_modules, bin, obj, etc.) are skipped. Results stop at maxResults (1-100, default 30) even if more matches exist, so a \"no matches\" result does not prove the term is absent from excluded files. Use FindFiles instead when you're matching file names rather than file content.",
+      "Description": "Recursively search source and documentation files under the workspace root for a case-insensitive literal\ntext match, returning each hit as path:line: text; a line longer than 200 characters shows the part around\nthe match, marked as cut, and ReadWorkspaceFile reads it whole. Only a fixed set of extensions is searched\n(code, config, markdown, etc.), and sensitive files, files over 1 MB, and excluded directories (.git,\nnode_modules, bin, obj, etc.) are skipped. Results stop at maxResults (1-100, default 30) even if more matches\nexist, so a \"no matches\" result does not prove the term is absent from excluded files. Use FindFiles instead\nwhen you're matching file names rather than file content.",
       "Schema": {
         "type": "object",
         "properties": {
