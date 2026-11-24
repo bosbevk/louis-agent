@@ -1,0 +1,89 @@
+{
+  "kind": "sequence",
+  "title": "F126.5.2 the framework Orbi's evals: a live run over the API",
+  "caption": "A live run on the framework host: started with the admin key, each conversation played against Orbi over the sessions API and recorded, graded by the judge, and read back when it ends.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "P",
+        "icon": "shield",
+        "tone": "amber",
+        "label": "Louis's ask"
+      },
+      {
+        "id": "R",
+        "icon": "server",
+        "tone": "green",
+        "label": "The eval routes"
+      },
+      {
+        "id": "W",
+        "icon": "play",
+        "tone": "green",
+        "label": "The run work"
+      },
+      {
+        "id": "O",
+        "icon": "message",
+        "tone": "violet",
+        "label": "Orbi"
+      },
+      {
+        "id": "J",
+        "icon": "scales",
+        "tone": "green",
+        "label": "The judge"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "P",
+        "to": "R",
+        "text": "POST /v1/admin/evals/framework/runs, 3 repeats"
+      },
+      {
+        "step": "reply",
+        "from": "R",
+        "to": "P",
+        "text": "the run's id"
+      },
+      {
+        "step": "message",
+        "from": "W",
+        "to": "O",
+        "text": "each ask, recorded"
+      },
+      {
+        "step": "reply",
+        "from": "O",
+        "to": "W",
+        "text": "the answer, its tools"
+      },
+      {
+        "step": "message",
+        "from": "W",
+        "to": "J",
+        "text": "each criterion"
+      },
+      {
+        "step": "reply",
+        "from": "J",
+        "to": "W",
+        "text": "met or not, and why"
+      },
+      {
+        "step": "message",
+        "from": "P",
+        "to": "R",
+        "text": "GET /v1/admin/evals/runs/{id}"
+      },
+      {
+        "step": "reply",
+        "from": "R",
+        "to": "P",
+        "text": "the run, passed and cost"
+      }
+    ]
+  }
+}
