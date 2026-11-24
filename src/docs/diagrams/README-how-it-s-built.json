@@ -21,13 +21,13 @@
         "id": "ids",
         "icon": "user",
         "tone": "green",
-        "label": "Identities\nwho an agent is: puls, the\ncoding agent"
+        "label": "Identities\nwho an agent is: the coding\nagent, the guide, the triage team"
       },
       {
         "id": "packs",
         "icon": "box",
         "tone": "green",
-        "label": "Packs\nwhat it can do: files, git,\ndotnet, shell, web, recipes, \u2026"
+        "label": "Packs\nwhat it can do: files, git,\ndotnet, shell, web, docs, \u2026"
       },
       {
         "id": "contracts",
