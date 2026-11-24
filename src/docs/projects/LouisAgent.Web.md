@@ -578,6 +578,17 @@ one line. On slides every section is a screen tall with its content in the middl
 section at a time. A section with more than a screen of content pages sideways, with a pager. A diagram scales to
 fit.
 
+A paged section keeps its heading on its first page. Its topic stays with its heading and its heading with its
+summary, but the summary may end a page, and a row of tiles or a list breaks between its items, each item kept
+whole. If a whole row had to go with the heading, a row taller than what was left of the page would drag the heading
+and summary over to the next page, and the browser would leave the topic alone on the first.
+
+On a page of slides the guide's bar stands as the corner's round button instead. The bar keeps its room free at the
+foot of the screen, about 234 pixels on a desktop with its chips, and on a laptop's 768 pixels that left a slide
+about 200 pixels for its content, so every slide paged. The frame hands its corner the layout the page is drawn in,
+the page's choice or else the site's, as a cascading value, and `WidgetLook.On` tells the widget how it stands
+there. When the visitor leaves the page of slides, the value changes and the bar comes back.
+
 The docs layout, `PageLayout.Docs`, is for content a developer reads: the frame draws `DocsColumns`, three columns on
 Bootstrap's grid. The site's menu, which it gives the frame in its `Sidebar` slot, is down the left. The page is in a
 readable middle column. From an extra-large screen, the page's sections stand on the right as "On this page", which is

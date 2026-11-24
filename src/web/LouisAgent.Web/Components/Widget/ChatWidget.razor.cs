@@ -3,6 +3,7 @@ using LouisAgent.Web.Api;
 using LouisAgent.Web.Chats;
 using LouisAgent.Web.Components.Widget.Pieces;
 using LouisAgent.Web.Components.Site.Addresses;
+using LouisAgent.Web.Components.Site.Slides;
 using LouisAgent.Web.Components.Widget.Door;
 using LouisAgent.Web.Components.Widget.Layouts;
 using LouisAgent.Web.Scripts;
@@ -41,18 +42,10 @@ public partial class ChatWidget : IAsyncDisposable
     private KeptGuide _kept = new();
 
     /// <summary>Whether the panel is open, kept with the guide.</summary>
-    private bool Open
-    {
-        get => _kept.Open;
-        set => _kept.Open = value;
-    }
+    private bool Open { get => _kept.Open; set => _kept.Open = value; }
 
     /// <summary>How big the panel is, kept with the guide.</summary>
-    private ChatWindowSize Size
-    {
-        get => _kept.Size;
-        set => _kept.Size = value;
-    }
+    private ChatWindowSize Size { get => _kept.Size; set => _kept.Size = value; }
 
     [Inject] private AgentApi Api { get; set; } = default!;
     [Inject] private IJSRuntime JS { get; set; } = default!;
@@ -136,8 +129,14 @@ public partial class ChatWidget : IAsyncDisposable
     [Parameter]
     public WidgetLayout Layout { get; set; } = WidgetLayout.Corner;
 
+    /// <summary>The layout the page in view is drawn in, which a site's frame tells its corner.</summary>
+    [CascadingParameter] public PageLayout Page { get; set; } = PageLayout.Flow;
+
+    /// <summary>How the widget stands on the page in view: on a page of slides the bar is the corner (FX247).</summary>
+    private WidgetLayout Standing => WidgetLook.On(Layout, Page);
+
     /// <summary>What the widget adds to its own class for its layout.</summary>
-    private string WidgetState => WidgetLook.StateOf(Layout, Open);
+    private string WidgetState => WidgetLook.StateOf(Standing, Open);
 
     /// <summary>A conversation has started and the site offers to pick it up again.</summary>
     private bool CanResume => ResumeLabel is not null && Runner.Chat is { Turns.Count: > 0 };
@@ -376,10 +375,10 @@ public partial class ChatWidget : IAsyncDisposable
     }
 
     /// <summary>What the panel adds: its size, as the styles read it (F127.2), or its place's when docked.</summary>
-    private string PanelState => WidgetLook.PanelOf(Layout, Size);
+    private string PanelState => WidgetLook.PanelOf(Standing, Size);
 
     /// <summary>What the round button adds for its layout.</summary>
-    private string ButtonPlace => WidgetLook.ButtonOf(Layout);
+    private string ButtonPlace => WidgetLook.ButtonOf(Standing);
 
     private void Redraw() => InvokeAsync(StateHasChanged);
 }

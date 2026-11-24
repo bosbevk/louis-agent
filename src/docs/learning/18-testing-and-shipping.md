@@ -1874,6 +1874,33 @@ Concept: *18 Testing and shipping* in the [goal](../GOAL.md): infrastructure as 
 file written for running infrastructure is proved by the difference it would make, and a module's safe defaults are
 read before they are trusted.
 
+## A page of words, and a layout run before it was trusted (F177, 2026-11-24)
+
+Louis takes freelance work integrating AI into a client's website or business, and he wanted something to show a
+client: how a job goes, from the first call to the handover, and how it is paid. That became two things. One is a
+deck to hand over. The other is the same story as a page of the site, *Work with us*, in the menu before Contact.
+
+The page itself was the easy part, because the framework already had every piece. Nine bands, a few rows of tiles, the
+numbered steps and two buttons at the end, all configured framework controls, with no HTML of the site's own. Its
+words are six small lists keyed by an enum of their parts, each with a test that every part has its words. Two tiles
+that both said "50%" got the same id, which the site's test that every place on a page has its own address caught at
+once. Giving each half a title fixed it.
+
+The lesson was in the layout. Louis picked the framework's *slides* layout, where every section is one screen and a
+long one pages sideways. It had been built for an earlier feature, and no site used it. Reading its code, it looked
+ready, and that is what he was told. Running it showed otherwise. At 1920 by 1080, a long section showed only its
+small topic line on page one and its heading on the next (FX246). On a 1366 by 768 laptop every slide paged, even the
+last one, because the guide's bar keeps 234 pixels free at the foot of the screen and a slide had about 200 left
+(FX247). Louis chose to fix the layout first, then picked the guide as a corner button on a page of slides. After
+both fixes, at 1920 by 1080 eight of the nine slides fit on one screen, and on a laptop every slide's heading is on
+its first page.
+
+What didn't work: the claim from reading. The code said "a section is a screen", and that was true, but what a
+visitor sees depends on what else stands on the screen. A layout no site uses has never met the rest of a site.
+
+Concept: *18 Testing and shipping* in the [goal](../GOAL.md): a layout is proved by running it at the screen sizes
+people really have, beside everything else that shares the screen, before anyone is told it works.
+
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md) · [Plans](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL15-engine-identities-packs.md), [CL19](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL19-config-by-place.md) · [Deploying to Azure](../guides/deploy-the-sites.md) ·
 [Write and run tests](../guides/write-tests.md) · [ADR 0027](../adr/0027-engine-identities-and-packs.md) · [ADR 0066](../../../demos/louis-agent/docs/adr/0066-the-site-is-static-razor.md) · [The site, now the app's](../../../demos/louis-agent/docs/projects/LouisAgent.CodeReview.md)

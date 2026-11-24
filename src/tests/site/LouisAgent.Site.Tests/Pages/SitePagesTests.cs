@@ -19,6 +19,7 @@ public class SitePagesTests
     [TestCase(typeof(ContactPage), "/contact", "An agent for your business, built for you.")]
     [TestCase(typeof(PrivacyPage), "/privacy", "What happens to what you type.")]
     [TestCase(typeof(TrustPage), "/trust", "What keeps your business safe here, and what doesn't yet.")]
+    [TestCase(typeof(WorkWithUsPage), "/work-with-us", "AI built into your website or business.")]
     public void APage_IsAtItsAddress_WithItsHeading(Type page, string address, string heading)
     {
         using var ctx = new BunitContext();
@@ -58,6 +59,7 @@ public class SitePagesTests
     /// </summary>
     [TestCase(typeof(HomePage))]
     [TestCase(typeof(ContactPage))]
+    [TestCase(typeof(WorkWithUsPage))]
     public void EverySection_IsANamedArea(Type page)
     {
         using var ctx = new BunitContext();

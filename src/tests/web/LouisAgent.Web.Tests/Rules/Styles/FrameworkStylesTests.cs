@@ -105,13 +105,22 @@ public partial class FrameworkStylesTests
     }
 
     /// <summary>
-    /// A section paged sideways keeps its heading with what follows it (FX110), so at 1080p a page never holds only a
-    /// section's title while its content starts on the next.
+    /// A section paged sideways keeps its topic with its heading (FX110), and its heading on the first page (FX246):
+    /// the summary may end a page, and a row of tiles or a list may break between its items, so the browser never has
+    /// to give up the whole chain from the topic down and leave the topic alone on a page.
     /// </summary>
     [Test]
-    public void APagedSection_KeepsItsHeadingWithItsContent() =>
-        Assert.That(string.Concat(Rules().Select(File.ReadAllText)),
-            Does.Contain(".is-paged .band-body ::deep > :is(.topic, h1, h2, h3, .summary) { break-after: avoid; }"));
+    public void APagedSection_KeepsItsHeadingOnTheFirstPage()
+    {
+        string rules = string.Concat(Rules().Select(File.ReadAllText));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(rules,
+                Does.Contain(".is-paged .band-body ::deep > :is(.topic, h1, h2, h3) { break-after: avoid; }"));
+            Assert.That(rules, Does.Contain(".is-paged .band-body ::deep > :is(.tiles, ol, ul) { break-inside: auto; }"));
+        });
+    }
 
     /// <summary>
     /// A card the frame's script finds cut in two by a page break, but that fits on a page, starts on the next page

@@ -211,7 +211,18 @@ are a plain mail button, a WhatsApp button and a LinkedIn button. The WhatsApp b
 `https://wa.me/27663912470`, with WhatsApp's own mark, green and words, as its brand guidelines ask. Say what the agent
 should do, which systems it needs to reach, and where it should run.
 
-*Decided in:* FX72, [ADR 0102](../adr/0102-third-party-marks-follow-their-owners-guidelines.md).
+How a job with a client goes has a page of its own, *Work with us* at `/work-with-us`, in the menu just before
+Contact. It is the slideshow Louis hands a client, told in the site's "we", and it is the one page of the site laid
+out as slides: the page asks for `PageLayout.Slides` with one line, and the frame makes every section a screen and
+settles on one at a time. On that page the guide's bar stands as the corner's round button, so a slide has the whole
+screen. Its nine sections go in the order of a first meeting: what we build, who builds it, where to see it working,
+the seven steps from the discovery call to the handover, how the price is paid in two halves of 50%, what the client
+gets at the end, what keeps costing after go-live, and the next step, which leaves details with the guide or goes to
+Contact. Like the rest of the site it names no price. Its words are lists keyed by an enum of their parts in
+`Content/WorkWithUs`, and the site's small `WorkTiles` draws one list as a row of tiles.
+
+*Decided in:* FX72, [ADR 0102](../adr/0102-third-party-marks-follow-their-owners-guidelines.md); the Work with us
+page in F177, FX246 and FX247.
 
 ### 10. Privacy and trust
 
@@ -448,13 +459,13 @@ The place to look a file up. The site is `src/site/LouisAgent.Site/`, and its ho
 
 | Path | What's in it |
 |---|---|
-| `Pages/` | The site's pages: the home page and contact; under `About/`, the CV, the privacy page and the trust page; under `Framework/`, the theme's component guide; under `Agents/`, the showroom's start and, under `Showroom/`, the three businesses' demos, whose recordings are in `wwwroot/recordings/showroom/` |
+| `Pages/` | The site's pages: the home page, contact and Work with us; under `About/`, the CV, the privacy page and the trust page; under `Framework/`, the theme's component guide; under `Agents/`, the showroom's start and, under `Showroom/`, the three businesses' demos, whose recordings are in `wwwroot/recordings/showroom/` |
 | `Errors/NotFound.razor` | The page for an address the site has no page for, outside `Pages/` so the page rules don't count it |
 | `Layout/` | `SiteLayout`, the site's frame on the framework's `SiteShell` and the router's default; `ShowroomLayout`, the demos' frame on `ShowroomShell`; `AdminLayout`, the admin's |
-| `Components/` | `Cv/` (the CV's view, its parts and its print), `Guide/` (`ExpertChat`, the framework's `ChatWidget` with the guide, and the corner's LinkedIn), `Landing/` (the hero, who builds it, the contact strip, and under `Offer/` the bands of the offer), `Showroom/` (`SiteDemos`, a business's demo, each business's mock website in `Websites/`, and the three windows on the start in `Windows/`), `Trust/` (`FactBand`, one part of the trust page) |
+| `Components/` | `Cv/` (the CV's view, its parts and its print), `Guide/` (`ExpertChat`, the framework's `ChatWidget` with the guide, and the corner's LinkedIn), `Landing/` (the hero, who builds it, the contact strip, and under `Offer/` the bands of the offer), `Showroom/` (`SiteDemos`, a business's demo, each business's mock website in `Websites/`, and the three windows on the start in `Windows/`), `Trust/` (`FactBand`, one part of the trust page), `WorkWithUs/` (`WorkTiles`, one list of the Work with us page as tiles) |
 | `Resumes/` | The CV's records by concern (`Basics/`, `History/`, `Skills/`, `Privacy/`), `ResumeReader`, `ResumeDates`, where a page gets it (`Sources/`) and the editor's draft (`Drafts/`) |
 | `Admin/` | The site's own area of the admin: `ResumeArea`, its link and card, `ResumeEditor` at `/admin/resume`, the page inside it (`ResumeSheet`) and `Forms/OffPageForm`; outside `Pages/`, so the page rules don't count it |
-| `Content/` | `SiteFacts`, the site's facts for search engines; `Cv` and `cv.json`, the CV the site is built with; `Trust/` (`TrustFact`, `TrustFacts`, `DataHandlers`), what the trust page says |
+| `Content/` | `SiteFacts`, the site's facts for search engines; `Cv` and `cv.json`, the CV the site is built with; `Trust/` (`TrustFact`, `TrustFacts`, `DataHandlers`), what the trust page says; `WorkWithUs/` (`WorkWithUsWords`, `WorkTile`, `PaymentShare`, and their parts' enums in `Parts/`), what the Work with us page says |
 | `LouisAgentDevAreas.cs` | The site's areas: the showroom, the focuses, the guide's chips, the bar opening under the pointer, the admin and the CV's area, its places, and glass and flat |
 | `Styles/app.scss` | The framework's Sass, the two themes and the paper sheets ([ADR 0085](../adr/0085-styles-are-written-in-sass.md)); the build makes `wwwroot/css/app.css` |
 | `wwwroot/` | `index.html` with its link card, the brand, the icons, the showroom's photos, the recordings, `sitemap.xml` and `robots.txt`; the CSS is built, and isn't in git |

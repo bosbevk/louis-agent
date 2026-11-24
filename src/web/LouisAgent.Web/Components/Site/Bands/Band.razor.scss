@@ -31,8 +31,12 @@
 .is-paged .band-body ::deep .panel,
 .is-paged .band-body ::deep li,
 .is-paged .band-body ::deep figure { break-inside: avoid; margin-bottom: 20px; }
-/* A heading travels with what follows it, so a page never holds only a section's title (FX110). */
-.is-paged .band-body ::deep > :is(.topic, h1, h2, h3, .summary) { break-after: avoid; }
+/* A topic travels with its heading, and a heading with its summary, so a page never holds only a section's title
+   (FX110). The summary may end a page, and a row of tiles or a list breaks between its items, each of which stays
+   whole above (FX246): kept whole, a row taller than what is left of the first page took the summary, the heading
+   and all with it, and the browser gave up the chain right after the topic, alone on page one. */
+.is-paged .band-body ::deep > :is(.topic, h1, h2, h3) { break-after: avoid; }
+.is-paged .band-body ::deep > :is(.tiles, ol, ul) { break-inside: auto; }
 /* A card a page break would cut in two, but that fits on a page, starts on the next one (FX126): the frame's script
    marks it, since Chrome ignores the break-inside above for a card inside a grid; a forced break it keeps. */
 .is-paged .band-body ::deep .is-new-page { break-before: column; }
