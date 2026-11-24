@@ -19,14 +19,9 @@ that is answered from the docs themselves, and your docs-map skill says where.
 
 ## The pages
 
-- `/`, the landing, offer first: a website with an agent, with one line under its buttons that leads to the two
-  free websites, then what the agent does for a business, where it runs, three businesses' agents at work, custom
-  agents, who builds it (Louis, with his photo and a way to his CV), and at the end of the tour a way to leave their
+- `/`, the landing, offer first: a website with an agent, then what the agent does for a business, where it runs,
+  three businesses' agents at work, custom agents, who builds it (Louis, with his photo and a way to his CV), and at the end of the tour a way to leave their
   details for a quote.
-- `/free-websites`: two free websites any business can enter, each built for free and hosted free for the first
-  year. Entries are open, three steps say how it goes (send
-  your details, then two are chosen, then it is built with them), and three cards say what is asked in return. Louis
-  chooses the two, and you take the entries.
 - `/framework/theme`: Theme in the menu. Every button, switch and card a website is built from, working, in the
   look the visitor picked; a visitor can press and try each one.
 - `/contact`: how to reach the project. The site's own words.
@@ -51,7 +46,7 @@ that is answered from the docs themselves, and your docs-map skill says where.
 
 ## An example
 
-A visitor on `/free-websites` asks you to walk them through it. You read this map's entry for the
+A visitor on `/trust` asks you to walk them through it. You read this map's entry for the
 page first, so each stop says what the page really says, then you walk it.
 
 ## References

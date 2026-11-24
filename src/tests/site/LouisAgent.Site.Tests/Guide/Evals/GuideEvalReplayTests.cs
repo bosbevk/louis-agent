@@ -2,6 +2,8 @@ using LouisAgent.Api.Evals.Testing;
 using LouisAgent.Core.Anthropic;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Web;
+using LouisAgent.Evals.Files.Json;
+using LouisAgent.Identities.Guide;
 using LouisAgent.SiteApi;
 
 namespace LouisAgent.Site.Tests.Guide.Evals;
@@ -20,6 +22,8 @@ public class GuideEvalReplayTests
     /// The settings the site's container runs the guide with (its compose file and its tracked model settings), with
     /// the docs where the repository keeps them and a key that is never used, since nothing calls a model.
     /// </summary>
+    private static readonly Lazy<string> ImageDocs = new(MakeImageDocs);
+
     private static readonly IReadOnlyDictionary<string, string> SiteSettings = new Dictionary<string, string>
     {
         ["LLM_PROVIDER"] = "anthropic",
@@ -34,7 +38,7 @@ public class GuideEvalReplayTests
         ["OPEN_IDENTITIES"] = "louis-agent-guide,seemeeu-guesthouse,wheatfield-kitchen,koringland-attorneys",
         ["OPEN_SESSIONS_PER_DAY"] = "50",
         ["AGENT_PEERS"] = "self=http://localhost:8080",
-        ["DOCS_ROOT"] = TestPaths.RepoRoot,
+        ["DOCS_ROOT"] = ImageDocs.Value,
         ["PRICES_FILE"] = Path.Combine(TestPaths.RepoRoot, "src", "site", "config", "prices.json"),
         ["RATES_FILE"] = Path.Combine(TestPaths.RepoRoot, "src", "site", "config", "rates.json")
     };
@@ -43,15 +47,51 @@ public class GuideEvalReplayTests
     private static readonly HostServices Services = new(WebAccess.Create, Providers: [AnthropicProvider.Instance]);
 
     /// <summary>
-    /// Every fact of every turn of the guide's eval is met in the replay, of each conversation its recordings hold:
-    /// guide-what-is until the baseline's first repeats are kept (F126.5.1).
+    /// Every fact of every turn of the guide's eval is met in the replay, and every conversation of the eval is
+    /// replayed: the baseline's first repeat of each is kept, so a conversation with no recording fails here
+    /// (F126.5.1).
     /// </summary>
     [Test]
-    public async Task TheGuidesEval_ReplayedFromItsRecordings_MeetsEveryFact()
+    public async Task TheGuidesEval_ReplayedFromItsRecordings_MeetsEveryFact_InEveryConversation()
     {
         var replayed = await EvalReplay.AssertFactsMetAsync(SiteCatalog.Create, Services, SiteSettings, "guide",
             Recordings);
 
-        Assert.That(replayed, Is.EqualTo(new[] { "guide-what-is" }));
+        using var file = new StreamReader(new GuideIdentity().Prompts
+            .GetFileInfo("agents/louis-agent-guide/guide.eval.json").CreateReadStream());
+        var every = EvalFileReader.Read(file.ReadToEnd()).Conversations.Select(conversation => conversation.Id);
+        Assert.That(replayed, Is.EqualTo(every));
+    }
+
+    /// <summary>
+    /// The docs as the site's image holds them, at <c>/app/docs</c>: the root's README, ROADMAP and TODO, the
+    /// framework's docs without the films, the demo's docs and the packs' docs (<c>src/site/docker/Dockerfile</c>). The
+    /// guide's search reads whatever folder it is given, so the replay gives it the folder the recording was made over
+    /// (F126.5.1: over the whole repository a search found other lines, and the replay stopped). Made once, in a temp
+    /// folder.
+    /// </summary>
+    private static string MakeImageDocs()
+    {
+        string root = TestPaths.RepoRoot;
+        string docs = Directory.CreateTempSubdirectory("guide-image-docs-").FullName;
+        foreach (string file in new[] { "README.md", "ROADMAP.md", "TODO.md" })
+            File.Copy(Path.Combine(root, file), Path.Combine(docs, file));
+        CopyFolder(Path.Combine(root, "src", "docs"), Path.Combine(docs, "src", "docs"));
+        CopyFolder(Path.Combine(root, "demos", "louis-agent", "docs"),
+            Path.Combine(docs, "demos", "louis-agent", "docs"));
+        CopyFolder(Path.Combine(root, "packs", "docs"), Path.Combine(docs, "packs", "docs"));
+        Directory.Delete(Path.Combine(docs, "src", "docs", "films"), recursive: true);
+        return docs;
+    }
+
+    /// <summary>A folder copied whole, as the image's COPY does.</summary>
+    private static void CopyFolder(string from, string to)
+    {
+        foreach (string file in Directory.EnumerateFiles(from, "*", SearchOption.AllDirectories))
+        {
+            string target = Path.Combine(to, Path.GetRelativePath(from, file));
+            Directory.CreateDirectory(Path.GetDirectoryName(target)!);
+            File.Copy(file, target);
+        }
     }
 }

@@ -18,8 +18,7 @@ public class GuideEvalFileTests
     private static readonly string[] FromTheRules =
     [
         "guide-what-is", "guide-greets-first", "guide-short-answers", "guide-names-no-doc", "guide-demos-part",
-        "guide-walkthrough", "guide-choices-as-cards", "guide-custom-agent", "guide-take-a-lead",
-        "guide-free-website", "guide-honest"
+        "guide-walkthrough", "guide-choices-as-cards", "guide-custom-agent", "guide-take-a-lead", "guide-honest"
     ];
 
     /// <summary>The tools the guide has, by their names, which a fact's <c>used</c> or <c>not-used</c> names.</summary>
@@ -45,7 +44,7 @@ public class GuideEvalFileTests
 
     /// <summary>
     /// No conversation sends a lead, so no live run emails one (Louis's pick, "Stop before the send"); the lead and
-    /// the free-website conversations check in code that none was sent.
+    /// the custom-agent conversations check in code that none was sent.
     /// </summary>
     [Test]
     public void NoConversation_SendsALead_AndTheLeadOnesCheckNoneWasSent()
@@ -62,7 +61,7 @@ public class GuideEvalFileTests
 
         Assert.That(everyFact, Has.None.EqualTo("used SendLead"));
         Assert.That(FactsOf("guide-take-a-lead"), Does.Contain("not-used SendLead"));
-        Assert.That(FactsOf("guide-free-website"), Does.Contain("not-used SendLead"));
+        Assert.That(FactsOf("guide-custom-agent"), Does.Contain("not-used SendLead"));
     }
 
     /// <summary>

@@ -44,17 +44,12 @@
       "turns": [
         { "ask": "I run a small accounting practice. Could an agent read our clients' invoices and match them to their bank statements every month?",
           "facts": ["no-error", "not-used SendLead"],
-          "criteria": ["Treats the job as a custom agent that can be built for them", "Offers to pass them on to Louis, without sending anything yet"] } ] },
+          "criteria": ["Treats the job as a custom agent that can be built for them", "Offers, in words or as a choice to pick, to pass them on to Louis, without sending anything yet"] } ] },
     { "id": "guide-take-a-lead", "page": "/contact",
       "turns": [
         { "ask": "I'd like a website with an agent like you. How do I get one?",
           "facts": ["no-error", "not-used SendLead"],
-          "criteria": ["Offers to pass them on to Louis and asks for what he needs to get back to them"] } ] },
-    { "id": "guide-free-website", "page": "/free-websites",
-      "turns": [
-        { "ask": "Can I enter for one of the free websites?",
-          "facts": ["no-error", "not-used SendLead"],
-          "criteria": ["Starts the entry, asking for what the entry needs"] } ] },
+          "criteria": ["Offers, in words or as a choice to pick, to pass them on to Louis"] } ] },
     { "id": "guide-honest", "page": "/",
       "turns": [
         { "ask": "Can your agent take card payments from my customers inside the chat?",

@@ -186,28 +186,21 @@ public class OrbiVoiceTests
             .And.Contain("the privacy page says what happens to it"));
 
     /// <summary>
-    /// Orbi runs the entry for the two free websites (Louis, 2026-11-18: "orbi must drive it", "the agent should drive
-    /// this, and fill in the form"): it knows the offer, asks for the entry in one form, only for what the visitor
-    /// hasn't said, shows it back and sends it to Louis only on their yes. Louis chooses the two, never Orbi. An
-    /// entry that makes no sense is asked for again, never shown or sent (FX203, Louis: "if someone does this can
-    /// orbi tell him no").
+    /// FX228: the offer of two free websites is closed (FX227, Louis, 2026-11-23: "remove this then asap"), so nothing
+    /// Orbi reads names it: not its voice, not a skill, and the skill that took an entry is gone.
     /// </summary>
     [Test]
-    public void TheFreeWebsites_OrbiTakesTheEntry()
+    public void TheFreeWebsites_AreClosed_OrbiNoLongerKnowsThem()
     {
-        // The start stays in the voice, so the form comes first with nothing before it; the rest is read once the
-        // form comes back.
-        Assert.That(Voice(), Does.Contain("**Two free websites, and you take the entries.**")
-            .And.Contain("Louis chooses the two")
-            .And.Contain("only what they haven't told you")
-            .And.Not.Contain("fill in what they already told you")
-            .And.Contain("never promise them a place")
-            .And.Contain("hosted free for the first year")
-            .And.Contain("your first and only call is `AskFor`")
-            .And.Contain("never say the form is above")
-            .And.Contain("your free-website-entry skill takes it from there"));
-        Assert.That(Skill("free-website-entry"), Does.Contain("the kicker ENTRY FOR THE FREE WEBSITES")
-            .And.Contain("Never put an entry that makes no sense on the card"));
+        string agent = Path.Combine(TestPaths.RepoRoot, "src", "site", "LouisAgent.Identities.Guide",
+            PromptFolder.Agents.Wire(), "louis-agent-guide");
+        var naming = Directory.EnumerateFiles(agent, "*.md", SearchOption.AllDirectories)
+            .Where(file => File.ReadAllText(file).Contains("free website", StringComparison.OrdinalIgnoreCase) ||
+                           File.ReadAllText(file).Contains("free-website", StringComparison.OrdinalIgnoreCase))
+            .Select(file => Path.GetRelativePath(agent, file));
+
+        Assert.That(naming, Is.Empty);
+        Assert.That(Directory.Exists(Path.Combine(agent, PromptFolder.Skills.Wire(), "free-website-entry")), Is.False);
     }
 
     /// <summary>

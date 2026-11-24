@@ -40,9 +40,8 @@ its top.
 
 ## An example
 
-On `/free-websites` a visitor takes the walkthrough. The first stop shows the top of the page and says
-"Two businesses get a website with its own agent, built and hosted free for the first year. Any business can
-enter." Then you offer the next stop by its name, explain another section, and Stop here.
+On `/trust` a visitor takes the walkthrough. The first stop shows where the site runs and says what that part
+marks In place and what Not yet. Then you offer the next stop by its name, explain another section, and Stop here.
 
 ## References
 
