@@ -236,6 +236,22 @@ the model having to copy them.
 
 *Decided in:* F22.
 
+A message can also carry a photo or a PDF, as its bytes (base64 in the message's JSON) and its media type, for a
+pack's tool to read. The API checks every file in a message before it keeps any, and before the turn starts, so a
+refused file starts nothing. A file must be one of the five kinds a model reads (a JPEG, PNG, GIF or WebP picture,
+or a PDF), it may weigh at most 10 MB, and a chat keeps at most 20 MB of files in all. A file that fails one of those
+is refused with a 400 that says which: `UnknownFileKind`, `SessionFileTooLarge` or `SessionFilesFull`. The files that
+pass are kept in memory with the session, as its history is, by name, and the same name again replaces the file it
+had. They are never written to a log or to disk. The checks and the limits live together on the session's
+`SessionFileStore`.
+
+The model running the conversation never gets the bytes. The turn's prompt holds one line in their place,
+`ApiModelText.AttachedFile`: the file's name, its kind and its size, and that a tool that reads files is given that
+name. The turn's ambient values set the session's files for each step (`TurnAmbience`), so when the model hands the
+name to a pack's tool, the tool finds the file through its pack context (core's part 15).
+
+*Decided in:* F171.1.
+
 ### 12. Recording and replaying the web for evals
 
 `POST /v1/sessions` takes `replay` (`{ web, of, model }`), but only on a session with a run tag. **Sending it, even as
@@ -365,7 +381,8 @@ These are the types involved:
 | `Messages/` | The API's own texts as enums (ADR 0009): errors, log lines, what the model reads (`ApiModelText`), what the user reads, and their holes |
 | `Sessions/SessionOpener.cs` | Who opened a session when a signed-in person did: their id and tenant, read from the cookie's claims; a session a key opened has none (ADR 0088) |
 | `Sessions/Prompts/` | `TurnPrompt`, the message a turn sends the model, and `PageBlock`, the page the visitor is reading, cut at 6,000 characters |
-| `Sessions/AgentSession.cs`, `AgentSessions.cs` | One conversation (id, engine, toolsets, depth, role, place, attachments, history, turn lock, cancellation) and the in-memory session store |
+| `Sessions/AgentSession.cs`, `AgentSessions.cs` | One conversation (id, engine, toolsets, depth, role, place, attachments, files, history, turn lock, cancellation) and the in-memory session store |
+| `Sessions/Files/SessionFileStore.cs` | F171.1: a chat's photos and PDFs, kept by name in memory for a tool to read; checks a message's files before it keeps any (a kind a model reads, 10 MB each, 20 MB a chat), refusing with its reason; what core's `SessionFiles` hands a tool for the turn |
 | `Sessions/Opening/` | How a session opens (part 8): `SessionRequest`, what is asked for, as one record; `SessionOpening`, its steps in order, from the identity to the engine; `LookupChecks`, a lookup agent's five checks |
 | `Sessions/Streaming/` | The stream formats (F18 step 1f): `ITurnStreamFormat`, the writer's seam; `StreamFormat`, the enum `"stream"` names; `StreamFormats`, which makes a turn's format; `TurnUsage`, a turn's usage computed once from the ledger; `Claude/ClaudeStreamFormat.cs`, the Claude-style events |
 | `Sessions/TurnStream.cs` | A turn as the API streams it: the prompt from the message, its attachments and the page the visitor is reading (F115, ADR 0104, one block cut at 6,000 characters), the engine's updates as Claude-style events, a sub-session's events live among them, the usage at the end, and (F127.8) the turn's line in the turn log |

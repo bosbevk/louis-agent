@@ -1,0 +1,34 @@
+{
+  "kind": "cards",
+  "title": "Multimodal: a photo or a PDF reaches a tool",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "skill", "icon": "file", "title": "A file as input to a tool", "code": "skill 19",
+          "look": "highlight",
+          "text": "A chat keeps a photo or a PDF, and a pack's tool has a model read it into a record." }
+      ] },
+      { "cards": [
+        { "id": "proof", "icon": "checks", "title": "Prove the adapter first",
+          "text": "One test sends a made-up account as a JPEG and a PDF before anything is built on it." },
+        { "id": "bytes", "icon": "server", "title": "Bytes kept, checked",
+          "text": "Five kinds, 10 MB a file, 20 MB a chat, refused with the reason before a turn starts." },
+        { "id": "name", "icon": "message", "title": "The model sees a name",
+          "text": "One line names the file; the bytes go only to the tool, never into the conversation." }
+      ] },
+      { "cards": [
+        { "id": "model", "icon": "chip", "title": "A model handed in",
+          "text": "The catalogue gives each pack its model, wrapped once: traced, replayed, a tool row." },
+        { "id": "replay", "icon": "stack", "title": "Replayed by its bytes",
+          "text": "The same file answers from the recording; one byte different is a miss, never a paid call." }
+      ] }
+    ],
+    "links": [
+      { "from": "skill", "to": "proof" },
+      { "from": "skill", "to": "bytes" },
+      { "from": "skill", "to": "name" },
+      { "from": "name", "to": "model" },
+      { "from": "bytes", "to": "replay" }
+    ]
+  }
+}
