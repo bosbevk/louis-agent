@@ -1,0 +1,59 @@
+{
+  "kind": "cards",
+  "title": "Louis Agent: the overview",
+  "caption": "One framework in C#: the engine does the work, the hosts serve it, packs give it tools, an identity says who it is, and evals and the ledger prove what it did and what it cost.",
+  "cards": {
+    "rows": [
+      {
+        "cards": [
+          {
+            "id": "framework",
+            "icon": "chip",
+            "title": "Louis Agent",
+            "code": "an AI agent framework in C#",
+            "look": "highlight",
+            "text": "A few lines of your own name who the agent is and what it can do, and start a host."
+          }
+        ]
+      },
+      {
+        "cards": [
+          {
+            "id": "engine",
+            "icon": "settings",
+            "title": "The engine",
+            "code": "LouisAgent.Core",
+            "text": "The tool loop, streaming, providers, the usage ledger and the guards, on Microsoft.Extensions.AI."
+          },
+          {
+            "id": "hosts",
+            "icon": "server",
+            "title": "The hosts",
+            "code": "Rider, API, CLI, MCP",
+            "text": "Libraries a small program starts, each serving the same engine its own way."
+          },
+          {
+            "id": "agents",
+            "icon": "user",
+            "title": "The agents",
+            "code": "identity + packs",
+            "text": "The coding agent, the triage team and the guide, with packs of tools such as files, git and web."
+          },
+          {
+            "id": "proof",
+            "icon": "book",
+            "title": "Evals and cost",
+            "code": "LouisAgent.Evals",
+            "text": "Conversations a judge marks, replayed for free, and every request priced."
+          }
+        ]
+      }
+    ],
+    "links": [
+      { "from": "framework", "to": "engine" },
+      { "from": "framework", "to": "hosts" },
+      { "from": "framework", "to": "agents" },
+      { "from": "framework", "to": "proof" }
+    ]
+  }
+}

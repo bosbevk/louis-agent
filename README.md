@@ -2,18 +2,18 @@
 
 **An AI agent framework in C#, and the agents built on it.**
 
-<picture>
-  <source media="(prefers-reduced-motion: reduce)" srcset="src/docs/films/short.png">
-  <img alt="A 36-second film of the whole framework in six scenes: your program starts a host, the catalogue says who the agent is and what it can do, core asks the model and a pack's tool runs behind a guard, the hosts are libraries and a site is an app on the framework's web, every check is an eval and every request lands in the ledger priced, and it runs in Docker on a PC and in Container Apps in Azure." src="src/docs/films/short.webp" width="960">
-</picture>
+![Louis Agent at a glance: the engine, the hosts, the identities and packs, and the evals and cost that prove them](src/docs/diagrams/README-overview.svg)
 
 louis-agent is a framework: the engine (the tool loop, streaming, providers, cost tracking and safety guards, built on
 [Microsoft.Extensions.AI](https://learn.microsoft.com/dotnet/ai/microsoft-extensions-ai)), the hosts that serve it, and
 packs of tools. A few lines of your own say who the agent is (an **identity**: its voice, its modes, its roles) and what
-it can do (**packs**: tools and their guides), and start a host. Four kinds of agent run on it today: a **coding agent**
-that works on your repository, **Puls**, a South African assistant in everyday Afrikaans, a **triage team** that sorts
-a service's errors, and the **guide** on [louis-agent.dev](https://louis-agent.dev), the framework's own website, with
-the agents of three made-up businesses in its showroom.
+it can do (**packs**: tools and their guides), and start a host. Three kinds of agent run on it here: a **coding agent**
+that works on your repository, a **triage team** that sorts a service's errors, and the **guide** on
+[louis-agent.dev](https://louis-agent.dev), the website that sells websites with an agent, with the agents of three
+made-up businesses in its showroom. The framework explains itself at
+[framework.louis-agent.dev](https://framework.louis-agent.dev), where its own guide sits beside the pages. Two
+products are built outside this repository on its packages: **Puls**, a South African assistant in everyday
+Afrikaans, and the **bill checker**, a phone app still being planned.
 
 Everything is C#, on purpose. It runs on Claude by default; Ollama and OpenAI-compatible endpoints work too.
 
@@ -30,23 +30,24 @@ own agents.
 
 | Works today | Next |
 |---|---|
-| The engine, with the identities and packs each program names | A host that names its parts with one builder, so a first agent takes a few lines |
-| The coding agent in Rider, the web app, the CLI, the HTTP API and over MCP | Orchestration: one agent delegating to another, with typed results checked in code |
-| Puls with five specialists: a researcher, a reader, a historian, an analyst and a cook | Conversations that survive a restart, and a tenant on every ledger row |
-| A recipes pack: 45 South African sites that allow readers, every fetch obeying `robots.txt`; its own recipe library, and the maths to scale a recipe in code | Evals redesigned around whole conversations |
-| **One address for every agent call:** `AskAgent("puls.cook", …)` asks a subagent, a cheap one-task lookup agent, or an agent on another server, and an identity lists in code whom it may ask | The chat on any website, from one script tag |
-| A triage team: a manager with a sorter, an investigator and a reviewer, each ending its work with a typed tool | Budgets that warn, ask or stop; drafts a person approves; an audit log |
-| **Evals, rebuilt:** one file of conversations beside the identity it proves, facts in code and criteria a judge marks ([ADR 0134](src/docs/adr/0134-an-eval-is-one-file-of-conversations.md)) | Then Puls again: a recipe's shopping list with prices, every text from localisation files, twelve local specialists |
-| An admin that is a frame its areas plug into: an overview of the talks and what they cost, and the packs' pages | |
-| Cost on every answer, from a usage ledger priced by date; every turn and tool call traced with OpenTelemetry | |
-| **louis-agent.dev**, the framework's own website (`src/site`), on the framework's web: a guide in the corner that knows the page you are on, takes you to a section and draws cards and forms in the chat; a showroom of three made-up businesses whose agents you can try live; every page served as HTML so a search engine can read it | |
+| The engine, with the identities and packs each program names | A photo or a PDF reaching a tool, the bill checker's first part in the framework |
+| The coding agent in Rider, the web app, the CLI, the HTTP API and over MCP | Sessions that survive a restart, behind one store with an in-memory and a MongoDB provider |
+| **One address for every agent call:** `AskAgent("seemeeu-guesthouse", …)` asks a subagent, a cheap one-task lookup agent, or an agent on another server, and an identity lists in code whom it may ask | History that is only ever appended to, then retries and a fallback model |
+| **Sequences:** an identity can force a fixed order on the agents it calls, run in code, each step checked before the next one opens | Budgets that warn and stop, per agent |
+| A triage team: a manager with a sorter, an investigator and a reviewer, each ending its work with a typed tool | Drafts a person approves, then safety and an audit log |
+| **Evals:** one file of conversations beside the identity it proves, facts in code and criteria a judge marks; a run kept as one file and replayed for free; started, followed and stopped from the admin, where a person flips a mark and compares a run with the one before | More evals: the framework's guide and the triage team |
+| The guide's eval: twelve conversations, a prompt-injection case among them, with a live baseline of 9 of 12 | A host that names its parts with one builder, so a first agent takes a few lines |
+| An admin that is a frame its areas plug into: an overview of the talks and what they cost, the evals, and the packs' pages | The rest of the bill checker, then the Google integration suite |
+| Cost on every answer, from a usage ledger priced by date; every turn and tool call traced with OpenTelemetry | A `/now` page on both sites: what is being built, and what just shipped |
+| **louis-agent.dev**, on the framework's web: a guide in the corner that knows the page you are on, takes you to a section and draws cards and forms in the chat; a showroom of three made-up businesses whose agents you can try live; every page served as HTML so a search engine can read it | |
+| **framework.louis-agent.dev**, the framework's own seven pages, Overview to Comparison, with its own guide docked beside them | |
 | **A showroom the agent runs:** the guide sits in an agent bar under the page, lights the part it explains, and opens each made-up business's own website in a window with that business's chat beside it | |
 | Louis's CV as a page on the site (`/cv`), edited in place in the admin and printed to PDF from the same page | |
 | Every diagram in the docs drawn from JSON by our own renderer, from flows and sequences to component and composite structure pictures | |
 | Accounts as a library a site opts into: sign-in, social logins, passkeys, a tenant from the host name | |
 | A new site from a template (`dotnet new louis-site`): a chat and an admin on the framework's web | |
-| louis-agent.dev running in Azure Container Apps, deployed from GitHub on every merge with no stored password | One docs endpoint every doc is served from, and the rest of the site in the showroom's look |
-| A pack runs from a package, with no engine in its dependencies | Publishing the packages to NuGet |
+| Both sites running in Azure Container Apps, deployed from GitHub on every merge with no stored password, on one Bicep file a person deploys | |
+| **The framework as packages:** 31 projects published to GitHub Packages, one tag each, and Puls built on them in its own repository | Moving to nuget.org at the first stable 1.0 |
 
 The full order is in the [TODO](TODO.md) and the [roadmap](ROADMAP.md); what's finished is in the
 [work log](src/docs/work-log.md).
@@ -105,7 +106,7 @@ and what it cost.
 It's local. Costs show in rand, it knows your time zone, and it uses your location (to about 1 km) only if you share
 it.
 
-It's checked by its tests, and by evals again once they are rebuilt.
+It's checked by its tests and its own evals, in its own repository.
 
 Puls is the first product built on this framework from outside. It lives in a repository of its own,
 [bosbevk/puls](https://github.com/bosbevk/puls), and takes the framework only as the packages published from here, so
@@ -133,14 +134,23 @@ with you.
 
 ## Evals
 
-The evals are being rebuilt from scratch, so none runs today. The old harness, its studio and its pages are deleted,
-and nothing of them was ported.
+An eval is how you know a change made the agent better and not worse. Here an eval is one `{name}.eval.json` file
+beside the identity it proves: conversations with turns, each turn with its own facts and criteria. A fact is
+checked in code, such as "it called this tool". A criterion is something only a reader can judge, so one model judge
+marks each one yes or no, with a reason. A conversation passes only when everything is met in every repeat
+([ADR 0134](src/docs/adr/0134-an-eval-is-one-file-of-conversations.md)).
 
-The new shape is decided ([ADR 0134](src/docs/adr/0134-an-eval-is-one-file-of-conversations.md)). An eval is one
-`{name}.eval.json` beside the identity it proves: conversations with turns, each turn with its own facts and
-criteria. A fact is told in code, and one model judge marks each criterion yes or no with a reason. A conversation
-passes only when everything is met in every repeat, and a person corrects the judge by flipping a mark. The plan is
-[F126, Evals redesigned](src/docs/plans/F126-evals-redesigned.md).
+A run plays the file against the agent over the sessions API, one session per repeat, and is kept as one JSON file.
+Because the run records what the model said, it can be replayed later for free. You start, follow and stop a run
+from the admin, which asks for your yes with an estimate before a live run spends money. On a run's page you can
+flip a judge's mark when it got one wrong, have the judge mark again only what changed, and compare the run with the
+one before to see whether it got better or worse.
+
+The first eval is the guide's on louis-agent.dev
+([guide.eval.json](src/site/LouisAgent.Identities.Guide/agents/louis-agent-guide/guide.eval.json)): twelve
+conversations, one of them a page that tries to inject instructions. Its first live run of three repeats passed 9 of
+the 12 and cost $0.090, and the three it failed are open fixes in the [TODO](TODO.md). How the parts fit is in
+[the evals' design doc](src/docs/projects/LouisAgent.Evals.md).
 
 ## Quick start
 
