@@ -55,6 +55,36 @@
             ],
             "default": null,
             "description": "The page the person is on when the agent is a site's guide, starting with /."
+          },
+          "givenPage": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "url": {
+                "type": "string",
+                "description": "The page's address on the site, starting with /."
+              },
+              "text": {
+                "type": "string",
+                "description": "The page's words, as the agent reads them."
+              },
+              "title": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "default": null,
+                "description": "The page's title."
+              }
+            },
+            "required": [
+              "url",
+              "text"
+            ],
+            "additionalProperties": false,
+            "description": "A page given as content instead of an address, never both: its url, title and text."
           }
         },
         "required": [

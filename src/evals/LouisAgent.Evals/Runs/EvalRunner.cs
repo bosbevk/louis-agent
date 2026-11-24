@@ -42,7 +42,8 @@ public sealed class EvalRunner(ConversationPlayer player, TimeProvider clock)
         {
             var playedNow = await PlayAsync(started, file, conversation, played, cancellationToken);
             // A page went with the conversation once one of its repeats was played.
-            if (conversation.Page is not null && playedNow.Run.Repeats.Count > 0)
+            if ((conversation.Page is not null || conversation.GivenPage is not null) &&
+                playedNow.Run.Repeats.Count > 0)
                 started = started with { PageSent = true };
             if (playedNow.Run.Repeats.Count > 0) graded.Add(playedNow.Run);
             if (playedNow.StoppedBecause is { } reason)

@@ -67,8 +67,9 @@ public static class EvalFileReader
     }
 
     /// <summary>
-    /// One conversation: an id used once, a turn at least, each turn right, a page that is an address, and something
-    /// checked, since a conversation that checks nothing would pass whatever the agent said.
+    /// One conversation: an id used once, a turn at least, each turn right, a page that is an address, named or given
+    /// but not both, and something checked, since a conversation that checks nothing would pass whatever the agent
+    /// said.
     /// </summary>
     private static void CheckConversation(Conversation conversation, string place, HashSet<string> ids)
     {
@@ -84,6 +85,12 @@ public static class EvalFileReader
         var notAPage = new PageNotAnAddressHoles(conversation.Page ?? "");
         if (conversation.Page is { } page && !page.StartsWith('/'))
             throw Refused($"{place}.page", EvalFileMessage.PageNotAnAddress, notAPage);
+        if (conversation is { Page: not null, GivenPage: not null })
+            throw Refused($"{place}.givenPage", EvalFileMessage.PageNamedAndGiven);
+
+        var givenNotAPage = new PageNotAnAddressHoles(conversation.GivenPage?.Url ?? "");
+        if (conversation.GivenPage is { } given && !given.Url.StartsWith('/'))
+            throw Refused($"{place}.givenPage.url", EvalFileMessage.PageNotAnAddress, givenNotAPage);
 
         bool checks = conversation.Turns.Any(turn => turn.Facts.Count > 0 || turn.Criteria.Count > 0);
         if (!checks) throw Refused(place, EvalFileMessage.ChecksNothing);
