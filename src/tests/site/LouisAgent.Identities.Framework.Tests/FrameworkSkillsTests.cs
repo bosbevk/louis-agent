@@ -95,4 +95,32 @@ public class FrameworkSkillsTests
             Assert.That(text, Does.Contain("one file of conversations").And.Contain("one page per run"));
         });
     }
+
+    /// <summary>
+    /// FX236: under the code, every setting the program needs, one line each, not one of them; Orbi's baseline named
+    /// only the model key.
+    /// </summary>
+    [Test]
+    public void UnderTheCode_ItNamesEverySettingItNeeds() =>
+        Assert.That(Read("voice.md"),
+            Does.Contain("every setting it needs to run").And.Contain("a second fenced block"));
+
+    /// <summary>
+    /// FX237: never an answer without words, a page shown or a choice card alone; once in three Orbi answered a
+    /// walkthrough so, as the guide did (FX233).
+    /// </summary>
+    [Test]
+    public void AnAnswer_AlwaysHasWords_BeforeAnyPageOrCard() =>
+        Assert.That(Skill("writing"), Does.Contain("Never an answer without words"));
+
+    /// <summary>
+    /// FX238: the doc's path is the last line of the words, and a listing's summary one sentence: Orbi wrote past the
+    /// path, and once summed a listing up in two.
+    /// </summary>
+    [Test]
+    public void TheDocsPath_EndsTheWords_AndAListingIsSummedUpInOneSentence()
+    {
+        Assert.That(Read("voice.md"), Does.Contain("the last line of your words"));
+        Assert.That(Skill("explain-code"), Does.Contain("one sentence, never two"));
+    }
 }

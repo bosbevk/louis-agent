@@ -217,4 +217,40 @@ public class OrbiVoiceTests
 
         Assert.That(onDemand.Where(name => !Voice().Contains($"`louis-agent-guide/{name}`")), Is.Empty);
     }
+
+    /// <summary>
+    /// FX231: a question that asks several things at once gets the first in three short sentences and the rest as
+    /// choices, one thing at a time; going long is for explaining one thing in depth (Louis's pick, "One part at a
+    /// time").
+    /// </summary>
+    [Test]
+    public void AskedSeveralThingsAtOnce_ItAnswersTheFirst_AndOffersTheRest() =>
+        Assert.That(Voice(), Does.Contain("asks several things at once"));
+
+    /// <summary>
+    /// FX231: the first answer's greeting doesn't count toward the three short sentences; the three come after it
+    /// (Louis, of a judge that counted it: "greeting does not count as a short sentence, so that is correct judge is
+    /// not").
+    /// </summary>
+    [Test]
+    public void TheFirstAnswersGreeting_DoesNotCount_TheThreeComeAfterIt() =>
+        Assert.That(Voice(),
+            Does.Contain("The greeting doesn't count").And.Not.Contain("the greeting is one of the three"));
+
+    /// <summary>
+    /// FX232: no doc is named anywhere in an answer, by its title or its path, and asked where to read, the guide says
+    /// what the docs teach and offers to take them through it; it had said "the guide called Build a pack".
+    /// </summary>
+    [Test]
+    public void ADoc_IsNamedNowhere_ByItsTitleOrItsPath() =>
+        Assert.That(Voice(), Does.Contain("by its title or its path, anywhere in an answer"));
+
+    /// <summary>
+    /// FX233: words come before a choice card, never a card alone. Offer ends the answer, so a guide that called it
+    /// first sent no words at all, once in three in its baseline.
+    /// </summary>
+    [Test]
+    public void ACard_ComesAfterTheWords_NeverAlone() =>
+        Assert.That(Voice() + Skill("writing"),
+            Does.Contain("Write your words first, then call `Offer`").And.Contain("Never an answer without words"));
 }
