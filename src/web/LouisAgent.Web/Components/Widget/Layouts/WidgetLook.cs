@@ -1,3 +1,5 @@
+using LouisAgent.Web.Components.Site.Slides;
+
 namespace LouisAgent.Web.Components.Widget.Layouts;
 
 /// <summary>
@@ -15,6 +17,15 @@ namespace LouisAgent.Web.Components.Widget.Layouts;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0123-ask-the-type.md">ADR 0123: ask the type</seealso>
 public static class WidgetLook
 {
+    /// <summary>
+    /// How the widget stands on the page in view: the bar folds into the corner's button on a page of slides (FX247),
+    /// so a slide has the whole screen; every other layout stands as the site placed it.
+    /// </summary>
+    public static WidgetLayout On(WidgetLayout layout, PageLayout page) => layout == WidgetLayout.Bar
+                                                                          && page == PageLayout.Slides
+        ? WidgetLayout.Corner
+        : layout;
+
     /// <summary>What the widget adds for its layout, and whether it is open.</summary>
     public static string StateOf(WidgetLayout layout, bool open) => layout switch
     {

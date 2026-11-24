@@ -1244,5 +1244,24 @@ lens on every pane rather than the hovered one. And a panel's glass became one v
 site says it in one place and the theme and the lens do the rest. Skill 18 (testing and shipping: what a visitor
 sees is checked by seeing it).
 
+## FX246 · A rule that keeps things together can push them all away
+
+A long slide showed only its small topic line on page one, and the heading started on page two. Each rule on its
+own was sensible: keep the topic with the heading, the heading with the summary, the summary with what follows, and
+never split a row of tiles. Together they made one chain from the topic to the last tile, taller than a page. The
+CSS fragmentation rules say that when a browser can't honour every "avoid", it gives some up, and Chrome gave up the
+first link, right after the topic. Letting the row break between its tiles, and the summary end a page, made the
+chain short enough to fit, so the heading stays on page one. It was found by measuring where each part landed in a
+real browser, not by reading the rules. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
+
+## FX247 · Room kept for one thing is room taken from another
+
+The guide's bar keeps its room free at the foot of the screen, so no page ends under it. On a 1366 by 768 laptop that
+room was 234 pixels, and a page of slides takes it off every slide, which left a slide about 200 pixels for its
+words. So every slide paged, even the last one with a heading and two buttons. Nothing was broken in either part. The
+two simply didn't fit on that screen together, and which one gives way is a product choice, so it went to Louis. His
+pick, the guide as a corner button on a page of slides, gives each slide the whole screen and keeps the guide one tap
+away. Skill 18 (testing and shipping: a layout is checked at the screen sizes people really have).
+
 ---
 [Learning](README.md) · [Fixes](../fixes/README.md) · [Docs index](../README.md)

@@ -117,9 +117,13 @@
                 <footer class="site-footer">@Footer</footer>
             }
 
+            @* The corner is told the layout the page is drawn in, as it changes, so the guide's bar can stand as the
+               corner's button on a page of slides (FX247). *@
             @if (Corner is not null)
             {
-                <div class="site-corner">@Corner</div>
+                <CascadingValue Value="Laid">
+                    <div class="site-corner">@Corner</div>
+                </CascadingValue>
             }
         </div>
     </CascadingValue>

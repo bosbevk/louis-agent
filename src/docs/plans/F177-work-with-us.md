@@ -56,4 +56,6 @@ green on the pull request.
 
 ## Approved during the build
 
-Nothing yet.
+- 2026-11-24, on a card: fix the framework's Slides layout first, as its own fixes, before the page ships in it
+  (FX246, a paged section's heading on page one, and FX247, the guide's bar as the corner button on a page of slides,
+  Louis's pick on a second card).

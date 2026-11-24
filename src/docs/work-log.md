@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 165 | 74 |
-| Fixes (`FX`) | 226 | 12 |
+| Fixes (`FX`) | 228 | 12 |
 | Cleanups (`CL`) | 47 | 24 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -303,10 +303,12 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (226 done)
+## Fixes (228 done)
 
 | Id | When | What |
 |---|---|---|
+| FX247 | 2026-11-24 | On a page of slides the guide's bar stands as the corner button, so a slide has the whole screen |
+| FX246 | 2026-11-24 | A long slide keeps its heading on its first page: a row of tiles or a list breaks between its items |
 | FX244 | 2026-11-24 | A search can stay inside one folder, such as the repository a triage case names, and the investigator and reviewer search there |
 | FX243 | 2026-11-24 | A search hit shows a giant line only around its match, marked as cut, so a search's answer stays small and is never summarised |
 | FX242 | 2026-11-24 | The triage manager raises a person's case as well as deciding it, since a decision alone gives it to nobody |
