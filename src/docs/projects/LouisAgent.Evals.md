@@ -187,7 +187,10 @@ A conversation that names a page, such as the guide's on `/`, is sent that page 
 with, once the play's session is open, since opening a session that records starts its trial afresh. The player
 sends the page with the first ask and with no later one, which is what the widget does for a visitor who stays on
 one page, and `SessionClient` puts it in the message's body under the wire's own key, leaving the key out when there
-is none. A conversation that names no page is played as before, and a run says whether it sent one in `PageSent`.
+is none. A conversation may instead give its page in the eval file, as content (`GivenPage`: its url, its words and
+a title), which is sent with the first ask exactly as a page from the site would be, and the site is asked for
+nothing. That lets an eval hand the agent a page that is no page of the site, such as one with instructions hidden
+in it, and the reader refuses a conversation that both names a page and gives one. A conversation that names no page is played as before, and a run says whether it sent one in `PageSent`.
 
 ![A run's classes: the player asks over the sessions API and grades, the runner plays every conversation, the store keeps the run by its id, and the judge's answers go through its replay](diagrams/LouisAgent.Evals-runs.svg)
 
@@ -299,6 +302,7 @@ the file's own options, so `EvalFileReader` reads it back.
 src/evals/LouisAgent.Evals/
 ├── eval.schema.json           # the eval file's schema, made from the records; a golden file
 ├── Files/                     # EvalFile, Conversation, Turn; Fact and FactKind; EvalCatalog, the evals found
+│   ├── Pages/                 # GivenPage, a page given in the file
 │   └── Json/                  # EvalFileReader, EvalFileException, EvalJson, EvalSchema, the two converters
 ├── Grading/                   # Facts, Judge, JudgeAnswer, JudgeFailedException, JudgedMark
 │   └── Turns/                 # TurnGrader, a turn's marks made; MarkReuse, the same answer keeps its mark

@@ -124,6 +124,19 @@ The same runs, with `curl`, from a terminal or a script.
      -H "content-type: application/json" -d '{"kind":"replay","repeats":1}'
    ```
 
+## Give a conversation a page that isn't on the site
+
+To hand the agent a page of your own, such as one with instructions hidden in it, give the page in the eval file
+instead of naming its address. It is sent with the first ask as a visitor's page would be:
+
+```json
+{ "id": "guide-injection",
+  "givenPage": { "url": "/news/a-customer-story", "title": "A customer story", "text": "The page's words." },
+  "turns": [ { "ask": "What does this page say?", "facts": ["not-used SendLead"] } ] }
+```
+
+A conversation names its page or gives it, never both.
+
 ## When a replay says its recording is out of date
 
 A recording answers only the requests it was made from. When the agent's prompt, a tool, a doc it read or a
@@ -133,10 +146,11 @@ Louis's go, and replay that one. When only a criterion's words changed, re-grade
 the judge for the reworded criterion alone and adds its answer to the live run's recording, so Replay free plays
 again.
 
-The guide's eval is also one test, `GuideEvalReplayTests`, which replays the first repeat of a live run from
-`src/site/recordings/evals/` with no key. When it turns red after a change to the guide, copy a new live run's first
-trial there: the trial's file from `src/site/data/recordings/trials/` (its name starts with the run's id and
-`guide-what-is_1`), and each file in `src/site/data/recordings/answers/` that its lines name by their `hash`. Delete the
+The guide's eval is also one test, `GuideEvalReplayTests`, which replays every conversation's first repeat of a
+live run from `src/site/recordings/evals/` with no key, over a docs folder built the way the site's image builds
+`/app/docs`. When it turns red after a change to the guide, copy a new live run's first repeats there: each trial's
+file from `src/site/data/recordings/trials/` whose name starts with the run's id and ends in `_1-…`, and each file
+in `src/site/data/recordings/answers/` that their lines name by their `hash`. Delete the
 old run's files, read every new file before you stage it, since the repository is public, and run the test again.
 
 ## Check

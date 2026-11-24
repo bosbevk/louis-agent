@@ -36,11 +36,13 @@ public static class EvalReplay
     private const string Key = "eval-replay-key";
 
     /// <summary>
-    /// The eval replayed from its recordings on the product's catalogue, services and settings; any fact not met, or a
+    /// The eval replayed from its recordings on the product's catalogue, services and settings, each conversation its
+    /// recordings hold, whose ids it answers so a test can say which it expects (F126.5.1); any fact not met, or a
     /// recording that is missing or out of date, fails the test with a plain reason. The catalogue is made once the
     /// settings are set, since a pack reads its own when it is made.
     /// </summary>
-    public static async Task AssertFactsMetAsync(Func<AgentCatalog> catalog, HostServices services,
+    public static async Task<IReadOnlyList<string>> AssertFactsMetAsync(Func<AgentCatalog> catalog,
+        HostServices services,
         IReadOnlyDictionary<string, string> settings, string eval, string recordings)
     {
         string kept = Copied(recordings);
@@ -60,6 +62,7 @@ public static class EvalReplay
             var unmet = Unmet(run);
             if (unmet.Count > 0)
                 Assert.Fail($"Facts not met in the replay of '{eval}':\n  {string.Join("\n  ", unmet)}");
+            return [.. run.Conversations.Select(conversation => conversation.Id)];
         }
         finally
         {
@@ -80,7 +83,9 @@ public static class EvalReplay
 
         var file = EvalCatalog.Read(catalog).Find(eval);
         Assert.That(file, Is.Not.Null, $"The catalogue holds no eval named '{eval}'.");
-        var factsOnly = FactsOnly(file!);
+        // Only the conversations the recordings hold are replayed: one with none recorded has nothing to play back.
+        var held = RecordedConversations(recorded);
+        var factsOnly = FactsOnly(file!, held);
 
         await using var app = ApiTestHost.Build(apiKey: Key, openDoor: OpenDoorOptions.FromEnvironment(Setting),
             host: host);
@@ -91,22 +96,24 @@ public static class EvalReplay
         // The run the recordings came from, and as many repeats as they hold.
         string replayOf = recorded[0][..recorded[0].IndexOf('/')];
         var started = new EvalRun(new RunId(DateTimeOffset.UtcNow, eval).Text, eval, file!.Agent.ToString(),
-            RunKind.Replay, recorded.Count / file.Conversations.Count, DateTimeOffset.UtcNow, [])
-        {
-            ReplayOf = replayOf
-        };
+            RunKind.Replay, recorded.Count / Math.Max(1, held.Count), DateTimeOffset.UtcNow,
+            [])
+        { ReplayOf = replayOf };
         var player = new ConversationPlayer(new SessionClient(http), new PageClient(http, new ReplayStore(kept)),
             new Judge(new NoJudge()));
         return await new EvalRunner(player, TimeProvider.System).RunAsync(started, factsOnly, _ => Task.CompletedTask);
     }
 
-    /// <summary>The eval with its criteria left out, so only code tells the turns.</summary>
-    private static EvalFile FactsOnly(EvalFile file) => file with
+    /// <summary>
+    /// The eval's conversations its recordings hold, with their criteria left out, so only code tells the turns.
+    /// </summary>
+    private static EvalFile FactsOnly(EvalFile file, IReadOnlySet<string> held) => file with
     {
-        Conversations = file.Conversations.Select(conversation => conversation with
-        {
-            Turns = conversation.Turns.Select(turn => turn with { Criteria = [] }).ToList()
-        }).ToList()
+        Conversations = file.Conversations.Where(conversation => held.Contains(conversation.Id))
+            .Select(conversation => conversation with
+            {
+                Turns = conversation.Turns.Select(turn => turn with { Criteria = [] }).ToList()
+            }).ToList()
     };
 
     /// <summary>Every fact not met, with the conversation, the repeat and what code saw.</summary>
@@ -115,6 +122,13 @@ public static class EvalReplay
                 .SelectMany(turn => turn.Facts).Where(mark => !mark.Met)
                 .Select(mark => $"{conversation.Id}.{repeat.Number}: {mark.Text} ({mark.Reason})")))
             .ToList();
+
+    /// <summary>
+    /// The conversations the recorded trials are of: a trial is named <c>{run}/{conversation}.{repeat}</c>.
+    /// </summary>
+    private static IReadOnlySet<string> RecordedConversations(IReadOnlyList<string> trials) => trials
+        .Select(trial => trial[(trial.IndexOf('/') + 1)..trial.LastIndexOf('.')])
+        .ToHashSet(StringComparer.Ordinal);
 
     /// <summary>The trials a recordings folder holds, by name, in order.</summary>
     private static IReadOnlyList<string> RecordedTrials(string folder)

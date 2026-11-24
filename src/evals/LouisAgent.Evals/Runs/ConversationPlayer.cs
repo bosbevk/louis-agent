@@ -18,7 +18,8 @@ namespace LouisAgent.Evals.Runs;
 
 /// <summary>
 /// Plays one conversation once against the agent, as a person would: one session, each ask in turn, the session
-/// closed. A conversation that names a page sends it with its first ask, as the site's widget would (F126.3.3). Then
+/// closed. A conversation that names a page, or gives one in the file, sends it with its first ask, as the site's
+/// widget would (F126.3.3, F126.5.1). Then
 /// it grades every turn with the turn grader, its facts by code and its criteria by the judge, and hands back the
 /// repeat.
 /// </summary>
@@ -80,9 +81,7 @@ public sealed class ConversationPlayer(
         {
             // The page goes with the first ask only, as the widget sends it once for a visitor who stays on one page.
             // It is asked after the session opens, since opening a recording session starts its trial afresh.
-            var page = conversation.Page is { } address
-                ? await pages.FindAsync(address, trial, cancellationToken)
-                : null;
+            var page = await PageOfAsync(conversation, trial, cancellationToken);
             var asked = new List<AskedTurn>();
             foreach (var turn in conversation.Turns)
             {
@@ -96,6 +95,19 @@ public sealed class ConversationPlayer(
         {
             await sessions.CloseAsync(session, CancellationToken.None);
         }
+    }
+
+    /// <summary>
+    /// The page the conversation's first ask carries: the one it gives in the file, sent as is (F126.5.1), the one it
+    /// names, asked of the site, or none.
+    /// </summary>
+    private async Task<PageRequest?> PageOfAsync(Conversation conversation, RunTrial trial,
+        CancellationToken cancellationToken)
+    {
+        if (conversation.GivenPage is { } given) return given.AsSent();
+        if (conversation.Page is not { } address) return null;
+
+        return await pages.FindAsync(address, trial, cancellationToken);
     }
 
     /// <summary>One ask sent, with its page if it has one, its stream read whole and timed, and written down.</summary>

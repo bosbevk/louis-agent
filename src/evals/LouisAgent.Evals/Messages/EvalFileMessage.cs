@@ -72,6 +72,9 @@ public enum EvalFileMessage
     [Holes(typeof(PageNotAnAddressHoles))]
     PageNotAnAddress,
 
+    [Description("A conversation names its page or gives it, not both.")]
+    PageNamedAndGiven,
+
     [Description("The conversation checks nothing, so it would pass whatever the agent said. " +
                  "Give a turn a fact or a criterion.")]
     ChecksNothing

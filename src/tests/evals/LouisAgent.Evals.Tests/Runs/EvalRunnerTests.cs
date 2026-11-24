@@ -4,6 +4,7 @@ using LouisAgent.Evals.Contracts.Grading;
 using LouisAgent.Evals.Contracts.Runs;
 using LouisAgent.Evals.Contracts.Transcripts;
 using LouisAgent.Evals.Files;
+using LouisAgent.Evals.Files.Pages;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Runs;
 using Microsoft.Extensions.AI;
@@ -194,7 +195,19 @@ public class EvalRunnerTests
         var none = await Runner(new FakeSessionsApi(Answered("Yes."), Answered("Yes.")))
             .RunAsync(StartedRun(1), TwoConversations, Kept([]));
 
+        var given = TwoConversations with
+        {
+            Conversations =
+            [
+                TwoConversations.Conversations[0] with { GivenPage = new GivenPage("/pricing", "What it costs.") },
+                TwoConversations.Conversations[1]
+            ]
+        };
+        var sentGiven = await Runner(new FakeSessionsApi(Answered("Yes."), Answered("Yes.")))
+            .RunAsync(StartedRun(1), given, Kept([]));
+
         Assert.That((sent.PageSent, none.PageSent), Is.EqualTo((true, false)));
+        Assert.That(sentGiven.PageSent, Is.True, "F126.5.1: a page given in the file is sent too");
     }
 
     /// <summary>

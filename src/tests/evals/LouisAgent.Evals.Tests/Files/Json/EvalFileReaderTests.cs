@@ -1,6 +1,7 @@
 using LouisAgent.Composition.Agents;
 using LouisAgent.Evals.Files;
 using LouisAgent.Evals.Files.Json;
+using LouisAgent.Evals.Files.Pages;
 
 namespace LouisAgent.Evals.Tests.Files.Json;
 
@@ -15,6 +16,22 @@ public class EvalFileReaderTests
         "src/tests/evals/LouisAgent.Evals.Tests/Files/Json/Fixtures/guide.eval.json"));
 
     /// <summary>The file names the guide, by its address.</summary>
+    /// <summary>F126.5.1: a conversation may give its page in the file: its address, title and text.</summary>
+    [Test]
+    public void AGivenPage_IsRead()
+    {
+        const string json = """
+                            { "agent": "acme", "conversations": [ { "id": "one",
+                              "givenPage": { "url": "/pricing", "title": "Pricing", "text": "What it costs." },
+                              "turns": [ { "ask": "Hi", "facts": ["no-error"] } ] } ] }
+                            """;
+
+        var conversation = EvalFileReader.Read(json).Conversations.Single();
+
+        Assert.That(conversation.GivenPage, Is.EqualTo(new GivenPage("/pricing", "What it costs.", "Pricing")));
+        Assert.That(conversation.Page, Is.Null);
+    }
+
     [Test]
     public void TheGuidesFile_NamesTheGuide() =>
         Assert.That(EvalFileReader.Read(Guide).Agent, Is.EqualTo(new AgentAddress("louis-agent-guide", null)));
@@ -40,10 +57,11 @@ public class EvalFileReaderTests
     {
         var turn = EvalFileReader.Read(Guide).Conversations[0].Turns[0];
 
-        Assert.That(turn.Facts, Is.EqualTo(new[]
-        {
-            new Fact(FactKind.NoError, ""), new Fact(FactKind.Used, "ReadDoc"), new Fact(FactKind.Under, "30")
-        }));
+        Assert.That(turn.Facts,
+            Is.EqualTo(new[]
+            {
+                new Fact(FactKind.NoError, ""), new Fact(FactKind.Used, "ReadDoc"), new Fact(FactKind.Under, "30")
+            }));
     }
 
     /// <summary>A turn that leaves out its facts or its criteria has none of them.</summary>
@@ -51,9 +69,10 @@ public class EvalFileReaderTests
     public void ATurnThatLeavesThemOut_HasNoFactsOrCriteria()
     {
         const string json = """
-            { "agent": "acme", "conversations": [ { "id": "one", "turns": [
-              { "ask": "Hello", "criteria": ["Greets back"] }, { "ask": "Next.", "facts": ["no-error"] } ] } ] }
-            """;
+                            { "agent": "acme", "conversations": [ { "id": "one", "turns": [
+                              { "ask": "Hello", "criteria": ["Greets back"] },
+                              { "ask": "Next.", "facts": ["no-error"] } ] } ] }
+                            """;
 
         var turns = EvalFileReader.Read(json).Conversations[0].Turns;
 
@@ -69,9 +88,9 @@ public class EvalFileReaderTests
     public void AFileWithNoSchema_Reads()
     {
         const string json = """
-            { "agent": "acme", "conversations": [
-              { "id": "one", "turns": [ { "ask": "Hi", "facts": ["no-error"] } ] } ] }
-            """;
+                            { "agent": "acme", "conversations": [
+                              { "id": "one", "turns": [ { "ask": "Hi", "facts": ["no-error"] } ] } ] }
+                            """;
 
         Assert.That(EvalFileReader.Read(json).Schema, Is.Null);
     }

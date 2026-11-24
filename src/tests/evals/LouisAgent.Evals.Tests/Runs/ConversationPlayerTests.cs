@@ -3,6 +3,7 @@ using LouisAgent.Core.Llm.UsageMapping;
 using LouisAgent.Core.Pricing.Prices;
 using LouisAgent.Evals.Contracts.Runs;
 using LouisAgent.Evals.Files;
+using LouisAgent.Evals.Files.Pages;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Runs;
 using LouisAgent.Evals.Sessions;
@@ -164,6 +165,22 @@ public class ConversationPlayerTests
 
         Assert.That(api.PagesAsked(), Is.EqualTo(new[] { "/" }));
         Assert.That(api.PagesSent(), Is.EqualTo(new[] { "/", null }));
+    }
+
+    /// <summary>
+    /// F126.5.1: a conversation that gives its page in the file sends it with its first ask, its address, title and
+    /// text, and asks the site's page route for nothing, since the file holds the page.
+    /// </summary>
+    [Test]
+    public async Task APageGiven_IsSentWithTheFirstAsk_AndNoPageIsAsked()
+    {
+        var api = new FakeSessionsApi(Answered("A framework."), Answered("Yes."));
+        var given = new GivenPage("/pricing", "What it costs.", "Pricing");
+
+        await Player(api, Met()).PlayAsync(Guide, TwoTurns with { GivenPage = given }, Trial);
+
+        Assert.That(api.PagesAsked(), Is.Empty);
+        Assert.That(api.PagesSent(), Is.EqualTo(new[] { "/pricing", null }));
     }
 
     /// <summary>A conversation that names no page asks for none and sends none.</summary>

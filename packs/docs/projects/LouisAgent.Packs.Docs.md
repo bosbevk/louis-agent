@@ -20,7 +20,7 @@ enough to read and an answer can then name its doc.
 |---|---|
 | `ListDocs(folder)` | The folders and the docs directly in one folder, folders first, as paths from the root; empty for the top, where `README.md` is the index |
 | `ReadDoc(path)` | One doc whole, markdown or plain text, up to 1 MB, with LF line endings whatever the checkout wrote, so it reads the same on every machine |
-| `SearchDocs(query, maxResults)` | Every line holding the text, case ignored, as `path:line: text`, up to 100 |
+| `SearchDocs(query, maxResults)` | Every line holding the text, case ignored, as `path:line: text`, up to 100, the docs walked in the order of the paths it shows, with `/`, so a search answers the same on every system |
 
 A path that reaches outside the root, a file that isn't a doc (a picture, a film), a doc over 1 MB and a search
 with no text are each refused with their reason, as `DocsToolMessage` says it. The same `WorkspaceBoundary` the

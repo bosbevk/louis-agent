@@ -513,6 +513,26 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX230 · A recording is only as portable as every tool it holds
+
+The guide's eval replay, recorded in the Linux container and replayed on Windows, stopped on a docs search. Two
+things made the same search answer other lines. The test searched the whole repository, where the container's image
+holds a folder of five parts, and the search walked its files in the order of the system's own paths, which sort
+differently with `\` than with `/`. Both were fixed: the test builds the image's folder, and the search orders by
+the path it shows the model. It is F126.3.1's and F126.3.3's lesson for a third tool: whatever a tool hands the
+model must be the same bytes on every machine and from every folder the recording may be played over, or a free
+replay stops being free. Skill 18 (testing and shipping).
+
+## FX228 · An agent's prompt keeps an offer after the page is gone
+
+The offer of two free websites was closed and its page taken away, but the guide still offered it, since the offer
+was written into its voice, an entry skill and its two maps of the site. It couldn't change with the page, because
+the guide's eval replays from recordings that answer only the prompt they were made with, and recording again costs
+a live run. It waited for the next live run, which was F126.5.1's baseline, and that run found it again: the
+eval's conversation about the offer stopped on the missing page. The lesson is FX164's, from the agent's side: what
+the agent reads is part of the site, and a change to one is a change to both, recorded together. Skill 12
+(evaluation).
+
 ## FX229 · An eval copies its prompt, mistakes and all
 
 The guide's eval failed "Names the doc it read" in every run, and the first page that showed a run turned that

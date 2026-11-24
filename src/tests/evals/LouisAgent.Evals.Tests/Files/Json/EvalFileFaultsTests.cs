@@ -48,6 +48,12 @@ public class EvalFileFaultsTests
             "$.conversations[0].page", "'identities'").SetName("A page that doesn't start with a slash");
         yield return new TestCaseData(FileWith(Conversation("one", """{ "ask": "Hi" }""")),
             "$.conversations[0]", "checks nothing").SetName("A conversation that checks nothing");
+        const string given = """, "givenPage": { "url": "/pricing", "text": "Prices." }""";
+        yield return new TestCaseData(FileWith(Conversation("one", Turn, ", \"page\": \"/\"" + given)),
+            "$.conversations[0].givenPage", "not both").SetName("A page named and given");
+        const string notAnAddress = """, "givenPage": { "url": "pricing", "text": "Prices." }""";
+        yield return new TestCaseData(FileWith(Conversation("one", Turn, notAnAddress)),
+            "$.conversations[0].givenPage.url", "'pricing'").SetName("A given page that isn't an address");
     }
 
     /// <summary>Each fault is refused at its place, with its reason.</summary>

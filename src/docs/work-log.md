@@ -12,18 +12,22 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 158 | 75 |
-| Fixes (`FX`) | 217 | 5 |
+| Features (`F`) | 161 | 75 |
+| Fixes (`FX`) | 219 | 9 |
 | Cleanups (`CL`) | 47 | 24 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (104 in the TODO)
+## Open (108 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
-| FX228 | Orbi still knows the two free websites after their page went (FX227): its voice, its entry skill and its two maps of the site name the offer; taking them out changes its prompt, so the guide's eval is recorded again in a live run | Now, next |
-| F126 | Evals, redesigned: one `.eval.json` of conversations with turns, seven facts in code, criteria a judge marks, flips to correct it, its own eval host, six screens; today's evals deleted, not ported; five children since 2026-11-22: F126.1 delete the old evals (done 2026-11-22); F126.2 the file and the grading (done 2026-11-22; closeness of meaning is a criterion the judge marks, F93 folded in); F126.3 runs and the run page, split 2026-11-23 into F126.3.1 runs (done 2026-11-23), F126.3.2 the run pages, which read a run (done 2026-11-23), F126.3.3 the page a conversation names, read on the server and sent with the first ask (done 2026-11-23), and F126.3.4 starting, following and stopping a run from the admin (done 2026-11-23); F126.3 is whole; F126.4 flips, re-grade, better-or-worse and Copy as conversation (done 2026-11-23); F126.5 new evals | Now |
+| FX231 | Asked to be told everything, the guide on louis-agent.dev writes about fifteen sentences, where its voice allows three short ones (the guide's eval, `guide-short-answers`, 0 of 3 in the baseline 20261124-072625-guide) | Now, next |
+| FX232 | Asked where to read how a pack is built, the guide names the packs' how-to by its title and two design decisions by number, where its voice says name no doc (`guide-names-no-doc`, 1 of 3 in the baseline) | Now, next |
+| FX233 | Once in three, the guide answered with no words at all, only a choice card (`guide-honest`, its visible reply empty, in the baseline) | Now, next |
+| FX234 | The ask before a live run estimates from the last live run's cost a repeat, whatever conversations that run held, so after the guide's eval grew from one conversation to twelve it said "About $0.012 for 3 repeats" for a run that cost $0.090 | Now, next |
+| FX235 | The guide's free replay runs the docs tools over today's docs, so any docs line that matches a search in its recordings makes the recording stale and the build red; a live run is to record what each tool answered, and a replay to play it back | Now, next |
+| F126 | Evals, redesigned: one `.eval.json` of conversations with turns, seven facts in code, criteria a judge marks, flips to correct it, its own eval host, six screens; today's evals deleted, not ported; five children since 2026-11-22: F126.1 delete the old evals (done 2026-11-22); F126.2 the file and the grading (done 2026-11-22; closeness of meaning is a criterion the judge marks, F93 folded in); F126.3 runs and the run page, split 2026-11-23 into F126.3.1 runs (done 2026-11-23), F126.3.2 the run pages, which read a run (done 2026-11-23), F126.3.3 the page a conversation names, read on the server and sent with the first ask (done 2026-11-23), and F126.3.4 starting, following and stopping a run from the admin (done 2026-11-23); F126.3 is whole; F126.4 flips, re-grade, better-or-worse and Copy as conversation (done 2026-11-23); F126.5 new evals, a parent of three since 2026-11-24 ([plan](plans/F126.5-new-evals.md)): F126.5.1 the guide's evals (done 2026-11-24), F126.5.2 the framework's Orbi, F126.5.3 the triage team | Now |
 | F171 | The bill checker (Louis, 2026-11-21; 2026-11-22: "this feature is next"): a phone app that reads a Western Cape municipal account from a photo or a PDF, checks every line against Cape Town's, Swartland's and Overstrand's own tariffs and drafts the dispute, free to download with one subscription; the product in its own private `bill-checker` repository on the framework's packages, the framework's parts here: F171.1 a photo or PDF reaches a tool (started 2026-11-22); F171.2 the bills pack reads and checks; F171.3 the dispute letter; F171.4 the identity and evals; F171.5 the account, consent and our own subscriptions part; F171.6 the phone app; F171.7 the stores; F171.8 the monthly report | Now, F171.1 after F126; F171.2 on after F140 |
 | F43 | Accounts, tenants and durable sessions; its first child, durable sessions, after F171.1 and before F157 | Now, its first child after F171.1 |
 | FX4 | Append-only history | Now, after F43's first child |
@@ -127,11 +131,14 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups |
 | CL61 | `ToolCallGuards` past 200 lines once laid out: split it, holes into records (ADR 0119), and end the turn through `TurnEnding.Ends` | Cleanups |
 
-## Features (156 done)
+## Features (161 done)
 
 | Id | When | What |
 |---|---|---|
 | F176 | 2026-11-23 | Sequences: an identity may declare a fixed order of agents from its own `Calls`; asking a sequence's first step runs the whole sequence in code for one of the turn's asks, and a later step can't be asked alone; each step held to one ask's checks, given the first message with the answer before (or the whole conversation, or only the answer before), and on a failure stopping (or asking once more, or skipping it, named); the rules checked before a step opens |
+| F126.5.1 | 2026-11-24 | The guide's evals, F126.5's first child: twelve conversations from its rules and its turn log, a prompt-injection case on a page given in the eval file (`GivenPage`), no lead ever sent, a live baseline of three repeats (9 of 12, $0.090) and every conversation's first repeat replayed free; FX228 and FX230 done in it |
+| F126.4 | 2026-11-23 | Flips, re-grade, better-or-worse and Copy as conversation, F126's fourth child: a person flips a judge's mark, a re-grade asks the judge only for what changed, a run is compared with the one before, and a played conversation is copied back as eval JSON; the re-grade proved against the real provider on 2026-11-24 |
+| F126.3.4 | 2026-11-23 | Starting, following and stopping a run from the admin, F126.3's fourth child: Run live with its estimate and a yes, Replay free, the run page following a run as it plays, and Stop |
 | F126.3.3 | 2026-11-23 | The page a conversation names, F126.3's third child: the site's API answers a page as a message carries it, read on the server as the widget reads it (`GET /v1/site/page`), the focus rule in the shared contract; a run asks it, sends it with the first ask and keeps it for its replay; a missing page stops a run; the guide's eval recorded again with its page and its expectations rewritten for the landing |
 | F126.3.2 | 2026-11-23 | The run pages, F126.3's second child: `LouisAgent.Web.Evals`, an area a site names with `.Evals()`, louis-agent.dev among them; the evals' page, a card an eval; a run's page, its number first, its conversations failed first with their first miss, its states and the eval's other runs; a conversation's page, one repeat turn by turn with each mark's reason, walking the failed ones and to the run before; every figure a method on the run's records |
 | F126.3.1 | 2026-11-23 | Runs, F126.3's first child: an eval file played against the agent over the sessions API, one session per repeat, graded, kept as one JSON file and replayed from its recording for free; the contracts, and the eval routes a site's API maps behind the admin key, one run at a time in the background; an operator's run passes the open door as the agent visitors get; the guide's eval replayed as one test; ADR 0134 gains two lines |
@@ -290,10 +297,12 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (217 done)
+## Fixes (219 done)
 
 | Id | When | What |
 |---|---|---|
+| FX230 | 2026-11-24 | A docs search goes through the docs in the order of their paths with `/`, so it answers the same on Windows and Linux |
+| FX228 | 2026-11-24 | The guide no longer knows the closed offer of two free websites: its voice, its entry skill and its maps of the site are cleared, and its eval was recorded again |
 | FX229 | 2026-11-23 | The public site's guide names no doc, a developer's or anyone's, and its eval no longer asks it to; naming the doc is the framework site's agent's |
 | FX227 | 2026-11-23 | The offer of two free websites is closed: its page, the line under the hero, its sitemap entry and what Orbi said and did for it are gone |
 | FX226 | 2026-11-22 | The packages' integration test turns MSBuild's node reuse off too, the second test that waited 15 minutes for a leftover worker |

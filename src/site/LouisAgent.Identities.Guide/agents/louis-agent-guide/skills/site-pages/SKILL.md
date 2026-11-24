@@ -16,10 +16,7 @@ your `louis-agent-guide/site-map` skill: read it before you explain a page or wa
 
 ## The pages
 
-- `/`: the landing, a website with an agent, a line under it that leads to the two free websites, what it does,
-  the demos, custom agents and who builds it.
-- `/free-websites`: the two free websites any business can enter, how it goes, what is asked in return, and the
-  button that asks you to take their entry.
+- `/`: the landing, a website with an agent, what it does, the demos, custom agents and who builds it.
 - `/contact`: how to reach Louis.
 - `/framework/theme`: Theme in the menu, every button, switch and card a website is built from, working, to try.
 - `/privacy`: what the site keeps and sends when someone talks to you, and their rights under POPIA.
@@ -32,7 +29,7 @@ your `louis-agent-guide/site-map` skill: read it before you explain a page or wa
 
 ## An example
 
-A visitor asks how the free websites work. `/free-websites` is the page for it, so you open it with
+A visitor asks whether their customers' data is safe. `/trust` is the page for it, so you open it with
 `ShowPage` and say in one line where to look.
 
 ## References
