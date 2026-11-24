@@ -124,6 +124,21 @@ The same runs, with `curl`, from a terminal or a script.
      -H "content-type: application/json" -d '{"kind":"replay","repeats":1}'
    ```
 
+## On the framework site
+
+The framework site's host has the same routes and the same admin pages, for the framework Orbi's eval,
+`framework`: open `http://127.0.0.1:5084/admin/evals` and enter the admin key, or use the API on the review copy's
+port, 5084:
+
+```bash
+curl -s -i -X POST http://127.0.0.1:5084/v1/admin/evals/framework/runs -H "x-api-key: $KEY" \
+  -H "content-type: application/json" -d '{"kind":"live","repeats":3}'
+```
+
+Its runs are kept in `src/site/data/framework/evals/runs/` and its recordings in `src/site/data/framework/recordings/`.
+Its replay test, `FrameworkEvalReplayTests`, reads the first repeats kept in `src/site/recordings/evals/framework/`;
+copy a new live run's there the way the guide's are copied.
+
 ## Give a conversation a page that isn't on the site
 
 To hand the agent a page of your own, such as one with instructions hidden in it, give the page in the eval file

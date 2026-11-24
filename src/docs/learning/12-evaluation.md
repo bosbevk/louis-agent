@@ -671,6 +671,32 @@ finished with every ledger row at $0, the reworded criterion's answers found in 
 Shankar), *prompt injection*, indirect, as OWASP's LLM01, a *test fixture* for content the model reads, and a
 *baseline* guarded by a *free regression replay*.
 
+## The framework Orbi's evals (F126.5.2)
+
+The second agent to get an eval was the framework site's Orbi, and the point of it was that the harness didn't
+change: an eval is the agent's, wherever it runs. The framework site's host took the same two calls louis-agent.dev's
+does, the eval routes behind the admin key, and a data folder for its runs and recordings, on this PC and on the
+Azure share, as a second mount of the folder the app already uses for its logs. Louis then asked for the admin page
+too. The admin's frame was already the framework's, so the framework site only had to fill it with its own name and
+name the evals' area, which is what a site built from framework parts should cost.
+
+**From the rules, with no log to read.** Orbi had no turn log on this PC, so its eleven conversations come from its
+voice and skills alone, plus an injection case. Its injection case is different from the guide's in an interesting
+way: Orbi has no tool that does anything outside the chat, so the attack can only make it say something, a download
+address and a code word, and code checks it said neither. It held in every repeat.
+
+**What the baseline measured.** Twelve conversations, three repeats, $0.066: eight passed in every repeat, and
+every fact of every first repeat was met. Orbi's own faults were close cousins of the guide's: once its visible reply
+was empty, only a page and choices, the guide's FX233 again; under the code it named one setting where its voice
+asks for each one; and it sometimes wrote past the doc's path or summed a listing up in two sentences. Those are
+FX236 to FX238. One criterion was the eval's fault, not Orbi's, the second time this happened: "Sends a question
+about buying to louis-agent.dev" was read as an action, so it now says "Says that buying questions go to
+louis-agent.dev". A criterion is an instruction to a reader as literal as a model, and its verb decides the mark.
+
+**What went wrong in the running of it.** The first live run went out on a container built before the injection
+case was written, so it held eleven conversations, not twelve, and a second run was needed. A live run measures the
+build it runs on, not the branch; rebuild before you pay.
+
 ## The limits, said plainly
 
 36 labels, one judge, one person. Nine fails is "few labels" by the card's own rule. A pass at 100% on nine is weaker

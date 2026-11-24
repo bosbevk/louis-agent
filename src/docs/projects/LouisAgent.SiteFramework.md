@@ -96,18 +96,29 @@ layout, the door, the code listing's Ask and the search work is in [LouisAgent.W
 `LouisAgent.SiteFrameworkApi` is the program that serves the site:
 
 ```csharp
-var host = AgentHost.Build(FrameworkCatalog.Create(), new HostServices(WebAccess.Create, OtlpTelemetry.Instance,
-    Providers: [AnthropicProvider.Instance]));
+var services = new HostServices(WebAccess.Create, OtlpTelemetry.Instance, Providers: [AnthropicProvider.Instance]);
+var host = AgentHost.Build(FrameworkCatalog.Create(), services);
 var builder = WebApplication.CreateBuilder(args);
 builder.AddLouisAgentApi(host);
+var evals = EvalsOptions.FromEnvironment();
+builder.AddLouisAgentEvals(host, EvalsStartup.JudgeClient(host, services.ClientFactory(), evals), evals);
 var app = builder.Build();
 app.UseLouisAgentKey();
 app.MapStaticAssets();
 app.MapLouisAgentSite(typeof(LouisAgent.SiteFramework.App).Assembly, FrameworkPageServices.Register,
     home: LouisAgent.SiteFramework.FrameworkAreas.Home);
 app.MapLouisAgentApi(host);
+string? adminKey = AdminOptions.FromEnvironment().AdminKey;
+app.MapLouisAgentHostGroup().MapLouisAgentEvals(adminKey);
 app.Run();
 ```
+
+It takes the framework Orbi's evals the way louis-agent.dev's host takes its agents': `AddLouisAgentEvals` reads the
+eval file beside Orbi's voice when the host starts, so a wrong one stops it, and `MapLouisAgentEvals` puts the eval
+routes on the API's group behind the admin key ([LouisAgent.Api.Evals](LouisAgent.Api.Evals.md)). The site's
+`/admin` is the framework's admin frame with this site's name, from its own `Layout/AdminLayout.razor`, and holds the
+framework's eval pages, which `FrameworkAreas` names with `.Admin(typeof(AdminLayout)).Evals()`. A run is started and
+read there or over the API, and kept in the host's data folder.
 
 It is the framework's API and the site's files. What it runs is its catalogue, `FrameworkCatalog`: the framework Orbi
 alone, on two packs, the docs it answers from and the site it shows places with. Nothing else, so a visitor reaches
@@ -162,6 +173,7 @@ The place to look a file up.
 | `LouisAgent.SiteFramework/FrameworkAreas.cs` | The site's areas, its home word, and the repository's name and addresses |
 | `LouisAgent.SiteFramework/App.razor`, `Program.cs` | The router, and the browser's program |
 | `LouisAgent.SiteFramework/Layout/FrameworkLayout.razor`, `FrameworkWords.cs` | The site's frame, on `SiteShell` in its docs layout, with the search, Ask Orbi, Orbi docked and the footer's links; the frame's words, written once |
+| `LouisAgent.SiteFramework/Layout/AdminLayout.razor` | The admin's frame, the framework's `AdminShell` with this site's name and its way back |
 | `LouisAgent.SiteFramework/Components/Orbi/` | `FrameworkOrbi`, the chat placed once; `OrbiAsks`, the words of every way to ask it |
 | `LouisAgent.SiteFramework/Errors/NotFound.razor` | The page for an address the site has no page for |
 | `LouisAgent.SiteFramework/Styles/app.scss`, `layout/_footer.scss` | The framework's Sass and the flat theme, then the site's one partial, its footer's links; the build makes `wwwroot/css/app.css` |
@@ -181,7 +193,9 @@ the model comes from `.env.anthropic`, Claude Haiku 5.5. The run profile loads n
 defaults are the same provider and model. `OPEN_IDENTITIES` and `OPEN_SESSIONS_PER_DAY` open the door, at 20 sessions
 a day in the compose file, the run profile and the Azure yaml alike. `DOCS_ROOT` says where the docs are: the image
 and the Azure yaml set it to `/app/docs`, the compose file keeps the image's, and the run profile points it at the
-repo.
+repo. `SITE_DATA_DIRECTORY` and `REPLAY_DIRECTORY` say where the evals keep their runs and what a live run records:
+`/data` and `/data/recordings` in the compose file, on `src/site/data/framework/`, and in the Azure yaml, on the
+share's `framework/data`; the run profile points both at the same folder on the PC.
 `FRAMEWORK_PORT` picks the review copy's port.
 
 ## Extending it
@@ -194,7 +208,11 @@ this site. A look of the site's own goes in `Styles/`, as the footer's links do;
 The tests are in `src/tests/site/LouisAgent.SiteFramework.Tests`. `Host/FrameworkSiteTests` start the host and hold
 that the Overview is at the root, drawn for a crawler. `Host/FrameworkCatalogTests` hold the catalogue to the
 framework Orbi on its two packs, and the program to it. `Host/FrameworkImageTests` hold the image to the docs, and
-the compose service and the run profile to the docs, the door and Orbi. `Layout/FrameworkLayoutTests` hold that the
+the compose service and the run profile to the docs, the door, Orbi and the evals' data folder.
+`Host/FrameworkEvalRoutesTests` hold that the program takes the evals behind the admin key, and `Admin/FrameworkAdminTests`
+that the admin holds the evals' card, link and pages, in a layout with this site's name. `Evals/FrameworkEvalFileTests`
+hold Orbi's eval to a conversation per rule and its injection case, and `Evals/FrameworkEvalReplayTests` replay every
+conversation from its recordings over no docs. `Layout/FrameworkLayoutTests` hold that the
 doc links lead to GitHub, that the site opens in flat and offers flat alone, that it wears the docs layout, that Orbi
 stands docked beside the page, and that the search, Ask Orbi and Ask about this page are where they belong.
 `Styles/StylesheetTests` hold that the site's styles carry the chat's rules. `Meta/SitemapTests` hold
