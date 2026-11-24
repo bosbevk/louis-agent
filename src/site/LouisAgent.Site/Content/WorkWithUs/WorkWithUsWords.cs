@@ -68,8 +68,8 @@ public static class WorkWithUsWords
     public static readonly PartWords<PaymentHalf, PaymentShare> HowYouPay =
         PartWords<PaymentHalf, PaymentShare>.Of(half => half switch
         {
-            PaymentHalf.AfterTesting => new(Half, "after you have tested it, before it goes live"),
-            PaymentHalf.AfterGoLive => new(Half, "after it is live with your customers"),
+            PaymentHalf.AfterTesting => new("The first half", Half, "after you have tested it, before it goes live"),
+            PaymentHalf.AfterGoLive => new("The second half", Half, "after it is live with your customers"),
             _ => throw new ArgumentOutOfRangeException(nameof(half))
         });
 

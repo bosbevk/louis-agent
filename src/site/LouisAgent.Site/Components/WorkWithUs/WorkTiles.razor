@@ -1,0 +1,16 @@
+@* A row of the Work with us page's tiles (F177): the framework's row with a tile per item, each with its icon, its
+   words and, where it leads somewhere, its button (ADR 0125). *@
+<TileRow Columns="Columns">
+    @for (var index = 0; index < Items.Count; index++)
+    {
+        var item = Items[index];
+        <Tile Icon="item.Icon" Title="@item.Title" Text="@item.Text" Delay="index">
+            <Actions>
+                @if (item.Href is not null && item.LinkText is not null)
+                {
+                    <LinkButton Href="@item.Href" Text="@item.LinkText" Kind="ButtonKind.Quiet" NewTab="item.LeavesTheSite" />
+                }
+            </Actions>
+        </Tile>
+    }
+</TileRow>
