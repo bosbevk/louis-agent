@@ -157,7 +157,7 @@
           ],
           "criteria": [
             "Sells nothing and quotes no price of its own",
-            "Sends a question about buying to louis-agent.dev"
+            "Says that buying questions go to louis-agent.dev"
           ]
         }
       ]
