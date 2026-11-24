@@ -513,6 +513,17 @@ Once a section is data handed to a control, the theme reaches it, and changing t
 The design page was the truth throughout, its own rules taken as they stood, and a name that needed a dictionary
 (`lede`, `kicker`) became one that didn't. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX239 · An error is written for the person who reads it
+
+A rotated model key left the live site's revision on the old one, and every visitor who asked the guide something
+read `AnthropicUnauthorizedException` and the provider's own answer, request id and all. The key was put right in
+the vault and a new revision read it, but the outage showed a second fault: the API handed the chat the exception
+as it was, written for a developer. A failure has two readers. The person in the chat needs to know it was not
+their fault and what to do next, and the developer needs the whole exception. So the stream now says a plain sorry
+and try again, and the exception goes only to the log, where it always went too. What a stranger reads is never an
+SDK's message, since it can name the provider, the key's state and a request id. Skill 14 (reliability: failures
+carry their reason, to the reader who can use it) and skill 15 (safety: a stranger is told no more than they need).
+
 ## FX235 · A replay that runs the world again isn't a replay
 
 The guide's free replay played back the model but ran its tools, so it read the docs as they are today, and a line

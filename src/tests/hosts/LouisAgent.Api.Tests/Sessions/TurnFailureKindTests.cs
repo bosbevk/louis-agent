@@ -1,4 +1,6 @@
+using LouisAgent.Api.Messages;
 using LouisAgent.Api.Sessions;
+using LouisAgent.Composition.Messages;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Agent.Toolsets;
@@ -49,5 +51,19 @@ public class TurnFailureKindTests
 
         Assert.That(stream, Does.Contain($"\"type\":\"{StreamErrorKind.Api.Wire()}\"")
             .And.Not.Contain(StreamErrorKind.ReplayMiss.Wire()));
+    }
+
+    /// <summary>
+    /// The API's own failure streams a plain sentence a visitor can read, never the exception's name or text (FX239:
+    /// a rejected model key showed a visitor <c>AnthropicUnauthorizedException</c> and the provider's answer).
+    /// </summary>
+    [Test]
+    public async Task TheApisFailure_StreamsAPlainSentence_NotTheException()
+    {
+        string stream = await FailedTurnAsync(new InvalidOperationException("invalid x-api-key"));
+
+        Assert.That(stream, Does.Contain(MessageText.Format(ApiUserText.TurnFailed))
+            .And.Not.Contain(nameof(InvalidOperationException))
+            .And.Not.Contain("invalid x-api-key"));
     }
 }

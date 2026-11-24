@@ -195,4 +195,9 @@ public enum ApiUserText
     [Description("'{Day}' isn't a day. Use yyyy-MM-dd, e.g. 2026-11-12, or leave it out for today.")]
     [Holes(typeof(UnknownDayHoles))]
     UnknownDay,
+
+    [Description(
+        "Sorry, something went wrong on our side and this answer didn't come through. Please try again in a " +
+        "minute.")]
+    TurnFailed,
 }

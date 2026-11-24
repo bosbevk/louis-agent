@@ -92,8 +92,9 @@ internal static class TurnStream
                     var failed = new TurnFailedHoles(session.Id);
                     AgentLogging.LoggerFactory.CreateLogger("LouisAgent.Api").Log(LogLevel.Error,
                         ApiLogMessage.TurnFailed, failed, exception: ex, tag: "API");
-                    error = $"{ex.GetType().Name}: {ex.Message}";
+                    // The exception is in the log line above; the chat gets a plain sentence, never its text (FX239).
                     // A replay with no recorded answer is streamed as its own kind, so a reader can tell it (FX26).
+                    error = StreamErrorKinds.MessageFor(ex);
                     errorKind = StreamErrorKinds.Of(ex);
                     break;
                 }

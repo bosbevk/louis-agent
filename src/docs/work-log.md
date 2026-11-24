@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 162 | 75 |
-| Fixes (`FX`) | 220 | 11 |
+| Fixes (`FX`) | 221 | 11 |
 | Cleanups (`CL`) | 47 | 24 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -300,10 +300,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (220 done)
+## Fixes (221 done)
 
 | Id | When | What |
 |---|---|---|
+| FX239 | 2026-11-24 | A failed chat turn tells the visitor sorry and to try again, never the exception's name and text; the exception stays in the log |
 | FX235 | 2026-11-24 | A free replay plays back what each tool answered, keyed by compact JSON, so a docs edit or a system's newline can't make a recording stale |
 | FX230 | 2026-11-24 | A docs search goes through the docs in the order of their paths with `/`, so it answers the same on Windows and Linux |
 | FX228 | 2026-11-24 | The guide no longer knows the closed offer of two free websites: its voice, its entry skill and its maps of the site are cleared, and its eval was recorded again |
