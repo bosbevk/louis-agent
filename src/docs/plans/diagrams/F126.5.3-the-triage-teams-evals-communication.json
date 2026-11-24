@@ -1,0 +1,71 @@
+{
+  "kind": "sequence",
+  "title": "F126.5.3 the triage team's evals: one case played",
+  "caption": "An auto-fixable case: the manager reads the runbook, asks the investigator by its address, decides auto-fix with DecideCase, and the run ends there; the facts check who was asked and what was decided.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "E",
+        "icon": "play",
+        "tone": "green",
+        "label": "The eval's player"
+      },
+      {
+        "id": "M",
+        "icon": "message",
+        "tone": "violet",
+        "label": "The manager"
+      },
+      {
+        "id": "I",
+        "icon": "search",
+        "tone": "violet",
+        "label": "triage.investigator"
+      },
+      {
+        "id": "F",
+        "icon": "checks",
+        "tone": "green",
+        "label": "The facts"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "E",
+        "to": "M",
+        "text": "run id, repository, error, runbook"
+      },
+      {
+        "step": "message",
+        "from": "M",
+        "to": "I",
+        "text": "AskAgent: the brief"
+      },
+      {
+        "step": "reply",
+        "from": "I",
+        "to": "M",
+        "text": "ReportInvestigation: cause, area, how sure"
+      },
+      {
+        "step": "reply",
+        "from": "M",
+        "to": "E",
+        "text": "DecideCase auto-fix, and why; no coder asked"
+      },
+      {
+        "step": "message",
+        "from": "E",
+        "to": "F",
+        "text": "the turn's calls"
+      },
+      {
+        "step": "reply",
+        "from": "F",
+        "to": "E",
+        "text": "routed-to triage.investigator, used DecideCase"
+      }
+    ]
+  }
+}

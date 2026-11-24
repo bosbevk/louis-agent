@@ -1,0 +1,96 @@
+{
+  "kind": "classes",
+  "title": "F126.5.3 the triage team's evals: the types",
+  "caption": "The demo's program takes the eval routes as the sites' do, the code-review app's areas name the evals' pages, the triage identity holds its eval file, and EvalReplay plays the kept recordings. The number in brackets is the step.",
+  "classes": {
+    "types": [
+      {
+        "id": "prog",
+        "name": "CodingApi Program",
+        "kind": "program",
+        "members": [
+          "AddLouisAgentEvals(host, judge, options) (2)",
+          "MapLouisAgentEvals(adminKey) (2)"
+        ]
+      },
+      {
+        "id": "areas",
+        "name": "CodeReviewAreas",
+        "kind": "static",
+        "members": [
+          ".Admin(..).Overview().Evals() (3)"
+        ]
+      },
+      {
+        "id": "cat",
+        "name": "CodingCatalog",
+        "kind": "static",
+        "members": [
+          "the coding identity",
+          "TriageIdentity"
+        ]
+      },
+      {
+        "id": "id",
+        "name": "TriageIdentity",
+        "kind": "class",
+        "members": [
+          "Calls: sorter, investigator, reviewer",
+          "triage.eval.json (4)"
+        ]
+      },
+      {
+        "id": "facts",
+        "name": "Facts",
+        "kind": "static",
+        "members": [
+          "routed-to: asked now",
+          "continued: asked now and before"
+        ]
+      },
+      {
+        "id": "replay",
+        "name": "EvalReplay",
+        "kind": "static",
+        "members": [
+          "AssertFactsMetAsync(catalog, ..)"
+        ]
+      },
+      {
+        "id": "test",
+        "name": "TriageEvalReplayTests",
+        "kind": "test (5)",
+        "members": [
+          "recordings/evals/triage"
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "from": "prog",
+        "to": "cat",
+        "kind": "uses"
+      },
+      {
+        "from": "cat",
+        "to": "id",
+        "kind": "holds"
+      },
+      {
+        "from": "id",
+        "to": "facts",
+        "kind": "uses"
+      },
+      {
+        "from": "test",
+        "to": "replay",
+        "kind": "uses"
+      },
+      {
+        "from": "replay",
+        "to": "cat",
+        "kind": "uses"
+      }
+    ]
+  }
+}

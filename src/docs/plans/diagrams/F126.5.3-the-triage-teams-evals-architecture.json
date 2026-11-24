@@ -1,0 +1,89 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F126.5.3 the triage team's evals: where it lives and runs",
+  "caption": "The demo's API container takes the eval routes and keeps runs and recordings in its data folder; the triage team reads the sample service in the workspace; the code-review admin shows the runs; the first repeats go into git, where a test replays them. The number in brackets is the step.",
+  "flow": {
+    "direction": "down",
+    "nodes": [
+      {
+        "id": "admin",
+        "icon": "shield",
+        "tone": "amber",
+        "label": "The code-review admin\nthe evals' page (3)"
+      },
+      {
+        "id": "host",
+        "icon": "server",
+        "tone": "green",
+        "label": "LouisAgent.CodingApi\nthe eval routes (2)"
+      },
+      {
+        "id": "team",
+        "icon": "message",
+        "tone": "violet",
+        "label": "The triage team\nmanager, sorter, investigator"
+      },
+      {
+        "id": "sample",
+        "icon": "folder",
+        "tone": "amber",
+        "label": "samples/order-service\nin the workspace",
+        "shape": "data"
+      },
+      {
+        "id": "data",
+        "icon": "database",
+        "tone": "amber",
+        "label": "demos/louis-agent/data\nruns, recordings (2)",
+        "shape": "data"
+      },
+      {
+        "id": "git",
+        "icon": "database",
+        "tone": "amber",
+        "label": "recordings/evals/triage\nevery first repeat (5)",
+        "shape": "data"
+      },
+      {
+        "id": "test",
+        "icon": "checks",
+        "tone": "green",
+        "label": "TriageEvalReplayTests\nno key (5)"
+      }
+    ],
+    "edges": [
+      {
+        "from": "admin",
+        "to": "host",
+        "word": "start, read"
+      },
+      {
+        "from": "host",
+        "to": "team",
+        "word": "plays each case"
+      },
+      {
+        "from": "team",
+        "to": "sample",
+        "word": "reads"
+      },
+      {
+        "from": "host",
+        "to": "data",
+        "word": "runs and recordings"
+      },
+      {
+        "from": "data",
+        "to": "git",
+        "word": "first repeats copied",
+        "style": "dashed"
+      },
+      {
+        "from": "git",
+        "to": "test",
+        "word": "played back"
+      }
+    ]
+  }
+}
