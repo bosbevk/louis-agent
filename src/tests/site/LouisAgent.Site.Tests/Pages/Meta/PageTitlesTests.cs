@@ -30,6 +30,7 @@ public class PageTitlesTests
     [TestCase(typeof(ContactPage), "/contact", "Ask for yours · louis-agent")]
     [TestCase(typeof(PrivacyPage), "/privacy", "Your privacy · louis-agent")]
     [TestCase(typeof(TrustPage), "/trust", "Trust and security · louis-agent")]
+    [TestCase(typeof(WorkWithUsPage), "/work-with-us", "Work with us · louis-agent")]
     public async Task ABusinessPage_IsNamedForWhatItSells(Type page, string address, string title) =>
         Assert.That(await TitleOf(page, address), Is.EqualTo(title));
 }

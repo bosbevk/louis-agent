@@ -1,4 +1,5 @@
 using LouisAgent.Web.Components.Widget;
+using LouisAgent.Web.Components.Site.Slides;
 using LouisAgent.Web.Storage;
 using LouisAgent.Web.Text;
 using LouisAgent.Web.Usage;
@@ -64,6 +65,28 @@ public class ChatWidgetBarTests
             Assert.That(cut.FindAll(".agent-bar #composer-input"), Has.Count.EqualTo(1));
             Assert.That(cut.FindAll("button.widget-button"), Is.Empty);
             Assert.That(cut.FindAll(".widget-panel"), Is.Empty);
+        });
+    }
+
+    /// <summary>
+    /// On a page of slides the bar stands as the corner's button (FX247, Louis's pick), so a slide gets the whole
+    /// screen; on a flowing page it stays the bar.
+    /// </summary>
+    [TestCase(PageLayout.Slides, 1, 0)]
+    [TestCase(PageLayout.Flow, 0, 1)]
+    public void TheBar_StandsAsTheCorner_OnAPageOfSlides(PageLayout page, int buttons, int bars)
+    {
+        using var ctx = Context();
+
+        var cut = ctx.Render<ChatWidget>(parameters => parameters
+            .AddCascadingValue(page)
+            .Add(w => w.Identity, "guide")
+            .Add(w => w.Layout, WidgetLayout.Bar));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(cut.FindAll("button.widget-button"), Has.Count.EqualTo(buttons));
+            Assert.That(cut.FindAll(".agent-bar #composer-input"), Has.Count.EqualTo(bars));
         });
     }
 }

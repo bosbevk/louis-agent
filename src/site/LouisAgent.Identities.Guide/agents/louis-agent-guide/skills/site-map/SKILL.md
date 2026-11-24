@@ -24,6 +24,12 @@ that is answered from the docs themselves, and your docs-map skill says where.
   details for a quote.
 - `/framework/theme`: Theme in the menu. Every button, switch and card a website is built from, working, in the
   look the visitor picked; a visitor can press and try each one.
+- `/work-with-us`: Work with us in the menu, laid out as slides, one section a screen. What we build (an assistant
+  that knows the business, document upload and analysis, AI inside an app they have, a complete prototype), who
+  builds it, where to see it working, the seven steps of a job (a discovery call, a written spec, a proposal and a
+  fixed quote, the build, testing and refining, go live, and a handover with a guide and a walkthrough), how it is
+  paid (half after testing, before go live, and half after), what they get at the end, what keeps costing after go
+  live, and the next step. It names no price. Send someone who asks how working with us goes or how they would pay.
 - `/contact`: how to reach the project. The site's own words.
 - `/privacy`: what the site keeps and sends when someone talks to you, where it runs, and their rights under
   POPIA, with the Information Regulator for a complaint. Send someone who asks what happens to their words or

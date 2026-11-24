@@ -1,0 +1,56 @@
+@page "/work-with-us"
+@using LouisAgent.Site.Components.WorkWithUs
+@using LouisAgent.Site.Content.WorkWithUs
+
+<PageTitle>Work with us · louis-agent</PageTitle>
+<PageHead Description="How we add AI to your website or business. What we build, the seven steps from the first call to the handover, how you pay and what you get." />
+
+@* The slideshow a client is handed, as a page (F177, Louis: "how could I get this slideshow on our site? in a menu
+   item?"): laid out as slides, a section a screen, in the order a client asks. Its lists are data in
+   Content/WorkWithUs, and every section is one of the framework's controls (ADR 0125). *@
+<PageLayoutChoice Layout="PageLayout.Slides" />
+
+<Band Id="top" Topic="Work with us" Title="AI built into your website or business." Summary="We add AI that does real work for your customers and your team. It is built to your spec, at a fixed price.">
+    <ButtonRow Columns="2">
+        <LinkButton Href="/demos" Text="Watch one work" />
+        <LinkButton Href="/contact" Text="Ask for a quote" Kind="ButtonKind.Quiet" />
+    </ButtonRow>
+</Band>
+
+<Band Id="what-we-build" Topic="what we build" Title="AI that fits the way you already work." Summary="Most jobs are one of these four, or two of them together.">
+    <WorkTiles Items="WorkWithUsWords.WhatWeBuild.InOrder" Columns="2" />
+</Band>
+
+<WhoBuildsIt />
+
+<Band Id="see-it-working" Topic="see it working" Title="Don't take our word for it. Try it." Summary="Everything here runs today, on this site and the framework's own.">
+    <WorkTiles Items="WorkWithUsWords.SeeItWorking.InOrder" />
+</Band>
+
+<Band Id="how-we-work" Topic="how we work" Title="Seven steps, and you always know where we are." Summary="The written spec is where we agree what done means. That is why the quote can be fixed.">
+    <Steps Items="WorkWithUsWords.HowWeWork.InOrder" />
+</Band>
+
+<Band Id="how-you-pay" Topic="how you pay" Title="Nothing to pay until you have tested it." Summary="The price is fixed in the proposal before any work starts.">
+    <TileRow Columns="2">
+        @foreach (var half in WorkWithUsWords.HowYouPay.InOrder)
+        {
+            <Tile Title="@half.Title" Value="@half.Share" Note="@half.When" />
+        }
+    </TileRow>
+</Band>
+
+<Band Id="what-you-get" Topic="what you get" Title="When we are done, it is yours to run." Summary="Four things are handed over, and nothing is held back.">
+    <WorkTiles Items="WorkWithUsWords.WhatYouGet.InOrder" Columns="2" />
+</Band>
+
+<Band Id="running-costs" Topic="running costs" Title="AI is paid for each time it is used." Summary="Your proposal says what running it should cost, before you agree to anything.">
+    <WorkTiles Items="WorkWithUsWords.RunningCosts.InOrder" Columns="2" />
+</Band>
+
+<Band Id="next-step" Topic="the next step" Title="Tell us about your idea." Summary="Leave your details with Orbi below, or write to us. A short video call shows whether AI is the right fit.">
+    <ButtonRow>
+        <AskButton Text="Leave your details" Question="I would like AI added to my website or business. Please take my details so we can book a call." />
+        <LinkButton Href="/contact" Text="Write to us" Kind="ButtonKind.Quiet" />
+    </ButtonRow>
+</Band>
