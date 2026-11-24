@@ -62,7 +62,7 @@ public class DocsToolsTests
         Assert.That(_tools.ReadDoc("windows.md"), Is.EqualTo("# Windows\n\nOne line.\n"));
     }
 
-    /// <summary>A path outside the root, a picture, a missing doc and a huge doc are each refused with their reason.</summary>
+    /// <summary>A path outside the root, a picture, a missing doc and a huge doc are each refused, with why.</summary>
     [Test]
     public void WhatIsNotADocToRead_IsRefusedWithItsReason()
     {
@@ -84,5 +84,21 @@ public class DocsToolsTests
         Assert.That(_tools.SearchDocs("CONVERTIBLE"), Is.EqualTo("adr/0001-first.md:3: Packs stay convertible."));
         Assert.That(_tools.SearchDocs("unicorn"), Does.Contain("unicorn").And.Contain("ListDocs"));
         Assert.That(_tools.SearchDocs(" "), Does.Contain("needs some text"));
+    }
+
+    /// <summary>
+    /// F126.5.1: a search goes through the docs in the order of their paths as it shows them, with <c>/</c>, so it
+    /// answers the same on Windows and Linux. Sorted by the system's full path, Windows' <c>\</c> put <c>aA.md</c>
+    /// before <c>a/x.md</c> and Linux's <c>/</c> after it, and a replay recorded on one stopped on the other.
+    /// </summary>
+    [Test]
+    public void ASearch_GoesInTheOrderOfItsPathsWithSlashes_OnEverySystem()
+    {
+        Directory.CreateDirectory(Path.Combine(_root, "a"));
+        File.WriteAllText(Path.Combine(_root, "a", "x.md"), "Payments are planned.\n");
+        File.WriteAllText(Path.Combine(_root, "aA.md"), "Payments are planned.\n");
+
+        Assert.That(_tools.SearchDocs("payments"),
+            Is.EqualTo("a/x.md:1: Payments are planned.\naA.md:1: Payments are planned."));
     }
 }

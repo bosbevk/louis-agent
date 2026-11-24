@@ -56,7 +56,9 @@ public sealed class DocsTools
             : string.Join('\n', entries);
     }
 
-    /// <summary>One doc, whole, with LF line endings whatever the checkout wrote, so it reads the same everywhere.</summary>
+    /// <summary>
+    /// One doc, whole, with LF line endings whatever the checkout wrote, so it reads the same everywhere.
+    /// </summary>
     [Description("Reads one doc of the docs, whole, as text. The path is the one ListDocs or SearchDocs showed.")]
     public string ReadDoc(
         [Description("The doc's path from the docs root, such as 'adr/0027-engine-identities-and-packs.md'.")]
@@ -85,8 +87,9 @@ public sealed class DocsTools
         maxResults = Math.Clamp(maxResults, 1, MostMatches);
 
         var matches = new List<string>();
+        // In the order of the paths as the model sees them, with /, so a search answers the same on every system.
         foreach (string file in Directory.EnumerateFiles(_root, "*", SearchOption.AllDirectories)
-                     .Where(IsDoc).Order(StringComparer.Ordinal))
+                     .Where(IsDoc).OrderBy(Relative, StringComparer.Ordinal))
         {
             if (new FileInfo(file).Length > MostBytes) continue;
             int lineNumber = 0;
