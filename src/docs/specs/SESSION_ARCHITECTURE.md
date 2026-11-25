@@ -1,13 +1,17 @@
 # Design: Session Architecture
 
-**Status:** idea — not planned yet · **Date:** moved here from the TODO on 2026-10-07 · **First slice:** bounded history
-is planned as feature [F9](../features/F09-context-management.md)
+**Status:** begun: the first workstream's durable storage is built (F43.1, 2026-11-25) · **Date:** moved here from the
+TODO on 2026-10-07 · **First slice of context building:** bounded history is planned as feature
+[F9](../features/F09-context-management.md)
 
 ## Today
 
-`AgentSession` (`src/LouisAgent.Api/AgentSessions.cs`) is an in-memory `List<ChatMessage>` per session id, dropped on
-idle timeout or restart. It mixes "conversation history" with "what the model sees", and has no durable storage, memory
-or retrieval. The ACP server keeps sessions the same way; the web app keeps a copy of each chat in the browser.
+In the API, `AgentSession` (`src/hosts/LouisAgent.Api/Sessions/AgentSession.cs`) holds a `List<ChatMessage>` per
+session id in memory, dropped from memory after four hours idle. Since F43.1 each session is also written to a store,
+how it opened and then a document per finished turn, and read back when a call names one the API doesn't hold, so a
+restart no longer ends it ([LouisAgent.Api](../projects/LouisAgent.Api.md#8-sessions)). It still mixes "conversation
+history" with "what the model sees", and has no memory or retrieval. The ACP server keeps its sessions in memory only;
+the web app keeps a copy of each chat in the browser.
 
 ## Target shape
 
@@ -24,7 +28,7 @@ Separate **session state** (identity, task state, memory references) from **LLM 
 session is not the model's memory. Extend `AgentSession` beyond id + history: lifecycle state, user
 profile/preferences, task state (goals), memory references, tool state. Today only id, history and the turn lock
 exist. Durable storage instead of only the in-process `ConcurrentDictionary`: a database for the full conversation, so
-a restart doesn't lose it (removes the *sessions are in memory* limitation).
+a restart doesn't lose it. Built for the API in F43.1, on MongoDB; the ACP server still keeps its sessions in memory.
 
 ### 2. Context-building pipeline
 

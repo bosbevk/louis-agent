@@ -1,7 +1,7 @@
 {
   "kind": "classes",
   "title": "LouisAgent.Api: the interface design",
-  "caption": "Sessions over HTTP: a program adds the API with the host's context, a session per conversation streams its turn in a format it picks, and the open door counts the public's.",
+  "caption": "Sessions over HTTP: a program adds the API with the host's context, a session per conversation streams its turn in a format it picks and is kept in a store a restart can't reach, and the open door counts the public's.",
   "classes": {
     "types": [
       {
@@ -37,15 +37,38 @@
         "name": "AgentSessions",
         "kind": "singleton",
         "members": [
-          "+Create(SessionRequest) AgentSession"
+          "+CreateAsync(SessionRequest, admittedAs?) AgentSession",
+          "+GetAsync(id) AgentSession?, memory then the store",
+          "+HoldingAsync(id) SessionHolding"
         ]
+      },
+      {
+        "id": "istore",
+        "name": "ISessionStore",
+        "kind": "interface",
+        "members": [
+          "+SaveOpeningAsync(StoredSession)",
+          "+AppendTurnAsync(id, StoredTurn)",
+          "+LoadAsync(id) SavedSession?",
+          "+DeleteAsync(id)"
+        ]
+      },
+      {
+        "id": "memorystore",
+        "name": "InMemorySessionStore",
+        "kind": "tests and a developer's machine"
+      },
+      {
+        "id": "mongostore",
+        "name": "MongoSessionStore",
+        "kind": "a session and a document per turn, a TTL index"
       },
       {
         "id": "opening",
         "name": "SessionOpening",
         "kind": "one per request, its steps in order",
         "members": [
-          "+Open() AgentSession",
+          "+Open(id?) AgentSession",
           "-Identity(), CheckDepth(), Level(), CheckTool()",
           "-Toolsets(), CheckLookupAsksNoOne(), Chain(), Engine()"
         ]
@@ -65,7 +88,8 @@
         "members": [
           "+TryStartTurn(aborted, out turn) bool",
           "+EndTurn(turn)",
-          "+Remember(name, content)"
+          "+Remember(name, content)",
+          "+Restore(turns)"
         ]
       },
       {
@@ -98,7 +122,7 @@
         "kind": "the public's sessions a day",
         "members": [
           "+ConsiderAsync(context) OpenDoorAnswer",
-          "+Admit(sessionId)"
+          "+Admit(sessionId, context)"
         ]
       },
       {
@@ -129,6 +153,10 @@
       { "from": "opening", "to": "factory", "kind": "uses", "word": "gets the engine" },
       { "from": "opening", "to": "session", "kind": "creates" },
       { "from": "sessions", "to": "session", "kind": "holds" },
+      { "from": "sessions", "to": "istore", "kind": "uses", "word": "saves and reads back" },
+      { "from": "memorystore", "to": "istore", "kind": "implements" },
+      { "from": "mongostore", "to": "istore", "kind": "implements" },
+      { "from": "door", "to": "sessions", "kind": "uses", "word": "asks who holds" },
       { "from": "handlers", "to": "stream", "kind": "uses", "word": "streams the turn" },
       { "from": "stream", "to": "iformat", "kind": "uses", "word": "writes in" },
       { "from": "claude", "to": "iformat", "kind": "implements" }

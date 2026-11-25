@@ -1,6 +1,6 @@
 {
   "kind": "cards",
-  "title": "F43.1 durable sessions",
+  "title": "Sessions and state: a chat that survives a restart",
   "cards": {
     "rows": [
       { "cards": [
@@ -14,13 +14,13 @@
         { "id": "save", "icon": "file", "title": "A turn appended whole",
           "text": "A document for how the session opened, then one per finished turn, never history rewritten." },
         { "id": "resume", "icon": "chip", "title": "Resumed on its next message",
-          "text": "An id the API doesn't hold is read back, opened again the same way, its history restored." }
+          "text": "An id the API doesn't hold is read back, opened again the same way; a keyed chat still needs its key." }
       ] },
       { "cards": [
         { "id": "keep", "icon": "shield", "title": "30 days idle, then gone",
           "text": "SESSION_RETENTION, a TTL index deletes it; photos and PDFs are never stored." },
         { "id": "azure", "icon": "server", "title": "Azure DocumentDB, free",
-          "text": "Mongo in the local compose, and a free-tier DocumentDB cluster for louis-agent.dev in main.bicep." }
+          "text": "MongoDB in the local compose, and a free-tier DocumentDB cluster for louis-agent.dev in main.bicep." }
       ] }
     ],
     "links": [

@@ -1,5 +1,5 @@
-<svg viewBox="-24 -24 944 705" width="944" height="705" role="img" aria-label="F43.1 durable sessions" xmlns="http://www.w3.org/2000/svg">
-  <title>F43.1 durable sessions</title>
+<svg viewBox="-24 -24 944 705" width="944" height="705" role="img" aria-label="Sessions and state: a chat that survives a restart" xmlns="http://www.w3.org/2000/svg">
+  <title>Sessions and state: a chat that survives a restart</title>
   <style>svg {
   --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #e2dfff; --violet-line: #6b4dff; --violet-ink: #3a22c4; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
   --mono: var(--bs-font-monospace, "Geist Mono", ui-monospace, Menlo, Consolas, monospace);
@@ -201,7 +201,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <rect class="ground" x="-24" y="-24" width="944" height="705" rx="14" />
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-22 126a470 210 0 1 0 940 0a470 210 0 1 0 -940 0Z" />
-    <text class="mrq-title" x="16" y="14" text-anchor="start">F43.1 durable sessions</text>
+    <text class="mrq-title" x="16" y="14" text-anchor="start">Sessions and state: a chat that survives a restart</text>
     <text class="pic-group" x="880" y="14" text-anchor="end">Overview</text>
     <rect class="mrq-rule" x="0" y="26" width="896" height="1" rx="0" />
     <g class="crd-cards" transform="translate(0 38)">
@@ -288,8 +288,8 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       </g>
       <text class="crd-name" x="630" y="298" text-anchor="start">Resumed on its next message</text>
       <text class="pic-text" x="630" y="319" text-anchor="start">An id the API doesn't hold is read back,</text>
-      <text class="pic-text" x="630" y="337" text-anchor="start">opened again the same way, its history</text>
-      <text class="pic-text" x="630" y="355" text-anchor="start">restored.</text>
+      <text class="pic-text" x="630" y="337" text-anchor="start">opened again the same way; a keyed chat</text>
+      <text class="pic-text" x="630" y="355" text-anchor="start">still needs its key.</text>
       <rect class="mrq-glass" x="0" y="445" width="437" height="114" rx="14" />
       <rect class="mrq-edge" x="28" y="444.5" width="381" height="1.6" rx="0" />
       <rect class="crd-tint" x="18" y="463" width="34" height="34" rx="10" />
@@ -309,7 +309,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M7 16l0 .01" />
       </g>
       <text class="crd-name" x="523" y="486" text-anchor="start">Azure DocumentDB, free</text>
-      <text class="pic-text" x="477" y="521" text-anchor="start">Mongo in the local compose, and a free-tier DocumentDB cluster</text>
+      <text class="pic-text" x="477" y="521" text-anchor="start">MongoDB in the local compose, and a free-tier DocumentDB cluster</text>
       <text class="pic-text" x="477" y="539" text-anchor="start">for louis-agent.dev in main.bicep.</text>
     </g>
     <rect class="mrq-rule" x="0" y="623" width="896" height="1" rx="0" />

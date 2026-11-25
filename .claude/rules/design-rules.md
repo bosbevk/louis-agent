@@ -71,7 +71,7 @@ The design decisions every change keeps, one line each: the *why* is its ADR in 
   a tag `LouisAgent.Core-0.2.0` on `main`, published with a guard; a package carries all a product needs outside this
   repository (its Sass, its run-time files), proved from outside. [ADR 0130](../../src/docs/adr/0130-the-framework-is-published-as-packages-one-tag-each.md).
 - **Choices are enums, not strings**, parsed once with `SettingChoice.TryParse`, written with `.Wire()`; a repeated
-  name is an enum too. [ADR 0024](../../src/docs/adr/0024-choices-are-enums.md), [ADR 0043](../../src/docs/adr/0043-repeated-names-are-enums.md).
+  name is an enum too; a setting that decides whether data is kept fails loud, one that opens access fails shut. [ADR 0024](../../src/docs/adr/0024-choices-are-enums.md), [ADR 0043](../../src/docs/adr/0043-repeated-names-are-enums.md).
 - **Records for values, classes for things; JSON and MongoDB through records**, never an anonymous object, a static
   `Of` to build one from another; **dates are UTC**. [ADR 0040](../../src/docs/adr/0040-records-for-values-classes-for-things.md),
   [0041](../../src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md), [0048](../../src/docs/adr/0048-mongo-through-records.md),
