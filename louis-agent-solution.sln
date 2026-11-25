@@ -447,7 +447,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "fixes", "fixes", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0104}"
 	ProjectSection(SolutionItems) = preProject
 		src\docs\fixes\README.md = src\docs\fixes\README.md
-		src\docs\fixes\FX04-append-only-history.md = src\docs\fixes\FX04-append-only-history.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "guides", "guides", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0105}"
