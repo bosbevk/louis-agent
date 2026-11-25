@@ -17,7 +17,9 @@ object is still what runs a turn, but how it opened and every finished turn are 
 When a message comes for a chat the API doesn't hold, it reads the chat back, opens it again exactly as it first
 opened, puts its turns back after the system prompt, and answers. On the local copy of the site we checked it by
 hand: a visitor told the guide a name and a bakery, the container restarted, and the next answer was "You told me
-your name is Pieter and you run a bakery in Paarl." The two model calls of that check cost $0.0036 together.
+your name is Pieter and you run a bakery in Paarl." The two model calls of that check cost $0.0036 together. Then
+the same on louis-agent.dev itself, once the free cluster was deployed: a chat told the same name, the app's running
+revision restarted, and the answer was "You're Pieter, and you run a bakery in Paarl.", for $0.0036 again.
 
 The store keeps a chat for 30 days after its last message, then MongoDB deletes it by itself. Photos and PDFs are
 never written down, only text. The privacy page and the trust page say so, and a test holds them to it.
@@ -70,10 +72,10 @@ search the whole site for every sentence about storing.
 
 ## What's left
 
-The live proof waits on the deploy: `deploy.ps1 infra` makes the cluster, `secrets` writes its address to the vault,
-and the next release turns the store on. Until then the live site keeps its chats in memory. A sub-session whose
-parent was dropped is still looked up in memory only. The framework's own site keeps its chats in memory, as the plan
-chose.
+A sub-session whose parent was dropped is still looked up in memory only. The plan gave only louis-agent.dev the
+store; FX250 gave the framework's site the same database the same day, since a session's id is a GUID neither site can
+repeat. The free cluster has no backup, and pauses after 60 days with no use. Accounts and tenants come next in F43,
+on a relational database of their own.
 
 ---
 [Docs index](../README.md) · Related: [Learning write-ups](README.md) ·
