@@ -30,7 +30,7 @@ known limitations below are facts about today, not tasks.
 | Id | What | Phase | Detail |
 |---|---|---|---|
 | F171 | The bill checker (Louis, 2026-11-21; 2026-11-22: "this feature is next"): a phone app that reads a Western Cape municipal account from a photo or a PDF, checks every line against Cape Town's, Swartland's and Overstrand's own tariffs and drafts the dispute, free to download with one subscription; the product in its own private `bill-checker` repository on the framework's packages, the framework's parts here: F171.1 a photo or PDF reaches a tool (done 2026-11-24); F171.2 the bills pack reads and checks; F171.3 the dispute letter; F171.4 the identity and evals; F171.5 the account, consent and our own subscriptions part; F171.6 the phone app; F171.7 the stores; F171.8 the monthly report | Now, F171.2 on after F140 | [plan](src/docs/plans/F171-the-bill-checker.md) |
-| F43 | Accounts, tenants and durable sessions; its first child is durable sessions (a session store behind one seam, with an in-memory and a MongoDB provider, and a session that resumes after a restart), built after F171.1 and before F157 (Louis's pick, 2026-11-22, after an outside comparison with Microsoft Agent Framework, LangGraph and OpenAI's Agents SDK found sessions lost on a restart the biggest gap) | Now, its first child after F171.1 | — |
+| F43 | Accounts, tenants and durable sessions; its first child is durable sessions (a session store behind one seam, with an in-memory and a MongoDB provider, and a session that resumes after a restart), built after F171.1 and before F157 (Louis's pick, 2026-11-22, after an outside comparison with Microsoft Agent Framework, LangGraph and OpenAI's Agents SDK found sessions lost on a restart the biggest gap) | Now, F43.1 done; its next children, accounts and tenants, not yet planned | [spec](src/docs/specs/SESSION_ARCHITECTURE.md) |
 | FX4 | Append-only history | Now, after F43's first child | [fix doc](src/docs/fixes/FX04-append-only-history.md) |
 | F8 | Reliability | Now, after FX4 | [feature doc](src/docs/features/F08-reliability.md) |
 | F7 | Cost you can see and stop | Now, after F8 | [feature doc](src/docs/features/F07-budgets.md) |
@@ -141,8 +141,8 @@ above that removes it.
 1. **Rider MCP discovery only logs** Rider's tools; they aren't callable yet (needs a full MCP client).
    → **F36** MCP servers as packs (*Next*, Phase 8); its MCP client is built first, for the guide, in F125.8
    ([plan](src/docs/plans/F125-an-agentic-site.md)).
-2. **Sessions are in memory** in the API and ACP server; a restart ends them (the web app keeps the transcript).
-   → **F43** Accounts, tenants and durable sessions (*Now*, its first child after F171.1;
+2. **Sessions are in memory** in the ACP server; a restart ends them (the API's survive one since F43.1).
+   → **F43** Accounts, tenants and durable sessions (*Now*;
    [session architecture](src/docs/specs/SESSION_ARCHITECTURE.md)).
 3. **Ollama tool support is a name heuristic** (`LlmOptions.KnownNoToolsPrefixes`).
    → [**F15** Model limits and local models](src/docs/features/F15-model-limits.md) (the capability check per model).

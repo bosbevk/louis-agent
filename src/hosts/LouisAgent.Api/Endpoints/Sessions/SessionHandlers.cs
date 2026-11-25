@@ -117,7 +117,7 @@ internal sealed class SessionHandlers(AgentHostContext host)
         AgentSession session;
         try
         {
-            session = sessions.Create(asked);
+            session = await sessions.CreateAsync(asked, admitted);
         }
         catch (Exception ex) when (ex is ToolsetException or RoleException or SessionLlmException)
         {
@@ -137,9 +137,9 @@ internal sealed class SessionHandlers(AgentHostContext host)
     }
 
     /// <summary>The session now; 404 for one this instance doesn't have.</summary>
-    public SessionAnswer GetSession(string id, AgentSessions sessions)
+    public async Task<SessionAnswer> GetSession(string id, AgentSessions sessions)
     {
-        if (sessions.Get(id) is not { } session) return RefuseUnknownSession(id);
+        if (await sessions.GetAsync(id) is not { } session) return RefuseUnknownSession(id);
         return TypedResults.Json(SessionReply.Of(session), SessionJson.SnakeCase);
     }
 
@@ -147,24 +147,24 @@ internal sealed class SessionHandlers(AgentHostContext host)
     /// The session's work, step by step (F127.4.2): 404 for an unknown session, 409 while it is still answering, since
     /// its conversation is being written.
     /// </summary>
-    public WorkAnswer GetSessionWork(string id, AgentSessions sessions)
+    public async Task<WorkAnswer> GetSessionWork(string id, AgentSessions sessions)
     {
-        if (sessions.Get(id) is not { } session) return RefuseUnknownSession(id);
+        if (await sessions.GetAsync(id) is not { } session) return RefuseUnknownSession(id);
         if (session.IsBusy) return RefuseBusy(id);
         return TypedResults.Json(SessionWorkReply.Of(session), SessionJson.SnakeCase);
     }
 
     /// <summary>Removes the session; 404 for one this instance doesn't have.</summary>
-    public DeletedAnswer DeleteSession(string id, AgentSessions sessions)
+    public async Task<DeletedAnswer> DeleteSession(string id, AgentSessions sessions)
     {
-        if (!sessions.Remove(id)) return RefuseUnknownSession(id);
+        if (!await sessions.RemoveAsync(id)) return RefuseUnknownSession(id);
         return TypedResults.Json(new SessionDeletedReply(id, true), SessionJson.SnakeCase);
     }
 
     /// <summary>Cancels the session's running turn, saying whether there was one; 404 for an unknown session.</summary>
-    public CancelledAnswer CancelSession(string id, AgentSessions sessions)
+    public async Task<CancelledAnswer> CancelSession(string id, AgentSessions sessions)
     {
-        if (sessions.Get(id) is not { } session) return RefuseUnknownSession(id);
+        if (await sessions.GetAsync(id) is not { } session) return RefuseUnknownSession(id);
         return TypedResults.Json(new SessionCancelledReply(id, session.Cancel()), SessionJson.SnakeCase);
     }
 
@@ -172,9 +172,11 @@ internal sealed class SessionHandlers(AgentHostContext host)
     /// Answers a message as a stream of events: 400 for an empty one, 409 while the session is still answering, 404 for
     /// an unknown session.
     /// </summary>
-    public TurnAnswer SendMessage(string id, SendMessageRequest request, AgentSessions sessions, HttpContext http)
+    public async Task<TurnAnswer> SendMessage(string id, SendMessageRequest request, AgentSessions sessions,
+        HttpContext http)
     {
-        if (sessions.Get(id) is not { } session) return RefuseUnknownSession(id);
+        // A chat this instance no longer holds is read back from the store and opened again (F43.1).
+        if (await sessions.GetAsync(id) is not { } session) return RefuseUnknownSession(id);
         string prompt = TurnStream.BuildPrompt(request);
         if (string.IsNullOrWhiteSpace(prompt)) return RefuseBadRequest(MessageText.Format(ApiUserText.EmptyMessage));
         // A photo or a PDF is checked and kept before the turn starts, so a refused one starts nothing (F171.1).
@@ -201,7 +203,8 @@ internal sealed class SessionHandlers(AgentHostContext host)
         // leaves its own pacer off and the words are paced once (F156).
         if (host.Agent.StreamPace) http.Response.Headers[ApiHeaders.StreamPaced] = ApiHeaders.StreamPacedOn;
 
-        return TypedResults.ServerSentEvents(TurnStream.StreamTurnAsync(session.Engine, session, prompt, turn, _turns));
+        return TypedResults.ServerSentEvents(TurnStream.StreamTurnAsync(session.Engine, session, prompt, turn, _turns,
+            sessions.TurnSaveFor(session, request)));
     }
 
     /// <summary>

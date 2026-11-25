@@ -1,0 +1,34 @@
+{
+  "kind": "cards",
+  "title": "Sessions and state: a chat that survives a restart",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "goal", "icon": "database", "title": "A chat survives a restart", "code": "F43.1",
+          "look": "highlight",
+          "text": "The API keeps each session in a store behind one seam, and a restart resumes it where it was." }
+      ] },
+      { "cards": [
+        { "id": "seam", "icon": "stack", "title": "One seam, two stores",
+          "text": "In memory, as today, or MongoDB: a setting picks one, and the session never knows which." },
+        { "id": "save", "icon": "file", "title": "A turn appended whole",
+          "text": "A document for how the session opened, then one per finished turn, never history rewritten." },
+        { "id": "resume", "icon": "chip", "title": "Resumed on its next message",
+          "text": "An id the API doesn't hold is read back, opened again the same way; a keyed chat still needs its key." }
+      ] },
+      { "cards": [
+        { "id": "keep", "icon": "shield", "title": "30 days idle, then gone",
+          "text": "SESSION_RETENTION, a TTL index deletes it; photos and PDFs are never stored." },
+        { "id": "azure", "icon": "server", "title": "Azure DocumentDB, free",
+          "text": "MongoDB in the local compose, and a free-tier DocumentDB cluster for louis-agent.dev in main.bicep." }
+      ] }
+    ],
+    "links": [
+      { "from": "goal", "to": "seam" },
+      { "from": "goal", "to": "save" },
+      { "from": "goal", "to": "resume" },
+      { "from": "save", "to": "keep" },
+      { "from": "seam", "to": "azure" }
+    ]
+  }
+}

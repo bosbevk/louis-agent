@@ -46,8 +46,11 @@ internal sealed class SessionOpening(
     private RoleLevel _level;
     private IReadOnlyList<string> _toolsets = [];
 
-    /// <summary>The session the request asks for, every check passed; nothing is made before the last one.</summary>
-    public AgentSession Open()
+    /// <summary>
+    /// The session the request asks for, every check passed; nothing is made before the last one. A chat read back
+    /// from the store (F43.1) is opened again under the id it had.
+    /// </summary>
+    public AgentSession Open(string? id = null)
     {
         Identity();
         CheckDepth();
@@ -64,7 +67,7 @@ internal sealed class SessionOpening(
         var chain = Chain(AgentAddresses.ChainKeyOf(_role, runsAs?.Name));
         var engine = Engine(llm);
 
-        return new AgentSession($"sess_{Guid.NewGuid():N}", engine, _toolsets, request.Depth,
+        return new AgentSession(id ?? $"sess_{Guid.NewGuid():N}", engine, _toolsets, request.Depth,
             request.Tags ?? UsageTags.None, _role, request.Place, llm, _tool, request.Format, request.Replay,
             request.Opener, runsAs)
         { Chain = chain };

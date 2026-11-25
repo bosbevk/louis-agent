@@ -16,9 +16,9 @@ public class WindowPagesTests
 {
     /// <summary>The windows' pages a message brought are the turn's, for the agent each window shows.</summary>
     [Test]
-    public void AMessagesWindowPages_AreTheTurns()
+    public async Task AMessagesWindowPages_AreTheTurns()
     {
-        var session = AgentSessionsTests.Sessions().Create(new SessionRequest([TestToolset.Files.Wire()]));
+        var session = (await AgentSessionsTests.Sessions().CreateAsync(new SessionRequest([TestToolset.Files.Wire()])));
         var page = new PageRequest("https://acme.example/", "Acme", "Four rooms.");
 
         session.Windows = [new WindowPageRequest("acme", page)];

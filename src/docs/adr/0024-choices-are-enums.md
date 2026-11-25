@@ -1,6 +1,7 @@
 # 0024. Choices are enums, not strings
 
-**Status:** Accepted · **Date:** 2026-10-17 (decided in F32 step 1b) · **Recorded:** 2026-10-17
+**Status:** Accepted · **Date:** 2026-10-17 (decided in F32 step 1b) · **Recorded:** 2026-10-17 · **Amended:**
+2026-11-25 (F43.1, a setting that keeps data fails loud)
 
 ## Context
 
@@ -10,6 +11,11 @@ a search's freshness, a thinking level. The code compared strings in each place 
 hand beside it. A new value meant finding every string, a typo compiled, and the "supported" message could drift from
 what the code accepted (it listed three providers after F32 step 1 added a fourth, and a test caught it). Louis, seeing
 `WebSearchProviderFactory`'s string switch: "can we make this enums … This must also be a rule".
+
+F43.1 found the limit of falling back. `SESSION_STORE` picks where the API keeps its chats. If a typo in it fell back
+to memory, as an unknown search provider falls back, the site would start, answer, and lose every chat at its next
+restart without a word. The open door's settings fail the other way on purpose: a door that can't read its cap stays
+shut, which loses nothing. Louis, 2026-11-25, of the rule: "add to adr 0024".
 
 Considered: constants for the strings (one place for each name, but still a string everywhere it travels, and nothing
 makes a switch complete); a smart-enum class per choice (more code than the choices need).
@@ -25,12 +31,18 @@ A value that names one of a fixed set is an **enum**.
 - The names a "supported" message lists come from the enum (`SettingChoice.Names<T>()`), in its order.
 - An unknown value never stops start-up when the setting was optional before: the first use says what's supported, as
   the `Unavailable…` stand-ins do.
+- **A setting that decides whether data is kept fails loud** (amended 2026-11-25): an unknown value, or a value its
+  choice needs and doesn't have, stops the host as it starts and names the setting, as `SessionStoreOptions` does
+  for `SESSION_STORE`, `SESSION_STORE_URL` and `SESSION_RETENTION`. A fallback there loses data silently. A setting
+  that only opens access fails shut instead, as `OpenDoorOptions` does: closed is the safe default.
 - A provider's own words for a choice (Tavily's `time_range=month`, Google's `dateRestrict=m1`) are written by that
   provider from the enum.
 
 ## Consequences
 
 - A new choice is a new enum member; the compiler points at each switch that must handle it.
+- A host whose data setting is wrong doesn't start, so a deploy with a typo fails at once, in its health check,
+  instead of after the first restart, when the data is already gone.
 - The text a person or the model writes is still text up to the point it's parsed: environment variables, tool
   arguments and JSON keep their strings, so the golden files don't change.
 - Choices still made by string are swept as they're touched (a TODO line lists them): the LLM provider, the rates

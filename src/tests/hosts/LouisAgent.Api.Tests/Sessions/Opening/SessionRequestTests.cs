@@ -11,9 +11,9 @@ public class SessionRequestTests
 {
     /// <summary>An empty request is the default: the skills alone, at the top, in the default voice.</summary>
     [Test]
-    public void AnEmptyRequest_OpensTheDefaultSession()
+    public async Task AnEmptyRequest_OpensTheDefaultSession()
     {
-        var session = AgentSessionsTests.Sessions().Create(new SessionRequest());
+        var session = (await AgentSessionsTests.Sessions().CreateAsync(new SessionRequest()));
 
         Assert.Multiple(() =>
         {

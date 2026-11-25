@@ -19,7 +19,8 @@ public static class DataHandlers
     public static readonly IReadOnlyList<ComparisonRow> Rows =
     [
         new("Microsoft Azure",
-            ["Runs the site, keeps its keys and watches it", "What the site runs, and its traces without your words",
+            ["Runs the site, keeps its keys and chats, and watches it",
+                "Your chats, for 30 days after the last message, and traces without your words",
                 "South Africa North"]),
         new("Anthropic", ["Its model writes the answers", "The messages of a chat", "United States"]),
         new("Resend", ["Sends us your details by email", "Your name and contact, after you press Send it",

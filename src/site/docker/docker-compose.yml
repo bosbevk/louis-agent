@@ -42,12 +42,26 @@ services:
       OPEN_SESSIONS_PER_DAY: "50"
       # The guide asks a showroom business on this same container (F127.3.1, Louis's pick 2 A): itself, inside it.
       AGENT_PEERS: self=http://localhost:8080
+      # The chats are kept in the MongoDB beside it (F43.1), so a restart of this container doesn't end them; an idle
+      # chat is deleted after 30 days.
+      SESSION_STORE: mongo
+      SESSION_STORE_URL: mongodb://sessions-mongo:27017/louis_agent
+    depends_on:
+      - sessions-mongo
     # Localhost only: the review copy. AGENT_API_KEY in .env.secrets is required (FX18), or the host refuses to start.
     ports:
       - "127.0.0.1:${SITE_PORT:-5080}:8080"
     volumes:
       - ../logs:/logs
       - ../data:/data
+
+  # Where the site keeps its chats (F43.1): MongoDB 7.0, as CI runs it. Reached only on the compose network, with no
+  # port on the host, so it needs no password; its data is in a volume, kept when the container is made again.
+  sessions-mongo:
+    image: mongo:7.0
+    container_name: louis_agent_sessions_mongo
+    volumes:
+      - sessions-mongo:/data/db
 
   # The framework's own site (F164.1), the review copy of framework.louis-agent.dev: its pages, and the framework Orbi
   # (F164.2).
@@ -83,3 +97,6 @@ services:
     volumes:
       - ../logs/framework:/logs
       - ../data/framework:/data
+
+volumes:
+  sessions-mongo:

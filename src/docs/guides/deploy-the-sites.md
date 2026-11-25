@@ -40,6 +40,7 @@ then, and their story is in git, FX122 and ADRs 0095 and 0098.
 | Registry | `acrpulsza` | The images; the environment pulls them as itself |
 | Storage | `pulsstorage`, the share `louis-agent-workspace` | Mounted on the environment as `louis-agent-vol`; each app's logs and louis-agent.dev's saved CV |
 | Logs and traces | `puls-logs`, `puls-insights` | Each app's logs, and its traces through the environment's agent (F52) |
+| Chats' database | `louis-agent-chats` | louis-agent.dev's chats (F43.1): DocumentDB on its free tier, one node and 32 GB, with no backup; it pauses after 60 days with no use |
 
 Everything in the table but the two apps is described in `main.bicep`. It takes every name as a parameter, and our
 own names, the ones above, are in `main.bicepparam` beside it, so another business deploys the same file with a
@@ -129,7 +130,10 @@ deploy\azure\deploy.ps1 logs -App louis-agent-framework-app      # its last line
 deploys only when you answer yes, under the deployment name `louis-agent-infra`. Every other verb reads the
 environment, the identity and the vault from the outputs Azure recorded for that deployment. A release identity can't
 give rights, and the file gives them, so `infra` is run by a person, signed in as someone who can, never by the
-workflow:
+workflow. It needs `CHATS_DATABASE_PASSWORD` in `src/site/config/.env.secrets`, the chats' database's password, and
+stops and says so without it. The password reaches Azure only through the environment, which `main.bicepparam`
+reads, and is cleared again however the deploy ends. Give it a value of its own, never another key's. After the
+first `infra` that makes the database, run `secrets`, then a release, and the site keeps its chats there:
 
 ```powershell
 deploy\azure\deploy.ps1 infra    # what-if, then a deploy on your yes
@@ -140,13 +144,16 @@ deploy\azure\deploy.ps1 infra    # what-if, then a deploy on your yes
 Every value lives in the vault, and no value is ever in a file under git or on an app. `deploy.ps1 secrets -App
 <app>` reads the app's git-ignored secrets file, puts one vault secret per value, prints only the names, and skips a
 name whose value is missing. A running revision keeps the values it read, so a changed key needs `secrets`, then a
-release. No value may hold `&` or `|`: az is a batch file on Windows, and cmd would cut it there.
+release. No value you write may hold `&` or `|`: az is a batch file on Windows, and cmd would cut it there. The one
+value the script builds itself, the chats' database's address, does hold `&`, so it goes to the vault through a file
+that is deleted straight after.
 
 | Vault secret | From | Read by |
 |---|---|---|
 | `anthropic-api-key` | `ANTHROPIC_API_KEY` in `src/site/config/.env.secrets` | Both sites' model calls; the framework's file leaves it out, so its `secrets` keeps this one as it is |
 | `agent-api-key-louis-agent`, `admin-api-key-louis-agent` | `AGENT_API_KEY`, `ADMIN_API_KEY` in `src/site/config/.env.secrets` | louis-agent.dev's key gate and admin |
 | `resend-api-key` | `RESEND_API_KEY` in `src/site/config/.env.secrets` | louis-agent.dev's lead mail (F112); named in its yaml only once the vault holds it |
+| `session-store-url-louis-agent` | Built by `secrets` from `louis-agent-chats`' own address, the name Azure holds for it and `CHATS_DATABASE_PASSWORD` in `src/site/config/.env.secrets` | louis-agent.dev's chats, as `SESSION_STORE_URL`; once the vault holds it a release also sets `SESSION_STORE=mongo`, and until then the chats stay in memory |
 | `agent-api-key-framework`, `admin-api-key-framework` | `AGENT_API_KEY`, `ADMIN_API_KEY` in `src/site/config/.env.secrets.framework` | framework.louis-agent.dev's key gate and admin |
 
 Both sites read the same config folder, `src/site/config/`, so the framework keeps its own keys in a file of their

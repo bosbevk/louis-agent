@@ -69,9 +69,9 @@ public static class TrustFacts
     public static readonly PartWords<DataProtectionFact, TrustFact> YourData =
         PartWords<DataProtectionFact, TrustFact>.Of(fact => fact switch
         {
-            DataProtectionFact.WordsNotStored => new(TileStatus.Done, "Your words aren't stored",
-                "The site holds a chat in memory while it runs and forgets it when it restarts. " +
-                "For each answer it writes down the cost, the page and the tools used, never your words.", Privacy),
+            DataProtectionFact.ChatsKept30Days => new(TileStatus.Done, "A chat is kept 30 days",
+                "The site keeps a chat in Azure, so it carries on after a restart, and deletes it 30 days after the " +
+                "last message. Photos and PDFs are never kept. Its records of cost and tools hold no words.", Privacy),
             DataProtectionFact.DetailsOnYourYes => new(TileStatus.Done, "Details sent only on your yes",
                 "The agent shows what it will send and sends it once, when you press Send it. Nothing reaches us " +
                 "before.", "src/docs/adr/0101-a-lead-is-a-tool-sent-once-on-the-visitors-yes.md"),
@@ -131,8 +131,8 @@ public static class TrustFacts
                 "A site is its own project. Its words, brand, pages and data sit apart from the framework, in code " +
                 "that can be handed over.", "src/docs/adr/0084-every-site-is-built-on-the-frameworks-web.md"),
             ContinuityFact.Backups => new(TileStatus.Open, "Backups",
-                "The file share that holds the logs and the site's saved content has no backup set up. Chats " +
-                "aren't stored, so no visitor's words can be lost.", AzureHowTo),
+                "The file share that holds the logs and the site's saved content has no backup set up, and nor has " +
+                "the free database that keeps the chats. A chat lost there can't be brought back.", AzureHowTo),
             ContinuityFact.Uptime => new(TileStatus.Open, "A promise of uptime",
                 "The site runs in one region, and a sleeping site takes a moment to wake on the first visit. There " +
                 "is no uptime figure yet.", Architecture),

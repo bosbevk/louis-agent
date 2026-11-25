@@ -60,6 +60,8 @@ $Apps = @{
         Config = 'src\site\config'; SecretsFile = '.env.secrets'; Yaml = 'src\site\deploy\azure\louis-agent-app.yaml'; IdentityOutput = 'codingAppIdentityId'
         Share = 'louis-agent-workspace'; Hostname = 'louis-agent.dev'; Suffix = '-louis-agent'; Folders = @()
         WhenSet = @{ RESEND_API_KEY = 'resend-api-key' }
+        # The vault secret its chats' database's address is kept in (F43.1), which secrets writes from the cluster.
+        Chats = 'session-store-url-louis-agent'
     }
     'louis-agent-framework-app' = @{
         # The framework's own site (F164.3), from the same config folder with keys of its own in their own file. It
@@ -122,6 +124,18 @@ function Get-Output([string]$Name) {
     return $value
 }
 
+function Get-ChatsAddress {
+    # The chats' database's address with its sign-in (F43.1): Azure's address for the cluster names <user> and
+    # <password>, filled with the name Azure holds and the password from the secrets file; $null before infra made it.
+    $clusterId = Read-Az deployment group show -n $Deployment -g $ResourceGroup --query 'properties.outputs.chatsClusterId.value' -o tsv
+    if ($LASTEXITCODE -ne 0 -or -not $clusterId) { return $null }
+    $password = Get-EnvValue (Join-Path $AppConfig $AppInfo.SecretsFile) 'CHATS_DATABASE_PASSWORD'
+    if (-not $password) { return $null }
+    $cluster = Read-Az resource show --ids $clusterId --query '{address:properties.connectionString, user:properties.administrator.userName}' -o json | ConvertFrom-Json
+    if (-not $cluster.address) { return $null }
+    return $cluster.address.Replace('<user>', [uri]::EscapeDataString($cluster.user)).Replace('<password>', [uri]::EscapeDataString($password))
+}
+
 function Get-Secrets {
     # The app's secrets as name/value pairs, from the git-ignored config files and the deployment's outputs; a missing
     # value is reported by name, never printed. No `&` in a value: az is a batch file on Windows, and cmd would cut
@@ -145,6 +159,7 @@ function Get-Secrets {
     }
     # The keys the app runs without (FX87), each from its env var.
     foreach ($key in $AppInfo.WhenSet.Keys) { $wanted += @{ name = $AppInfo.WhenSet[$key]; value = Get-EnvValue $secretsFile $key } }
+    if ($AppInfo.Chats) { $wanted += @{ name = $AppInfo.Chats; value = Get-ChatsAddress } }
     return $wanted
 }
 
@@ -154,11 +169,18 @@ switch ($Verb) {
         # what-if first and deploys only on a yes. It gives rights, which the release identity can't, so a person
         # runs it, signed in with az login.
         Write-Host "What-if of main.bicep against $ResourceGroup, then a deploy as $Deployment on your yes..."
-        # The apps' group first (FX249): the Bicep deploys the environment into it and gives the release its right there.
-        Invoke-Az group create -n $AppsGroup -l $Location -o none
-        Invoke-Az deployment group create -g $ResourceGroup -n $Deployment `
-            -f (Join-Path $PSScriptRoot 'main.bicep') -p (Join-Path $PSScriptRoot 'main.bicepparam') `
-            --confirm-with-what-if --query 'properties.provisioningState' -o tsv
+        # The chats' database's password (F43.1) reaches Azure through the environment, which main.bicepparam reads,
+        # so it is never printed or written to a file; it is cleared again however the deploy ends.
+        $chatsPassword = Get-EnvValue (Join-Path $Repo 'src\site\config\.env.secrets') 'CHATS_DATABASE_PASSWORD'
+        if (-not $chatsPassword) { throw 'Set CHATS_DATABASE_PASSWORD in src\site\config\.env.secrets first: 16 letters and digits or more.' }
+        $env:CHATS_DATABASE_PASSWORD = $chatsPassword
+        try {
+            # The apps' group first (FX249): the Bicep deploys the environment into it and gives the release its right there.
+            Invoke-Az group create -n $AppsGroup -l $Location -o none
+            Invoke-Az deployment group create -g $ResourceGroup -n $Deployment `
+                -f (Join-Path $PSScriptRoot 'main.bicep') -p (Join-Path $PSScriptRoot 'main.bicepparam') `
+                --confirm-with-what-if --query 'properties.provisioningState' -o tsv
+        } finally { Remove-Item Env:CHATS_DATABASE_PASSWORD -ErrorAction SilentlyContinue }
     }
     'build' {
         # Built with Docker where the script runs, Louis's PC or the release's runner, then pushed (FX248): building in
@@ -191,7 +213,15 @@ switch ($Verb) {
         foreach ($s in Get-Secrets) {
             if ($null -eq $s.value) { Write-Host "  skipped $($s.name): no value in its file"; continue }
             Write-Host "  $Vault/$($s.name)"
-            Invoke-Az keyvault secret set --vault-name $Vault -n $s.name --value $s.value --query 'name' -o none
+            if ($s.value.Contains('&')) {
+                # A value with an `&`, as a database's address has, goes through a file: cmd would cut --value there.
+                $file = Join-Path ([System.IO.Path]::GetTempPath()) ([System.IO.Path]::GetRandomFileName())
+                [System.IO.File]::WriteAllText($file, $s.value, [System.Text.UTF8Encoding]::new($false))
+                try { Invoke-Az keyvault secret set --vault-name $Vault -n $s.name --file $file --encoding utf-8 --query 'name' -o none }
+                finally { Remove-Item $file -Force }
+            } else {
+                Invoke-Az keyvault secret set --vault-name $Vault -n $s.name --value $s.value --query 'name' -o none
+            }
             $set++
         }
         if ($set -eq 0) { throw 'No secret has a value to set.' }
@@ -217,6 +247,7 @@ switch ($Verb) {
         $names = @('anthropic-api-key', "agent-api-key$suffix", "admin-api-key$suffix")
         foreach ($provider in $Providers) { $names += "auth-$provider-client-id$suffix"; $names += "auth-$provider-client-secret$suffix" }
         $names += @($AppInfo.WhenSet.Values)
+        if ($AppInfo.Chats) { $names += $AppInfo.Chats }
         $secrets = @('    secrets:')
         foreach ($name in $names) {
             if ($inVault -contains $name) {
@@ -245,6 +276,13 @@ switch ($Verb) {
                 $whenSetLines += "          - name: $key"
                 $whenSetLines += "            secretRef: $($AppInfo.WhenSet[$key])"
             }
+        }
+        # The chats go to their database (F43.1) once the vault holds its address; until then they stay in memory.
+        if ($AppInfo.Chats -and $inVault -contains $AppInfo.Chats) {
+            $whenSetLines += "          - name: SESSION_STORE"
+            $whenSetLines += "            value: mongo"
+            $whenSetLines += "          - name: SESSION_STORE_URL"
+            $whenSetLines += "            secretRef: $($AppInfo.Chats)"
         }
         $template = Join-Path $Repo $AppInfo.Yaml
         $resolved = Join-Path ([System.IO.Path]::GetTempPath()) "$App.$Revision.yaml"

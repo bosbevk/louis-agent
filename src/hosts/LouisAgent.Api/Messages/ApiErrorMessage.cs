@@ -58,4 +58,15 @@ public enum ApiErrorMessage
     [Description("This instance runs no identity '{Name}'; it runs: {Available}.")]
     [Holes(typeof(UnknownIdentityHoles))]
     UnknownIdentity,
+
+    [Description("SESSION_STORE is 'memory' or 'mongo': where the chats are kept.")]
+    UnknownSessionStore,
+
+    [Description("SESSION_STORE is 'mongo', so SESSION_STORE_URL must name the MongoDB the chats are kept in.")]
+    SessionStoreUrlMissing,
+
+    [Description(
+        "SESSION_RETENTION is how long an idle chat is kept, a .NET duration above zero, such as 30.00:00:00 for " +
+        "30 days.")]
+    SessionRetentionInvalid,
 }

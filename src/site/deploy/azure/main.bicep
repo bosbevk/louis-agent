@@ -75,6 +75,16 @@ param shareName string
 @description('The share\'s size, in GiB.')
 param shareQuotaGiB int
 
+@description('The database the chats are kept in: a DocumentDB cluster, its name unique across Azure.')
+param chatsClusterName string
+
+@description('The name the database of the chats is signed in to with.')
+param chatsAdminLogin string
+
+@description('The password of the database of the chats, read from the environment; it is never in a file.')
+@secure()
+param chatsAdminPassword string
+
 // Azure's own ids for the roles the file gives, the same in every subscription.
 var acrPullRole = '7f951dda-4ed3-4680-a7ca-43fe172d538d'
 var vaultSecretsUserRole = '4633458b-17de-408a-b874-0445c86b69e6'
@@ -304,6 +314,29 @@ module storage 'br/public:avm/res/storage/storage-account:0.33.2' = {
   }
 }
 
+// Where the chats are kept (F43.1): DocumentDB, Azure's MongoDB, on its free tier of one node and 32 GB, which has
+// no high availability or backup and pauses after 60 days with no use. Azure's own addresses may reach it, since the
+// apps' outbound address isn't fixed, and every call still needs the password.
+module chats 'br/public:avm/res/document-db/mongo-cluster:0.4.3' = {
+  name: 'chats'
+  params: {
+    name: chatsClusterName
+    location: location
+    sku: 'Free'
+    nodeCount: 1
+    storage: 32
+    highAvailabilityMode: 'Disabled'
+    administratorLogin: chatsAdminLogin
+    administratorLoginPassword: chatsAdminPassword
+    publicNetworkAccess: 'Enabled'
+    networkAcls: {
+      allowAllIPs: false
+      allowAzureIPs: true
+    }
+    enableTelemetry: false
+  }
+}
+
 // The storage account as Azure holds it once its module has run, so the apps' environment can mount the share with
 // its key.
 resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing = {
@@ -316,3 +349,5 @@ output environmentId string = appsEnvironment.outputs.environmentId
 output environmentStaticIp string = appsEnvironment.outputs.staticIp
 output codingAppIdentityId string = appIdentity.outputs.resourceId
 output vaultUri string = vault.outputs.uri
+// The chats' database, which deploy.ps1 secrets reads its address from to write the site's connection to it.
+output chatsClusterId string = chats.outputs.mongoClusterResourceId

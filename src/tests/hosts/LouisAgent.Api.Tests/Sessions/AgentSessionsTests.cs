@@ -94,9 +94,9 @@ public class AgentSessionsTests
     /// A session that asks for files gets the file tools and none of git's.
     /// </summary>
     [Test]
-    public void ASessionWithFiles_HasNoGitTools()
+    public async Task ASessionWithFiles_HasNoGitTools()
     {
-        var session = Sessions().Create(new SessionRequest([TestToolset.Files.Wire()]));
+        var session = (await Sessions().CreateAsync(new SessionRequest([TestToolset.Files.Wire()])));
 
         Assert.That(session.Toolsets, Is.EqualTo(new[] { TestToolset.Files.Wire() }));
         Assert.That(Names(session), Does.Contain("ReadWorkspaceFile").And.Not.Contain("GetStatus"));
@@ -106,9 +106,9 @@ public class AgentSessionsTests
     /// Naming no toolsets gives you the default, which is just the skills.
     /// </summary>
     [Test]
-    public void NoToolsets_GivesTheDefault_SkillsOnly()
+    public async Task NoToolsets_GivesTheDefault_SkillsOnly()
     {
-        var session = Sessions().Create(new SessionRequest());
+        var session = (await Sessions().CreateAsync(new SessionRequest()));
 
         Assert.That(session.Toolsets, Is.EqualTo(AgentSessions.DefaultToolsets));
         Assert.That(Names(session), Does.Contain("CreateTool").And.Not.Contain("ReadWorkspaceFile"));
@@ -118,9 +118,9 @@ public class AgentSessionsTests
     /// An empty list really means none: only the two tools every session has.
     /// </summary>
     [Test]
-    public void AnEmptyList_GivesNoToolsets()
+    public async Task AnEmptyList_GivesNoToolsets()
     {
-        Assert.That(Names(Sessions().Create(new SessionRequest([]))),
+        Assert.That(Names((await Sessions().CreateAsync(new SessionRequest([])))),
             Is.EquivalentTo(new[] { "ExecuteSkill", "GetToday" }));
     }
 
@@ -129,13 +129,13 @@ public class AgentSessionsTests
     /// its own history.
     /// </summary>
     [Test]
-    public void TwoSessionsWithDifferentLists_DontShareTools_TwoWithTheSameShareAnEngine()
+    public async Task TwoSessionsWithDifferentLists_DontShareTools_TwoWithTheSameShareAnEngine()
     {
         var sessions = Sessions();
 
-        var files = sessions.Create(new SessionRequest([TestToolset.Files.Wire()]));
-        var git = sessions.Create(new SessionRequest([TestToolset.Git.Wire()]));
-        var filesAgain = sessions.Create(new SessionRequest(["FILES"]));
+        var files = (await sessions.CreateAsync(new SessionRequest([TestToolset.Files.Wire()])));
+        var git = (await sessions.CreateAsync(new SessionRequest([TestToolset.Git.Wire()])));
+        var filesAgain = (await sessions.CreateAsync(new SessionRequest(["FILES"])));
 
         Assert.That(git.Engine, Is.Not.SameAs(files.Engine));
         Assert.That(Names(git), Does.Not.Contain("ReadWorkspaceFile"));
@@ -149,7 +149,7 @@ public class AgentSessionsTests
     [Test]
     public void AnUnknownToolset_IsRefused_WithTheValidNames()
     {
-        Assert.That(() => Sessions().Create(new SessionRequest([TestToolset.Files.Wire(), "nope"])),
+        Assert.That(async () => (await Sessions().CreateAsync(new SessionRequest([TestToolset.Files.Wire(), "nope"]))),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("Valid names").And.Message
                 .Contain(TestToolset.Files.Wire()));
     }
@@ -158,11 +158,12 @@ public class AgentSessionsTests
     /// An optional toolset this instance doesn't have is quietly left out, and the session lists only what it loaded.
     /// </summary>
     [Test]
-    public void AnOptionalToolset_ThisInstanceLacks_IsLeftOut_AndTheSessionSaysWhatItLoaded()
+    public async Task AnOptionalToolset_ThisInstanceLacks_IsLeftOut_AndTheSessionSaysWhatItLoaded()
     {
         // F33 step 4: a parent may hand an optional toolset; here its pack misses its setting, so the session gets
         // the web alone.
-        var session = Sessions().Create(new SessionRequest([TestToolset.Web.Wire(), OffPack + "?"], Depth: 1));
+        var session =
+            (await Sessions().CreateAsync(new SessionRequest([TestToolset.Web.Wire(), OffPack + "?"], Depth: 1)));
 
         Assert.That(session.Toolsets, Is.EqualTo(new[] { TestToolset.Web.Wire() }));
         Assert.That(Names(session), Does.Contain("FetchUrl").And.Not.Contain("FindFakeProducts"));
@@ -173,12 +174,12 @@ public class AgentSessionsTests
     /// calculator.
     /// </summary>
     [Test]
-    public void ASubagent_LoadsTheToolsetsItsRoleNames()
+    public async Task ASubagent_LoadsTheToolsetsItsRoleNames()
     {
         // F35.2 and F50.2: a role's header names its toolsets, so they come with the role, beside what the parent
         // passed.
-        var subagent = Sessions()
-            .Create(new SessionRequest([TestToolset.Files.Wire()], Depth: 1, Role: TestAgent.Researcher));
+        var subagent = await Sessions()
+            .CreateAsync(new SessionRequest([TestToolset.Files.Wire()], Depth: 1, Role: TestAgent.Researcher));
 
         Assert.That(subagent.Toolsets,
             Is.EquivalentTo(new[] { TestToolset.Files.Wire(), TestToolset.Web.Wire(), TestToolset.Calculator.Wire() }));
@@ -190,13 +191,13 @@ public class AgentSessionsTests
     /// You can look a session up by its id until it's removed.
     /// </summary>
     [Test]
-    public void ASession_IsFoundById_UntilRemoved()
+    public async Task ASession_IsFoundById_UntilRemoved()
     {
         var sessions = Sessions();
-        var session = sessions.Create(new SessionRequest([TestToolset.Files.Wire()]));
+        var session = (await sessions.CreateAsync(new SessionRequest([TestToolset.Files.Wire()])));
 
         Assert.That(sessions.Get(session.Id), Is.SameAs(session));
-        Assert.That(sessions.Remove(session.Id), Is.True);
+        Assert.That((await sessions.RemoveAsync(session.Id)), Is.True);
         Assert.That(sessions.Get(session.Id), Is.Null);
     }
 
@@ -204,14 +205,14 @@ public class AgentSessionsTests
     /// Only a top-level session gets the routing instructions; a sub-session keeps just its toolsets' guides.
     /// </summary>
     [Test]
-    public void ASubSession_HasNoRouter_ATopLevelOneHas()
+    public async Task ASubSession_HasNoRouter_ATopLevelOneHas()
     {
         // F21: default.md picks toolsets and delegates; a sub-session's toolsets were chosen for it and it can't
         // delegate.
         var sessions = Sessions();
 
-        var top = sessions.Create(new SessionRequest([TestToolset.Files.Wire()]));
-        var sub = sessions.Create(new SessionRequest([TestToolset.Files.Wire()], Depth: 1));
+        var top = (await sessions.CreateAsync(new SessionRequest([TestToolset.Files.Wire()])));
+        var sub = (await sessions.CreateAsync(new SessionRequest([TestToolset.Files.Wire()], Depth: 1)));
 
         Assert.That(top.Engine.SkillDocumentation, Does.Contain(TestAgent.RoutingHeading));
         Assert.That(sub.Engine.SkillDocumentation, Does.Not.Contain(TestAgent.RoutingHeading));
@@ -224,8 +225,8 @@ public class AgentSessionsTests
     [Test]
     public void AnUnknownRole_IsRefused()
     {
-        Assert.Throws<RoleException>(() =>
-            Sessions().Create(new SessionRequest([TestToolset.Files.Wire()], Role: "nobody-here")));
+        Assert.ThrowsAsync<RoleException>(async () =>
+            await Sessions().CreateAsync(new SessionRequest([TestToolset.Files.Wire()], Role: "nobody-here")));
     }
 
     /// <summary>
@@ -233,19 +234,23 @@ public class AgentSessionsTests
     /// lower down, still as a voice, when another agent asks it.
     /// </summary>
     [Test]
-    public void ARole_OpensOnlyAtItsOwnLevel()
+    public async Task ARole_OpensOnlyAtItsOwnLevel()
     {
         // At the top only a voice; below it, the role's own folder (F127.5, Louis: "depth decides" only how deep).
         var sessions = Sessions();
 
-        Assert.Throws<RoleException>(() =>
-            sessions.Create(new SessionRequest([TestToolset.Web.Wire()], Role: TestAgent.Researcher)));
-        Assert.That(sessions.Create(new SessionRequest([TestToolset.Web.Wire()], Depth: 1, Role: TestAgent.Voice)).Role,
-            Is.EqualTo(TestAgent.Voice));
-        Assert.That(sessions.Create(new SessionRequest([TestToolset.Web.Wire()], Role: TestAgent.Voice)).Role,
+        Assert.ThrowsAsync<RoleException>(async () =>
+            await sessions.CreateAsync(new SessionRequest([TestToolset.Web.Wire()], Role: TestAgent.Researcher)));
+        Assert.That(
+            (await sessions.CreateAsync(new SessionRequest([TestToolset.Web.Wire()], Depth: 1, Role: TestAgent.Voice)))
+            .Role,
             Is.EqualTo(TestAgent.Voice));
         Assert.That(
-            sessions.Create(new SessionRequest([TestToolset.Web.Wire()], Depth: 1, Role: TestAgent.Researcher)).Role,
+            (await sessions.CreateAsync(new SessionRequest([TestToolset.Web.Wire()], Role: TestAgent.Voice))).Role,
+            Is.EqualTo(TestAgent.Voice));
+        Assert.That(
+            (await sessions.CreateAsync(new SessionRequest([TestToolset.Web.Wire()], Depth: 1,
+                Role: TestAgent.Researcher))).Role,
             Is.EqualTo(TestAgent.Researcher));
     }
 
@@ -253,9 +258,9 @@ public class AgentSessionsTests
     /// A session that names no role gets the default voice.
     /// </summary>
     [Test]
-    public void NoRole_IsTheDefault()
+    public async Task NoRole_IsTheDefault()
     {
-        var session = Sessions().Create(new SessionRequest([TestToolset.Files.Wire()], Role: ""));
+        var session = (await Sessions().CreateAsync(new SessionRequest([TestToolset.Files.Wire()], Role: "")));
 
         Assert.That(session.Role, Is.Null);
         Assert.That(session.Engine.SkillDocumentation, Does.Contain(TestAgent.VoiceHeading));
@@ -265,10 +270,10 @@ public class AgentSessionsTests
     /// A session remembers its attachments by name, whatever the case, keeps the newest, and cuts a huge one short.
     /// </summary>
     [Test]
-    public void ASession_RemembersItsAttachments_ByName_Capped()
+    public async Task ASession_RemembersItsAttachments_ByName_Capped()
     {
         // F22: a later turn can still hand an earlier attachment to a subagent.
-        var session = Sessions().Create(new SessionRequest([TestToolset.Files.Wire()]));
+        var session = (await Sessions().CreateAsync(new SessionRequest([TestToolset.Files.Wire()])));
 
         session.Remember("Verslag.txt", "eerste");
         session.Remember("verslag.txt", "tweede");
@@ -282,7 +287,7 @@ public class AgentSessionsTests
     /// The user's place carries their location only when they shared it, and their time zone whenever it's sent.
     /// </summary>
     [Test]
-    public void ThePlace_HasTheLocationWhenShared_AndTheTimeZoneAlways()
+    public async Task ThePlace_HasTheLocationWhenShared_AndTheTimeZoneAlways()
     {
         // F22 step 2b, and PR #28's review: a time zone sent without a location is kept (GetToday in the user's time).
         Assert.That(
@@ -292,8 +297,8 @@ public class AgentSessionsTests
             Is.EqualTo(new LouisAgent.Core.Sessions.UserPlace(null, "Europe/London")));
         Assert.That(new CreateSessionRequest(null, null, null).Place(), Is.Null);
 
-        var session = Sessions().Create(new SessionRequest([TestToolset.Files.Wire()],
-            Place: new LouisAgent.Core.Sessions.UserPlace("Pretoria", null)));
+        var session = (await Sessions().CreateAsync(new SessionRequest([TestToolset.Files.Wire()],
+            Place: new LouisAgent.Core.Sessions.UserPlace("Pretoria", null))));
         Assert.That(session.Place!.Location, Is.EqualTo("Pretoria"));
     }
 
@@ -301,16 +306,17 @@ public class AgentSessionsTests
     /// A session keeps the replay it was opened with for all its turns, and one opened without has none.
     /// </summary>
     [Test]
-    public void ASessionKeepsTheReplayItWasOpenedWith()
+    public async Task ASessionKeepsTheReplayItWasOpenedWith()
     {
         // F18 step 4a: resolved once when the session opens (ReplayResolution), then kept for its turns.
         var replay =
             new SessionReplay(WebReplayMode.Record,
                 "run_1:cook:1/bobotie", false);
 
-        Assert.That(Sessions().Create(new SessionRequest([TestToolset.Files.Wire()], Replay: replay)).Replay,
+        Assert.That(
+            (await Sessions().CreateAsync(new SessionRequest([TestToolset.Files.Wire()], Replay: replay))).Replay,
             Is.EqualTo(replay));
-        Assert.That(Sessions().Create(new SessionRequest([TestToolset.Files.Wire()])).Replay, Is.Null);
+        Assert.That((await Sessions().CreateAsync(new SessionRequest([TestToolset.Files.Wire()]))).Replay, Is.Null);
     }
 
     /// <summary>
@@ -322,10 +328,10 @@ public class AgentSessionsTests
     /// What the API sends for a session says "role", never the old "personality".
     /// </summary>
     [Test]
-    public void TheSessionJson_SaysRole_NotPersonality()
+    public async Task TheSessionJson_SaysRole_NotPersonality()
     {
-        var cook = Sessions()
-            .Create(new SessionRequest([TestToolset.Web.Wire()], Depth: 1, Role: TestAgent.Researcher));
+        var cook = await Sessions()
+            .CreateAsync(new SessionRequest([TestToolset.Web.Wire()], Depth: 1, Role: TestAgent.Researcher));
 
         Assert.That(Json(SessionCreatedReply.Of(cook)),
             Does.Contain($"\"role\":\"{TestAgent.Researcher}\"").And.Not.Contain("personality"));
@@ -339,7 +345,7 @@ public class AgentSessionsTests
     [Test]
     public async Task ASubSessionTheChatKeeps_IsListedWithItsRole()
     {
-        var session = Sessions().Create(new SessionRequest([TestToolset.Files.Wire()]));
+        var session = (await Sessions().CreateAsync(new SessionRequest([TestToolset.Files.Wire()])));
         await session.SubSessions.AddAsync(Kept("sess_cook", []));
 
         Assert.That(Json(SessionReply.Of(session)),
@@ -389,13 +395,13 @@ public class AgentSessionsTests
         // F26 step 3 (F26-S3): the chat is deleted, so its subagents are deleted on the peer too.
         var sessions = Sessions();
         var session =
-            sessions.Create(new SessionRequest([
+            (await sessions.CreateAsync(new SessionRequest([
                 TestToolset.Files.Wire()
-            ])); // the test factory has no peers; the registry doesn't care
+            ]))); // the test factory has no peers; the registry doesn't care
         var closed = new List<string>();
         await session.SubSessions.AddAsync(Kept("sess_cook", closed));
 
-        Assert.That(sessions.Remove(session.Id), Is.True);
+        Assert.That((await sessions.RemoveAsync(session.Id)), Is.True);
 
         Assert.That(closed, Is.EqualTo(new[] { "sess_cook" }));
         Assert.That(session.SubSessions.Open, Is.Empty);
@@ -408,7 +414,7 @@ public class AgentSessionsTests
     public async Task AnIdleSession_IsDropped_WithItsSubSessions()
     {
         var sessions = Sessions();
-        var session = sessions.Create(new SessionRequest([TestToolset.Files.Wire()]));
+        var session = (await sessions.CreateAsync(new SessionRequest([TestToolset.Files.Wire()])));
         var closed = new List<string>();
         await session.SubSessions.AddAsync(Kept("sess_cook", closed));
 
@@ -423,20 +429,21 @@ public class AgentSessionsTests
     /// A sub-session gets a role only when its parent names one; without, it has just the default voice.
     /// </summary>
     [Test]
-    public void ASubSessionWithoutARole_GetsNone_AndAGivenOneIsKept()
+    public async Task ASubSessionWithoutARole_GetsNone_AndAGivenOneIsKept()
     {
         // CL10: a role is named by the parent, never derived from the toolsets; with none, the default mode's voice
         // only.
         var sessions = Sessions();
 
-        var unnamed = sessions.Create(new SessionRequest([TestToolset.Web.Wire()], Depth: 1));
+        var unnamed = (await sessions.CreateAsync(new SessionRequest([TestToolset.Web.Wire()], Depth: 1)));
         Assert.That(unnamed.Role, Is.Null);
         Assert.That(unnamed.Engine.SkillDocumentation,
             Does.Contain(TestAgent.VoiceHeading).And.Not.Contain(TestAgent.RoutingHeading));
         Assert.That(
-            sessions.Create(new SessionRequest([TestToolset.Web.Wire()], Depth: 1, Role: TestAgent.Researcher)).Role,
+            (await sessions.CreateAsync(new SessionRequest([TestToolset.Web.Wire()], Depth: 1,
+                Role: TestAgent.Researcher))).Role,
             Is.EqualTo(TestAgent.Researcher));
-        Assert.That(sessions.Create(new SessionRequest([TestToolset.Web.Wire()])).Role, Is.Null,
+        Assert.That((await sessions.CreateAsync(new SessionRequest([TestToolset.Web.Wire()]))).Role, Is.Null,
             "a top-level session that names none gets the default voice");
     }
 
@@ -444,13 +451,14 @@ public class AgentSessionsTests
     /// A session can run on another model by naming its profile, and gets its own engine for it.
     /// </summary>
     [Test]
-    public void ASessionNamingAnLlmProfile_KeepsIt_AndOneWithout_HasNone()
+    public async Task ASessionNamingAnLlmProfile_KeepsIt_AndOneWithout_HasNone()
     {
         // F30: a price lookup runs on the local model, the chat that asked for it on the instance's.
         var sessions = Sessions([new SessionLlm("ollama-puls", new NoModel())]);
 
-        var local = sessions.Create(new SessionRequest([TestToolset.Web.Wire()], Depth: 1, Llm: "ollama-puls"));
-        var own = sessions.Create(new SessionRequest([TestToolset.Web.Wire()], Depth: 1));
+        var local = (await sessions.CreateAsync(new SessionRequest([TestToolset.Web.Wire()], Depth: 1,
+            Llm: "ollama-puls")));
+        var own = (await sessions.CreateAsync(new SessionRequest([TestToolset.Web.Wire()], Depth: 1)));
 
         Assert.That(local.Llm, Is.EqualTo("ollama-puls"));
         Assert.That(own.Llm, Is.Null);
@@ -465,8 +473,8 @@ public class AgentSessionsTests
     {
         var sessions = Sessions([new SessionLlm("ollama-puls", new NoModel())]);
 
-        var ex = Assert.Throws<SessionLlmException>(() =>
-            sessions.Create(new SessionRequest([TestToolset.Web.Wire()], Llm: "gpt-9")));
+        var ex = Assert.ThrowsAsync<SessionLlmException>(async () =>
+            await sessions.CreateAsync(new SessionRequest([TestToolset.Web.Wire()], Llm: "gpt-9")));
         Assert.That(ex!.Message, Does.Contain("gpt-9").And.Contain("ollama-puls"));
     }
 
@@ -479,15 +487,16 @@ public class AgentSessionsTests
     /// A lookup agent opens under its subagent with just one of that subagent's tools and its own guide.
     /// </summary>
     [Test]
-    public void ALookupAgent_OpensAtDepthTwo_WithOneToolItsParentHas()
+    public async Task ALookupAgent_OpensAtDepthTwo_WithOneToolItsParentHas()
     {
         // F30 step 4: a subagent hands a lookup agent one task and one of its own tools; the peer checks the tool
         // against the parent session it finds here (lookup agents run on the subagent's own instance).
         var sessions = Sessions();
-        var cook = sessions.Create(new SessionRequest([TestToolset.Web.Wire()], Depth: 1, Role: TestAgent.Researcher));
+        var cook = (await sessions.CreateAsync(new SessionRequest([TestToolset.Web.Wire()], Depth: 1,
+            Role: TestAgent.Researcher)));
 
-        var lookup = sessions.Create(new SessionRequest([TestToolset.Web.Wire()], ParentOf(cook), Depth: 2,
-            Role: TestAgent.Lookup, Tool: "FetchUrl"));
+        var lookup = (await sessions.CreateAsync(new SessionRequest([TestToolset.Web.Wire()], ParentOf(cook), Depth: 2,
+            Role: TestAgent.Lookup, Tool: "FetchUrl")));
 
         Assert.That(lookup.Depth, Is.EqualTo(2));
         Assert.That(lookup.Tool, Is.EqualTo("FetchUrl"));
@@ -502,7 +511,7 @@ public class AgentSessionsTests
     /// delegates or extends the agent.
     /// </summary>
     [Test]
-    public void ALookupAgent_GetsOnlyAToolItsParentHas_AndOneThatIsEverHandedDown()
+    public async Task ALookupAgent_GetsOnlyAToolItsParentHas_AndOneThatIsEverHandedDown()
     {
         // Capability delegation: a lookup agent can never do more than the subagent that sent it. The parent's toolbox
         // is the only list (Louis: "the specialist must give him its tools"); delegation and self-extension never go
@@ -510,21 +519,25 @@ public class AgentSessionsTests
         var sessions = Sessions();
         // The reader, which declares no toolsets of its own: the cook's header brings the web (F127.3.1).
         var withFiles =
-            sessions.Create(new SessionRequest([TestToolset.Files.Wire()], Depth: 1, Role: TestAgent.Reader));
-        var withWeb = sessions.Create(new SessionRequest([TestToolset.Web.Wire(), TestToolset.Files.Wire()], Depth: 1,
-            Role: TestAgent.Researcher));
+            (await sessions.CreateAsync(
+                new SessionRequest([TestToolset.Files.Wire()], Depth: 1, Role: TestAgent.Reader)));
+        var withWeb = (await sessions.CreateAsync(new SessionRequest([TestToolset.Web.Wire(), TestToolset.Files.Wire()],
+            Depth: 1,
+            Role: TestAgent.Researcher)));
 
         Assert.That(
-            () => sessions.Create(new SessionRequest([TestToolset.Web.Wire()], ParentOf(withFiles), Depth: 2,
-                Role: TestAgent.Lookup, Tool: "FetchUrl")),
+            async () => (await sessions.CreateAsync(new SessionRequest([TestToolset.Web.Wire()], ParentOf(withFiles),
+                Depth: 2,
+                Role: TestAgent.Lookup, Tool: "FetchUrl"))),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("parent session has no 'FetchUrl'"));
         Assert.That(
-            sessions.Create(new SessionRequest([TestToolset.Files.Wire()], ParentOf(withWeb), Depth: 2,
-                Role: TestAgent.Lookup, Tool: "ReadWorkspaceFile")).Tool,
+            (await sessions.CreateAsync(new SessionRequest([TestToolset.Files.Wire()], ParentOf(withWeb), Depth: 2,
+                Role: TestAgent.Lookup, Tool: "ReadWorkspaceFile"))).Tool,
             Is.EqualTo("ReadWorkspaceFile"), "any tool of the parent's own: which one is the subagent's call");
         Assert.That(
-            () => sessions.Create(new SessionRequest([CoreToolset.Skills.Wire()], ParentOf(withWeb), Depth: 2,
-                Role: TestAgent.Lookup, Tool: "ExecuteSkill")),
+            async () => (await sessions.CreateAsync(new SessionRequest([CoreToolset.Skills.Wire()], ParentOf(withWeb),
+                Depth: 2,
+                Role: TestAgent.Lookup, Tool: "ExecuteSkill"))),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("never handed"));
     }
 
@@ -533,42 +546,46 @@ public class AgentSessionsTests
     /// <c>AskDepthTests</c>').
     /// </summary>
     [Test]
-    public void ALookupAgent_NeedsAParentItCanFind_ALookupAgentRole_AndATool()
+    public async Task ALookupAgent_NeedsAParentItCanFind_ALookupAgentRole_AndATool()
     {
         var sessions = Sessions();
-        var cook = sessions.Create(new SessionRequest([TestToolset.Web.Wire()], Depth: 1, Role: TestAgent.Researcher));
+        var cook = (await sessions.CreateAsync(new SessionRequest([TestToolset.Web.Wire()], Depth: 1,
+            Role: TestAgent.Researcher)));
         var parent = ParentOf(cook);
 
         Assert.That(
-            () => sessions.Create(new SessionRequest([TestToolset.Web.Wire()], Depth: 2, Role: TestAgent.Lookup,
-                Tool: "FetchUrl")),
+            async () => (await sessions.CreateAsync(new SessionRequest([TestToolset.Web.Wire()], Depth: 2,
+                Role: TestAgent.Lookup,
+                Tool: "FetchUrl"))),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("parent"), "no parent");
         Assert.That(
-            () => sessions.Create(new SessionRequest([TestToolset.Web.Wire()],
+            async () => (await sessions.CreateAsync(new SessionRequest([TestToolset.Web.Wire()],
                 new UsageTags(null, null, null, "sess_gone#1"), Depth: 2,
-                Role: TestAgent.Lookup, Tool: "FetchUrl")),
+                Role: TestAgent.Lookup, Tool: "FetchUrl"))),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("sess_gone"), "a parent it can't find");
         Assert.That(
-            () => sessions.Create(new SessionRequest([TestToolset.Web.Wire()], parent, Depth: 2,
+            async () => (await sessions.CreateAsync(new SessionRequest([TestToolset.Web.Wire()], parent, Depth: 2,
                 Role: TestAgent.Researcher,
-                Tool: "FetchUrl")),
+                Tool: "FetchUrl"))),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("'tool'"),
             "a subagent's role is no lookup agent role, at any depth");
         Assert.That(
-            () => sessions.Create(new SessionRequest([TestToolset.Web.Wire()], parent, Depth: 2,
+            async () => (await sessions.CreateAsync(new SessionRequest([TestToolset.Web.Wire()], parent, Depth: 2,
                 Role: TestAgent.LookupBase,
-                Tool: "FetchUrl")),
+                Tool: "FetchUrl"))),
             Throws.TypeOf<RoleException>(), "the base is no role");
         Assert.That(
-            () => sessions.Create(new SessionRequest([TestToolset.Web.Wire()], parent, Depth: 2, Tool: "FetchUrl")),
+            async () => (await sessions.CreateAsync(new SessionRequest([TestToolset.Web.Wire()], parent, Depth: 2,
+                Tool: "FetchUrl"))),
             Throws.TypeOf<RoleException>(), "a lookup agent always has a role");
         Assert.That(
-            () => sessions.Create(new SessionRequest([TestToolset.Web.Wire()], parent, Depth: 2,
-                Role: TestAgent.Lookup)),
+            async () => (await sessions.CreateAsync(new SessionRequest([TestToolset.Web.Wire()], parent, Depth: 2,
+                Role: TestAgent.Lookup))),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("'tool'"), "a lookup agent always has its one tool");
         Assert.That(
-            () => sessions.Create(new SessionRequest([TestToolset.Web.Wire()], Depth: 1, Role: TestAgent.Researcher,
-                Tool: "FetchUrl")),
+            async () => (await sessions.CreateAsync(new SessionRequest([TestToolset.Web.Wire()], Depth: 1,
+                Role: TestAgent.Researcher,
+                Tool: "FetchUrl"))),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("'tool'"),
             "a subagent loads toolsets, not a tool");
     }
@@ -577,15 +594,17 @@ public class AgentSessionsTests
     /// A lookup agent works out its toolset from the tool it's handed.
     /// </summary>
     [Test]
-    public void ALookupAgentSession_DerivesItsToolsetFromItsTool()
+    public async Task ALookupAgentSession_DerivesItsToolsetFromItsTool()
     {
         // F30 step 5: AskAgent sends a lookup agent no toolsets, only the tool; the peer finds the toolset that builds
         // it. F127.5: the lookup agents toolset is gone, since AskAgent asks lookup agents too.
         var sessions = Sessions();
-        var cook = sessions.Create(new SessionRequest([TestToolset.Web.Wire()], Depth: 1, Role: TestAgent.Researcher));
+        var cook = (await sessions.CreateAsync(new SessionRequest([TestToolset.Web.Wire()], Depth: 1,
+            Role: TestAgent.Researcher)));
 
-        var lookup = sessions.Create(new SessionRequest(null, ParentOf(cook), Depth: 2, Role: TestAgent.Lookup,
-            Tool: "FetchUrl"));
+        var lookup = (await sessions.CreateAsync(new SessionRequest(null, ParentOf(cook), Depth: 2,
+            Role: TestAgent.Lookup,
+            Tool: "FetchUrl")));
         Assert.That(lookup.Toolsets, Is.EqualTo(new[] { TestToolset.Web.Wire() }));
         Assert.That(Names(lookup), Is.EqualTo(new[] { "FetchUrl" }));
     }

@@ -173,9 +173,31 @@ The first is `shop-prices`, which takes Stats SA's two spreadsheets.
 
 ### 8. Sessions
 
-Sessions live in memory, in the session store (`AgentSessions`). A session runs one turn at a time, so a second
-message while one is running gets a `409`. A turn is cancelled by `POST /v1/sessions/{id}/cancel`, or by the client
-disconnecting. Idle sessions are dropped after 4 hours, each time a new one opens.
+A session runs in memory, held by `AgentSessions`. It runs one turn at a time, so a second message while one is
+running gets a `409`. A turn is cancelled by `POST /v1/sessions/{id}/cancel`, or by the client disconnecting. Idle
+sessions are dropped from memory after 4 hours, each time a new one opens.
+
+Beside memory, every session is written to a store, so a restart doesn't end it. The store is one seam,
+`ISessionStore`, with two implementations: `InMemorySessionStore`, for tests and a developer's machine, and
+`MongoSessionStore`, for a site. `SESSION_STORE` picks one when the host starts, and a store the host registers itself
+wins. A session is written as it opens, as how it opened (`StoredSession`): the request it was asked with, when, and
+the identity the open door admitted it as, for a visitor's chat. Then each finished turn is appended (`StoredTurn`):
+its number, when, the messages it added to the history and the text attachments it brought. Nothing written is ever
+rewritten, as the history itself is append-only (ADR 0008). A photo or a PDF is never written; it stays in memory
+only. A replayed eval's session isn't written at all.
+
+When a call names a session the API doesn't hold in memory, after a restart or an idle drop, `AgentSessions.GetAsync`
+reads it back from the store. It opens it again through the same `SessionOpening` a new session goes through, under
+its old id, so it comes back with exactly the toolsets, identity and role it had. Then it puts the turns' messages back
+after the system prompt, with their attachments and the turn count, and the turn goes on as if nothing happened. Two
+messages at once resume it once. A session neither memory nor the store has is a `404`, as before. Deleting a
+session deletes it from the store too.
+
+MongoDB keeps a session in two collections: `sessions`, one document per session, and `turns`, one document per turn,
+so no document grows with the conversation. A turn's messages are kept as Microsoft.Extensions.AI's own JSON, which
+reads every kind of content back. Each turn moves the session's `last_activity` on in both collections, and a TTL
+index on it in each deletes a session and its turns together once it has been idle for `SESSION_RETENTION`, 30 days
+by default.
 
 When `POST /v1/sessions` comes in, its handler reads the body into one record of what is asked for
 (`SessionRequest`): the toolsets, the usage tags with the parent, the depth, the role or identity, the user's place,
@@ -338,11 +360,11 @@ so the agent an eval measures is the one visitors get. But it keeps its run tag,
 not counted against the day's cap, and isn't tagged `open-door` on the ledger. A keyed request that names no run, as
 the guide's own calls to the showroom's businesses, is narrowed as a visitor's is.
 
-The sessions and the door's list of the ones it let in live in memory, so a restart forgets both. A visitor whose
-page still holds a conversation from before it would otherwise be sent to the key's check and told to enter a key.
-So the door asks the host whether it has the session, and lets a call on one it doesn't have go on to its handler.
-The handler answers that the session is gone (a 404), and the page ends the chat with its own words for a restart.
-A session the host does have, and the door didn't let in, still needs the key.
+The door's list of the sessions it let in lives in memory, so a restart forgets it, while the sessions themselves
+come back from the store. So the door asks the host about a session it didn't let in, in memory or in the store. One
+the host has nowhere goes on to its handler, which answers that it is gone (a 404), and the page ends the chat with
+its own words for a restart. A visitor's session the store says the door let in before is let in again, as it was
+used. Any other session the host has still needs the key, so a chat opened with the key can't be resumed without it.
 
 A session knows who it runs as (`AgentSession.Who`), and each turn sets that in the background (`TurnIdentity`, with
 the user's place and the rest, in `Sessions/Streaming/TurnAmbience`). That way a pack can tell a demonstration's turn
@@ -375,13 +397,16 @@ These are the types involved:
 | `Endpoints/Git/Branches/GitBranchesEndpoints.cs` | `GET /v1/git/branches`, `GET` and `DELETE /v1/git/branches/{name}`, `POST /v1/git/merge` |
 | `Endpoints/Git/GitProcess.cs`, `Output/` | The git runner (no shell, 30 seconds at most); git's output parsed (`GitOutputParser` and its records) |
 | `Endpoints/Routing/` | `ApiMap` (the services and every route, the `/v1` group, the JSON 404, and `MapHostGroup`, the same group handed to a host for routes of its own through `MapLouisAgentHostGroup`, F142), `RouteAccess` and `WithAccess` (who may call a route), `AgentKeyGate` (the key check) |
-| `Endpoints/Routing/OpenDoor.cs`, `Config/OpenDoorOptions.cs` | The open door (part 16): who it lets in without a key, counted per address per day, and its two settings |
+| `Endpoints/Routing/OpenDoor.cs`, `SessionHolding.cs`, `Config/OpenDoorOptions.cs` | The open door (part 16): who it lets in without a key, counted per address per day, what it learns of a session it didn't let in, and its two settings |
 | `Endpoints/Answers/CreatedJson.cs` | A `201` with its `Location` and its JSON body |
 | `Endpoints/*/…Handlers.cs` | Each route's named handler beside its `…Endpoints.cs` (sessions, info, admin) |
 | `Messages/` | The API's own texts as enums (ADR 0009): errors, log lines, what the model reads (`ApiModelText`), what the user reads, and their holes |
 | `Sessions/SessionOpener.cs` | Who opened a session when a signed-in person did: their id and tenant, read from the cookie's claims; a session a key opened has none (ADR 0088) |
 | `Sessions/Prompts/` | `TurnPrompt`, the message a turn sends the model, and `PageBlock`, the page the visitor is reading, cut at 6,000 characters |
-| `Sessions/AgentSession.cs`, `AgentSessions.cs` | One conversation (id, engine, toolsets, depth, role, place, attachments, files, history, turn lock, cancellation) and the in-memory session store |
+| `Sessions/AgentSession.cs`, `AgentSessions.cs` | One conversation (id, engine, toolsets, depth, role, place, attachments, files, history, turn lock, cancellation), and the sessions in memory, read back from the store when one isn't there (part 8) |
+| `Sessions/Store/` | Where a session is kept beyond the process (part 8): `ISessionStore`, the seam; `InMemorySessionStore`; `StoredSession`, `StoredTurn`, `SavedSession`, what is kept; `TurnSave`, a turn's append |
+| `Sessions/Store/Mongo/` | `MongoSessionStore`, its two collections and TTL indexes, and their records, `SessionDocument` and `TurnDocument` |
+| `Config/SessionStoreOptions.cs`, `SessionStoreKind.cs` | `SESSION_STORE`, `SESSION_STORE_URL` and `SESSION_RETENTION`; a setting that can't be read stops the host |
 | `Sessions/Files/SessionFileStore.cs` | F171.1: a chat's photos and PDFs, kept by name in memory for a tool to read; checks a message's files before it keeps any (a kind a model reads, 10 MB each, 20 MB a chat), refusing with its reason; what core's `SessionFiles` hands a tool for the turn |
 | `Sessions/Opening/` | How a session opens (part 8): `SessionRequest`, what is asked for, as one record; `SessionOpening`, its steps in order, from the identity to the engine; `LookupChecks`, a lookup agent's five checks |
 | `Sessions/Streaming/` | The stream formats (F18 step 1f): `ITurnStreamFormat`, the writer's seam; `StreamFormat`, the enum `"stream"` names; `StreamFormats`, which makes a turn's format; `TurnUsage`, a turn's usage computed once from the ledger; `Claude/ClaudeStreamFormat.cs`, the Claude-style events |
@@ -415,8 +440,9 @@ as. Outside Docker,
 `ASPNETCORE_URLS` and `ASPNETCORE_ENVIRONMENT` matter too: an unpublished `dotnet run` only serves the web app in
 `Development`.
 
-The admin routes use `ADMIN_API_KEY`, or `AGENT_API_KEY` when that's not set. [SETUP](../SETUP.md) has the full
-list.
+The admin routes use `ADMIN_API_KEY`, or `AGENT_API_KEY` when that's not set. `SESSION_STORE` keeps sessions in
+`memory`, the default, or in `mongo`, the MongoDB `SESSION_STORE_URL` names, for `SESSION_RETENTION` after their last
+message; a value that can't be read stops the host as it starts. [SETUP](../SETUP.md) has the full list.
 
 
 ## Extending it
@@ -456,7 +482,9 @@ A streamed turn is still checked by hand, in the browser.
 
 ## Limits and plans
 
-Sessions are kept in memory; keeping them is the [session architecture](../specs/SESSION_ARCHITECTURE.md).
+Sessions survive a restart on MongoDB; the rest of the session's state, its lifecycle and its context building, is
+the [session architecture](../specs/SESSION_ARCHITECTURE.md). A sub-session whose parent was dropped from memory still
+finds its parent in memory only. Azure's free DocumentDB tier has no backup, so a session lost there is gone.
 
 A usage API over the ledger (`/v1/usage` endpoints, `/v1/budgets`, `/v1/estimates`) and budget errors are
 [F7](../features/F07-budgets.md), which takes in [F11](../features/F11-usage-tab-and-reconciliation.md).
