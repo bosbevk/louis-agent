@@ -56,8 +56,9 @@ site needed nothing new in Azure but the app.
 ## How a release works
 
 `deploy.ps1 release -App <app>` does three things, in this order. It makes the folders the app's entry names on the
-share, so a first release finds them. It builds the image in the registry with `az acr build`, tagged with the date
-and time, so the PC needs no Docker. And it fills in the app's yaml and creates or updates the app as the next
+share, so a first release finds them. It builds the image with Docker where it runs, tagged with the date and time,
+and pushes it to the registry: on the release's runner that build costs nothing, where a build in the registry is
+paid by the minute. So a release from your PC needs Docker running. And it fills in the app's yaml and creates or updates the app as the next
 revision, `vNNN`, one more than the highest it has ever had (FX123).
 
 ![A release: the folders its entry names, the image built in the registry, then the yaml filled in and the app updated as its next revision, until /health answers](diagrams/deploy-the-sites-flow.svg)
@@ -81,7 +82,7 @@ lists each app's running revisions.
 
 The workflow signs in to Azure by OpenID Connect. GitHub signs a short-lived token for the run, and Azure trusts it
 only for this repo's `main` branch, so GitHub stores no password. The identity it signs in as, `github-puls-deploy`,
-is Contributor on `rg-puls-za`, which lets it build in the registry, read the storage key to make a folder, and
+is Contributor on `rg-puls-za`, which lets it push to the registry, read the storage key to make a folder, and
 create or update an app. It is also Key Vault Reader on `puls-keys`, so it can read the secrets' *names*, never a
 value. The verbs that read files kept off git, `secrets` and `domain`, stay on the PC. The why is
 [ADR 0097](../adr/0097-puls-deploys-from-github-without-a-password.md).

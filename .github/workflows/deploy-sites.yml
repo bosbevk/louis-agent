@@ -52,7 +52,8 @@ jobs:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
 
-      # The image builds in the registry (az acr build), so the runner needs no Docker; each revision is the next one.
+      # The image builds here, with the runner's own Docker, and is pushed to the registry (FX248): building in the
+      # registry ran on Azure's machines on the clock. Each revision is the next one.
       - name: Release the louis-agent app
         shell: pwsh
         run: ./src/site/deploy/azure/deploy.ps1 release -App louis-agent-app
