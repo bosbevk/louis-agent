@@ -1,0 +1,24 @@
+{
+  "kind": "flow",
+  "type": "object",
+  "title": "F43.1 durable sessions: objects in memory",
+  "caption": "The API holds one AgentSessions and one store for the process. A session in memory holds its engine and its history as today; the store holds what lasts: the opening and one document per turn, and never the session's photos or PDFs.",
+  "flow": {
+    "nodes": [
+      { "id": "ss", "icon": "server", "tone": "green", "label": "AgentSessions\none per host" },
+      { "id": "st", "icon": "database", "tone": "amber", "label": "MongoSessionStore\nthe setting's pick", "shape": "data" },
+      { "id": "s", "icon": "message", "tone": "blue", "label": "AgentSession sess_…\nengine, history, files" },
+      { "id": "o", "icon": "file", "tone": "amber", "label": "StoredSession\nthe opening, turns, last activity", "shape": "data" },
+      { "id": "t1", "icon": "file", "tone": "amber", "label": "StoredTurn 1\nits messages", "shape": "data" },
+      { "id": "t2", "icon": "file", "tone": "amber", "label": "StoredTurn 2\nits messages", "shape": "data" }
+    ],
+    "edges": [
+      { "from": "ss", "to": "s" },
+      { "from": "ss", "to": "st" },
+      { "from": "st", "to": "o", "word": "keeps" },
+      { "from": "o", "to": "t1", "style": "dashed" },
+      { "from": "o", "to": "t2", "style": "dashed" }
+    ],
+    "direction": "down"
+  }
+}

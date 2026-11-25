@@ -1,0 +1,29 @@
+{
+  "kind": "sequence",
+  "title": "F43.1 durable sessions: a chat across a restart",
+  "caption": "A session is saved as it opens and after each turn. After a restart the API no longer holds it, so the next message reads it back, opens it again from the same request with its history, and the turn goes on as if nothing happened.",
+  "sequence": {
+    "participants": [
+      { "id": "B", "icon": "user", "tone": "blue", "label": "The browser" },
+      { "id": "S", "icon": "server", "tone": "green", "label": "AgentSessions" },
+      { "id": "O", "icon": "settings", "tone": "green", "label": "SessionOpening" },
+      { "id": "E", "icon": "chip", "tone": "violet", "label": "The engine" },
+      { "id": "D", "icon": "database", "tone": "amber", "label": "ISessionStore" }
+    ],
+    "steps": [
+      { "step": "message", "from": "B", "to": "S", "text": "POST /v1/sessions" },
+      { "step": "message", "from": "S", "to": "D", "text": "SaveOpeningAsync(id, the request)" },
+      { "step": "message", "from": "B", "to": "S", "text": "a message" },
+      { "step": "message", "from": "S", "to": "E", "text": "the turn" },
+      { "step": "message", "from": "S", "to": "D", "text": "AppendTurnAsync(id, turn 1's messages)" },
+      { "step": "note", "over": ["S"], "text": "the host restarts: memory is empty" },
+      { "step": "message", "from": "B", "to": "S", "text": "the next message, same id" },
+      { "step": "message", "from": "S", "to": "D", "text": "LoadAsync(id)" },
+      { "step": "reply", "from": "D", "to": "S", "text": "the opening + turn 1" },
+      { "step": "message", "from": "S", "to": "O", "text": "Open(the request, the same id)" },
+      { "step": "reply", "from": "O", "to": "S", "text": "the session, its history restored" },
+      { "step": "message", "from": "S", "to": "E", "text": "turn 2, with turn 1 before it" },
+      { "step": "message", "from": "S", "to": "D", "text": "AppendTurnAsync(id, turn 2)" }
+    ]
+  }
+}

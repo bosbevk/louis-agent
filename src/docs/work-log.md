@@ -23,7 +23,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | Id | What | Phase |
 |---|---|---|
 | F171 | The bill checker (Louis, 2026-11-21; 2026-11-22: "this feature is next"): a phone app that reads a Western Cape municipal account from a photo or a PDF, checks every line against Cape Town's, Swartland's and Overstrand's own tariffs and drafts the dispute, free to download with one subscription; the product in its own private `bill-checker` repository on the framework's packages, the framework's parts here: F171.1 a photo or PDF reaches a tool (done 2026-11-24); F171.2 the bills pack reads and checks; F171.3 the dispute letter; F171.4 the identity and evals; F171.5 the account, consent and our own subscriptions part; F171.6 the phone app; F171.7 the stores; F171.8 the monthly report | Now, F171.2 on after F140 |
-| F43 | Accounts, tenants and durable sessions; its first child, durable sessions, after F171.1 and before F157 | Now, its first child after F171.1 |
+| F43 | Accounts, tenants and durable sessions; its first child, durable sessions, after F171.1 and before F157 | Now, F43.1 durable sessions |
 | FX4 | Append-only history | Now, after F43's first child |
 | F8 | Reliability | Now, after FX4 |
 | F7 | Cost you can see and stop | Now, after F8 |
