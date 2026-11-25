@@ -1286,6 +1286,10 @@ first link, right after the topic. Letting the row break between its tiles, and 
 chain short enough to fit, so the heading stays on page one. It was found by measuring where each part landed in a
 real browser, not by reading the rules. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX248 · A convenience that is billed by the minute
+
+Building the image in the registry meant no machine needed Docker, which was handy when every release ran from a PC. Once every merge released both sites from GitHub, the same convenience ran twice per merge on Azure's machines, and it became the biggest line on the bill, ahead of the apps themselves. The runner already has Docker and builds for nothing, so the image is built there and pushed. Reading the bill by meter, not by service, is what showed it: "Container Registry" looked like storage, and the meter said it was build minutes. Skill 13 (cost and token economics: measure what each part costs before guessing).
+
 ## FX247 · Room kept for one thing is room taken from another
 
 The guide's bar keeps its room free at the foot of the screen, so no page ends under it. On a 1366 by 768 laptop that

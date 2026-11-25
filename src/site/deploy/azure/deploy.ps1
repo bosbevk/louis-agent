@@ -92,6 +92,14 @@ function Invoke-Az {
     if ($LASTEXITCODE -ne 0) { throw "az $($args[0]) $($args[1]) failed ($LASTEXITCODE)" }
 }
 
+function Invoke-Docker {
+    # Docker is a native command too, its build progress on stderr, so it is judged by its exit code alone, as az is.
+    $ErrorActionPreference = 'Continue'
+    & docker @args
+    $ErrorActionPreference = 'Stop'
+    if ($LASTEXITCODE -ne 0) { throw "docker $($args[0]) failed ($LASTEXITCODE)" }
+}
+
 function Read-Az {
     # A read that may come back empty (an app that doesn't exist yet): az's "not found" goes to stderr, which Windows
     # PowerShell turns into a terminating error under 'Stop' when it is redirected, so the read runs under 'Continue'
@@ -147,8 +155,16 @@ switch ($Verb) {
             --confirm-with-what-if --query 'properties.provisioningState' -o tsv
     }
     'build' {
-        Write-Host "Building $($AppInfo.Image):$Tag from the repo root ($($AppInfo.Dockerfile))..."
-        Invoke-Az acr build -r $Registry -t "$($AppInfo.Image):$Tag" -f (Join-Path $Repo $AppInfo.Dockerfile) $Repo
+        # Built with Docker where the script runs, Louis's PC or the release's runner, then pushed (FX248): building in
+        # the registry, with its own build tasks, ran on Azure's machines on the clock, where the runner builds for
+        # nothing. The name is the one the app's yaml pulls; the Dockerfile's path takes forward slashes, which both
+        # systems read.
+        $image = "$Registry.azurecr.io/$($AppInfo.Image):$Tag"
+        $dockerfile = Join-Path $Repo ($AppInfo.Dockerfile -replace '\\', '/')
+        Write-Host "Building $image from the repo root ($($AppInfo.Dockerfile))..."
+        Invoke-Az acr login -n $Registry
+        Invoke-Docker build -t $image -f $dockerfile $Repo
+        Invoke-Docker push $image
     }
     'workspace' {
         # The price tables the app reads from its share (README: the share's layout), copied from its config folder;

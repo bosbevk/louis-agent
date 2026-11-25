@@ -43,6 +43,16 @@ public class DeployFilesTests
     }
 
     /// <summary>
+    /// FX248: build makes the image with Docker where the script runs, Louis's PC or the release's runner, signs in to
+    /// the registry and pushes it. Building in the registry (<c>az acr build</c>) ran on Azure's own machines on the
+    /// clock, about R850 a month at a few merges a day, where the runner builds for nothing.
+    /// </summary>
+    [Test]
+    public void TheBuild_IsDockerWhereTheScriptRuns_ThenAPush() =>
+        Assert.That(Script, Does.Contain("acr login -n $Registry").And.Contain("Invoke-Docker build")
+            .And.Contain("Invoke-Docker push").And.Not.Contain("acr build"));
+
+    /// <summary>
     /// The script offers only what makes and releases the two sites: the framework's own Bicep file through infra
     /// (F170), then the verbs that release them. The old Bicep build's vm and sql-access, which would make the VM,
     /// Mongo and SQL again, are gone with Puls (F166.1).
