@@ -89,6 +89,8 @@ internal sealed class TurnRunner(
         try
         {
             ChatOptions chatOptions = Begin(conversation, userInput);
+            // The loop's final request puts back these tools, the conversation's, never the engine's live list.
+            using var tools = TurnTools.Begin(conversation.Tools ?? []);
             ChatResponse response =
                 await chatClient.GetResponseAsync(conversation.Messages, chatOptions, cancellationToken);
 
@@ -117,6 +119,7 @@ internal sealed class TurnRunner(
     {
         using var span = TurnSpans.Start(agentName());
         ChatOptions chatOptions = Begin(conversation, userInput);
+        using var tools = TurnTools.Begin(conversation.Tools ?? []);
         bool owedAsked = false;
         for (int continuation = 0; ; continuation++)
         {
@@ -125,7 +128,7 @@ internal sealed class TurnRunner(
             await using var stream = chatClient
                 .GetStreamingResponseAsync(conversation.Messages, chatOptions, cancellationToken)
                 .GetAsyncEnumerator(cancellationToken);
-            while (await NextAsync(stream, span))
+            while (await NextAsync(stream, span, tools))
             {
                 updates.Add(stream.Current);
                 yield return stream.Current;
@@ -203,11 +206,14 @@ internal sealed class TurnRunner(
     }
 
     /// <summary>
-    /// Moves the stream on with the turn's span current, and records a failure on the span before it reaches the host.
+    /// Moves the stream on with the turn's span and tools current, and records a failure on the span before it
+    /// reaches the host.
     /// </summary>
-    private static async ValueTask<bool> NextAsync(IAsyncEnumerator<ChatResponseUpdate> stream, Activity? span)
+    private static async ValueTask<bool> NextAsync(IAsyncEnumerator<ChatResponseUpdate> stream, Activity? span,
+        TurnTools tools)
     {
         Resume(span);
+        tools.Resume();
         try
         {
             return await stream.MoveNextAsync();

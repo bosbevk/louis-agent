@@ -16,19 +16,67 @@ public class AgentEngineRoundLimitTests
         new(new MarkdownSkillProvider(TestPaths.SampleSkills), client, TestPaths.Agent(),
             supportsTools);
 
-    /// <summary>A model that asks for a tool on every request, so the loop always runs into its limit.</summary>
-    private static FakeChatClient NeverStopsCallingTools() => new(Enumerable.Range(1, 15)
-        .Select<int, Func<IList<ChatMessage>, ChatResponse>>(i => _ => new ChatResponse(new ChatMessage(
-            ChatRole.Assistant,
-            [
-                new FunctionCallContent($"call_{i}", "ExecuteSkill",
-                    new Dictionary<string, object?>
-                    {
-                        ["skillName"] = "SayHello",
-                        ["jsonArgs"] = "{\"name\":\"x\"}"
-                    }),
-            ])))
+    /// <summary>
+    /// A model that asks for a tool on every request, so the loop always runs into its limit; what's given runs as each
+    /// request arrives, with its number.
+    /// </summary>
+    private static FakeChatClient NeverStopsCallingTools(Action<int>? onRequest = null) => new(Enumerable.Range(1, 15)
+        .Select<int, Func<IList<ChatMessage>, ChatResponse>>(i => _ =>
+        {
+            onRequest?.Invoke(i);
+            return new ChatResponse(new ChatMessage(
+                ChatRole.Assistant,
+                [
+                    new FunctionCallContent($"call_{i}", "ExecuteSkill",
+                        new Dictionary<string, object?>
+                        {
+                            ["skillName"] = "SayHello",
+                            ["jsonArgs"] = "{\"name\":\"x\"}"
+                        }),
+                ]));
+        })
         .ToArray());
+
+    /// <summary>
+    /// The engine's tools change mid-turn; past the limit, the final request still sends the conversation's list, not
+    /// the engine's, with tool mode None.
+    /// </summary>
+    [Test]
+    public async Task PastTheRoundLimit_AfterTheEnginesToolsChanged_FinalRequestSendsTheConversationsList()
+    {
+        AgentEngine engine = null!;
+        var client = NeverStopsCallingTools(onRequest: i =>
+        {
+            if (i == 2) engine.KeepOnlyTool("ExecuteSkill");
+        });
+        engine = Engine(client);
+
+        await engine.ProcessPromptAsync(engine.StartConversation(), "go");
+
+        Assert.That(engine.Tools.Select(t => t.Name), Is.EqualTo(new[] { "ExecuteSkill" }), "the engine changed");
+        Assert.That(client.ToolNamesSent[^1], Is.EqualTo(client.ToolNamesSent[0]), "the final request didn't");
+        Assert.That(client.Requests[^1].Options!.ToolMode, Is.EqualTo(ChatToolMode.None));
+    }
+
+    /// <summary>
+    /// Streamed, the same: the turn's tools stay current across every step of the stream, to the final request.
+    /// </summary>
+    [Test]
+    public async Task Streamed_PastTheRoundLimit_AfterTheEnginesToolsChanged_FinalRequestSendsTheConversationsList()
+    {
+        AgentEngine engine = null!;
+        var client = NeverStopsCallingTools(onRequest: i =>
+        {
+            if (i == 2) engine.KeepOnlyTool("ExecuteSkill");
+        });
+        engine = Engine(client);
+
+        await foreach (var _ in engine.StreamPromptAsync(engine.StartConversation(), "go"))
+        {
+        }
+
+        Assert.That(client.ToolNamesSent[^1], Is.EqualTo(client.ToolNamesSent[0]));
+    }
 
     /// <summary>Streamed past the limit, the last request still sends the tools, with tool mode None.</summary>
     [Test]

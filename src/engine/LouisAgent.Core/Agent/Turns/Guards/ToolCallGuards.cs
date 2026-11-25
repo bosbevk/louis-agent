@@ -115,7 +115,8 @@ internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryC
         if (registry.Count == 0 || options?.Tools is { Count: > 0 }) return options;
 
         ChatOptions final = options?.Clone() ?? new ChatOptions();
-        final.Tools = registry.Live;
+        // The turn's conversation's tools, as every earlier request sent them; outside a turn, the engine's.
+        final.Tools = TurnTools.Current is { } turn ? [.. turn.Tools] : registry.Live;
         final.ToolMode = ChatToolMode.None;
         return final;
     }
