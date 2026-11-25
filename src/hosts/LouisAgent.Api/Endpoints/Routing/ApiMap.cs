@@ -10,9 +10,11 @@ using LouisAgent.Api.Endpoints.Sessions;
 using LouisAgent.Api.Endpoints.Workspace;
 using LouisAgent.Api.Messages;
 using LouisAgent.Api.Sessions;
+using LouisAgent.Api.Sessions.Store;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Messages;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace LouisAgent.Api.Endpoints.Routing;
 
@@ -44,6 +46,8 @@ internal static class ApiMap
         // (F5).
         services.AddSingleton(host.Engine);
         services.AddSingleton(host.Engines);
+        // Where the sessions are kept beyond this process (F43.1): in memory unless the host registered a store first.
+        services.TryAddSingleton<ISessionStore, InMemorySessionStore>();
         services.AddSingleton<AgentSessions>();
         services.AddSingleton(new WorkspaceBoundary(host.Engine.WorkspaceRoot));
         return services;

@@ -33,9 +33,10 @@ public class AskedVoiceTests
     /// delegates.
     /// </summary>
     [Test]
-    public void AnIdentitysVoice_AskedAtDepthOne_OpensAsItsVoice_WithItsPacks()
+    public async Task AnIdentitysVoice_AskedAtDepthOne_OpensAsItsVoice_WithItsPacks()
     {
-        var session = Sessions().Create(new SessionRequest(Depth: 1, Identity: TestBusiness.Identity.Name));
+        var session =
+            (await Sessions().CreateAsync(new SessionRequest(Depth: 1, Identity: TestBusiness.Identity.Name)));
 
         Assert.Multiple(() =>
         {
@@ -51,8 +52,9 @@ public class AskedVoiceTests
     /// if it is setup that way"): one level down, the <c>agents</c> toolset loads.
     /// </summary>
     [Test]
-    public void AnAskedAgent_MayAskFurther() =>
-        Assert.That(Sessions()
-            .Create(new SessionRequest([CoreToolset.Agents.Wire()], Depth: 1, Identity: TestBusiness.Identity.Name))
+    public async Task AnAskedAgent_MayAskFurther() =>
+        Assert.That((await Sessions()
+                .CreateAsync(new SessionRequest([CoreToolset.Agents.Wire()], Depth: 1,
+                    Identity: TestBusiness.Identity.Name)))
             .Toolsets, Does.Contain(CoreToolset.Agents.Wire()));
 }

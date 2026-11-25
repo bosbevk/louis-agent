@@ -20,7 +20,7 @@ public class SessionHandlersTests
         yield return new TestCaseData("GetSessionWork",
             typeof(Results<JsonHttpResult<SessionWorkReply>, JsonHttpResult<ApiError>>));
         yield return new TestCaseData("DeleteSession",
-            typeof(Results<JsonHttpResult<SessionDeletedReply>, JsonHttpResult<ApiError>>));
+            typeof(Task<Results<JsonHttpResult<SessionDeletedReply>, JsonHttpResult<ApiError>>>));
         yield return new TestCaseData("CancelSession",
             typeof(Results<JsonHttpResult<SessionCancelledReply>, JsonHttpResult<ApiError>>));
         yield return new TestCaseData("SendMessage",

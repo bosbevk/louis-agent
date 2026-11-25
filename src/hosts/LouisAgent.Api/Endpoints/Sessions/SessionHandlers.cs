@@ -117,7 +117,7 @@ internal sealed class SessionHandlers(AgentHostContext host)
         AgentSession session;
         try
         {
-            session = sessions.Create(asked);
+            session = await sessions.CreateAsync(asked);
         }
         catch (Exception ex) when (ex is ToolsetException or RoleException or SessionLlmException)
         {
@@ -155,9 +155,9 @@ internal sealed class SessionHandlers(AgentHostContext host)
     }
 
     /// <summary>Removes the session; 404 for one this instance doesn't have.</summary>
-    public DeletedAnswer DeleteSession(string id, AgentSessions sessions)
+    public async Task<DeletedAnswer> DeleteSession(string id, AgentSessions sessions)
     {
-        if (!sessions.Remove(id)) return RefuseUnknownSession(id);
+        if (!await sessions.RemoveAsync(id)) return RefuseUnknownSession(id);
         return TypedResults.Json(new SessionDeletedReply(id, true), SessionJson.SnakeCase);
     }
 
@@ -201,7 +201,8 @@ internal sealed class SessionHandlers(AgentHostContext host)
         // leaves its own pacer off and the words are paced once (F156).
         if (host.Agent.StreamPace) http.Response.Headers[ApiHeaders.StreamPaced] = ApiHeaders.StreamPacedOn;
 
-        return TypedResults.ServerSentEvents(TurnStream.StreamTurnAsync(session.Engine, session, prompt, turn, _turns));
+        return TypedResults.ServerSentEvents(TurnStream.StreamTurnAsync(session.Engine, session, prompt, turn, _turns,
+            sessions.TurnSaveFor(session, request)));
     }
 
     /// <summary>

@@ -11,6 +11,7 @@ using LouisAgent.SessionStream.Wire.Requests;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Sessions.SubSessions;
+using LouisAgent.Api.Sessions.Store;
 using LouisAgent.Api.Sessions.Streaming;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.SessionStream;
@@ -34,7 +35,8 @@ internal static class TurnStream
     /// format writes them, a sub-session's events among them, and the turn's end or its failure with its kind.
     /// </summary>
     public static async IAsyncEnumerable<SseItem<string>> StreamTurnAsync(
-        AgentEngine engine, AgentSession session, string prompt, CancellationTokenSource turn, TurnLog? log = null)
+        AgentEngine engine, AgentSession session, string prompt, CancellationTokenSource turn, TurnLog? log = null,
+        TurnSave? save = null)
     {
         var stream = StreamFormats.Create(session.StreamFormat, session.Id, session.Toolsets, session.Role);
         UsageScope? usage = null;
@@ -137,6 +139,9 @@ internal static class TurnStream
                 log?.Write(finished);
             }
 
+            // What the turn added to the history goes to the store before the turn's lock is let go, so the chat's
+            // next message, even on another instance after a restart, finds it (F43.1).
+            if (save is not null) await save.AppendAsync(session);
             session.EndTurn(turn);
         }
     }
