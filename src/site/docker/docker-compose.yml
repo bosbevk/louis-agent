@@ -91,6 +91,11 @@ services:
       # it can be replayed for free. Nothing is recorded unless a session asks to; a visitor's session never does.
       SITE_DATA_DIRECTORY: /data
       REPLAY_DIRECTORY: /data/recordings
+      # Its chats in the same MongoDB as the site's (FX250): a session's id is a GUID, so the two never meet.
+      SESSION_STORE: mongo
+      SESSION_STORE_URL: mongodb://sessions-mongo:27017/louis_agent
+    depends_on:
+      - sessions-mongo
     # Localhost only: the review copy. AGENT_API_KEY in .env.secrets is required (FX18), or the host refuses to start.
     ports:
       - "127.0.0.1:${FRAMEWORK_PORT:-5084}:8080"

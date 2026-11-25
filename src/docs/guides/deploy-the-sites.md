@@ -40,7 +40,7 @@ then, and their story is in git, FX122 and ADRs 0095 and 0098.
 | Registry | `acrpulsza` | The images; the environment pulls them as itself |
 | Storage | `pulsstorage`, the share `louis-agent-workspace` | Mounted on the environment as `louis-agent-vol`; each app's logs and louis-agent.dev's saved CV |
 | Logs and traces | `puls-logs`, `puls-insights` | Each app's logs, and its traces through the environment's agent (F52) |
-| Chats' database | `louis-agent-chats` | louis-agent.dev's chats (F43.1): DocumentDB on its free tier, one node and 32 GB, with no backup; it pauses after 60 days with no use |
+| Chats' database | `louis-agent-chats` | Both sites' chats, in one database (F43.1): DocumentDB on its free tier, one node and 32 GB, with no backup; it pauses after 60 days with no use |
 
 Everything in the table but the two apps is described in `main.bicep`. It takes every name as a parameter, and our
 own names, the ones above, are in `main.bicepparam` beside it, so another business deploys the same file with a
@@ -153,7 +153,7 @@ that is deleted straight after.
 | `anthropic-api-key` | `ANTHROPIC_API_KEY` in `src/site/config/.env.secrets` | Both sites' model calls; the framework's file leaves it out, so its `secrets` keeps this one as it is |
 | `agent-api-key-louis-agent`, `admin-api-key-louis-agent` | `AGENT_API_KEY`, `ADMIN_API_KEY` in `src/site/config/.env.secrets` | louis-agent.dev's key gate and admin |
 | `resend-api-key` | `RESEND_API_KEY` in `src/site/config/.env.secrets` | louis-agent.dev's lead mail (F112); named in its yaml only once the vault holds it |
-| `session-store-url-louis-agent` | Built by `secrets` from `louis-agent-chats`' own address, the name Azure holds for it and `CHATS_DATABASE_PASSWORD` in `src/site/config/.env.secrets` | louis-agent.dev's chats, as `SESSION_STORE_URL`; once the vault holds it a release also sets `SESSION_STORE=mongo`, and until then the chats stay in memory |
+| `session-store-url` | Built by `secrets` from `louis-agent-chats`' own address, the name Azure holds for it and `CHATS_DATABASE_PASSWORD` in `src/site/config/.env.secrets`, for either app | Both sites' chats, in the one database, as `SESSION_STORE_URL`; once the vault holds it a release also sets `SESSION_STORE=mongo`, and until then the chats stay in memory |
 | `agent-api-key-framework`, `admin-api-key-framework` | `AGENT_API_KEY`, `ADMIN_API_KEY` in `src/site/config/.env.secrets.framework` | framework.louis-agent.dev's key gate and admin |
 
 Both sites read the same config folder, `src/site/config/`, so the framework keeps its own keys in a file of their

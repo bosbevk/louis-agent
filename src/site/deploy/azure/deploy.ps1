@@ -47,6 +47,9 @@ $Registry = 'acrpulsza'
 $Environment = 'louis-agent-env'
 $Vault = 'puls-keys'
 $Deployment = 'louis-agent-infra'
+# The vault secret both apps read their chats' database's address from (F43.1): one database for both, since a
+# session's id is a GUID neither site can repeat (FX250, Louis: "can share the db").
+$ChatsSecret = 'session-store-url'
 $Repo = (Resolve-Path (Join-Path $PSScriptRoot '..\..\..\..')).Path
 $Providers = @('google', 'microsoft', 'linkedin')
 # What is each app's: its image and Dockerfile, its config folder and the secrets file in it, its yaml, the Bicep
@@ -60,8 +63,6 @@ $Apps = @{
         Config = 'src\site\config'; SecretsFile = '.env.secrets'; Yaml = 'src\site\deploy\azure\louis-agent-app.yaml'; IdentityOutput = 'codingAppIdentityId'
         Share = 'louis-agent-workspace'; Hostname = 'louis-agent.dev'; Suffix = '-louis-agent'; Folders = @()
         WhenSet = @{ RESEND_API_KEY = 'resend-api-key' }
-        # The vault secret its chats' database's address is kept in (F43.1), which secrets writes from the cluster.
-        Chats = 'session-store-url-louis-agent'
     }
     'louis-agent-framework-app' = @{
         # The framework's own site (F164.3), from the same config folder with keys of its own in their own file. It
@@ -126,10 +127,11 @@ function Get-Output([string]$Name) {
 
 function Get-ChatsAddress {
     # The chats' database's address with its sign-in (F43.1): Azure's address for the cluster names <user> and
-    # <password>, filled with the name Azure holds and the password from the secrets file; $null before infra made it.
+    # <password>, filled with the name Azure holds and the cluster's one password, which is in the site's secrets file
+    # whichever app is released; $null before infra made it.
     $clusterId = Read-Az deployment group show -n $Deployment -g $ResourceGroup --query 'properties.outputs.chatsClusterId.value' -o tsv
     if ($LASTEXITCODE -ne 0 -or -not $clusterId) { return $null }
-    $password = Get-EnvValue (Join-Path $AppConfig $AppInfo.SecretsFile) 'CHATS_DATABASE_PASSWORD'
+    $password = Get-EnvValue (Join-Path $AppConfig '.env.secrets') 'CHATS_DATABASE_PASSWORD'
     if (-not $password) { return $null }
     $cluster = Read-Az resource show --ids $clusterId --query '{address:properties.connectionString, user:properties.administrator.userName}' -o json | ConvertFrom-Json
     if (-not $cluster.address) { return $null }
@@ -159,7 +161,7 @@ function Get-Secrets {
     }
     # The keys the app runs without (FX87), each from its env var.
     foreach ($key in $AppInfo.WhenSet.Keys) { $wanted += @{ name = $AppInfo.WhenSet[$key]; value = Get-EnvValue $secretsFile $key } }
-    if ($AppInfo.Chats) { $wanted += @{ name = $AppInfo.Chats; value = Get-ChatsAddress } }
+    $wanted += @{ name = $ChatsSecret; value = Get-ChatsAddress }
     return $wanted
 }
 
@@ -247,7 +249,7 @@ switch ($Verb) {
         $names = @('anthropic-api-key', "agent-api-key$suffix", "admin-api-key$suffix")
         foreach ($provider in $Providers) { $names += "auth-$provider-client-id$suffix"; $names += "auth-$provider-client-secret$suffix" }
         $names += @($AppInfo.WhenSet.Values)
-        if ($AppInfo.Chats) { $names += $AppInfo.Chats }
+        $names += $ChatsSecret
         $secrets = @('    secrets:')
         foreach ($name in $names) {
             if ($inVault -contains $name) {
@@ -278,11 +280,11 @@ switch ($Verb) {
             }
         }
         # The chats go to their database (F43.1) once the vault holds its address; until then they stay in memory.
-        if ($AppInfo.Chats -and $inVault -contains $AppInfo.Chats) {
+        if ($inVault -contains $ChatsSecret) {
             $whenSetLines += "          - name: SESSION_STORE"
             $whenSetLines += "            value: mongo"
             $whenSetLines += "          - name: SESSION_STORE_URL"
-            $whenSetLines += "            secretRef: $($AppInfo.Chats)"
+            $whenSetLines += "            secretRef: $ChatsSecret"
         }
         $template = Join-Path $Repo $AppInfo.Yaml
         $resolved = Join-Path ([System.IO.Path]::GetTempPath()) "$App.$Revision.yaml"

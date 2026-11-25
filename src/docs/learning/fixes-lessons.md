@@ -1286,6 +1286,10 @@ first link, right after the topic. Letting the row break between its tiles, and 
 chain short enough to fit, so the heading stays on page one. It was found by measuring where each part landed in a
 real browser, not by reading the rules. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX250 · A feature that lands in one host is still missing in the other
+
+F43.1 gave sessions a store, and the plan named only louis-agent.dev to use it. The framework's site runs the same API, so it went on losing its chats on a restart, and its own Comparison page went on calling durable sessions planned, a claim about the framework the framework had just made untrue. Sharing one database was the cheap fix, since a session's id is a GUID neither site can repeat, and the free tier allows one cluster. The lesson is the search F43.1's close missed: when a feature changes what the framework can do, read every page that describes the framework, not only the site the plan was for. Skill 9 (sessions and state) and 18 (testing and shipping: a claim held to the code by a test).
+
 ## FX249 · A setting fixed at birth is paid for until you rebuild
 
 An environment's network is chosen when it is made and can't change after, so a network kept for one VM went on costing a load balancer and an IP a month after the VM left. The only way out was a new environment, and the way to move without an outage was to build it beside the old one: a group of its own so the apps kept their names, the certificates issued before the DNS moved, and the old deleted only once all three names answered. One step needed a second road: Azure's bind command answered an internal error twice for the apex, and setting the same binding on the app directly worked. Skill 13 (cost and token economics: what a choice costs every month) and 18 (testing and shipping: a move with the old beside the new).
