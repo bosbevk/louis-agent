@@ -78,6 +78,12 @@ A turn starts when a host hands the engine your message, through `StreamPromptAs
 `ProcessPromptAsync` (all at once). The engine adds your message to the conversation's history. Then it sends the
 model three things: the history, the tools it may call, and the reasoning settings.
 
+The tools are the conversation's own. At its first turn the conversation takes a copy of the engine's tools, and
+every request of that chat sends the copy from then on. That matters because the model checks its earlier thinking
+against everything it was sent before, the tools included, and a list that changed under it can make a request fail.
+So a tool the agent makes, or one you reject, changes the engine's tools, and the next chat gets them.
+Engines are shared by every chat with the same toolsets, so this also keeps one chat's new tool out of another's.
+
 The model usually answers by asking for a tool. `FunctionInvokingChatClient`, from Microsoft.Extensions.AI, runs
 that tool, gives the model the result, and asks again. It keeps going like that for up to 10 rounds. While it
 works, everything streams back to the host as it happens: the model's thinking, its text, each tool call and each

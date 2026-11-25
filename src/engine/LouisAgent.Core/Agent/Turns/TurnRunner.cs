@@ -233,7 +233,8 @@ internal sealed class TurnRunner(
             };
         if (supportsTools)
         {
-            chatOptions.Tools = registry.Live;
+            // The chat's own copy, taken at its first turn: a change to the engine's tools reaches the next chat.
+            chatOptions.Tools = [.. conversation.FreezeTools(registry.Live)];
             chatOptions.ToolMode = ChatToolMode.Auto;
         }
 

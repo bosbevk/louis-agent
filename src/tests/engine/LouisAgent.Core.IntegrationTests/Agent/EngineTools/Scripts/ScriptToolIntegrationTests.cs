@@ -114,22 +114,27 @@ public class ScriptToolIntegrationTests
             "arguments must arrive as data, never as code");
     }
 
-    /// <summary>The model can call a tool in the same turn it made it.</summary>
+    /// <summary>
+    /// A tool the model makes can be called in the next chat; the chat that made it keeps the tools it started with.
+    /// </summary>
     [Test]
-    public async Task NewTool_IsCallableInTheSameTurnThatCreatedIt()
+    public async Task NewTool_IsCallableInTheNextChat()
     {
         RequirePython();
         string escapedDefinition = JsonSerializer.Serialize(AddTool);
         var client = new FakeChatClient(
             _ => ToolCall("c1", "CreateTool", $$"""{"definition":{{escapedDefinition}}}"""),
+            _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "made it")),
             _ => ToolCall("c2", "AddNumbers", """{"a":20,"b":22}"""),
             messages => new ChatResponse(new ChatMessage(ChatRole.Assistant,
                 "result: " + messages.Last().Contents.OfType<FunctionResultContent>().Single().Result)));
         var engine = Engine(client);
 
-        string answer = await engine.ProcessPromptAsync(engine.StartConversation(), "add 20 and 22 with a new tool");
+        await engine.ProcessPromptAsync(engine.StartConversation(), "make a tool that adds");
+        string answer = await engine.ProcessPromptAsync(engine.StartConversation(), "add 20 and 22");
 
         Assert.That(answer, Is.EqualTo("""result: {"sum": 42}"""));
+        Assert.That(client.ToolNamesSent[1], Does.Not.Contain("AddNumbers"), "not in the chat that made it");
     }
 
     /// <summary>The model's answer that calls the tool named, with the arguments given as JSON.</summary>
