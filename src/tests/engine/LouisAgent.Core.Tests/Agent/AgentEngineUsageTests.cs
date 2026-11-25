@@ -12,16 +12,20 @@ using LouisAgent.Core.Anthropic;
 
 namespace LouisAgent.Core.Tests.Agent;
 
-// F1-S1 through AgentEngine: every request of the tool loop, summaries and continuations are recorded.
-// Hosts open the turn's scope (F1 step 7); these tests do it the same way.
+/// <summary>
+/// Every request the engine makes is recorded: each round of the tool loop, a summary and a continuation. Hosts open
+/// the turn's usage scope, and these tests do it the same way.
+/// </summary>
 public class AgentEngineUsageTests
 {
+    /// <summary>An engine on the model given, recording into the sink given, with the mapper if one is given.</summary>
     private static AgentEngine Engine(IChatClient client, IUsageSink sink, IUsageMapper? mapper = null) =>
         new(new MarkdownSkillProvider(TestPaths.SampleSkills), client,
             TestPaths.Agent(),
             toolsets: TestPaths.Toolsets(TestPaths.Agent(), [TestToolset.Files.Wire()]), usageSink: sink,
             usageMapper: mapper);
 
+    /// <summary>The model's answer that runs the SayHello skill, under the call id given.</summary>
     private static ChatResponse CallSayHello(string callId) =>
         new(new ChatMessage(ChatRole.Assistant,
         [
@@ -33,6 +37,7 @@ public class AgentEngineUsageTests
                 })
         ]));
 
+    /// <summary>A streamed turn of three rounds records three requests, numbered 1 to 3.</summary>
     [Test]
     public async Task StreamPrompt_ThreeRoundToolLoop_RecordsRounds1To3()
     {
@@ -52,6 +57,7 @@ public class AgentEngineUsageTests
         Assert.That(sink.Records.Select(r => r.Purpose), Is.All.EqualTo(UsagePurpose.Turn));
     }
 
+    /// <summary>A turn answered whole records its rounds too.</summary>
     [Test]
     public async Task ProcessPrompt_NonStreamingToolLoop_IsRecordedToo()
     {
@@ -67,6 +73,7 @@ public class AgentEngineUsageTests
         Assert.That(sink.Records.Select(r => r.Round), Is.EqualTo(new[] { 1, 2 }));
     }
 
+    /// <summary>Summarising an oversized result adds one record, marked as a summary.</summary>
     [Test]
     public async Task ProcessPrompt_OversizedToolResult_AddsOneSummaryRecord()
     {
@@ -109,6 +116,7 @@ public class AgentEngineUsageTests
         }
     }
 
+    /// <summary>The request that continues a cut-off reply is recorded as a continuation.</summary>
     [Test]
     public async Task StreamPrompt_ReplyCutOff_ContinuationIsRecordedAsContinue()
     {
@@ -130,6 +138,7 @@ public class AgentEngineUsageTests
             Is.EqualTo(new[] { (UsagePurpose.Turn, 1, "length"), (UsagePurpose.Continue, 2, "stop"), }));
     }
 
+    /// <summary>The engine reads usage with the provider's mapper it was given.</summary>
     [Test]
     public async Task ProcessPrompt_UsesTheMapperItIsGiven()
     {
@@ -150,6 +159,7 @@ public class AgentEngineUsageTests
         Assert.That(sink.Records.Single().Tokens, Is.EqualTo(new UsageTokens(39, 10_227, 0, 144, null)));
     }
 
+    /// <summary>With no ledger the engine records nothing and answers all the same.</summary>
     [Test]
     public async Task ProcessPrompt_NoSink_RecordsNothingAndStillAnswers()
     {

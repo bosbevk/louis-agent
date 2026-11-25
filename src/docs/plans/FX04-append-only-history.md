@@ -204,5 +204,9 @@ wire's JSON stays as it is.
 its log enum a touched file, so all 24 of its holed messages get records. The first tidy takes ACP and the CLI, the
 second the orchestrator, each small enough to review on its own.
 
+**A third tidy, for the tests** (Louis, 2026-11-25, "finish unattended", after his first pick). The test files the
+rename reaches lacked about 160 summaries (ADR 0050); they get them in two commits, the engine's tests first, then
+usage and pricing.
+
 ---
 [Docs index](../README.md) · Related: [Plans](README.md) · [FX4](../fixes/FX04-append-only-history.md)

@@ -10,16 +10,19 @@ using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Core.Tests.Agent;
 
-// CL3 step 6: the [TOOL] lines people watch in Rider and the logs read as they did before ILogger.
+/// <summary>The [TOOL] lines people watch in Rider and the logs: what ran and how it ended.</summary>
 [NonParallelizable]
 public class ToolCallLogTests
 {
+    /// <summary>One tool that answers pong.</summary>
     private sealed class PingTools
     {
+        /// <summary>Answers pong to whoever is named.</summary>
         [System.ComponentModel.Description("Replies pong")]
         public string Ping(string to) => $"pong to {to}";
     }
 
+    /// <summary>A tool call shows on stderr as its [TOOL] line going in and coming out.</summary>
     [Test]
     public async Task AToolCall_IsLoggedOnStderr_AsTool_ArrowIn_ArrowOut()
     {
@@ -47,10 +50,12 @@ public class ToolCallLogTests
         Assert.That(stderr.ToString(), Does.Contain("[TOOL] <- Ping: pong to Louis"));
     }
 
+    /// <summary>One tool that fails its first call and answers the next, so a log shows both endings.</summary>
     private sealed class PlaceTools
     {
         private bool _failed;
 
+        /// <summary>Throws the first time it's asked, then finds the area.</summary>
         [System.ComponentModel.Description("Finds a place")]
         public string FindPlace(string area)
         {
@@ -60,6 +65,9 @@ public class ToolCallLogTests
         }
     }
 
+    /// <summary>
+    /// The summary request sees the call's arguments whole, while the log line only shows their hash.
+    /// </summary>
     [Test]
     public async Task TheSummaryRequest_KeepsTheFullArguments_WhileTheLogLineHashesThem()
     {
@@ -100,11 +108,12 @@ public class ToolCallLogTests
         Assert.That(stderr.ToString(), Does.Contain("[TOOL] -> ReadWorkspaceFile(relativePath=#"));
     }
 
+    /// <summary>By default a tool line shows what ran and how it ended, never what it was given.</summary>
     [Test]
     public async Task ByDefault_AToolLine_ShowsWhatRanAndHowItEnded_NeverWhatItWasGiven()
     {
-        // F18 step 4f.1: the arguments, a failure's quoted reason and the result are a keyed hash and a length; the user's words
-        // (the request is "Ek is in Malmesbury, wat kan ek kook?") appear nowhere, on stderr or in the run file.
+        // The arguments, a failure's quoted reason and the result are a keyed hash and a length; the user's words (the
+        // request is "Ek is in Malmesbury, wat kan ek kook?") appear nowhere, on stderr or in the run file.
         string directory = Directory.CreateTempSubdirectory("toollog-").FullName;
         TextWriter original = Console.Error;
         var stderr = new StringWriter();

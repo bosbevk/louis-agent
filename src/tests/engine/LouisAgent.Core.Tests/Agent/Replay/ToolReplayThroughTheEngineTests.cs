@@ -62,6 +62,7 @@ public class ToolReplayThroughTheEngineTests
     /// <summary>The model's answer in words.</summary>
     private static ChatResponse Say(string text) => new(new ChatMessage(ChatRole.Assistant, text));
 
+    /// <summary>A tool's recorded answer is played back even when the file it read is gone.</summary>
     [Test]
     public async Task AToolsAnswer_IsPlayedBack_WhenWhatItReadIsGone()
     {

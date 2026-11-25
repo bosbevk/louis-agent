@@ -14,6 +14,10 @@ using LouisAgent.Core.Hosting;
 
 namespace LouisAgent.Core.Tests.Agent.EngineTools;
 
+/// <summary>
+/// The agent writing its own skill files: they wait in pending/ for the user's /approve, a bad or reserved name is
+/// refused, and a reload picks up what is on disk.
+/// </summary>
 public class SkillAuthoringTests
 {
     private const string EchoSkill = """
@@ -35,12 +39,14 @@ public class SkillAuthoringTests
 
     private string _skillsDir = null!;
 
+    /// <summary>Each test gets an empty skills folder of its own.</summary>
     [SetUp]
     public void SetUp()
     {
         _skillsDir = Directory.CreateTempSubdirectory("skills-").FullName;
     }
 
+    /// <summary>The folder goes when the test is done.</summary>
     [TearDown]
     public void TearDown() => Directory.Delete(_skillsDir, recursive: true);
 
@@ -51,12 +57,16 @@ public class SkillAuthoringTests
         return Path.Combine(_skillsDir, PromptFolder.Agents.Wire(), PromptFolder.Functions.Wire(), $"{name}.md");
     }
 
+    /// <summary>Settings that point the workspace and the skills at the test's folder.</summary>
     private AgentOptions Options() => new()
     {
         WorkspaceRoot = _skillsDir,
         SkillsDirectory = _skillsDir
     };
 
+    /// <summary>
+    /// An engine on the test's folder that can write and reload skills; a fake model unless one is given.
+    /// </summary>
     private AgentEngine Engine(IChatClient? client = null)
     {
         var options = Options();
@@ -67,6 +77,7 @@ public class SkillAuthoringTests
         };
     }
 
+    /// <summary>A function skill left at the folder's root, the old place, isn't loaded.</summary>
     [Test]
     public void AFunctionFileLeftAtTheRoot_IsntRead()
     {
@@ -76,14 +87,17 @@ public class SkillAuthoringTests
         Assert.That(SkillLoader.Load(Options()).Skills.Select(s => s.Name), Does.Not.Contain("Farewell"));
     }
 
+    /// <summary>Where a skill file waits for the user's /approve.</summary>
     private string PendingFile(string name) => Path.Combine(_skillsDir, PromptFolder.Agents.Wire(),
         PromptFolder.Functions.Wire(), "pending", $"{name}.md");
 
+    /// <summary>Where an approved skill file lives.</summary>
     private string ApprovedFile(string name) => Path.Combine(_skillsDir, PromptFolder.Agents.Wire(),
         PromptFolder.Functions.Wire(), $"{name}.md");
 
     // ---- FX20: a skill file the agent writes waits in pending/ for the user's /approve, as agent-built tools do ----
 
+    /// <summary>A new skill file waits in pending/, and the engine that wrote it can already run it.</summary>
     [Test]
     public void CreateSkillFile_SavesLoadsAndMakesSkillExecutable()
     {
@@ -102,6 +116,7 @@ public class SkillAuthoringTests
             "active in the engine that wrote it");
     }
 
+    /// <summary>Until it's approved, a later session doesn't load the skill.</summary>
     [Test]
     public void APendingSkillFile_IsntLoadedByALaterSession()
     {
@@ -113,6 +128,7 @@ public class SkillAuthoringTests
         Assert.That(later.ExecuteSkill("Greet", """{"who":"Louis"}"""), Does.Contain("not found").IgnoreCase);
     }
 
+    /// <summary>/approve moves the file into place: later sessions load it, this one keeps it, and only once.</summary>
     [Test]
     public void Approve_MovesTheFile_ALaterSessionSeesIt_AndThisOneKeepsItWithoutAReload()
     {
@@ -134,8 +150,9 @@ public class SkillAuthoringTests
         Assert.That(Count(engine.SkillDocumentation, "# Greeting Skills"), Is.EqualTo(1), "loaded once, not twice");
     }
 
-    // Review of PR #68: CreateSkillFile lowercases the name, so /approve has to as well, or on Linux "Greeting" finds
-    // nothing.
+    /// <summary>
+    /// /approve and /reject find a skill file whatever case the name is typed in, since the file is saved lowercase.
+    /// </summary>
     [Test]
     public void Approve_AndReject_TakeTheNameInAnyCase()
     {
@@ -151,6 +168,7 @@ public class SkillAuthoringTests
         Assert.That(File.Exists(PendingFile("greeting")), Is.False);
     }
 
+    /// <summary>/reject deletes the waiting file and takes the skill out of this session too.</summary>
     [Test]
     public void Reject_DeletesTheFile_AndUnloadsItHere()
     {
@@ -165,6 +183,7 @@ public class SkillAuthoringTests
         Assert.That(engine.ExecuteSkill("Greet", """{"who":"Louis"}"""), Does.Contain("not found").IgnoreCase);
     }
 
+    /// <summary>Approving or rejecting a name nothing waits under says so.</summary>
     [Test]
     public void Approve_OfAnUnknownName_SaysSo()
     {
@@ -174,6 +193,7 @@ public class SkillAuthoringTests
             Does.Contain("No pending tool or skill file named 'nothing'"));
     }
 
+    /// <summary>A name that's both a waiting tool and a waiting skill file is refused, and nothing moves.</summary>
     [Test]
     public void AName_ThatIsBothAPendingTool_AndAPendingSkillFile_IsRefused()
     {
@@ -190,6 +210,9 @@ public class SkillAuthoringTests
         Assert.That(File.Exists(ApprovedFile("greeting")), Is.False);
     }
 
+    /// <summary>
+    /// Overwriting an approved skill keeps the approved one for later sessions until the new one is approved.
+    /// </summary>
     [Test]
     public void Overwrite_KeepsTheApprovedVersion_UntilTheNewOneIsApproved()
     {
@@ -213,6 +236,7 @@ public class SkillAuthoringTests
         Assert.That(Engine().ExecuteSkill("Greet", """{"who":"Louis"}"""), Is.EqualTo("hi Louis"));
     }
 
+    /// <summary>/tools lists the waiting skill files, and says which this session already runs.</summary>
     [Test]
     public void Tools_ListsPendingSkillFiles()
     {
@@ -226,8 +250,10 @@ public class SkillAuthoringTests
         Assert.That(reply, Does.Contain("older").And.Contain("not loaded"));
     }
 
+    /// <summary>How many times a part appears in a text.</summary>
     private static int Count(string text, string part) => (text.Length - text.Replace(part, "").Length) / part.Length;
 
+    /// <summary>A file with no valid skill in it is refused and not saved.</summary>
     [Test]
     public void CreateSkillFile_RejectsInvalidSkillSections()
     {
@@ -242,18 +268,22 @@ public class SkillAuthoringTests
             Is.False);
     }
 
+    /// <summary>A toolset's name is built in, so a skill file can't take it.</summary>
     [TestCase(TestToolset.DotNet)]
     [TestCase(TestToolset.Python)]
     public void CreateSkillFile_RefusesBuiltInNames(TestToolset toolset) => AssertRefusedAsBuiltIn(toolset.Wire());
 
+    /// <summary>A guide's own file name is built in too.</summary>
     [TestCase("self-extension")]
     public void CreateSkillFile_RefusesBuiltInNames_ThatAreAGuidesOwnFile(string name) => AssertRefusedAsBuiltIn(name);
 
+    /// <summary>Saving a skill file under the name is refused as built in.</summary>
     private void AssertRefusedAsBuiltIn(string name)
     {
         Assert.That(Engine().CreateSkillFile(name, EchoSkill), Does.Contain("built-in"));
     }
 
+    /// <summary>"default" is no longer special, so a skill file may take it.</summary>
     [Test]
     public void CreateSkillFile_MayTakeTheNameDefault()
     {
@@ -261,6 +291,7 @@ public class SkillAuthoringTests
         Assert.That(Engine().CreateSkillFile("default", EchoSkill), Does.Contain("Saved"));
     }
 
+    /// <summary>"time-logging" isn't built in any more, so a skill file may take it.</summary>
     [Test]
     public void CreateSkillFile_MayTakeTheNameTimeLoggingHad()
     {
@@ -268,6 +299,9 @@ public class SkillAuthoringTests
         Assert.That(Engine().CreateSkillFile("time-logging", EchoSkill), Does.Contain("Saved"));
     }
 
+    /// <summary>
+    /// A function skill the agent wrote loads with the skills toolset, with no setting to turn it on.
+    /// </summary>
     [Test]
     public void AnAgentWrittenFunction_LoadsWithTheSkillsToolset_NoSettingNeeded()
     {
@@ -283,6 +317,7 @@ public class SkillAuthoringTests
         Assert.That(SkillLoader.Load(options).Skills.Select(s => s.Name), Does.Contain("Greet"));
     }
 
+    /// <summary>Every toolset's guide name is reserved, with no list to keep by hand.</summary>
     [Test]
     public void CreateSkillFile_RefusesEveryToolsetsGuideName()
     {
@@ -296,6 +331,7 @@ public class SkillAuthoringTests
         }
     }
 
+    /// <summary>A name that isn't kebab-case, one that climbs out of the folder too, is refused.</summary>
     [TestCase("../escape")]
     [TestCase("Has Spaces")]
     [TestCase("")]
@@ -304,6 +340,7 @@ public class SkillAuthoringTests
         Assert.That(Engine().CreateSkillFile(name, EchoSkill), Does.Contain("kebab-case"));
     }
 
+    /// <summary>A skill file is only replaced when the call says overwrite.</summary>
     [Test]
     public void CreateSkillFile_RequiresOverwriteToReplace()
     {
@@ -316,6 +353,7 @@ public class SkillAuthoringTests
         Assert.That(engine.ExecuteSkill("Greet", """{"who":"Louis"}"""), Is.EqualTo("hi Louis"));
     }
 
+    /// <summary>A reload finds a skill file put on disk after the engine started.</summary>
     [Test]
     public void ReloadSkills_PicksUpFilesAddedOnDisk()
     {
@@ -325,6 +363,7 @@ public class SkillAuthoringTests
         Assert.That(engine.ReloadSkills(), Does.Contain("Greet"));
     }
 
+    /// <summary>A skill written mid-chat changes the system prompt the chat's next request sends.</summary>
     [Test]
     public async Task ProcessPrompt_UsesReloadedSystemPromptInExistingConversation()
     {
