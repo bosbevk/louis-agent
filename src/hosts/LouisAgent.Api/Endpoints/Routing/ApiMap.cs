@@ -11,10 +11,12 @@ using LouisAgent.Api.Endpoints.Workspace;
 using LouisAgent.Api.Messages;
 using LouisAgent.Api.Sessions;
 using LouisAgent.Api.Sessions.Store;
+using LouisAgent.Api.Sessions.Store.Mongo;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Messages;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using MongoDB.Driver;
 
 namespace LouisAgent.Api.Endpoints.Routing;
 
@@ -33,6 +35,9 @@ internal static class ApiMap
     /// </summary>
     public const string Version = "/v1";
 
+    /// <summary>The database the chats are kept in when the store's address names none.</summary>
+    private const string SessionsDatabase = "louis_agent";
+
     /// <summary>The services the endpoints take, from the host the agent was built as.</summary>
     public static IServiceCollection AddApi(this IServiceCollection services, AgentHostContext host,
         OpenDoorOptions? openDoor = null)
@@ -46,11 +51,25 @@ internal static class ApiMap
         // (F5).
         services.AddSingleton(host.Engine);
         services.AddSingleton(host.Engines);
-        // Where the sessions are kept beyond this process (F43.1): in memory unless the host registered a store first.
+        // Where the sessions are kept beyond this process (F43.1): a store the host registered first, else the one
+        // the settings pick, read now so a setting that can't be read stops the host as it starts.
+        var storeOptions = SessionStoreOptions.FromEnvironment();
+        if (storeOptions.Store == SessionStoreKind.Mongo)
+            services.TryAddSingleton<ISessionStore>(_ => MongoStoreFor(storeOptions));
         services.TryAddSingleton<ISessionStore, InMemorySessionStore>();
         services.AddSingleton<AgentSessions>();
         services.AddSingleton(new WorkspaceBoundary(host.Engine.WorkspaceRoot));
         return services;
+    }
+
+    /// <summary>
+    /// The MongoDB store the settings name: the database the address names, or <see cref="SessionsDatabase"/>.
+    /// </summary>
+    private static MongoSessionStore MongoStoreFor(SessionStoreOptions options)
+    {
+        var address = MongoUrl.Create(options.Url);
+        var database = new MongoClient(address).GetDatabase(address.DatabaseName ?? SessionsDatabase);
+        return new MongoSessionStore(database, options.Retention);
     }
 
     /// <summary>
