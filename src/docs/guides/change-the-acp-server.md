@@ -46,15 +46,18 @@ stderr ([Messages and logging](../../engine/LouisAgent.Core/CLAUDE.md#messages-a
 ## Add a `session/update` kind
 
 `Turns/TurnRelay.cs` turns the engine's stream into updates: `agent_thought_chunk` for thinking, `tool_call` and
-`tool_call_update` for tools (with their cards from `ToolCards`), and `agent_message_chunk` for text. Add a case to
-its `switch` for the new content, named the way ACP spells the kind. Then regenerate the transcript (below) and read
-its diff.
+`tool_call_update` for tools (with their cards from `ToolCards`), and `agent_message_chunk` for text. Each kind is a
+record in `Protocol/Updates/` that derives from `SessionUpdate`. So a new kind starts as a record of its own there,
+and a `[JsonDerivedType]` line on `SessionUpdate` gives it its wire name, spelt the way ACP spells the kind: the
+serializer writes that name into the update's `sessionUpdate` field. Then add a case to `TurnRelay`'s `switch` that
+builds the record and sends it. Regenerate the transcript (below) and read its diff.
 
 ## Texts
 
 Log lines are `Messages/AcpLogMessage`, what the user sees is `AcpUserText`, and what the model is told is
-`AcpModelText` ([ADR 0009](../adr/0009-message-text-as-enum-templates.md)). A changed model text changes the
-transcript's golden file.
+`AcpModelText` ([ADR 0009](../adr/0009-message-text-as-enum-templates.md)). A text with holes names the record
+that fills them, `[Holes(typeof(UnknownSessionHoles))]`, kept in `Messages/Holes/` under the enum it belongs to
+([ADR 0119](../adr/0119-declare-name-then-pass.md)). A changed model text changes the transcript's golden file.
 
 ## Test it
 

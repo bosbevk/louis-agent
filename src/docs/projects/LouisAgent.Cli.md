@@ -90,6 +90,7 @@ These are the types involved:
 | `CliHost.cs` | The one call a program makes: takes the catalogue, then picks one-shot or interactive |
 | `ConsoleChat.cs` | The chat on the console: the loop, a single prompt, the stream drawn as text, the usage line |
 | `Messages/CliUserText.cs` | The screen's words: the banner, the prompts, the status lines (ADR 0009) |
+| `Messages/Holes/` | The records that fill those words' holes: an error's reason, a tool call and how it ended (ADR 0119) |
 | `LouisAgent.Cli.csproj` | References core only |
 
 The program that starts it is your own. The coding agent's is `demos/louis-agent/hosts/LouisAgent.CodingCli`, which names no

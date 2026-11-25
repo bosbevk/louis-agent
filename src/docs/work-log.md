@@ -14,7 +14,7 @@
 |---|---|---|
 | Features (`F`) | 168 | 74 |
 | Fixes (`FX`) | 239 | 4 |
-| Cleanups (`CL`) | 47 | 24 |
+| Cleanups (`CL`) | 47 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
@@ -124,6 +124,8 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL54 | A pack can't add itself to a router | Cleanups |
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups |
 | CL61 | `ToolCallGuards` past 200 lines once laid out: split it, holes into records (ADR 0119), and end the turn through `TurnEnding.Ends` | Cleanups |
+| CL71 | The ACP server on Microsoft's StreamJsonRpc, our read loop and writer gone; after FX4, plan first | Cleanups |
+| CL72 | The CLI's console drawn with Spectre.Console; after FX4, plan first | Cleanups |
 
 ## Features (168 done)
 

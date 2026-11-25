@@ -1,8 +1,9 @@
-
-using LouisAgent.Composition.Tools;
 using System.ComponentModel;
+using LouisAgent.Cli.Messages.Holes;
+using LouisAgent.Composition.Messages;
 
 namespace LouisAgent.Cli.Messages;
+
 /// <summary>The CLI's screen text: the banner, the prompts, a reply's status lines.</summary>
 public enum CliUserText
 {
@@ -15,30 +16,29 @@ public enum CliUserText
     [Description("/tools, /approve <Name>, /reject <Name> manage agent-built tools and skill files\n")]
     BannerCommands,
 
-    [Description("You: ")]
-    YouPrompt,
+    [Description("You: ")] YouPrompt,
 
-    [Description("\nAssistant: ")]
-    AssistantPrompt,
+    [Description("\nAssistant: ")] AssistantPrompt,
 
-    [Description("\n[stopped]\n")]
-    Stopped,
+    [Description("\n[stopped]\n")] Stopped,
 
     [Description("\nError: {Reason}\n")]
+    [Holes(typeof(TurnErrorHoles))]
     TurnError,
 
     [Description("Error: {Reason}")]
+    [Holes(typeof(PromptErrorHoles))]
     PromptError,
 
     [Description("  > {Name} {Arguments}")]
+    [Holes(typeof(ToolCallStatusHoles))]
     ToolCallStatus,
 
     [Description("    {Outcome}: {Result}")]
+    [Holes(typeof(ToolResultStatusHoles))]
     ToolResultStatus,
 
-    [Description("done")]
-    ToolDone,
+    [Description("done")] ToolDone,
 
-    [Description("failed")]
-    ToolFailed,
+    [Description("failed")] ToolFailed,
 }

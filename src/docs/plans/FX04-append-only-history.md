@@ -190,7 +190,19 @@ tool's description: no 400, in any of them.
 
 ## Approved during the build
 
-Nothing yet.
+**A tidy before step 2** (Louis, 2026-11-25, on a card: "Tidy first, own commit"). Rider's rename in step 2 reaches
+four host files that still build anonymous objects (`AcpServer`, `TurnRelay`, `ConsoleChat`, the orchestrator's
+`Program`), and fix-as-you-touch would fold their records into the refactor. So one commit before step 2 fixes them
+whole, and step 2 stays the pure `Conversation` change.
+
+**ACP's updates as our own records, a union** (Louis, 2026-11-25, on a card: "Our records, polymorphic", over the
+unofficial `AgentClientProtocol` package and flat records). `session/update`'s `update` is an abstract
+`SessionUpdate` record, `[JsonPolymorphic]` on `sessionUpdate`, one sealed record per kind the server sends, so the
+wire's JSON stays as it is.
+
+**The tidy in two commits** (Louis, 2026-11-25, on a card: "Two tidy commits"). The orchestrator's `Program` made
+its log enum a touched file, so all 24 of its holed messages get records. The first tidy takes ACP and the CLI, the
+second the orchestrator, each small enough to review on its own.
 
 ---
 [Docs index](../README.md) · Related: [Plans](README.md) · [FX4](../fixes/FX04-append-only-history.md)

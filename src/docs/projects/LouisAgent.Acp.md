@@ -99,12 +99,13 @@ These are the types involved:
 |---|---|
 | `AcpHost.cs` | The one call a program makes: takes the catalogue, then `AgentHost.Build` and `new AcpServer(engine).RunAsync()` |
 | `AcpServer.cs` | The message loop and the dispatch (S, CL15: the flow only); its reader and writer are constructor arguments (stdin and stdout in Rider, a script and a buffer in the transcript test) |
-| `Protocol/` | `JsonRpcWriter` (one JSON-RPC message per line on stdout, under a lock), `AcpCapabilities` (the `initialize` reply) |
+| `Protocol/` | `JsonRpcWriter` (one JSON-RPC message per line on stdout, under a lock), `AcpCapabilities` (the `initialize` reply), `NewSessionReply` (the `session/new` reply), `JsonRpcErrorCodes` (the codes JSON-RPC 2.0 sets aside, by their names) |
+| `Protocol/Updates/` | What a `session/update` carries: `SessionUpdateNotification`, and `SessionUpdate`, a union whose kind travels in `sessionUpdate` (`AgentThoughtChunk`, `AgentMessageChunk`, and in `ToolCalls/` the card's `ToolCall` and `ToolCallUpdate` with its `ToolCallStatus` and `ToolCardContent`), with `TextBlock` for text |
 | `Prompting/PromptBuilder.cs` | The model's prompt from the content blocks: text, embedded resources, attached files read and capped, the file open in the IDE left out |
 | `Paths/` | `ContainerPaths` (a Windows path from the IDE as the file in the container: `ACP_MOUNT_MAPPINGS`, the mount roots, the drive letter), `GitRoots` (the repository the active file is in) |
 | `Turns/` | `PromptHandler` (one prompt's turn: the git root, a command or the model, the usage scope, the stop reason), `TurnRelay` (thinking, text and tool cards as `session/update`), `ToolCards` (a card's kind and output preview), `AcpSession` |
 | `Rider/` | `RiderToolDiscovery` (Rider's tools found and registered), `RiderMcpClient` (the MCP call to Rider), `RiderOptions` (the `RIDER_MCP_*` settings), `DiscoveredTool` |
-| `Messages/` | The log lines, the words the model reads about an attachment, and the words the person sees (ADR 0009) |
+| `Messages/` | The log lines, the words the model reads about an attachment, and the words the person sees (ADR 0009); in `Holes/` the records that fill them, by the enum they belong to (ADR 0119) |
 
 ## Tests
 
@@ -128,8 +129,9 @@ holds when the server can't start too: the reason goes to the log on stderr, and
 ## Extending it
 
 The steps are in [Change the ACP server](../guides/change-the-acp-server.md). In short: a new method is a `case` in
-`AcpServer.HandleRequestAsync`, with its handler in its concern's folder. A new kind of update is a case in
-`TurnRelay`. The server only ever translates.
+`AcpServer.HandleRequestAsync`, with its handler in its concern's folder. A new kind of update is a record of its
+own beside the others in `Protocol/Updates/`, named on `SessionUpdate` with its wire name, and a case in `TurnRelay`
+that builds it. The server only ever translates.
 
 ## Limits and plans
 
