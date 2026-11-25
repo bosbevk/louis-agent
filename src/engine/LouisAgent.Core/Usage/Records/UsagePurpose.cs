@@ -16,6 +16,12 @@ public static class UsagePurpose
     public const string Grading = "grading";
 
     /// <summary>
+    /// A pack's tool calling the model it was given (F171.1), such as reading a photo: tagged with the turn it ran in,
+    /// so the turn's total includes it, and told apart from the turn's own requests.
+    /// </summary>
+    public const string Tool = "tool";
+
+    /// <summary>
     /// Not a model request: a roll-up of a sub-session's requests (F5), added to the parent turn so its totals include
     /// the subagent's work, and written to the parent's ledger. Its <see cref="UsageRecord.Requests"/> says how many.
     /// </summary>

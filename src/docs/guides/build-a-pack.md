@@ -277,6 +277,50 @@ with settings is built with them, as `new DocsPack(docs)` is. Any identity in th
 Then list it in `EveryPack`, in `packs/tests/LouisAgent.Packs.Rules.Tests`, the one project that holds every pack to
 the rules in step 7. Its own test fails until you do.
 
+### When a tool needs a model, or reads a photo or a PDF
+
+A tool that asks a model for something, such as reading an account from a photo, takes Microsoft's `IChatClient`
+in its constructor, and so does the pack that builds it. Your program hands it over where it builds its catalogue.
+Instead of a finished catalogue, give the host a function: it calls it once at start-up with the models a tool may
+be given, each already traced, replayed in an eval and written to the ledger.
+
+```csharp
+var host = AgentHost.Build(models => new AgentCatalog([], [new ReadingPack(models.Named("haiku"))]), services);
+```
+
+`models.Instance` is the instance's own model, and `models.Named("haiku")` a profile listed in
+`LLM_SESSION_PROFILES`. A name that isn't one stops the host at start-up, naming the profiles there are. Each call
+your tool makes is a ledger row whose purpose is `tool`, counted in the turn it ran in.
+
+The file a user sent comes through the pack context, not the constructor, since it lives only as long as the chat:
+build the tool with `context.Files` beside its model. The tool takes the file's name, which the conversation's model
+reads from the line that names the file, finds it, and sends its instructions and the bytes in one request, asking
+for a record. A failure is text with its reason, and a cancellation is left to stop the turn:
+
+```csharp
+[Description("Reads an account from a photo or a PDF sent in this chat, by the file's name.")]
+public async Task<string> ReadAccount(string name, CancellationToken cancellationToken = default)
+{
+    if (files.Find(name) is not { } file) return $"No file named {name} in this chat.";
+
+    var document = new DataContent(file.Bytes, file.MediaType.Wire());
+    var message = new ChatMessage(ChatRole.User, [new TextContent(Instructions), document]);
+    try
+    {
+        var reading = await model.GetResponseAsync<AccountReading>([message], cancellationToken: cancellationToken);
+        return JsonSerializer.Serialize(reading.Result);
+    }
+    catch (Exception failure) when (failure is not OperationCanceledException)
+    {
+        return $"The reading failed: {failure.Message}";
+    }
+}
+```
+
+The API keeps a chat's photos and PDFs for you, checked first: a JPEG, PNG, GIF or WebP picture, or a PDF, at most
+10 MB each and 20 MB a chat. The whole path is in [LouisAgent.Core](../projects/LouisAgent.Core.md#15-a-photo-or-a-pdf-a-tool-reads),
+and `AccountReaderTools` in the API's integration tests is this tool in full.
+
 ## 7. Test it
 
 ```bash

@@ -1,4 +1,5 @@
 using LouisAgent.Composition.Packs;
+using LouisAgent.Composition.Packs.Files;
 using LouisAgent.Composition.Pricing;
 using LouisAgent.Composition.Sites;
 using LouisAgent.Composition.Web.Browsing;
@@ -7,6 +8,7 @@ using LouisAgent.Composition.Web.Rendering;
 using LouisAgent.Composition.Web.Search;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Pricing.Rates;
+using LouisAgent.Core.Sessions.Files;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Sessions.Replay.Store;
 using LouisAgent.Core.Usage.Sinks;
@@ -64,4 +66,7 @@ public sealed record ToolsetContext(
 
     /// <inheritdoc/>
     ISitePlaces IPackContext.Places => Places;
+
+    /// <summary>The files of whichever chat's turn is running when a tool asks (F171.1).</summary>
+    ISessionFiles IPackContext.Files => TurnSessionFiles.Instance;
 }

@@ -1,3 +1,4 @@
+using LouisAgent.Api.Sessions.Files;
 using LouisAgent.Api.Sessions.Streaming;
 using LouisAgent.Composition.Sessions;
 using LouisAgent.Core.Sessions.SubSessions;
@@ -123,6 +124,12 @@ internal sealed class AgentSession(
     /// finds them again by address; closed on the peer when the chat is removed or dropped as idle.
     /// </summary>
     public SubSessionRegistry SubSessions { get; } = new();
+
+    /// <summary>
+    /// The photos and PDFs sent in this chat, by name, for a tool that reads one (F171.1); checked before they are
+    /// kept.
+    /// </summary>
+    public SessionFileStore Files { get; } = new();
 
     /// <summary>Keeps an attachment for later turns; the same name again replaces it.</summary>
     public void Remember(string name, string? content)

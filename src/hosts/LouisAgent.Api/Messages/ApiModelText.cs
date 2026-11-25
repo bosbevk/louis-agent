@@ -13,6 +13,11 @@ public enum ApiModelText
     [Holes(typeof(AttachmentHoles))]
     Attachment,
 
+    [Description("[File attached: {Name}, {Kind}, {Size}. Its contents aren't in this message; a tool that reads " +
+                 "files is given this name.]")]
+    [Holes(typeof(AttachedFileHoles))]
+    AttachedFile,
+
     [Description("[The user is in {Location}; their time zone is {TimeZone}.]")]
     [Holes(typeof(UserPlaceHoles))]
     UserPlace,

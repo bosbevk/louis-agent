@@ -21,6 +21,7 @@ using Microsoft.Extensions.Logging;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Sessions.Replay.Store;
 using LouisAgent.Core.Hosting.Messages;
+using LouisAgent.Core.Hosting.Messages.Holes;
 
 namespace LouisAgent.Core.Hosting;
 
@@ -87,7 +88,8 @@ public sealed class AgentEngineFactory
     public AgentEngineFactory(IChatClient chatClient, AgentOptions agent, bool supportsTools = true,
         IUsageSink? usageSink = null, IUsageMapper? usageMapper = null, DisplayCurrency? display = null,
         ReasoningEffort? thinking = null, HostServices? services = null, int capacity = DefaultCapacity,
-        ExchangeRates? rates = null, IReadOnlyList<SessionLlm>? sessionLlms = null, AgentCatalog? catalog = null)
+        ExchangeRates? rates = null, IReadOnlyList<SessionLlm>? sessionLlms = null, AgentCatalog? catalog = null,
+        ReplayStore? recordings = null)
     {
         Catalog = catalog ?? AgentCatalog.CoreOnly;
         _chatClient = chatClient;
@@ -100,10 +102,11 @@ public sealed class AgentEngineFactory
         _thinking = thinking;
         _engines = new EngineCache(capacity);
         _sessionLlms = (sessionLlms ?? []).ToDictionary(l => l.Name, StringComparer.Ordinal);
-        // One store where recordings are kept for every engine of this process (F18 step 4b), and one clock, so a
-        // trial's frozen time is shared by every engine and sub-session. The web (one browser, one robots policy, the
-        // search provider) is the host's to build from them (CL33); without a host's web library it isn't set up.
-        var replay = _replay = ReplayStore.From(agent);
+        // One store where recordings are kept for every engine of this process (F18 step 4b), the one the host opened
+        // for the models a pack's tool is given too (F171.1), and one clock, so a trial's frozen time is shared by
+        // every engine and sub-session. The web (one browser, one robots policy, the search provider) is the host's to
+        // build from them (CL33); without a host's web library it isn't set up.
+        var replay = _replay = recordings ?? ReplayStore.From(agent);
         _clock = replay is null ? null : new ReplayClock(replay);
         Context = new ToolsetContext(agent, (services ?? HostServices.None).WebOrNone(agent, replay), rates,
             usageSink, replay)
@@ -172,11 +175,7 @@ public sealed class AgentEngineFactory
         var model = FindLlm(key.Llm);
         if (key.Tool is not null && !Catalog.ToolNamesOf(resolved).Contains(key.Tool))
             throw new ToolsetException(MessageText.Format(HostingErrorMessage.ToolNotInToolsets,
-                new
-                {
-                    key.Tool,
-                    Toolsets = resolved.Count == 0 ? "(none)" : string.Join(", ", resolved.Select(t => t.Name))
-                }));
+                new ToolNotInToolsetsHoles(key.Tool, NamesOf(resolved))));
 
         return _engines.GetOrAdd(key, () => Build(resolved, key, model));
     }
@@ -187,12 +186,9 @@ public sealed class AgentEngineFactory
     {
         if (llm is null) return null;
         if (_sessionLlms.TryGetValue(llm, out var model)) return model;
-        throw new SessionLlmException(MessageText.Format(HostingErrorMessage.UnknownSessionLlm,
-            new
-            {
-                Name = llm,
-                Available = _sessionLlms.Count == 0 ? "none" : string.Join(", ", _sessionLlms.Keys)
-            }));
+        var unknown = new UnknownSessionLlmHoles(llm,
+            _sessionLlms.Count == 0 ? "none" : string.Join(", ", _sessionLlms.Keys));
+        throw new SessionLlmException(MessageText.Format(HostingErrorMessage.UnknownSessionLlm, unknown));
     }
 
     /// <summary>
@@ -233,23 +229,18 @@ public sealed class AgentEngineFactory
         if (tool is not null) engine.KeepOnlyTool(tool);
 
         string toolsJson = JsonSerializer.Serialize(engine.Tools.OfType<AIFunction>()
-            .Select(t => new
-            {
-                t.Name,
-                t.Description,
-                t.JsonSchema
-            }));
-        Log.Log(LogLevel.Information, HostingLogMessage.ToolsetProfileBuilt, new
-        {
-            Toolsets = (resolved.Count == 0 ? "(none)" : string.Join(", ", resolved.Select(t => t.Name)))
-                       + (role is null ? "" : $" · role {role}") +
-                       (level == RoleLevel.Agent ? "" : $" · {level.Wire()}")
-                       + (model is null ? "" : $" · llm {model.Name}") + (tool is null ? "" : $" · tool {tool}"),
-            Tools = engine.Tools.Count,
-            PromptChars = engine.SkillDocumentation.Length,
-            // About four characters a token: an estimate of the fixed prefix every request of this profile sends.
-            PrefixTokens = (engine.SkillDocumentation.Length + toolsJson.Length) / 4
-        });
+            .Select(t => new PrefixTool(t.Name, t.Description, t.JsonSchema)));
+        string profile = NamesOf(resolved) + (role is null ? "" : $" · role {role}") +
+                         (level == RoleLevel.Agent ? "" : $" · {level.Wire()}") +
+                         (model is null ? "" : $" · llm {model.Name}") + (tool is null ? "" : $" · tool {tool}");
+        // About four characters a token: an estimate of the fixed prefix every request of this profile sends.
+        var built = new ToolsetProfileBuiltHoles(profile, engine.Tools.Count, engine.SkillDocumentation.Length,
+            (engine.SkillDocumentation.Length + toolsJson.Length) / 4);
+        Log.Log(LogLevel.Information, HostingLogMessage.ToolsetProfileBuilt, built);
         return engine;
     }
+
+    /// <summary>The toolsets' names as a message lists them, or <c>(none)</c>.</summary>
+    private static string NamesOf(IReadOnlyList<ToolsetDefinition> toolsets) =>
+        toolsets.Count == 0 ? "(none)" : string.Join(", ", toolsets.Select(t => t.Name));
 }

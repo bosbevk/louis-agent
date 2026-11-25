@@ -384,7 +384,9 @@ its row in the work log's open table with the count. Louis, 2026-11-22: "save me
   context gains only `ISessionFiles`. So `ReadBill` takes the file's name, finds it through the pack context, and
   sends its instructions and the bytes to the model the bills pack was built with. Where this plan's table, its
   namespace map, its folder tree and its pictures still name the reader, the
-  [F171.1 plan](F171.1-a-photo-or-a-pdf-reaches-a-tool.md) is the one to follow.
+  F171.1 as built is the one to follow: done 2026-11-24, its design in
+  [LouisAgent.Core](../projects/LouisAgent.Core.md#15-a-photo-or-a-pdf-a-tool-reads), part 15, and its write-up
+  [19 · Multimodal](../learning/19-multimodal-and-computer-use.md).
 
 ## Open before the first child
 

@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Packs.Files;
 using LouisAgent.Composition.Pricing;
 using LouisAgent.Composition.Sites;
 using LouisAgent.Composition.Web.Browsing;
@@ -46,4 +47,10 @@ public interface IPackContext
     /// has no site when the host serves none.
     /// </summary>
     ISitePlaces Places => NoSitePlaces.Instance;
+
+    /// <summary>
+    /// The files sent in this session, a photo or a PDF a tool reads by its name (F171.1); none when the host keeps
+    /// none.
+    /// </summary>
+    ISessionFiles Files => NoSessionFiles.Instance;
 }

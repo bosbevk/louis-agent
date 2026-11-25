@@ -221,4 +221,26 @@ public class TurnStreamPromptTests
     {
         Assert.That(TurnStream.BuildPrompt(new SendMessageRequest("hi", null)), Is.EqualTo("hi"));
     }
+
+    /// <summary>
+    /// F171.1 step 6: a photo or a PDF reaches the model as one line, its name, its kind and its size, never its
+    /// bytes, so a tool can be given the name and the photo stays out of every later request of the chat.
+    /// </summary>
+    [Test]
+    public void AFile_IsOneLineWithItsNameKindAndSize_AndNoneOfItsBytes()
+    {
+        byte[] photo = [0xFF, 0xD8, 0xFF, 0xE0, .. new byte[2044]];
+        var file = new AttachmentRequest("account.jpg", null, photo, "image/jpeg");
+
+        string prompt = TurnStream.BuildPrompt(new SendMessageRequest("Check this", [file]));
+        string line = prompt.Split("\n\n")[1];
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(line, Does.Contain("account.jpg").And.Contain("image/jpeg").And.Contain("2 KB"));
+            Assert.That(line, Does.Not.Contain('\n'), "one line");
+            Assert.That(prompt, Does.Not.Contain(Convert.ToBase64String(file.Bytes!)[..8]));
+            Assert.That(prompt, Does.Not.Contain("```"), "no fenced block, as a text attachment has");
+        });
+    }
 }

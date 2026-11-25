@@ -22,6 +22,13 @@
     <ProjectReference Include="..\..\..\engine\LouisAgent.Core\LouisAgent.Core.csproj" />
     <!-- The fakes every test project shares (CL15 step 5), and Outside, which asks for the tool a test needs (F18 step 7.6). -->
     <ProjectReference Include="..\..\shared\LouisAgent.Testing\LouisAgent.Testing.csproj" />
+    <!-- The Anthropic provider, so the documents' proof builds a model as a host does (F171.1 step 2). -->
+    <ProjectReference Include="..\..\..\engine\LouisAgent.Core.Anthropic\LouisAgent.Core.Anthropic.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The made-up account the documents' proof reads, as a photo and as a PDF. -->
+    <None Update="Llm\Documents\sample-account.*" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>
