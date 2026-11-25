@@ -11,17 +11,11 @@ param workspaceRetentionDays = 30
 param insightsName = 'puls-insights'
 param insightsRetentionDays = 90
 
-param networkName = 'puls-vnet'
-param networkAddressPrefix = '10.0.0.0/16'
-param appsSubnetName = 'apps'
-param appsSubnetPrefix = '10.0.0.0/23'
-
-param environmentName = 'puls-env'
-param environmentInfrastructureGroupName = 'ME_puls-env_rg-puls-za_southafricanorth'
+param appsGroupName = 'rg-louis-agent-za'
+param environmentName = 'louis-agent-env'
 param shareLinkName = 'louis-agent-vol'
 
 param registryName = 'acrpulsza'
-param registryPullAssignmentName = '3b785df2-c303-5865-adb0-94ee624325e1'
 
 param vaultName = 'puls-keys'
 param appIdentityName = 'louis-agent-app-identity'
@@ -33,6 +27,8 @@ param vaultAdminAssignmentName = '3a2229ca-c39f-4001-84ed-16d24b6ccc6c'
 param releasePrincipalId = '293d31f9-e8a6-408f-ab09-7a01a9c31e16'
 param releaseVaultReadAssignmentName = '3e128fb0-5a4f-42d7-b3ce-87d85d4fdd0a'
 param releaseGroupAssignmentName = 'd16c7301-259f-4696-b0b1-31fe8f7fc142'
+param releaseAppsGroupAssignmentName = 'd397b6ea-5b0c-4c6d-a1e8-722b70de08f2'
+param appsRegistryPullAssignmentName = '9068bc57-06f2-4db8-a9f5-ea1aff00a9be'
 
 param storageName = 'pulsstorage'
 param shareName = 'louis-agent-workspace'

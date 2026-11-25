@@ -16,7 +16,9 @@ public class BicepFileTests
     /// <summary>The start of a reference to a module in Bicep's public registry.</summary>
     private const string PublicModule = "'br/public:";
 
-    /// <summary>The file's lines, or none while it doesn't exist yet, so each check fails on its own assertion.</summary>
+    /// <summary>
+    /// The file's lines, or none while it doesn't exist yet, so each check fails on its own assertion.
+    /// </summary>
     private static string[] Lines(string name)
     {
         string path = Path.Combine(TestPaths.RepoRoot, Folder, name);
@@ -26,6 +28,11 @@ public class BicepFileTests
     /// <summary>The file.</summary>
     private static string[] Bicep => Lines("main.bicep");
 
+    /// <summary>
+    /// The apps' environment, a module of its own deployed into the apps' resource group (FX249), on no network.
+    /// </summary>
+    private static string[] AppsEnvironment => Lines("apps-environment.bicep");
+
     /// <summary>Our own instance's values.</summary>
     private static string[] Params => Lines("main.bicepparam");
 
@@ -33,7 +40,9 @@ public class BicepFileTests
     private static string ParamName(string line) =>
         line[ParamWord.Length..].Split(' ', StringSplitOptions.RemoveEmptyEntries)[0];
 
-    /// <summary>The names the file takes, from its own lines (Louis's pick 2 of F170: every name a parameter).</summary>
+    /// <summary>
+    /// The names the file takes, from its own lines (Louis's pick 2 of F170: every name a parameter).
+    /// </summary>
     private static List<string> Declared() =>
         Bicep.Where(line => line.StartsWith(ParamWord, StringComparison.Ordinal)).Select(ParamName).ToList();
 
@@ -58,7 +67,9 @@ public class BicepFileTests
         Assert.That(Bicep.Where(line => line.Contains("puls", StringComparison.OrdinalIgnoreCase)), Is.Empty);
     }
 
-    /// <summary>Every name the file takes has its value in our parameters file, so a deploy never asks for one.</summary>
+    /// <summary>
+    /// Every name the file takes has its value in our parameters file, so a deploy never asks for one.
+    /// </summary>
     [Test]
     public void EveryParameter_HasItsValue()
     {
@@ -122,7 +133,7 @@ public class BicepFileTests
     [Test]
     public void TheEnvironment_KeepsItsTelemetryAgent()
     {
-        var lines = Bicep.Select(line => line.Trim()).ToList();
+        var lines = AppsEnvironment.Select(line => line.Trim()).ToList();
 
         Assert.That(lines, Does.Contain("openTelemetryConfiguration: {"));
         Assert.That(lines, Does.Contain("appInsightsConfiguration: {"));
@@ -130,12 +141,54 @@ public class BicepFileTests
     }
 
     /// <summary>
-    /// The apps subnet's delegation keeps its live name: the network's module would rename it, on a subnet the
-    /// environment uses.
+    /// FX249: the apps' environment sits on no network of ours, since one on our own network is billed a load
+    /// balancer and its public IP; and no file makes a network any more.
     /// </summary>
     [Test]
-    public void TheNetwork_KeepsItsDelegationsName() =>
-        Assert.That(Bicep.Select(line => line.Trim()), Does.Contain("name: 'containerapps'"));
+    public void TheEnvironment_SitsOnNoNetwork()
+    {
+        var both = Bicep.Concat(AppsEnvironment).ToList();
+
+        Assert.That(AppsEnvironment, Has.Some.Contains("Microsoft.App/managedEnvironments@"), "the module makes it");
+        Assert.That(both, Has.None.Contains("vnetConfiguration").And.None.Contains("virtualNetworks"));
+    }
+
+    /// <summary>
+    /// FX249: the environment and its share link are deployed into the apps' own resource group, and its outputs
+    /// keep the names the script has always read.
+    /// </summary>
+    [Test]
+    public void TheEnvironment_IsDeployedIntoTheAppsGroup()
+    {
+        var lines = Bicep.Select(line => line.Trim()).ToList();
+
+        Assert.That(lines, Has.Some.StartsWith("module appsEnvironment 'apps-environment.bicep'"));
+        Assert.That(lines, Does.Contain("scope: resourceGroup(appsGroupName)"));
+        Assert.That(AppsEnvironment, Has.Some.Contains("Microsoft.App/managedEnvironments/storages@"));
+        Assert.That(lines, Does.Contain("output environmentId string = appsEnvironment.outputs.environmentId"));
+    }
+
+    /// <summary>
+    /// FX249: the registry gives the new environment its own right to pull, under a name of its own (an assignment
+    /// keeps its name for life), and the release identity is Contributor on the apps' group, so a release can make
+    /// the apps there.
+    /// </summary>
+    [Test]
+    public void TheNewEnvironment_CanPull_AndTheReleaseCanMakeItsApps()
+    {
+        var lines = Bicep.Select(line => line.Trim()).ToList();
+
+        Assert.That(lines, Does.Contain("name: appsRegistryPullAssignmentName"));
+        Assert.That(lines, Does.Contain("principalId: appsEnvironment.outputs.principalId"));
+        Assert.That(lines, Does.Contain("name: releaseAppsGroupAssignmentName"));
+    }
+
+    /// <summary>The apps' environment's file names no product either (ADR 0076).</summary>
+    [Test]
+    public void TheAppsEnvironmentsFile_NamesNoProduct() =>
+        Assert.That(AppsEnvironment.Where(line => line.Contains("puls", StringComparison.OrdinalIgnoreCase) ||
+                                                  line.Contains("louis-agent", StringComparison.OrdinalIgnoreCase)),
+            Is.Empty);
 
     /// <summary>
     /// Every output the deploy script reads is one the file declares, so a release finds the environment, the

@@ -71,10 +71,10 @@ jobs:
             echo "Commit: \`$(git rev-parse --short HEAD)\`"
             echo "Running revisions of louis-agent-app:"
             echo '```'
-            az containerapp revision list -n louis-agent-app -g rg-puls-za --query "[?properties.active].{revision:name, healthy:properties.healthState, created:properties.createdTime}" -o table || true
+            az containerapp revision list -n louis-agent-app -g rg-louis-agent-za --query "[?properties.active].{revision:name, healthy:properties.healthState, created:properties.createdTime}" -o table || true
             echo '```'
             echo "Running revisions of louis-agent-framework-app:"
             echo '```'
-            az containerapp revision list -n louis-agent-framework-app -g rg-puls-za --query "[?properties.active].{revision:name, healthy:properties.healthState, created:properties.createdTime}" -o table || true
+            az containerapp revision list -n louis-agent-framework-app -g rg-louis-agent-za --query "[?properties.active].{revision:name, healthy:properties.healthState, created:properties.createdTime}" -o table || true
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"

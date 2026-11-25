@@ -1,7 +1,7 @@
 <#
 .SYNOPSIS
-Deploys the framework's two sites to Azure (rg-puls-za): what they stand on, from the framework's own Bicep file
-beside this script (F170), and their revisions, as verbs that are each a few az commands with the names filled in
+Deploys the framework's two sites to Azure (the apps in rg-louis-agent-za, what they share in rg-puls-za): what
+they stand on, from the framework's own Bicep file beside this script (F170), and their revisions, as verbs that are each a few az commands with the names filled in
 (CL19, F61.4). louis-agent.dev runs, sleeping when unused, with no VM and no database (FX122); since F164.3 the
 framework's own site, framework.louis-agent.dev, runs beside it the same way. The environment, the identity and the
 vault the releases need are read back from the Bicep deployment's recorded outputs.
@@ -39,8 +39,12 @@ param(
 $ErrorActionPreference = 'Stop'
 if (-not $Tag -and $Verb -in @('build', 'release')) { $Tag = Get-Date -Format 'yyyy-MM-dd-HHmm' }
 $ResourceGroup = 'rg-puls-za'
+# The apps and their environment have a group of their own, on no network of ours (FX249); the registry, the vault,
+# the storage and the identities stay in the first group, where the infra deployment and its outputs are.
+$AppsGroup = 'rg-louis-agent-za'
+$Location = 'southafricanorth'
 $Registry = 'acrpulsza'
-$Environment = 'puls-env'
+$Environment = 'louis-agent-env'
 $Vault = 'puls-keys'
 $Deployment = 'louis-agent-infra'
 $Repo = (Resolve-Path (Join-Path $PSScriptRoot '..\..\..\..')).Path
@@ -150,6 +154,8 @@ switch ($Verb) {
         # what-if first and deploys only on a yes. It gives rights, which the release identity can't, so a person
         # runs it, signed in with az login.
         Write-Host "What-if of main.bicep against $ResourceGroup, then a deploy as $Deployment on your yes..."
+        # The apps' group first (FX249): the Bicep deploys the environment into it and gives the release its right there.
+        Invoke-Az group create -n $AppsGroup -l $Location -o none
         Invoke-Az deployment group create -g $ResourceGroup -n $Deployment `
             -f (Join-Path $PSScriptRoot 'main.bicep') -p (Join-Path $PSScriptRoot 'main.bicepparam') `
             --confirm-with-what-if --query 'properties.provisioningState' -o tsv
@@ -197,11 +203,11 @@ switch ($Verb) {
         $environmentId = Get-Output 'environmentId'
         $identityId = Get-Output $AppInfo.IdentityOutput
         $vaultUri = (Get-Output 'vaultUri').TrimEnd('/')
-        $exists = Read-Az containerapp show -n $App -g $ResourceGroup --query 'properties.environmentId' -o tsv
+        $exists = Read-Az containerapp show -n $App -g $AppsGroup --query 'properties.environmentId' -o tsv
         $inPlace = ($LASTEXITCODE -eq 0 -and $exists -eq $environmentId)
         if ($LASTEXITCODE -eq 0 -and $exists -and -not $inPlace) {
             # A Container App's name is unique in its resource group, and an app can't move between environments.
-            throw "$App already exists in another environment ($exists). Delete the old one first: az containerapp delete -n $App -g $ResourceGroup"
+            throw "$App already exists in another environment ($exists). Delete the old one first: az containerapp delete -n $App -g $AppsGroup"
         }
         # The secrets block: one reference per secret the vault holds among the names the app may use; a reference to
         # a secret the vault lacks would stop the revision, so what the vault lacks stays out, the providers' lines too.
@@ -248,10 +254,10 @@ switch ($Verb) {
         [System.IO.File]::WriteAllText($resolved, $filled, [System.Text.UTF8Encoding]::new($false))
         if ($inPlace) {
             Write-Host "Updating $App to revision $Revision (tag $Tag) from $template..."
-            Invoke-Az containerapp update -n $App -g $ResourceGroup --yaml $resolved --query '{revision:properties.latestRevisionName, ready:properties.latestReadyRevisionName, state:properties.provisioningState}' -o json
+            Invoke-Az containerapp update -n $App -g $AppsGroup --yaml $resolved --query '{revision:properties.latestRevisionName, ready:properties.latestReadyRevisionName, state:properties.provisioningState}' -o json
         } else {
             Write-Host "Creating $App in $Environment as revision $Revision (tag $Tag) from $template..."
-            Invoke-Az containerapp create -n $App -g $ResourceGroup --yaml $resolved --query '{fqdn:properties.configuration.ingress.fqdn, state:properties.provisioningState}' -o json
+            Invoke-Az containerapp create -n $App -g $AppsGroup --yaml $resolved --query '{fqdn:properties.configuration.ingress.fqdn, state:properties.provisioningState}' -o json
         }
         Remove-Item $resolved -ErrorAction SilentlyContinue
         Write-Host "Watch it come up with: deploy.ps1 logs"
@@ -259,7 +265,7 @@ switch ($Verb) {
     'release' {
         # The next vNNN after the highest the app has had (FX123): a revision made outside this script carries Azure's
         # own name (louis-agent-app--0000001), so the latest alone can't say; none at all, and it is the first.
-        $revisions = @(Read-Az containerapp revision list -n $App -g $ResourceGroup --all --query '[].name' -o tsv)
+        $revisions = @(Read-Az containerapp revision list -n $App -g $AppsGroup --all --query '[].name' -o tsv)
         $numbers = @($revisions | Where-Object { $_ -match '--v(\d+)$' } | ForEach-Object { [int]($_ -replace '^.*--v', '') })
         $highest = if ($numbers.Count -gt 0) { [int]($numbers | Measure-Object -Maximum).Maximum } else { 0 }
         $next = 'v{0:D3}' -f ($highest + 1)
@@ -284,8 +290,8 @@ switch ($Verb) {
         # first label to the app's own address. A name of two parts is the apex (F164.3: before, any name but www was
         # taken for one, and framework.louis-agent.dev would have been given louis-agent.dev's A record).
         $staticIp = Get-Output 'environmentStaticIp'
-        $fqdn = Read-Az containerapp show -n $App -g $ResourceGroup --query 'properties.configuration.ingress.fqdn' -o tsv
-        $verification = Read-Az containerapp show -n $App -g $ResourceGroup --query 'properties.customDomainVerificationId' -o tsv
+        $fqdn = Read-Az containerapp show -n $App -g $AppsGroup --query 'properties.configuration.ingress.fqdn' -o tsv
+        $verification = Read-Az containerapp show -n $App -g $AppsGroup --query 'properties.customDomainVerificationId' -o tsv
         if ($LASTEXITCODE -ne 0 -or -not $fqdn) { throw "$App is not deployed yet: deploy.ps1 release first." }
         $apex = $Hostname.Split('.').Count -eq 2
         $label = $Hostname.Split('.')[0]
@@ -301,30 +307,30 @@ switch ($Verb) {
         if ($PSCmdlet.ShouldProcess($App, "az containerapp hostname add/bind $Hostname with a managed certificate ($method)")) {
             Write-Host "Adding $Hostname to $App and asking for its managed certificate (the records above must resolve first)..."
             # Added already on an earlier run that stopped at a pending certificate: adding again would refuse.
-            $added = Read-Az containerapp hostname list -n $App -g $ResourceGroup --query "[?name=='$Hostname'].name | [0]" -o tsv
-            if (-not $added) { Invoke-Az containerapp hostname add -n $App -g $ResourceGroup --hostname $Hostname -o none }
+            $added = Read-Az containerapp hostname list -n $App -g $AppsGroup --query "[?name=='$Hostname'].name | [0]" -o tsv
+            if (-not $added) { Invoke-Az containerapp hostname add -n $App -g $AppsGroup --hostname $Hostname -o none }
             if ($apex) {
                 # An apex certificate validates with a token of its own, in a TXT record named _dnsauth (2026-11-07: the
                 # asuid record proves the hostname is ours, the certificate stays Pending without this one). The
                 # certificate is asked for first, so the token can be printed before the bind waits on it.
-                $token = Read-Az containerapp env certificate create -n $Environment -g $ResourceGroup --hostname $Hostname --validation-method TXT --query 'properties.validationToken' -o tsv
+                $token = Read-Az containerapp env certificate create -n $Environment -g $AppsGroup --hostname $Hostname --validation-method TXT --query 'properties.validationToken' -o tsv
                 if (-not $token) {
                     # Asked again while the first request is pending, create refuses and the list leaves the token out
                     # (2026-11-08); the certificate itself, read at the 2023-05-01 API version, still carries it.
-                    $certificate = Read-Az containerapp env certificate list -n $Environment -g $ResourceGroup --managed-certificates-only --query "[?properties.subjectName=='$Hostname'].id | [0]" -o tsv
+                    $certificate = Read-Az containerapp env certificate list -n $Environment -g $AppsGroup --managed-certificates-only --query "[?properties.subjectName=='$Hostname'].id | [0]" -o tsv
                     if ($certificate) { $token = Read-Az rest --method get --url "https://management.azure.com${certificate}?api-version=2023-05-01" --query 'properties.validationToken' -o tsv }
                 }
                 Write-Host "  TXT    _dnsauth    $token      (in Cloudflare too, DNS-only; the certificate validates once it resolves)"
                 # The bind refuses a certificate still pending on that record: stop here, and run domain again once it resolves.
-                $state = Read-Az containerapp env certificate list -n $Environment -g $ResourceGroup --managed-certificates-only --query "[?properties.subjectName=='$Hostname'].properties.provisioningState | [0]" -o tsv
+                $state = Read-Az containerapp env certificate list -n $Environment -g $AppsGroup --managed-certificates-only --query "[?properties.subjectName=='$Hostname'].properties.provisioningState | [0]" -o tsv
                 if ($state -ne 'Succeeded') { Write-Host "The certificate is $state. Once the _dnsauth record resolves, run deploy.ps1 domain -App $App again to bind it."; return }
             }
-            Invoke-Az containerapp hostname bind -n $App -g $ResourceGroup --hostname $Hostname --environment $Environment --validation-method $method --query '[].{name:name, state:bindingType}' -o table
+            Invoke-Az containerapp hostname bind -n $App -g $AppsGroup --hostname $Hostname --environment $Environment --validation-method $method --query '[].{name:name, state:bindingType}' -o table
         }
     }
     'logs' {
         $followArgs = @()
         if ($Follow) { $followArgs = @("--follow") }
-        Invoke-Az containerapp logs show -n $App -g $ResourceGroup --container $App --tail 60 @followArgs
+        Invoke-Az containerapp logs show -n $App -g $AppsGroup --container $App --tail 60 @followArgs
     }
 }

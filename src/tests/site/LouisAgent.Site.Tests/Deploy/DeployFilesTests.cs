@@ -53,6 +53,39 @@ public class DeployFilesTests
             .And.Contain("Invoke-Docker push").And.Not.Contain("acr build"));
 
     /// <summary>
+    /// FX249: the apps and their environment have a group of their own, on no network, and every command on an app or
+    /// on the environment's certificates goes there; the shared parts stay in the first group.
+    /// </summary>
+    [Test]
+    public void EveryAppCommand_GoesToTheAppsGroup()
+    {
+        var lines = Script.Split('\n');
+        var appCommands = lines.Where(line => line.Contains("containerapp ", StringComparison.Ordinal) &&
+                                              line.Contains(" -g ", StringComparison.Ordinal)).ToList();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(Script, Does.Contain("$AppsGroup = 'rg-louis-agent-za'")
+                .And.Contain("$Environment = 'louis-agent-env'"));
+            Assert.That(appCommands, Is.Not.Empty);
+            Assert.That(appCommands, Is.All.Contains("-g $AppsGroup"));
+        });
+    }
+
+    /// <summary>
+    /// FX249: infra makes the apps' group before it deploys the Bicep, which deploys the environment into it and gives
+    /// the release identity its right there.
+    /// </summary>
+    [Test]
+    public void TheInfra_MakesTheAppsGroupFirst()
+    {
+        int makes = Script.IndexOf("group create -n $AppsGroup", StringComparison.Ordinal);
+        int deploys = Script.IndexOf("deployment group create", StringComparison.Ordinal);
+
+        Assert.That(makes, Is.GreaterThan(0).And.LessThan(deploys));
+    }
+
+    /// <summary>
     /// The script offers only what makes and releases the two sites: the framework's own Bicep file through infra
     /// (F170), then the verbs that release them. The old Bicep build's vm and sql-access, which would make the VM,
     /// Mongo and SQL again, are gone with Puls (F166.1).
@@ -275,7 +308,7 @@ public class DeployFilesTests
     /// carries Azure's own name (louis-agent-app--0000001), so the latest alone can't say which vNNN comes next and
     /// the release stopped; the highest vNNN among them all can.
     /// </summary>
-    [TestCase("containerapp revision list -n $App -g $ResourceGroup --all --query '[].name' -o tsv")]
+    [TestCase("containerapp revision list -n $App -g $AppsGroup --all --query '[].name' -o tsv")]
     [TestCase("Measure-Object -Maximum")]
     public void TheRelease_NumbersFromEveryRevision(string text) => Assert.That(Script, Does.Contain(text));
 

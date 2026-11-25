@@ -1,0 +1,23 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "FX249 an environment without a network: the architecture",
+  "caption": "Cloudflare points the three names at the new environment's apps. The apps and their environment live in their own group with no network of ours, so Azure bills no load balancer; they read the shared registry, vault and share across in rg-puls-za. The old environment, its load balancer and IP and puls-vnet are deleted at the end. The number in brackets is the step.",
+  "flow": {
+    "nodes": [
+      { "id": "dns", "icon": "user", "tone": "blue", "label": "Cloudflare DNS\nlouis-agent.dev, www, framework (5)", "shape": "terminal" },
+      { "id": "env", "icon": "server", "tone": "green", "label": "rg-louis-agent-za\nlouis-agent-env, the two apps (2, 5)" },
+      { "id": "shared", "icon": "stack", "tone": "teal", "label": "rg-puls-za\nregistry, vault, share, identities" },
+      { "id": "ci", "icon": "settings", "tone": "violet", "label": "The release workflow\ndeploy.ps1 release (3, 4)" },
+      { "id": "old", "icon": "database", "tone": "amber", "label": "puls-env, its load balancer and IP\npuls-vnet: deleted (6)", "shape": "data" }
+    ],
+    "edges": [
+      { "from": "dns", "to": "env", "word": "HTTPS" },
+      { "from": "env", "to": "shared", "word": "pulls, reads" },
+      { "from": "ci", "to": "env", "word": "releases" },
+      { "from": "ci", "to": "shared", "word": "pushes images" },
+      { "from": "dns", "to": "old", "word": "until the switch", "style": "dashed" }
+    ],
+    "direction": "down"
+  }
+}
