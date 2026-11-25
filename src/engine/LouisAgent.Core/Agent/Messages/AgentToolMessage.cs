@@ -3,6 +3,7 @@ using LouisAgent.Core.Agent.Messages.Holes;
 using LouisAgent.Core.Agent.Messages.Holes.AgentBuilt;
 using LouisAgent.Core.Agent.Messages.Holes.Calls;
 using LouisAgent.Core.Agent.Messages.Holes.Commands;
+using LouisAgent.Core.Agent.Messages.Holes.Frozen;
 using LouisAgent.Core.Agent.Messages.Holes.Oversized;
 using LouisAgent.Core.Agent.Messages.Holes.SkillFiles;
 using LouisAgent.Core.Agent.Messages.Holes.Skills;
@@ -161,8 +162,7 @@ public enum AgentToolMessage
     [Holes(typeof(ExitCodeErrorHoles))]
     ExitCodeError,
 
-    [Description("no parameters")]
-    NoParameters,
+    [Description("no parameters")] NoParameters,
 
     [Description("- {Name} [pending from an earlier session, not loaded]")]
     [Holes(typeof(AgentToolNotLoadedHoles))]
@@ -199,6 +199,12 @@ public enum AgentToolMessage
         "future sessions (or '/reject {Name}').")]
     [Holes(typeof(ToolCreatedHoles))]
     ToolCreated,
+
+    [Description(
+        "Error: '{Name}' was NOT run: the user rejected it, or it is no longer offered. Don't call it again in this " +
+        "chat.")]
+    [Holes(typeof(ToolNoLongerOfferedHoles))]
+    ToolNoLongerOffered,
 
     [Description("- {Name} [approved]: {Description}")]
     [Holes(typeof(AgentToolApprovedHoles))]

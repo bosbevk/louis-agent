@@ -81,7 +81,10 @@ model three things: the history, the tools it may call, and the reasoning settin
 The tools are the conversation's own. At its first turn the conversation takes a copy of the engine's tools, and
 every request of that chat sends the copy from then on. That matters because the model checks its earlier thinking
 against everything it was sent before, the tools included, and a list that changed under it can make a request fail.
-So a tool the agent makes, or one you reject, changes the engine's tools, and the next chat gets them. The system
+So a tool the agent makes, or one you approve or reject, changes the engine's tools, and the next chat gets them. The
+copy keeps each tool as it was first sent: an approved tool's new description waits for the next chat. A tool you
+rejected stays in an open chat's list, so nothing it was sent changes, but a call to it is answered as rejected and
+never runs. The system
 prompt is the same: it is written once, when the conversation starts, and skills written or reloaded mid-chat reach
 the next chat's prompt, never the open one's.
 Engines are shared by every chat with the same toolsets, so this also keeps one chat's new tool out of another's.
@@ -415,6 +418,7 @@ This part is for looking things up: every folder and file of core, and what's in
 | `Agent/Commands/UserCommands.cs` | `/tools`, `/approve`, `/reject`, `/usage`: answered without the model, from the agent-built tools, the skill files and the session's usage |
 | `Agent/ToolRegistry.cs` | The tools in name order (one name each), public methods as tools, discovered tools |
 | `Agent/Conversation.cs` | One chat: its messages, opening with the system prompt, which a host reads and adds to but never changes (Encapsulate Collection, ADR 0008), the tools it was started with, and, for a chat resumed from a store, whether those tools moved since its turns were saved |
+| `Agent/FrozenTool.cs` | A tool as a conversation first sent it (a Decorator on `DelegatingAIFunction`): its name, description and schema kept, and a call to one the engine no longer offers, after a `/reject`, answered rather than run |
 | `Agent/ToolsFingerprint.cs` | A tool list's mark: each tool's name, description and schema in order, hashed, so a resumed chat knows whether its tools changed |
 | `Agent/Turns/ToolCallGuards.cs` | Around each call: logging, a call missing an argument never run, cut-off calls never run, oversized results summarised (a model call), tools kept on the final request; a sub-session's prompt budget (FX14: past `SUB_SESSION_PROMPT_BUDGET` the next request answers without tools) |
 | `Agent/Toolsets/ToolsetCatalog.cs`, `ToolsetDefinition.cs`, `ToolsetContext.cs` | Every toolset a session can load (F5): name, description, the settings it needs, its tool class and guide; resolves a session's list (`ToolsetException` for an unknown or unavailable one); `SitePlacesSlot`, where a host puts its site's places once it maps the site, so a pack's tool can find them (F127.7) |

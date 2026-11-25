@@ -31,10 +31,19 @@ public sealed class Conversation
     internal IReadOnlyList<AITool>? Tools { get; private set; }
 
     /// <summary>
-    /// The chat's tools, copied from the engine's live list at its first turn and kept from then on, so a tool made,
-    /// approved or rejected mid-chat reaches the next chat instead.
+    /// The chat's tools, copied from the engine's live list at its first turn and kept from then on, each as it was
+    /// sent, so a tool made, approved or rejected mid-chat reaches the next chat instead, and a rejected one never runs.
     /// </summary>
-    internal IReadOnlyList<AITool> FreezeTools(IEnumerable<AITool> live) => Tools ??= [.. live];
+    /// <param name="live">The engine's tools now.</param>
+    /// <param name="stillOffered">Whether the engine still offers a tool, by name.</param>
+    internal IReadOnlyList<AITool> FreezeTools(IEnumerable<AITool> live, Func<string, bool> stillOffered) =>
+        Tools ??= [.. live.Select(tool => Frozen(tool, stillOffered))];
+
+    /// <summary>
+    /// A function kept as it was sent; any other kind of tool has nothing that changes, and stays itself.
+    /// </summary>
+    private static AITool Frozen(AITool tool, Func<string, bool> stillOffered) =>
+        tool is AIFunction function ? new FrozenTool(function, stillOffered) : tool;
 
     /// <summary>The mark of the tools this chat sends; none before its first turn.</summary>
     public ToolsFingerprint? ToolsFingerprint => Tools is null ? null : ToolsFingerprint.Of(Tools);
@@ -49,9 +58,9 @@ public sealed class Conversation
     /// Takes today's tools for a chat brought back from the store, and notes whether they differ from those its saved
     /// turns were sent with; a chat saved before any turn has nothing to differ from.
     /// </summary>
-    internal void ResumeOn(IEnumerable<AITool> today, ToolsFingerprint? saved)
+    internal void ResumeOn(IEnumerable<AITool> today, Func<string, bool> stillOffered, ToolsFingerprint? saved)
     {
-        FreezeTools(today);
+        FreezeTools(today, stillOffered);
         ToolsChangedSinceSaved = saved is not null && saved != ToolsFingerprint;
     }
 

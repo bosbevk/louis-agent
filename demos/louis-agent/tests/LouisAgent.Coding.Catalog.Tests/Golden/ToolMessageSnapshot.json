@@ -323,6 +323,7 @@
   "ToolBuildingUnavailable": "Error: tool building is not available (no skills folder was found).",
   "ToolCreated": "Created tool '<Name>' (<Language>; <Parameters>). It reaches the user's next chat, not this one: this chat keeps the tools it started with. It is pending: tell the user to type '/approve <Name>' to keep it for future sessions (or '/reject <Name>').",
   "ToolDefinitionInvalid": "Error: invalid tool definition:\n- <Errors>",
+  "ToolNoLongerOffered": "Error: '<Name>' was NOT run: the user rejected it, or it is no longer offered. Don't call it again in this chat.",
   "ToolOnlyForLookup": "Error: only a lookup agent takes a tool, and '<Address>' is no lookup agent. Ask it without a tool, or give a lookup agent's address.",
   "ToolRanNoOutput": "Tool ran successfully (no output).",
   "ToolsNotSupported": "Error: tools are not supported by the current model.",

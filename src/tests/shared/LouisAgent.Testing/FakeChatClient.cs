@@ -17,6 +17,9 @@ public sealed class FakeChatClient(params Func<IList<ChatMessage>, ChatResponse>
     /// </summary>
     public List<IReadOnlyList<string>> ToolNamesSent { get; } = [];
 
+    /// <summary>Each request's tools as the model read them when it was sent: each one's description, by name.</summary>
+    public List<IReadOnlyDictionary<string, string>> ToolDescriptionsSent { get; } = [];
+
     /// <summary>Records the request and answers with the next scripted reply.</summary>
     public Task<ChatResponse> GetResponseAsync(
         IEnumerable<ChatMessage> messages, ChatOptions? options = null, CancellationToken cancellationToken = default)
@@ -24,6 +27,7 @@ public sealed class FakeChatClient(params Func<IList<ChatMessage>, ChatResponse>
         var snapshot = messages.ToList();
         Requests.Add((snapshot, options));
         ToolNamesSent.Add([.. options?.Tools?.Select(tool => tool.Name) ?? []]);
+        ToolDescriptionsSent.Add((options?.Tools ?? []).ToDictionary(tool => tool.Name, tool => tool.Description));
         return Task.FromResult(script[_call++](snapshot));
     }
 

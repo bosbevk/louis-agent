@@ -210,7 +210,20 @@ usage and pricing.
 
 **A fourth tidy, before step 6** (his "tidy first, own commit", applied again). Step 6 changes texts in
 `AgentToolMessage` and `UserText`, whose holed messages named no records; their 48 records come first, a commit for
-each enum, the texts byte for byte as they were.
+each enum, the texts byte for byte as they were. A fifth did the same for `LlmErrorMessage` before step 8.
+
+**A frozen tool, a Decorator** (Louis, 2026-11-25, on a card: "Decorator: a frozen tool", over replacing the
+approved tool's object and over leaving both). `/approve` changed a pending tool's description in place, and a
+`/reject` left the tool callable in the open chat. At the freeze each tool is wrapped, keeping its name, description
+and schema as sent; a call to one the engine no longer has is answered as rejected, never run.
+
+**CL61 now, then step 4** (Louis, 2026-11-25, on a card: "Split Agent/Turns now (CL61)", over a `Scope/` subfolder
+and over `Agent/`). `Agent/Turns/` was at its six files, so CL61's split comes first: the oversized-result summary
+its own class, the folder into subfolders, the guards' holes into records, the turn ended through `TurnEnding.Ends`;
+then `TurnTools` goes in the turn's folder.
+
+**Step 9's paid proof, yes** (Louis, 2026-11-25, on a card: "Yes, run it"), after reading whether the Anthropic
+adapter can send the header and the field.
 
 ---
 [Docs index](../README.md) · Related: [Plans](README.md) · [FX4](../fixes/FX04-append-only-history.md)

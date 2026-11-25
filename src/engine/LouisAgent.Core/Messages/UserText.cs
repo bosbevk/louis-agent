@@ -55,21 +55,19 @@ public enum UserText
     [Holes(typeof(UsageCachedHoles))]
     UsageCached,
 
-    [Description("price unknown")]
-    UsagePriceUnknown,
+    [Description("price unknown")] UsagePriceUnknown,
 
     [Description("{Amount} + {Unpriced} unpriced")]
     [Holes(typeof(UsagePartlyPricedHoles))]
     UsagePartlyPriced,
 
-    [Description("1 request")]
-    UsageOneRequest,
+    [Description("1 request")] UsageOneRequest,
 
     [Description("{Count} requests")]
     [Holes(typeof(UsageRequestsHoles))]
     UsageRequests,
 
-    [Description(" and removed it from this session")]
+    [Description(" and stopped it: it no longer runs, in an open chat or the next")]
     ToolRejectedFromSession,
 
     [Description("Tool building is not available.")]
@@ -78,8 +76,7 @@ public enum UserText
     [Description("Usage: /approve <Name>")]
     ApproveUsage,
 
-    [Description("Usage: /reject <Name>")]
-    RejectUsage,
+    [Description("Usage: /reject <Name>")] RejectUsage,
 
     [Description("No pending tool or skill file named '{Name}'. Use /tools to see what is pending.")]
     [Holes(typeof(NoPendingToolSeeToolsHoles))]

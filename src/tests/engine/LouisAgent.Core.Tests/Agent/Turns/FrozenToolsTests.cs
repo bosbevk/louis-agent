@@ -110,6 +110,44 @@ public class FrozenToolsTests
         Assert.That(ToolNames(client, 1), Is.EqualTo(ToolNames(client, 0)), "the open conversation didn't");
     }
 
+    /// <summary>A tool approved mid-chat keeps, in the open chat, the description it was first sent with.</summary>
+    [Test]
+    public async Task AToolApprovedBetweenMessages_KeepsTheDescriptionItWasSentWith()
+    {
+        var client = new FakeChatClient(_ => Say("one"), _ => Say("two"));
+        var engine = Engine(client);
+        engine.CreateTool(AddTool);
+        var conversation = engine.StartConversation();
+
+        await engine.ProcessPromptAsync(conversation, "first");
+        engine.HandleUserCommand("/approve AddNumbers");
+        await engine.ProcessPromptAsync(conversation, "second");
+
+        Assert.That(client.ToolDescriptionsSent[1]["AddNumbers"],
+            Is.EqualTo(client.ToolDescriptionsSent[0]["AddNumbers"]));
+    }
+
+    /// <summary>
+    /// A tool rejected while a chat is open stays in its list, as it was sent, but never runs: the model is told.
+    /// </summary>
+    [Test]
+    public async Task AToolRejectedBetweenMessages_NeverRuns()
+    {
+        var callIt = new FunctionCallContent("c1", "AddNumbers", new Dictionary<string, object?> { ["a"] = 1 });
+        var client = new FakeChatClient(_ => Say("one"),
+            _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, [callIt])),
+            messages => Say(messages.Last().Contents.OfType<FunctionResultContent>().Single().Result!.ToString()!));
+        var engine = Engine(client);
+        engine.CreateTool(AddTool);
+        var conversation = engine.StartConversation();
+
+        await engine.ProcessPromptAsync(conversation, "first");
+        engine.HandleUserCommand("/reject AddNumbers");
+        string answer = await engine.ProcessPromptAsync(conversation, "add 1");
+
+        Assert.That(answer, Does.Contain("rejected").And.Contain("NOT run"));
+    }
+
     /// <summary>
     /// A tool made while one conversation is open doesn't reach it, though the engine is shared; a new one has it.
     /// </summary>

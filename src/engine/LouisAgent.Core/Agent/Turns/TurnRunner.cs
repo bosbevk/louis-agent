@@ -62,7 +62,7 @@ internal sealed class TurnRunner(
     public Conversation ResumedConversation(string savedPrompt, ToolsFingerprint? savedTools)
     {
         var conversation = new Conversation(Opening(savedPrompt));
-        if (supportsTools) conversation.ResumeOn(registry.Live, savedTools);
+        if (supportsTools) conversation.ResumeOn(registry.Live, name => registry.Contains(name), savedTools);
         return conversation;
     }
 
@@ -246,7 +246,7 @@ internal sealed class TurnRunner(
         if (supportsTools)
         {
             // The chat's own copy, taken at its first turn: a change to the engine's tools reaches the next chat.
-            chatOptions.Tools = [.. conversation.FreezeTools(registry.Live)];
+            chatOptions.Tools = [.. conversation.FreezeTools(registry.Live, name => registry.Contains(name))];
             chatOptions.ToolMode = ChatToolMode.Auto;
         }
 
