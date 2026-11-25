@@ -25,10 +25,11 @@ first step ([src/docs/CLAUDE.md](src/docs/CLAUDE.md), rule 3), never here; the n
 tag `pre-work-log` (2026-11-07). When an item is finished its row moves to the [work log](src/docs/work-log.md). The
 known limitations below are facts about today, not tasks.
 
-## Open (108)
+## Open (109)
 
 | Id | What | Phase | Detail |
 |---|---|---|---|
+| FX249 | The sites' environment sits on a network of our own, so Azure bills a load balancer and its public IP, about R370 a month: the apps move to an environment with no network, in a group of their own | Now, before F43's first child | [plan](src/docs/plans/FX249-environment-without-a-network.md) |
 | F171 | The bill checker (Louis, 2026-11-21; 2026-11-22: "this feature is next"): a phone app that reads a Western Cape municipal account from a photo or a PDF, checks every line against Cape Town's, Swartland's and Overstrand's own tariffs and drafts the dispute, free to download with one subscription; the product in its own private `bill-checker` repository on the framework's packages, the framework's parts here: F171.1 a photo or PDF reaches a tool (done 2026-11-24); F171.2 the bills pack reads and checks; F171.3 the dispute letter; F171.4 the identity and evals; F171.5 the account, consent and our own subscriptions part; F171.6 the phone app; F171.7 the stores; F171.8 the monthly report | Now, F171.2 on after F140 | [plan](src/docs/plans/F171-the-bill-checker.md) |
 | F43 | Accounts, tenants and durable sessions; its first child is durable sessions (a session store behind one seam, with an in-memory and a MongoDB provider, and a session that resumes after a restart), built after F171.1 and before F157 (Louis's pick, 2026-11-22, after an outside comparison with Microsoft Agent Framework, LangGraph and OpenAI's Agents SDK found sessions lost on a restart the biggest gap) | Now, its first child after F171.1 | — |
 | FX4 | Append-only history | Now, after F43's first child | [fix doc](src/docs/fixes/FX04-append-only-history.md) |

@@ -1,0 +1,24 @@
+{
+  "kind": "classes",
+  "title": "FX249 an environment without a network: what the Bicep describes",
+  "caption": "main.bicep keeps the shared parts in rg-puls-za and deploys a new module into the apps' own group: the environment on no network, its share link and its outputs. The registry gives the new environment the right to pull, and the release identity gets Contributor on the new group. The number in brackets is the step.",
+  "classes": {
+    "types": [
+      { "id": "main", "name": "main.bicep", "members": ["scope: rg-puls-za", "registry, vault, storage, identities", "outputs read by deploy.ps1  (2)"] },
+      { "id": "apps", "name": "apps-environment.bicep", "kind": "record", "members": ["scope: rg-louis-agent-za  (2)", "the environment, no vnetConfiguration", "its share link, its outputs"] },
+      { "id": "env", "name": "louis-agent-env", "members": ["Consumption, public  (2)", "telemetry agent kept", "system identity pulls images"] },
+      { "id": "link", "name": "louis-agent-vol", "members": ["the share, read and write  (2)"] },
+      { "id": "registry", "name": "acrpulsza", "members": ["AcrPull for the new environment  (2)"] },
+      { "id": "right", "name": "release right", "members": ["Contributor on rg-louis-agent-za  (2)"] },
+      { "id": "script", "name": "deploy.ps1", "members": ["$AppsGroup for every app command  (3)", "infra makes the group first  (3)"] }
+    ],
+    "relations": [
+      { "from": "main", "to": "apps", "kind": "creates" },
+      { "from": "apps", "to": "env", "kind": "creates" },
+      { "from": "env", "to": "link", "kind": "holds" },
+      { "from": "registry", "to": "env", "kind": "uses" },
+      { "from": "main", "to": "right", "kind": "creates" },
+      { "from": "script", "to": "main", "kind": "uses" }
+    ]
+  }
+}

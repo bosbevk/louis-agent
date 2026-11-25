@@ -1,0 +1,31 @@
+{
+  "kind": "cards",
+  "title": "FX249 an environment without a network",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "goal", "icon": "chart", "title": "No load balancer to pay for", "code": "FX249",
+          "look": "highlight",
+          "text": "The two apps move to an environment on no network of our own, about R370 a month saved." }
+      ] },
+      { "cards": [
+        { "id": "group", "icon": "folder", "title": "A group of their own",
+          "text": "rg-louis-agent-za holds the new environment and the apps, under the same names." },
+        { "id": "shared", "icon": "stack", "title": "The shared parts stay",
+          "text": "Registry, vault, share and identities stay in rg-puls-za, with rights given across." },
+        { "id": "side", "icon": "chip", "title": "Old beside new",
+          "text": "The old apps serve until the new ones answer with their certificates; then DNS moves." }
+      ] },
+      { "cards": [
+        { "id": "gone", "icon": "shield", "title": "Then the old goes",
+          "text": "The old apps, environment, load balancer, IP and puls-vnet are deleted, by you." }
+      ] }
+    ],
+    "links": [
+      { "from": "goal", "to": "group" },
+      { "from": "goal", "to": "shared" },
+      { "from": "goal", "to": "side" },
+      { "from": "side", "to": "gone" }
+    ]
+  }
+}
