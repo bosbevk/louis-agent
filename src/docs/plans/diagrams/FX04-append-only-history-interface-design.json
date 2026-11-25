@@ -1,0 +1,101 @@
+{
+  "kind": "classes",
+  "title": "FX4 append-only history: the interface design",
+  "caption": "A conversation owns its history and frozen tools; the turn reads them through a turn scope; a resumed chat's stale thinking is handled by its provider's strategy.",
+  "classes": {
+    "types": [
+      {
+        "id": "engine",
+        "name": "AgentEngine",
+        "kind": "changed (step 2)",
+        "members": [
+          "+StartConversation() Conversation",
+          "+ProcessPromptAsync(Conversation, input)",
+          "+StreamPromptAsync(Conversation, input)"
+        ]
+      },
+      {
+        "id": "conv",
+        "name": "Conversation",
+        "kind": "new (step 2)",
+        "members": [
+          "+Messages List<ChatMessage>",
+          "+Tools IList<AITool>?, frozen at the first turn",
+          "+Of(messages, tools) Conversation, for a resume"
+        ]
+      },
+      {
+        "id": "runner",
+        "name": "TurnRunner",
+        "kind": "changed (steps 3, 5)",
+        "members": [
+          "-Begin(conversation, input) freezes, never rewrites [0]"
+        ]
+      },
+      {
+        "id": "scope",
+        "name": "TurnTools",
+        "kind": "new (step 4), an AsyncLocal",
+        "members": [
+          "+Current IList<AITool>?",
+          "+Open(tools) IDisposable"
+        ]
+      },
+      {
+        "id": "guards",
+        "name": "ToolCallGuards",
+        "kind": "changed (step 4)",
+        "members": [
+          "-KeepToolsOnFinalRequest reads TurnTools.Current"
+        ]
+      },
+      {
+        "id": "registry",
+        "name": "ToolRegistry",
+        "kind": "unchanged: the engine's live list",
+        "members": [
+          "+Live List<AITool>"
+        ]
+      },
+      {
+        "id": "stored",
+        "name": "StoredSession",
+        "kind": "changed (step 7)",
+        "members": [
+          "+SystemPrompt string",
+          "+ToolsFingerprint string"
+        ]
+      },
+      {
+        "id": "istale",
+        "name": "IStaleThinking",
+        "kind": "new (step 8), a provider strategy",
+        "members": [
+          "+Prepare(conversation, ChatOptions)"
+        ]
+      },
+      {
+        "id": "ours",
+        "name": "StripStaleThinking",
+        "kind": "new (step 8): the default, strips old thinking"
+      },
+      {
+        "id": "anthropic",
+        "name": "AnthropicDropBlock",
+        "kind": "new (step 9): asks for drop_block"
+      }
+    ],
+    "relations": [
+      { "from": "engine", "to": "conv", "kind": "creates" },
+      { "from": "engine", "to": "runner", "kind": "uses" },
+      { "from": "runner", "to": "conv", "kind": "uses", "word": "freezes tools in" },
+      { "from": "runner", "to": "registry", "kind": "uses", "word": "copies once" },
+      { "from": "runner", "to": "scope", "kind": "uses", "word": "opens per turn" },
+      { "from": "guards", "to": "scope", "kind": "uses", "word": "reads" },
+      { "from": "stored", "to": "conv", "kind": "uses", "word": "restores" },
+      { "from": "runner", "to": "istale", "kind": "uses", "word": "on a resume that moved" },
+      { "from": "ours", "to": "istale", "kind": "implements" },
+      { "from": "anthropic", "to": "istale", "kind": "implements" }
+    ]
+  }
+}

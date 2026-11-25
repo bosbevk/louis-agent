@@ -1,0 +1,34 @@
+{
+  "kind": "cards",
+  "title": "FX4 append-only history",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "goal", "icon": "shield", "title": "Nothing a chat sent is ever edited", "code": "FX4",
+          "look": "highlight",
+          "text": "Its system prompt and tool list are fixed when it starts, so earlier thinking stays valid on every request." }
+      ] },
+      { "cards": [
+        { "id": "conv", "icon": "stack", "title": "A Conversation type",
+          "text": "Owns the history and the tool list it was frozen with; every host passes it instead of a bare list." },
+        { "id": "freeze", "icon": "shield", "title": "Frozen at the first turn",
+          "text": "Every request, the round limit's final one included, sends the chat's own list, read from a turn scope." },
+        { "id": "next", "icon": "file", "title": "Changes reach the next chat",
+          "text": "A tool created, approved or rejected, or a skill reloaded, says so: it is there in your next chat." }
+      ] },
+      { "cards": [
+        { "id": "resume", "icon": "database", "title": "A resume sends what it saved",
+          "text": "The stored session keeps its system prompt and a fingerprint of its tools." },
+        { "id": "stale", "icon": "chip", "title": "Stale thinking, per provider",
+          "text": "When a release changed the tools: ours strips old thinking, Anthropic's asks for drop_block, OpenAI's does nothing." }
+      ] }
+    ],
+    "links": [
+      { "from": "goal", "to": "conv" },
+      { "from": "goal", "to": "freeze" },
+      { "from": "goal", "to": "next" },
+      { "from": "conv", "to": "resume" },
+      { "from": "next", "to": "stale" }
+    ]
+  }
+}

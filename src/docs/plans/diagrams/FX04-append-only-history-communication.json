@@ -1,0 +1,26 @@
+{
+  "kind": "sequence",
+  "title": "FX4 append-only history: a tool created mid-message",
+  "caption": "The chat's tools are frozen at its first turn; CreateTool adds to the engine's live list, and every later request of the chat, its final one too, still sends the frozen list.",
+  "sequence": {
+    "participants": [
+      { "id": "H", "icon": "server", "tone": "blue", "label": "a host" },
+      { "id": "E", "icon": "chip", "tone": "violet", "label": "AgentEngine" },
+      { "id": "C", "icon": "stack", "tone": "violet", "label": "Conversation" },
+      { "id": "T", "icon": "shield", "tone": "violet", "label": "TurnTools" },
+      { "id": "M", "icon": "cloud", "tone": "red", "label": "the model" }
+    ],
+    "steps": [
+      { "step": "message", "from": "H", "to": "E", "text": "StreamPromptAsync(conversation, \"build me a tool\")" },
+      { "step": "message", "from": "E", "to": "C", "text": "first turn: Tools = a copy of the live list" },
+      { "step": "message", "from": "E", "to": "T", "text": "Open(conversation.Tools)" },
+      { "step": "message", "from": "E", "to": "M", "text": "request 1: system, the frozen tools, the messages" },
+      { "step": "reply", "from": "M", "to": "E", "text": "thinking + CreateTool(...)" },
+      { "step": "note", "over": ["E"], "text": "the new tool joins the live list only: \"it is there in your next chat\"" },
+      { "step": "message", "from": "E", "to": "M", "text": "request 2: the same frozen tools, so the thinking stays valid" },
+      { "step": "message", "from": "E", "to": "M", "text": "at the round limit: the final request reads TurnTools, tool_choice none" },
+      { "step": "reply", "from": "M", "to": "E", "text": "the answer" },
+      { "step": "reply", "from": "E", "to": "H", "text": "the turn, appended to the conversation" }
+    ]
+  }
+}
