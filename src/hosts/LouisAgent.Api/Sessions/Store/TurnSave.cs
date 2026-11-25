@@ -16,7 +16,8 @@ internal sealed record TurnSave(ISessionStore Store, int HistoryFrom, IReadOnlyD
         var added = session.Conversation.Messages.Skip(HistoryFrom).ToList();
         if (added.Count == 0) return;
 
-        var turn = new StoredTurn(session.Turns, DateTimeOffset.UtcNow, added, Attachments);
+        var turn = new StoredTurn(session.Turns, DateTimeOffset.UtcNow, added, Attachments,
+            session.Conversation.ToolsFingerprint);
         await Store.AppendTurnAsync(session.Id, turn, cancellationToken);
     }
 }

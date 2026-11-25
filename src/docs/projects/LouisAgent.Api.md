@@ -180,17 +180,22 @@ sessions are dropped from memory after 4 hours, each time a new one opens.
 Beside memory, every session is written to a store, so a restart doesn't end it. The store is one seam,
 `ISessionStore`, with two implementations: `InMemorySessionStore`, for tests and a developer's machine, and
 `MongoSessionStore`, for a site. `SESSION_STORE` picks one when the host starts, and a store the host registers itself
-wins. A session is written as it opens, as how it opened (`StoredSession`): the request it was asked with, when, and
-the identity the open door admitted it as, for a visitor's chat. Then each finished turn is appended (`StoredTurn`):
-its number, when, the messages it added to the history and the text attachments it brought. Nothing written is ever
+wins. A session is written as it opens, as how it opened (`StoredSession`): the request it was asked with, when, the
+system prompt it opened with, and the identity the open door admitted it as, for a visitor's chat. Then each finished
+turn is appended (`StoredTurn`): its number, when, the messages it added to the history, the text attachments it
+brought, and a fingerprint of the tools it was sent with (`ToolsFingerprint`, each tool's name, description and schema,
+hashed). Nothing written is ever
 rewritten, as the history itself is append-only (ADR 0008). A photo or a PDF is never written; it stays in memory
 only. A replayed eval's session isn't written at all.
 
 When a call names a session the API doesn't hold in memory, after a restart or an idle drop, `AgentSessions.GetAsync`
 reads it back from the store. It opens it again through the same `SessionOpening` a new session goes through, under
-its old id, so it comes back with exactly the toolsets, identity and role it had. Then it puts the turns' messages back
-after the system prompt, with their attachments and the turn count, and the turn goes on as if nothing happened. Two
-messages at once resume it once. A session neither memory nor the store has is a `404`, as before. Deleting a
+its old id, so it comes back with exactly the toolsets, identity and role it had. Its conversation opens with the
+system prompt it was saved with, not today's, because the model checks the thinking in its earlier turns against the
+prompt it was sent, and a release may have changed it since. It takes today's tools, and compares their fingerprint
+with the one its last turn was saved with, so it knows whether a release moved them. Then it puts the turns' messages
+back after the system prompt, with their attachments and the turn count, and the turn goes on as if nothing
+happened. Two messages at once resume it once. A session neither memory nor the store has is a `404`, as before. Deleting a
 session deletes it from the store too.
 
 MongoDB keeps a session in two collections: `sessions`, one document per session, and `turns`, one document per turn,

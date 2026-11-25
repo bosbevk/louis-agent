@@ -1,13 +1,15 @@
 using LouisAgent.Api.Sessions.Opening;
 using LouisAgent.Api.Sessions.Store;
+using LouisAgent.Core.Agent;
 using LouisAgent.Core.Sessions;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Api.Testing.Sessions;
 
 /// <summary>
-/// What every session store keeps (F43.1): an opening loads back as it was saved, turns append and load in order, an
-/// unknown chat loads as none, and a delete forgets a chat and its turns. One contract, run on each store by its own
+/// What every session store keeps (F43.1): an opening loads back as it was saved, its system prompt too, turns append
+/// and load in order with the mark of their tools, an unknown chat loads as none, and a delete forgets a chat and its
+/// turns. One contract, run on each store by its own
 /// fixture: the in-memory one in the unit tests, MongoDB in the integration tests.
 /// </summary>
 /// <remarks>
@@ -21,16 +23,26 @@ internal static class SessionStoreContract
     /// </summary>
     private static readonly DateTimeOffset Opened = new(2026, 11, 25, 9, 0, 0, TimeSpan.Zero);
 
-    /// <summary>A chat that asked for a toolset, an identity, a depth and a place, as a real opening does.</summary>
+    /// <summary>The system prompt the chats in the checks opened with.</summary>
+    private const string Prompt = "You plan dinners.";
+
+    /// <summary>The mark of the tools the turns in the checks were sent with.</summary>
+    private static readonly ToolsFingerprint Tools = new("3f9c0a1b");
+
+    /// <summary>
+    /// A chat that asked for a toolset, an identity, a depth and a place, as a real opening does, with its prompt.
+    /// </summary>
     private static StoredSession Opening(string id) =>
         new(id, new SessionRequest(["files"], Depth: 1, Identity: "testagent",
-            Place: new UserPlace("Cape Town", "Africa/Johannesburg")), Opened);
+            Place: new UserPlace("Cape Town", "Africa/Johannesburg")), Opened, Prompt);
 
-    /// <summary>A turn that added a question and its answer, and sent one text attachment.</summary>
+    /// <summary>
+    /// A turn that added a question and its answer, sent one text attachment, and was sent with the checks' tools.
+    /// </summary>
     private static StoredTurn Turn(int number, string question) =>
         new(number, Opened.AddMinutes(number),
             [new ChatMessage(ChatRole.User, question), new ChatMessage(ChatRole.Assistant, $"answer {number}")],
-            new Dictionary<string, string> { [$"note{number}.txt"] = $"note {number}" });
+            new Dictionary<string, string> { [$"note{number}.txt"] = $"note {number}" }, Tools);
 
     /// <summary>A saved opening loads back as it was saved, with no turns yet.</summary>
     public static async Task AnOpening_LoadsBackAsItWasSaved(ISessionStore store)
@@ -48,6 +60,7 @@ internal static class SessionStoreContract
             Assert.That(saved.Session.Opening.Depth, Is.EqualTo(1));
             Assert.That(saved.Session.Opening.Place, Is.EqualTo(new UserPlace("Cape Town", "Africa/Johannesburg")));
             Assert.That(saved.Session.OpenedAt, Is.EqualTo(Opened));
+            Assert.That(saved.Session.SystemPrompt, Is.EqualTo(Prompt));
             Assert.That(saved.Turns, Is.Empty);
             Assert.That(saved.LastActivity, Is.EqualTo(Opened));
         });
@@ -71,6 +84,7 @@ internal static class SessionStoreContract
                 Is.EqualTo(new[] { "second", "answer 2" }));
             Assert.That(saved.Turns[1].Messages[1].Role, Is.EqualTo(ChatRole.Assistant));
             Assert.That(saved.Turns[0].Attachments["note1.txt"], Is.EqualTo("note 1"));
+            Assert.That(saved.Turns[0].Tools, Is.EqualTo(Tools));
             Assert.That(saved.LastActivity, Is.EqualTo(Opened.AddMinutes(2)));
         });
     }

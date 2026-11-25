@@ -1,3 +1,4 @@
+using LouisAgent.Core.Agent;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Api.Sessions.Store;
@@ -10,8 +11,13 @@ namespace LouisAgent.Api.Sessions.Store;
 /// <param name="At">When it finished, in UTC: the chat's last activity once it is the newest.</param>
 /// <param name="Messages">The messages the turn added to the history, in order.</param>
 /// <param name="Attachments">The text attachments sent with its message, by name; photos and PDFs never.</param>
+/// <param name="Tools">
+/// The mark of the tools the turn was sent with, so a resume knows whether today's tools are the same; none for a
+/// turn that asked the model nothing, such as a user's command.
+/// </param>
 internal sealed record StoredTurn(
     int Number,
     DateTimeOffset At,
     IReadOnlyList<ChatMessage> Messages,
-    IReadOnlyDictionary<string, string> Attachments);
+    IReadOnlyDictionary<string, string> Attachments,
+    ToolsFingerprint? Tools);

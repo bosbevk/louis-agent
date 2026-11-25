@@ -132,11 +132,15 @@ internal sealed class AgentSession(
     public SessionFileStore Files { get; } = new();
 
     /// <summary>
-    /// Brings back a chat read from the store (F43.1): its turns' messages after the system prompt, in order, their
-    /// text attachments, and its turn count, so its next turn runs as if nothing happened.
+    /// Brings back a chat read from the store (F43.1): the system prompt it was saved with, today's tools and whether
+    /// they moved since its turns were sent, its turns' messages in order, their text attachments, and its turn count,
+    /// so its next turn runs as if nothing happened.
     /// </summary>
-    public void Restore(IReadOnlyList<StoredTurn> turns)
+    public void Restore(SavedSession saved)
     {
+        var turns = saved.Turns;
+        var savedTools = turns.LastOrDefault(turn => turn.Tools is not null)?.Tools;
+        Conversation = Engine.ResumeConversation(saved.Session.SystemPrompt, savedTools);
         foreach (var turn in turns)
         {
             Conversation.AddRange(turn.Messages);
@@ -154,7 +158,7 @@ internal sealed class AgentSession(
     }
 
     /// <summary>The chat itself: everything said in it, the system prompt first.</summary>
-    public Conversation Conversation { get; } = engine.StartConversation();
+    public Conversation Conversation { get; private set; } = engine.StartConversation();
 
     /// <summary>
     /// What the caller said the session is for (e.g. the orchestrator's fix and run); on every usage record.

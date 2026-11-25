@@ -54,11 +54,26 @@ internal sealed class TurnRunner(
     /// <summary>
     /// A new chat, opening with the system prompt, and the no-tools notice when the model takes none.
     /// </summary>
-    public Conversation NewConversation()
+    public Conversation NewConversation() => new(Opening(systemPrompt()));
+
+    /// <summary>
+    /// A saved chat brought back: its saved system prompt, and today's tools, knowing whether they moved since.
+    /// </summary>
+    public Conversation ResumedConversation(string savedPrompt, ToolsFingerprint? savedTools)
     {
-        var opening = new List<ChatMessage> { new(ChatRole.System, systemPrompt()) };
+        var conversation = new Conversation(Opening(savedPrompt));
+        if (supportsTools) conversation.ResumeOn(registry.Live, savedTools);
+        return conversation;
+    }
+
+    /// <summary>
+    /// A chat's opening messages: the system prompt, and the no-tools notice when the model takes none.
+    /// </summary>
+    private List<ChatMessage> Opening(string prompt)
+    {
+        var opening = new List<ChatMessage> { new(ChatRole.System, prompt) };
         if (!supportsTools) opening.Add(new ChatMessage(ChatRole.System, NoToolsNotice));
-        return new Conversation(opening);
+        return opening;
     }
 
     /// <summary>

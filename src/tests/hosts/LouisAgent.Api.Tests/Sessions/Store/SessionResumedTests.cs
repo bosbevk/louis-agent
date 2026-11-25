@@ -2,7 +2,10 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using LouisAgent.Api.Config;
+using LouisAgent.Api.Sessions;
+using LouisAgent.Api.Sessions.Opening;
 using LouisAgent.Api.Sessions.Store;
+using LouisAgent.Core.Agent;
 using LouisAgent.Choices;
 using LouisAgent.SessionStream.Wire.Replies;
 using LouisAgent.SessionStream.Wire.Requests;
@@ -95,10 +98,8 @@ public class SessionResumedTests
         Assert.Multiple(() =>
         {
             Assert.That(status, Is.EqualTo(HttpStatusCode.OK));
-            Assert.That(FirstRequest(after), Is.SupersetOf(new[]
-            {
-                "Plan three dinners", "Monday, Tuesday and Wednesday.", "What is on Monday?"
-            }));
+            Assert.That(FirstRequest(after),
+                Is.SupersetOf(new[] { "Plan three dinners", "Monday, Tuesday and Wednesday.", "What is on Monday?" }));
         });
     }
 
@@ -141,6 +142,70 @@ public class SessionResumedTests
             Assert.That(status, Is.EqualTo(HttpStatusCode.OK));
             Assert.That(FirstRequest(after), Is.SupersetOf(new[] { "Hello", "Welcome.", "Are you there?" }));
         });
+    }
+
+    /// <summary>
+    /// A chat saved with one earlier turn, its prompt and the mark of the tools that turn was sent with, as a store
+    /// written by an earlier release holds it.
+    /// </summary>
+    private static async Task<InMemorySessionStore> SavedChatAsync(string id, string prompt, ToolsFingerprint? tools)
+    {
+        var store = new InMemorySessionStore();
+        var opening = new SessionRequest([TestToolset.Files.Wire()]);
+        var at = new DateTimeOffset(2026, 11, 25, 9, 0, 0, TimeSpan.Zero);
+        await store.SaveOpeningAsync(new StoredSession(id, opening, at, prompt));
+        ChatMessage[] said = [new(ChatRole.User, "Plan a dinner"), new(ChatRole.Assistant, "Fish.")];
+        await store.AppendTurnAsync(id, new StoredTurn(1, at.AddMinutes(1), said, new Dictionary<string, string>(),
+            tools));
+        return store;
+    }
+
+    /// <summary>
+    /// A chat resumed after a release changed the system prompt sends the prompt it was saved with, not today's, so
+    /// the thinking in its earlier turns still matches.
+    /// </summary>
+    [Test]
+    public async Task AResumedChat_SendsTheSystemPromptItWasSavedWith()
+    {
+        const string savedPrompt = "The prompt this chat was saved with.";
+        var store = await SavedChatAsync("sess_saved", savedPrompt, tools: null);
+        var model = Answers("Fish again.");
+        var (app, client) = await RunAsync(store, model);
+        await using var _ = app;
+
+        await SendAsync(client, "sess_saved", "And on Tuesday?", keyed: true);
+
+        Assert.That(model.Requests[0].Messages[0].Text, Is.EqualTo(savedPrompt));
+    }
+
+    /// <summary>A chat saved and resumed on the same tools knows they didn't change.</summary>
+    [Test]
+    public async Task AResumedChat_OnTheSameTools_KnowsTheyDidntChange()
+    {
+        var store = new InMemorySessionStore();
+        var (before, beforeClient) = await RunAsync(store, Answers("Monday, Tuesday and Wednesday."));
+        string id = await OpenAsync(beforeClient, keyed: true);
+        await SendAsync(beforeClient, id, "Plan three dinners", keyed: true);
+        await before.DisposeAsync();
+
+        var (after, _) = await RunAsync(store, Answers("Fish."));
+        await using var __ = after;
+        var resumed = await after.Services.GetRequiredService<AgentSessions>().GetAsync(id);
+
+        Assert.That(resumed!.Conversation.ToolsChangedSinceSaved, Is.False);
+    }
+
+    /// <summary>A chat whose saved turns were sent other tools than today's knows its tools changed since.</summary>
+    [Test]
+    public async Task AResumedChat_OnOtherTools_KnowsTheyChanged()
+    {
+        var store = await SavedChatAsync("sess_moved", "You plan dinners.", new ToolsFingerprint("an older tool list"));
+        var (app, _) = await RunAsync(store, Answers("Fish."));
+        await using var __ = app;
+
+        var resumed = await app.Services.GetRequiredService<AgentSessions>().GetAsync("sess_moved");
+
+        Assert.That(resumed!.Conversation.ToolsChangedSinceSaved, Is.True);
     }
 
     /// <summary>An id that neither memory nor the store holds is still a 404.</summary>

@@ -55,7 +55,8 @@ internal sealed class AgentSessions(AgentEngineFactory engines, ISessionStore? s
         _sessions[session.Id] = session;
         if (request.Replay is null)
         {
-            var stored = new StoredSession(session.Id, request, session.CreatedAt, admittedAs);
+            string systemPrompt = session.Conversation.Messages[0].Text;
+            var stored = new StoredSession(session.Id, request, session.CreatedAt, systemPrompt, admittedAs);
             await _store.SaveOpeningAsync(stored, cancellationToken);
         }
 
@@ -75,7 +76,7 @@ internal sealed class AgentSessions(AgentEngineFactory engines, ISessionStore? s
         if (await _store.LoadAsync(id, cancellationToken) is not { } saved) return null;
 
         var session = new SessionOpening(engines, saved.Session.Opening, Get).Open(saved.Session.Id);
-        session.Restore(saved.Turns);
+        session.Restore(saved);
         // Two messages for the same chat at once resume it once: the first one kept is the one both get.
         return _sessions.GetOrAdd(session.Id, session);
     }

@@ -36,6 +36,25 @@ public sealed class Conversation
     /// </summary>
     internal IReadOnlyList<AITool> FreezeTools(IEnumerable<AITool> live) => Tools ??= [.. live];
 
+    /// <summary>The mark of the tools this chat sends; none before its first turn.</summary>
+    public ToolsFingerprint? ToolsFingerprint => Tools is null ? null : ToolsFingerprint.Of(Tools);
+
+    /// <summary>
+    /// Whether this chat was brought back on tools other than those its saved turns were sent with: a release changed
+    /// them since, so the thinking in those turns may no longer match.
+    /// </summary>
+    public bool ToolsChangedSinceSaved { get; private set; }
+
+    /// <summary>
+    /// Takes today's tools for a chat brought back from the store, and notes whether they differ from those its saved
+    /// turns were sent with; a chat saved before any turn has nothing to differ from.
+    /// </summary>
+    internal void ResumeOn(IEnumerable<AITool> today, ToolsFingerprint? saved)
+    {
+        FreezeTools(today);
+        ToolsChangedSinceSaved = saved is not null && saved != ToolsFingerprint;
+    }
+
     /// <summary>Adds one message at the end.</summary>
     public void Add(ChatMessage message) => _messages.Add(message);
 

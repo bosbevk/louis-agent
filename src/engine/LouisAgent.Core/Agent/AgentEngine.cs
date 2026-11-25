@@ -203,6 +203,15 @@ public class AgentEngine
     public Conversation StartConversation() => _turns.NewConversation();
 
     /// <summary>
+    /// A saved chat brought back: it opens with the system prompt it was saved with, not today's, and sends today's
+    /// tools, knowing whether they differ from those its saved turns were sent with. The host adds the turns after.
+    /// </summary>
+    /// <param name="systemPrompt">The system prompt the chat was saved with.</param>
+    /// <param name="savedTools">The mark of the tools its saved turns were sent with; none when it had no turn.</param>
+    public Conversation ResumeConversation(string systemPrompt, ToolsFingerprint? savedTools) =>
+        _turns.ResumedConversation(systemPrompt, savedTools);
+
+    /// <summary>
     /// One prompt, the reply whole (<see cref="TurnRunner.ProcessAsync"/>): the turn, tool calls included, lands in
     /// <paramref name="conversation"/>.
     /// </summary>
