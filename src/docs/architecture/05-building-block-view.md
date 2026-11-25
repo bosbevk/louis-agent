@@ -209,7 +209,7 @@ The same pattern shows up away from the providers too: `IRatesMapper` for where 
 
 `AgentEngine` (`Agent/AgentEngine.cs`) doesn't care which provider it talks to. It owns the turn loop, the rules of
 the history and the chain of chat clients, and it's the one face the hosts talk to. The rest has its own classes:
-`ToolRegistry` keeps the tools in name order, `ToolCallGuards` (in `Agent/Turns/`) guards each call, `SkillTools`
+`ToolRegistry` keeps the tools in name order, `ToolCallGuards` (in `Agent/Turns/Guards/`) guards each call, `SkillTools`
 holds `ExecuteSkill`, `CreateSkillFile`, `ReloadSkills` and the skills the system prompt is built from, and
 `AgentBuiltTools` holds `CreateTool`, `/approve` and `/reject`. Core's pure safety checks are in `Guardrails/`: the
 hosts' key rule (`Auth/`) and the address rule (`Network/SsrfGuard`). The console chat belongs to the CLI

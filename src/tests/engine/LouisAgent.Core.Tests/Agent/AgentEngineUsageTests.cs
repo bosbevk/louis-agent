@@ -7,6 +7,7 @@ using LouisAgent.Core.Usage.Sinks;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Providers;
 using LouisAgent.Core.Agent;
+using LouisAgent.Core.Agent.Turns.Guards;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Anthropic;
 
@@ -79,7 +80,7 @@ public class AgentEngineUsageTests
     {
         string relative = $"big-{Guid.NewGuid():N}.txt";
         string path = Path.Combine(TestPaths.RepoRoot, relative);
-        File.WriteAllText(path, new string('x', ToolCallGuards.MaxToolResultChars + 1));
+        File.WriteAllText(path, new string('x', OversizedResults.MaxToolResultChars + 1));
         try
         {
             var sink = new ListUsageSink();

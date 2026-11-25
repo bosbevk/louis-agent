@@ -130,7 +130,6 @@ known limitations below are facts about today, not tasks.
 | CL53 | A price format per country | Cleanups | — |
 | CL54 | A pack can't add itself to a router | Cleanups | — |
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups | — |
-| CL61 | `ToolCallGuards` is over 200 lines once Rider lays out its message holes, and `Agent/Turns` holds six files: split it by responsibility (the oversized-result summary its own class, the folder into subfolders), its holes into records (ADR 0119), and have it end the turn through `TurnEnding.Ends` as `TurnRunner` does (found in F127.4.3 step 3) | Cleanups | — |
 | CL71 | The ACP server on Microsoft's StreamJsonRpc: methods as `[JsonRpcMethod]` on one target, notifications sent through it, our read loop and `JsonRpcWriter` gone; prove newline JSON with System.Text.Json and the golden transcript first; after FX4, plan first | Cleanups | — |
 | CL72 | The CLI's console drawn with Spectre.Console: thinking, answer and tool status through it, the cursor's state out of `ConsoleChat`; prove first that it streams text piece by piece and writes to stderr, and escape every model text; after FX4, plan first | Cleanups | — |
 

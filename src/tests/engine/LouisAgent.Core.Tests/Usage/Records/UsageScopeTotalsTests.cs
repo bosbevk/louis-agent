@@ -8,6 +8,7 @@ using LouisAgent.Core.Usage.Reports;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Providers;
 using LouisAgent.Core.Agent;
+using LouisAgent.Core.Agent.Turns.Guards;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Core.Tests.Usage.Records;
@@ -197,7 +198,7 @@ public class UsageScopeTotalsTests
     {
         string relative = $"big-{Guid.NewGuid():N}.txt";
         string path = Path.Combine(TestPaths.RepoRoot, relative);
-        File.WriteAllText(path, new string('x', ToolCallGuards.MaxToolResultChars + 1));
+        File.WriteAllText(path, new string('x', OversizedResults.MaxToolResultChars + 1));
         try
         {
             var client = new FakeChatClient(

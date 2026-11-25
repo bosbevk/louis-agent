@@ -14,7 +14,7 @@
 |---|---|---|
 | Features (`F`) | 168 | 74 |
 | Fixes (`FX`) | 239 | 4 |
-| Cleanups (`CL`) | 47 | 26 |
+| Cleanups (`CL`) | 48 | 25 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
@@ -123,7 +123,6 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL53 | A price format per country | Cleanups |
 | CL54 | A pack can't add itself to a router | Cleanups |
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups |
-| CL61 | `ToolCallGuards` past 200 lines once laid out: split it, holes into records (ADR 0119), and end the turn through `TurnEnding.Ends` | Cleanups |
 | CL71 | The ACP server on Microsoft's StreamJsonRpc, our read loop and writer gone; after FX4, plan first | Cleanups |
 | CL72 | The CLI's console drawn with Spectre.Console; after FX4, plan first | Cleanups |
 
@@ -544,10 +543,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | FX2 | 2026-10-10 | The usage probe says which model to pull on an Ollama 404 |
 | FX1 | 2026-10-10 | Keep the tools on the request after the 10-round limit |
 
-## Cleanups (47 done)
+## Cleanups (48 done)
 
 | Id | When | What |
 |---|---|---|
+| CL61 | 2026-11-25 | Agent/Turns split, inside FX4 (Louis's pick): the guards in Guards/, the oversized-result summary its own class (Extract Class), their holes named records, the turn ended through TurnEnding.Ends |
 | CL69 | 2026-11-22 | The old words left in code: specialist and minion leave everything outside the evals (Louis's pick A), held by OldWordsTests, a ratchet that ended empty; the web texts' 48 holes records, a long tool description as a raw string, C# on LF everywhere |
 | CL70 | 2026-11-22 | A session opens in steps: AgentSessions.Create takes one SessionRequest record (Introduce Parameter Object) and hands it to SessionOpening, a method object whose steps run in order, with LookupChecks beside it; the eleven refusals' holes records (Louis's pick A, over a builder and a chain of checks) |
 | CL68 | 2026-11-22 | Agents and their subagents, all three children done: no prompts/ wrapper, every agent at agents/{identity}/ with its voice, its skills (SKILL.md folders), its subagents and its lookup agents, each named by its address; ADR 0133, ADR 0021 amended, PartWords (ADR 0132), PromptFolder and PromptFileName |

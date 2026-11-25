@@ -5,6 +5,7 @@ using LouisAgent.Core.Agent.Toolsets;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using LouisAgent.Core.Agent;
+using LouisAgent.Core.Agent.Turns.Guards;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Skills;

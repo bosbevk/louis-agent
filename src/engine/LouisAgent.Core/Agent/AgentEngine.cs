@@ -13,6 +13,7 @@ using LouisAgent.Core.Messages;
 using LouisAgent.Core.Pricing.Rates;
 using LouisAgent.Core.Skills;
 using LouisAgent.Composition.Tools.Scripts;
+using LouisAgent.Core.Agent.Turns.Guards;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Sinks;
 using Microsoft.Extensions.AI;

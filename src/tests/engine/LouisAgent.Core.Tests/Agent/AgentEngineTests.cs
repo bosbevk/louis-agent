@@ -5,6 +5,7 @@ using LouisAgent.Core.Agent.Turns;
 using LouisAgent.Core.Agent.Toolsets;
 using System.Text.Json;
 using LouisAgent.Core.Agent;
+using LouisAgent.Core.Agent.Turns.Guards;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Providers;
@@ -244,7 +245,7 @@ public class AgentEngineTests
     {
         string relative = $"big-{Guid.NewGuid():N}.txt";
         string path = Path.Combine(TestPaths.RepoRoot, relative);
-        File.WriteAllText(path, new string('x', ToolCallGuards.MaxToolResultChars + 1));
+        File.WriteAllText(path, new string('x', OversizedResults.MaxToolResultChars + 1));
         try
         {
             var client = new FakeChatClient(
@@ -280,12 +281,12 @@ public class AgentEngineTests
     {
         var client = new FakeChatClient(_ => throw new HttpRequestException("boom"));
         var engine = Engine(client);
-        string output = new('y', ToolCallGuards.MaxToolResultChars * 3);
+        string output = new('y', OversizedResults.MaxToolResultChars * 3);
 
-        string result = await engine.Guards.SummariseToolResultAsync("DiffUnstaged", "{}", output, "show my changes");
+        string result = await engine.Guards.Oversized.SummariseAsync("DiffUnstaged", "{}", output, "show my changes");
 
         Assert.That(result, Does.Contain("too large").And.Contain("[truncated"));
-        Assert.That(result.Length, Is.LessThan(ToolCallGuards.MaxToolResultChars + 500));
+        Assert.That(result.Length, Is.LessThan(OversizedResults.MaxToolResultChars + 500));
     }
 
     /// <summary>A tool call cut off by the output limit never runs, and the model is told to write in chunks.</summary>

@@ -2,6 +2,7 @@ using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Agent.Turns;
+using LouisAgent.Core.Agent.Turns.Guards;
 using LouisAgent.Core.Pricing.Prices;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Skills.Providers;
@@ -97,7 +98,7 @@ public class ChatPipelineReplayTests
     {
         // An oversized result is summarised by a second model request; that summary must replay too, or a free replay
         // would pay for it.
-        string path = FileOf(oversizedResult ? ToolCallGuards.MaxToolResultChars + 1 : 20, out string relative);
+        string path = FileOf(oversizedResult ? OversizedResults.MaxToolResultChars + 1 : 20, out string relative);
         try
         {
             var live = oversizedResult
