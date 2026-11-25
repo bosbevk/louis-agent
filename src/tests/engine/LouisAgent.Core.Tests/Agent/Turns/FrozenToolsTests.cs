@@ -52,6 +52,31 @@ public class FrozenToolsTests
     private static IReadOnlyList<string> ToolNames(FakeChatClient client, int request) =>
         client.ToolNamesSent[request];
 
+    /// <summary>
+    /// Making a tool tells the model it reaches the next chat, so it doesn't promise to use it in this one.
+    /// </summary>
+    [Test]
+    public void CreateTool_SaysTheToolReachesTheNextChat()
+    {
+        var engine = Engine(new FakeChatClient());
+
+        string reply = engine.CreateTool(AddTool);
+
+        Assert.That(reply, Does.Contain("next chat").And.Not.Contain("call it now"));
+    }
+
+    /// <summary>Approving a tool tells the user it reaches their next chat.</summary>
+    [Test]
+    public void ApproveATool_SaysItReachesTheNextChat()
+    {
+        var engine = Engine(new FakeChatClient());
+        engine.CreateTool(AddTool);
+
+        string reply = engine.HandleUserCommand("/approve AddNumbers")!;
+
+        Assert.That(reply, Does.Contain("Approved").And.Contain("next chat"));
+    }
+
     /// <summary>A tool the model makes mid-message isn't sent on that message's later requests.</summary>
     [Test]
     public async Task AToolMadeMidMessage_LeavesTheMessagesLaterRequestsAlone()

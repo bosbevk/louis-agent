@@ -93,7 +93,7 @@ public enum UserText
     [Holes(typeof(ApprovedToolAlreadyThereHoles))]
     ApprovedToolAlreadyThere,
 
-    [Description("Approved '{Name}'. Saved to {Path}; it will load in every future session.")]
+    [Description("Approved '{Name}'. Saved to {Path}; it loads in every future session, from your next chat on.")]
     [Holes(typeof(ToolApprovedHoles))]
     ToolApproved,
 
@@ -109,7 +109,8 @@ public enum UserText
     ToolsHint,
 
     [Description(
-        "Approved skill file '{Name}'. Moved to {Path}; every later session with the skills toolset loads it.")]
+        "Approved skill file '{Name}'. Moved to {Path}; every later session with the skills toolset loads it, from " +
+        "your next chat on.")]
     [Holes(typeof(SkillFileApprovedHoles))]
     SkillFileApproved,
 

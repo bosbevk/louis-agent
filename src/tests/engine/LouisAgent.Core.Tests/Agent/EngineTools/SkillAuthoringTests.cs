@@ -353,6 +353,23 @@ public class SkillAuthoringTests
         Assert.That(engine.ExecuteSkill("Greet", """{"who":"Louis"}"""), Is.EqualTo("hi Louis"));
     }
 
+    /// <summary>
+    /// Writing, reloading and approving skills each say what reaches the next chat's system prompt, never this one's.
+    /// </summary>
+    [Test]
+    public void SkillChanges_SayTheyReachTheNextChat()
+    {
+        var engine = Engine();
+
+        string saved = engine.CreateSkillFile("greeting", EchoSkill);
+        string reloaded = engine.ReloadSkills();
+        string approved = engine.HandleUserCommand("/approve greeting")!;
+
+        Assert.That(saved, Does.Contain("next chat"), "saved");
+        Assert.That(reloaded, Does.Contain("next chat"), "reloaded");
+        Assert.That(approved, Does.Contain("next chat"), "approved");
+    }
+
     /// <summary>A reload finds a skill file put on disk after the engine started.</summary>
     [Test]
     public void ReloadSkills_PicksUpFilesAddedOnDisk()

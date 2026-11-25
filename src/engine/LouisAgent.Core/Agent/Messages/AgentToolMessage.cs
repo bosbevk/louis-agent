@@ -178,12 +178,15 @@ public enum AgentToolMessage
     SkillGuidanceOnly,
 
     [Description(
-        "Saved {Path}, pending — {Skills}. It runs in this session now; ask the user to type /approve {Name} to keep " +
-        "it for every later session, or /reject {Name} to discard it.\n{Reload}")]
+        "Saved {Path}, pending — {Skills}. ExecuteSkill runs it here now, and its documentation reaches the next " +
+        "chat's system prompt; ask the user to type /approve {Name} to keep it for every later session, or " +
+        "/reject {Name} to discard it.\n{Reload}")]
     [Holes(typeof(SkillFileSavedHoles))]
     SkillFileSaved,
 
-    [Description("Skills reloaded. Available skills: {Skills}")]
+    [Description(
+        "Skills reloaded. Available skills: {Skills}. ExecuteSkill runs them here now; the next chat's system prompt " +
+        "lists them.")]
     [Holes(typeof(SkillsReloadedHoles))]
     SkillsReloaded,
 
@@ -191,8 +194,9 @@ public enum AgentToolMessage
     CommandRanNoOutput,
 
     [Description(
-        "Created tool '{Name}' ({Language}; {Parameters}). You can call it now. It is pending: tell the user to type " +
-        "'/approve {Name}' to keep it for future sessions (or '/reject {Name}').")]
+        "Created tool '{Name}' ({Language}; {Parameters}). It reaches the user's next chat, not this one: this chat " +
+        "keeps the tools it started with. It is pending: tell the user to type '/approve {Name}' to keep it for " +
+        "future sessions (or '/reject {Name}').")]
     [Holes(typeof(ToolCreatedHoles))]
     ToolCreated,
 
@@ -200,7 +204,7 @@ public enum AgentToolMessage
     [Holes(typeof(AgentToolApprovedHoles))]
     AgentToolApproved,
 
-    [Description("- {Name} [pending, active this session]: {Description}")]
+    [Description("- {Name} [pending, in chats started since it was made]: {Description}")]
     [Holes(typeof(AgentToolPendingHoles))]
     AgentToolPending,
 }
