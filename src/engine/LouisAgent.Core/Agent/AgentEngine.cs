@@ -197,26 +197,28 @@ public class AgentEngine
     public bool RegisterDiscoveredTool(string name, string description) =>
         _registry.RegisterDiscovered(name, description);
 
-    /// <summary>A history seeded with the system prompt (and the no-tools notice when applicable).</summary>
-    public List<ChatMessage> StartHistory() => _turns.NewHistory();
+    /// <summary>
+    /// A new chat, opening with the system prompt, and the no-tools notice when the model takes none.
+    /// </summary>
+    public Conversation StartConversation() => _turns.NewConversation();
 
     /// <summary>
     /// One prompt, the reply whole (<see cref="TurnRunner.ProcessAsync"/>): the turn, tool calls included, lands in
-    /// <paramref name="history"/>.
+    /// <paramref name="conversation"/>.
     /// </summary>
-    public Task<string> ProcessPromptAsync(List<ChatMessage> history, string userInput,
+    public Task<string> ProcessPromptAsync(Conversation conversation, string userInput,
         CancellationToken cancellationToken = default) =>
-        _turns.ProcessAsync(history, userInput, cancellationToken);
+        _turns.ProcessAsync(conversation, userInput, cancellationToken);
 
     /// <summary>
     /// One prompt, the reply streamed (<see cref="TurnRunner.StreamAsync"/>): text, each tool call and its outcome as
     /// they happen; the text at a steady pace in whole words when the host turned STREAM_PACE on (F155), the turn
-    /// itself and its history untouched by it.
+    /// itself and its conversation untouched by it.
     /// </summary>
-    public IAsyncEnumerable<ChatResponseUpdate> StreamPromptAsync(List<ChatMessage> history, string userInput,
+    public IAsyncEnumerable<ChatResponseUpdate> StreamPromptAsync(Conversation conversation, string userInput,
         CancellationToken cancellationToken = default)
     {
-        var turn = _turns.StreamAsync(history, userInput, cancellationToken);
+        var turn = _turns.StreamAsync(conversation, userInput, cancellationToken);
         return _paced ? turn.Paced(_clock, cancellationToken) : turn;
     }
 

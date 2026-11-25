@@ -205,7 +205,7 @@ public class JsonlUsageSinkTests
         agent.LogDirectory = _directory;
 
         AgentEngine engine = AgentHost.Build(new LlmOptions(), agent, factory).Engine;
-        await engine.ProcessPromptAsync(engine.StartHistory(), $"say hi {marker}");
+        await engine.ProcessPromptAsync(engine.StartConversation(), $"say hi {marker}");
 
         string line = ReadLines(JsonlUsageSink.FileNameFor(DateTimeOffset.UtcNow)).Single();
         using var json = JsonDocument.Parse(line);

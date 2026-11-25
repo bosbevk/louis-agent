@@ -127,7 +127,7 @@ public class ScriptToolIntegrationTests
                 "result: " + messages.Last().Contents.OfType<FunctionResultContent>().Single().Result)));
         var engine = Engine(client);
 
-        string answer = await engine.ProcessPromptAsync(engine.StartHistory(), "add 20 and 22 with a new tool");
+        string answer = await engine.ProcessPromptAsync(engine.StartConversation(), "add 20 and 22 with a new tool");
 
         Assert.That(answer, Is.EqualTo("""result: {"sum": 42}"""));
     }

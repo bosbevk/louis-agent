@@ -214,7 +214,7 @@ public class UsageScopeTotalsTests
                 TestPaths.Agent(),
                 toolsets: TestPaths.Toolsets(TestPaths.Agent(), [TestToolset.Files.Wire()]),
                 usageSink: new ListUsageSink());
-            var history = engine.StartHistory();
+            var history = engine.StartConversation();
 
             IReadOnlyList<UsageRecord> first, second;
             using (var turn = UsageScope.Begin(turn: 1))

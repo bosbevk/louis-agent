@@ -111,7 +111,7 @@ internal sealed class AgentSessions(AgentEngineFactory engines, ISessionStore? s
         if (session.Replay is not null) return null;
         var text = (request.Attachments ?? []).Where(attachment => attachment.Bytes is null)
             .ToDictionary(attachment => attachment.Name, attachment => attachment.Content ?? string.Empty);
-        return new TurnSave(_store, session.History.Count, text);
+        return new TurnSave(_store, session.Conversation.Messages.Count, text);
     }
 
     /// <summary>

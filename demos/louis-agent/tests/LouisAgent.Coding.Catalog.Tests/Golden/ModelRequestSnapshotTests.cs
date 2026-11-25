@@ -87,7 +87,7 @@ public class ModelRequestSnapshotTests
                     Schema = JsonDocument.Parse(t.JsonSchema.GetRawText()).RootElement
                 }),
             SystemPrompt = engine.SkillDocumentation,
-            NoToolsHistory = Engine(supportsTools: false).StartHistory().Select(m => new
+            NoToolsHistory = Engine(supportsTools: false).StartConversation().Messages.Select(m => new
             {
                 Role = m.Role.Value,
                 m.Text

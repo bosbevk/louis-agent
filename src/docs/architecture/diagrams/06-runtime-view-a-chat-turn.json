@@ -11,7 +11,7 @@
       { "id": "T", "icon": "box", "tone": "green", "label": "A pack's tool" }
     ],
     "steps": [
-      { "step": "message", "from": "H", "to": "E", "text": "StreamPromptAsync(history, message)" },
+      { "step": "message", "from": "H", "to": "E", "text": "StreamPromptAsync(conversation, message)" },
       { "step": "message", "from": "E", "to": "M", "text": "system prompt, tools, reasoning, 16k output limit" },
       { "step": "block", "block": "loop", "label": "up to 10 tool rounds",
         "steps": [

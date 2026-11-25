@@ -20,7 +20,7 @@ internal sealed class TurnRelay(AgentEngine agent, JsonRpcWriter writer)
         // A new message id after each tool call, so text before and after a tool shows as separate messages.
         string messageId = $"msg_{Guid.NewGuid():N}";
         // Every piece of every update, in the order they came, as one stream.
-        var contents = agent.StreamPromptAsync(session.History, prompt, turnCancellationToken)
+        var contents = agent.StreamPromptAsync(session.Conversation, prompt, turnCancellationToken)
             .SelectMany(update => update.Contents);
         await foreach (var content in contents)
         {

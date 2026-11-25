@@ -36,7 +36,7 @@ public class EndsTurnTests
         var engine = new AgentEngine(new CompositeSkillProvider(), client, TestPaths.Agent(),
             toolsets: [new AskingTools()]);
         var text = new System.Text.StringBuilder();
-        await foreach (var update in engine.StreamPromptAsync(engine.StartHistory(), "Walk me through"))
+        await foreach (var update in engine.StreamPromptAsync(engine.StartConversation(), "Walk me through"))
             text.Append(update.Text);
         return text.ToString();
     }

@@ -63,9 +63,9 @@ public class ChatPipelineReplayTests
         SessionReplay.Use(new SessionReplay(web, Trial, model));
 
     /// <summary>Two streamed turns on one history; returns each turn's streamed text and the history.</summary>
-    private static async Task<(string[] Texts, List<ChatMessage> History)> TwoTurns(AgentEngine engine)
+    private static async Task<(string[] Texts, Conversation History)> TwoTurns(AgentEngine engine)
     {
-        var history = engine.StartHistory();
+        var history = engine.StartConversation();
         var texts = new List<string>();
         foreach (string prompt in new[] { "what is in the file?", "thanks" })
         {
@@ -112,7 +112,7 @@ public class ChatPipelineReplayTests
             var throwing = new FakeChatClient(_ => throw new InvalidOperationException("the model was called"));
             var replaying = new ListUsageSink();
             string[] replayed;
-            List<ChatMessage> history;
+            Conversation history;
             using (SetReplay(WebReplayMode.Replay, model: true))
                 (replayed, history) = await TwoTurns(Engine(throwing, replaying));
 
@@ -125,7 +125,8 @@ public class ChatPipelineReplayTests
                     r.CacheHit == true && r.Cost == new UsageCost("USD", 0m, "2026-10-25")));
             Assert.That(recording.Records, Has.All.Matches<UsageRecord>(r => r.CacheHit is null && r.Cost is null),
                 "a live request on an unpriced model stays unknown");
-            Assert.That(history.SelectMany(m => m.AdditionalProperties?.Keys ?? []), Does.Not.Contain("replay_hit"),
+            Assert.That(history.Messages.SelectMany(m => m.AdditionalProperties?.Keys ?? []),
+                Does.Not.Contain("replay_hit"),
                 "the tag never enters the history (ADR 0008)");
         }
         finally

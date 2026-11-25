@@ -187,7 +187,7 @@ internal sealed class AcpServer
             ? cwdElement.GetString() ?? string.Empty
             : string.Empty;
         string sessionId = $"sess_{Guid.NewGuid():N}";
-        var history = _agent.StartHistory();
+        var history = _agent.StartConversation();
         var workspace = new WorkspaceNoticeHoles(_agent.WorkspaceRoot);
         history.Add(new ChatMessage(ChatRole.System, MessageText.Format(AcpModelText.WorkspaceNotice, workspace)));
 

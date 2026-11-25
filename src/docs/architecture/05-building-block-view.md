@@ -214,8 +214,10 @@ holds `ExecuteSkill`, `CreateSkillFile`, `ReloadSkills` and the skills the syste
 hosts' key rule (`Auth/`) and the address rule (`Network/SsrfGuard`). The console chat belongs to the CLI
 (`ConsoleChat`). Everything the engine sends uses LF line endings, whatever the checkout.
 
-A host hands it a message with `StreamPromptAsync(history, input)`. That streams `ChatResponseUpdate`s back (text,
-`TextReasoningContent`, tool calls and their results) and records the finished turn in `history`.
+A host starts a chat with `StartConversation()`, which gives it a `Conversation`: the chat's messages, opening with
+the system prompt, which the host can read and add to but never change. It hands the engine a message with
+`StreamPromptAsync(conversation, input)`. That streams `ChatResponseUpdate`s back (text, `TextReasoningContent`, tool
+calls and their results) and adds the finished turn to the conversation.
 `ProcessPromptAsync` does the same without streaming. `FunctionInvokingChatClient` runs the loop, up to 10 tool rounds
 per request, and gives the model the full error when a tool fails. A reply may be up to 16,000 tokens, and
 `LLM_THINKING` sets `ChatOptions.Reasoning`.

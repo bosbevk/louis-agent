@@ -1,0 +1,44 @@
+using Microsoft.Extensions.AI;
+
+namespace LouisAgent.Core.Agent;
+
+/// <summary>
+/// One chat with the agent: everything said in it so far, starting with the system prompt. A host keeps one per chat
+/// and hands it to every turn; it can read the messages and add to them, never change one already there. Only the
+/// engine still brings the system prompt up to date after the skills are reloaded.
+/// </summary>
+/// <remarks>
+/// Encapsulate Collection (Fowler). The history used to be a bare list every host held and anyone could edit, and the
+/// model checks its earlier thinking against everything sent before it, so an edit can break a chat. Owning the list
+/// here makes adding the only way in, and gives what belongs to a chat one place to live.
+/// </remarks>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0008-history-is-append-only.md">ADR 0008: history is append-only</seealso>
+public sealed class Conversation
+{
+    /// <summary>What has been said, in order.</summary>
+    private readonly List<ChatMessage> _messages;
+
+    /// <summary>
+    /// Starts a chat with its opening messages: the system prompt, and the no-tools notice if there is one.
+    /// </summary>
+    internal Conversation(IEnumerable<ChatMessage> opening) => _messages = [.. opening];
+
+    /// <summary>Everything said so far, the system prompt first.</summary>
+    public IReadOnlyList<ChatMessage> Messages => _messages;
+
+    /// <summary>Adds one message at the end.</summary>
+    public void Add(ChatMessage message) => _messages.Add(message);
+
+    /// <summary>Adds messages at the end, in order, such as a turn brought back from the store.</summary>
+    public void AddRange(IEnumerable<ChatMessage> messages) => _messages.AddRange(messages);
+
+    /// <summary>Adds a streamed reply at the end, its updates joined into whole messages.</summary>
+    internal void AddMessages(IEnumerable<ChatResponseUpdate> updates) => _messages.AddMessages(updates);
+
+    /// <summary>Swaps the opening system prompt for the one given, when the skills have changed it since.</summary>
+    internal void BringSystemPromptUpToDate(string prompt)
+    {
+        if (_messages.Count == 0 || _messages[0].Role != ChatRole.System || _messages[0].Text == prompt) return;
+        _messages[0] = new ChatMessage(ChatRole.System, prompt);
+    }
+}

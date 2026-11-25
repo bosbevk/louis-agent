@@ -371,7 +371,7 @@ public class SkillAuthoringTests
             _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "first")),
             _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "second")));
         var engine = Engine(client: client);
-        var history = engine.StartHistory();
+        var history = engine.StartConversation();
 
         await engine.ProcessPromptAsync(history, "before");
         engine.CreateSkillFile("greeting", EchoSkill);

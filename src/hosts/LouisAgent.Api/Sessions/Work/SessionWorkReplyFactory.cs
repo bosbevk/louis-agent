@@ -21,7 +21,8 @@ internal static class SessionWorkReplyFactory
     extension(SessionWorkReply)
     {
         /// <summary>The steps of every turn the session had, oldest first.</summary>
-        public static SessionWorkReply Of(AgentSession session) => new(session.Id, Steps(session.History));
+        public static SessionWorkReply Of(AgentSession session) =>
+            new(session.Id, Steps(session.Conversation.Messages));
     }
 
     /// <summary>Each message's steps in order, the names of the calls kept so a result can say whose it is.</summary>

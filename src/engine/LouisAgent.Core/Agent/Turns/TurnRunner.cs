@@ -17,7 +17,7 @@ using Microsoft.Extensions.Logging;
 namespace LouisAgent.Core.Agent.Turns;
 
 /// <summary>
-/// One chat turn (S, CL15, from AgentEngine): the history seeded and kept current, the prompt sent on the pipeline,
+/// One chat turn (S, CL15, from AgentEngine): the conversation started and added to, the prompt sent on the pipeline,
 /// the reply read whole or streamed, and a reply cut off by the output limit continued. Each turn is one span,
 /// named for the agent (F52).
 /// </summary>
@@ -45,41 +45,44 @@ internal sealed class TurnRunner(
     /// <summary>How many times a cut-off reply is continued before the turn gives up.</summary>
     private const int MaxCutOffContinuations = 3;
 
-    /// <summary>What a model without tools is told, as the history's second system message.</summary>
+    /// <summary>What a model without tools is told, as the conversation's second system message.</summary>
     internal static string NoToolsNotice => MessageText.Format(AgentToolMessage.NoToolsNotice);
 
     /// <summary>What the model is asked after its reply was cut off.</summary>
     internal static string ContinueAfterCutOffMessage => MessageText.Format(AgentToolMessage.ContinueAfterCutOff);
 
-    /// <summary>A history seeded with the system prompt (and the no-tools notice when applicable).</summary>
-    public List<ChatMessage> NewHistory()
+    /// <summary>
+    /// A new chat, opening with the system prompt, and the no-tools notice when the model takes none.
+    /// </summary>
+    public Conversation NewConversation()
     {
-        var history = new List<ChatMessage> { new(ChatRole.System, systemPrompt()) };
-        if (!supportsTools) history.Add(new ChatMessage(ChatRole.System, NoToolsNotice));
-        return history;
+        var opening = new List<ChatMessage> { new(ChatRole.System, systemPrompt()) };
+        if (!supportsTools) opening.Add(new ChatMessage(ChatRole.System, NoToolsNotice));
+        return new Conversation(opening);
     }
 
     /// <summary>
     /// Processes one prompt without writing to the console, allowing protocol adapters to control how the response is
-    /// transported. Tool calls made by the model are executed and recorded in <paramref name="history"/> along with the
-    /// final answer.
+    /// transported. Tool calls made by the model are executed and recorded in <paramref name="conversation"/> along
+    /// with the final answer.
     /// </summary>
-    public async Task<string> ProcessAsync(List<ChatMessage> history, string userInput,
+    public async Task<string> ProcessAsync(Conversation conversation, string userInput,
         CancellationToken cancellationToken = default)
     {
         // The turn's span holds the tool loop's; a failure is recorded on it and still reaches the host.
         using var span = TurnSpans.Start(agentName());
         try
         {
-            ChatOptions chatOptions = Begin(history, userInput);
-            ChatResponse response = await chatClient.GetResponseAsync(history, chatOptions, cancellationToken);
+            ChatOptions chatOptions = Begin(conversation, userInput);
+            ChatResponse response =
+                await chatClient.GetResponseAsync(conversation.Messages, chatOptions, cancellationToken);
 
             // Includes assistant tool-call and tool-result messages so follow-up turns keep their context.
-            history.AddRange(response.Messages);
+            conversation.AddRange(response.Messages);
             if (ShownReport.In([.. response.Messages.SelectMany(message => message.Contents)]) is not { } report)
                 return response.Text;
 
-            history.Add(new ChatMessage(ChatRole.Assistant, report));
+            conversation.Add(new ChatMessage(ChatRole.Assistant, report));
             return response.Text + report;
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
@@ -92,19 +95,20 @@ internal sealed class TurnRunner(
     /// <summary>
     /// Streaming form of <see cref="ProcessAsync"/>: yields text as the model writes it, each tool call as it is made
     /// (<see cref="FunctionCallContent"/>) and its outcome (<see cref="FunctionResultContent"/>). The completed turn is
-    /// recorded in <paramref name="history"/> once the stream ends.
+    /// recorded in <paramref name="conversation"/> once the stream ends.
     /// </summary>
-    public async IAsyncEnumerable<ChatResponseUpdate> StreamAsync(List<ChatMessage> history, string userInput,
+    public async IAsyncEnumerable<ChatResponseUpdate> StreamAsync(Conversation conversation, string userInput,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         using var span = TurnSpans.Start(agentName());
-        ChatOptions chatOptions = Begin(history, userInput);
+        ChatOptions chatOptions = Begin(conversation, userInput);
         bool owedAsked = false;
         for (int continuation = 0; ; continuation++)
         {
             var updates = new List<ChatResponseUpdate>();
             // Read by hand: C# allows no yield inside a try with a catch, and the catch records a failure on the span.
-            await using var stream = chatClient.GetStreamingResponseAsync(history, chatOptions, cancellationToken)
+            await using var stream = chatClient
+                .GetStreamingResponseAsync(conversation.Messages, chatOptions, cancellationToken)
                 .GetAsyncEnumerator(cancellationToken);
             while (await NextAsync(stream, span))
             {
@@ -123,7 +127,7 @@ internal sealed class TurnRunner(
                 yield return shown;
             }
 
-            history.AddMessages(updates);
+            conversation.AddMessages(updates);
 
             // When streaming, a tool call cut off by the output limit is dropped entirely, so the turn would just stop.
             bool cutOff = updates.LastOrDefault(u => u.FinishReason is not null)?.FinishReason ==
@@ -135,7 +139,8 @@ internal sealed class TurnRunner(
                 owedAsked = true;
                 // A request must end with the user's message (no prefill), so a notice asks for it, as after a cut-off.
                 var owedTool = new EndWithToolHoles(owed);
-                history.Add(new ChatMessage(ChatRole.User, MessageText.Format(AgentToolMessage.EndWithTool, owedTool)));
+                conversation.Add(new ChatMessage(ChatRole.User,
+                    MessageText.Format(AgentToolMessage.EndWithTool, owedTool)));
                 chatOptions = Requiring(chatOptions, owed);
                 continue;
             }
@@ -145,7 +150,7 @@ internal sealed class TurnRunner(
             var outputLimit = new ReplyCutOffHoles(MaxOutputTokens);
             Log.Log(LogLevel.Warning, AgentLogMessage.ReplyCutOff, outputLimit);
             ToolCallRecords.TruncatedToolCall("(streamed reply)", string.Empty, MaxOutputTokens);
-            history.Add(new ChatMessage(ChatRole.User, ContinueAfterCutOffMessage));
+            conversation.Add(new ChatMessage(ChatRole.User, ContinueAfterCutOffMessage));
             // The rest of this turn's requests exist only because of the cut-off; the host's scope says so.
             if (UsageScope.Current is { } scope) scope.Purpose = UsagePurpose.Continue;
         }
@@ -212,14 +217,12 @@ internal sealed class TurnRunner(
     /// Starts a turn: the system prompt brought up to date, the user's words added, and the request's options (the
     /// output limit, thinking, the tools).
     /// </summary>
-    private ChatOptions Begin(List<ChatMessage> history, string userInput)
+    private ChatOptions Begin(Conversation conversation, string userInput)
     {
         // Skills may have been reloaded since this conversation started; keep its system prompt current.
-        string prompt = systemPrompt();
-        if (history.Count > 0 && history[0].Role == ChatRole.System && history[0].Text != prompt)
-            history[0] = new ChatMessage(ChatRole.System, prompt);
+        conversation.BringSystemPromptUpToDate(systemPrompt());
 
-        history.Add(new ChatMessage(ChatRole.User, userInput));
+        conversation.Add(new ChatMessage(ChatRole.User, userInput));
 
         var chatOptions = new ChatOptions { MaxOutputTokens = MaxOutputTokens };
         if (thinking() is { } effort)

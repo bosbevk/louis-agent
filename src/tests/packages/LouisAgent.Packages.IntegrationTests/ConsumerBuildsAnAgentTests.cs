@@ -152,7 +152,7 @@ public class ConsumerBuildsAnAgentTests
             var model = new FakeChatClient(_ => new ChatResponse(answer));
             var options = new AgentOptions { WorkspaceRoot = Environment.CurrentDirectory };
             var agent = new AgentEngine(new CompositeSkillProvider(), model, options, supportsTools: false);
-            Console.WriteLine(await agent.ProcessPromptAsync([], "hello"));
+            Console.WriteLine(await agent.ProcessPromptAsync(agent.StartConversation(), "hello"));
             """;
         File.WriteAllText(Path.Combine(project, "Program.cs"), program);
         return project;

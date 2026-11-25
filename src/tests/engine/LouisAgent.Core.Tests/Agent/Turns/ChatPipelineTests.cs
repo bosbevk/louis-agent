@@ -70,11 +70,11 @@ public class ChatPipelineTests
         using (UsageScope.Begin())
         {
             if (streamed)
-                await foreach (var _ in engine.StreamPromptAsync(engine.StartHistory(), prompt))
+                await foreach (var _ in engine.StreamPromptAsync(engine.StartConversation(), prompt))
                 {
                 }
             else
-                await engine.ProcessPromptAsync(engine.StartHistory(), prompt);
+                await engine.ProcessPromptAsync(engine.StartConversation(), prompt);
         }
 
         lock (spans) return (root, spans.Where(a => a.TraceId == root.TraceId).ToList());

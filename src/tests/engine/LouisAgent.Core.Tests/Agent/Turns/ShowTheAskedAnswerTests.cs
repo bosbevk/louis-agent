@@ -41,7 +41,8 @@ public class ShowTheAskedAnswerTests
 
         using var _ = TurnIdentity.Use(TurnIdentity.Of(asker));
         var text = new System.Text.StringBuilder();
-        await foreach (var update in engine.StreamPromptAsync(engine.StartHistory(), "Do it")) text.Append(update.Text);
+        await foreach (var update in engine.StreamPromptAsync(engine.StartConversation(), "Do it"))
+            text.Append(update.Text);
         return text.ToString();
     }
 

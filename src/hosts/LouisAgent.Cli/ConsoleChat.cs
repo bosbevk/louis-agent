@@ -28,7 +28,7 @@ internal sealed class ConsoleChat(AgentEngine engine)
     /// <summary>Run the interactive chat loop.</summary>
     public async Task RunAsync()
     {
-        var history = engine.StartHistory();
+        var conversation = engine.StartConversation();
         // One CLI run is one session in the usage ledger.
         string session = $"{Host}_{Guid.NewGuid():N}";
         int turns = 0;
@@ -77,7 +77,7 @@ internal sealed class ConsoleChat(AgentEngine engine)
             try
             {
                 Console.Write(MessageText.Format(CliUserText.AssistantPrompt));
-                await StreamToConsoleAsync(history, userInput, cancellation.Token);
+                await StreamToConsoleAsync(conversation, userInput, cancellation.Token);
                 Console.WriteLine("\n");
             }
             catch (OperationCanceledException)
@@ -104,7 +104,7 @@ internal sealed class ConsoleChat(AgentEngine engine)
         using var usage = UsageScope.Begin(host: Host, session: $"{Host}_{Guid.NewGuid():N}", turn: 1);
         try
         {
-            await StreamToConsoleAsync(engine.StartHistory(), userInput);
+            await StreamToConsoleAsync(engine.StartConversation(), userInput);
             Console.WriteLine();
             // One prompt is the whole session, so the line has no session total.
             if (usage.Records.Count > 0) WriteUsageLine(UsageText.Line(usage.Records, display: engine.Display));
@@ -132,12 +132,12 @@ internal sealed class ConsoleChat(AgentEngine engine)
     }
 
     /// <summary>Writes the reply as it streams (thinking in grey), with a one-line status for each tool call.</summary>
-    private async Task StreamToConsoleAsync(List<ChatMessage> history, string userInput,
+    private async Task StreamToConsoleAsync(Conversation conversation, string userInput,
         CancellationToken cancellationToken = default)
     {
         bool midLine = false, inThinking = false;
         // Every piece of every update, in the order they came, as one stream.
-        var contents = engine.StreamPromptAsync(history, userInput, cancellationToken)
+        var contents = engine.StreamPromptAsync(conversation, userInput, cancellationToken)
             .SelectMany(update => update.Contents);
         await foreach (var content in contents)
         {

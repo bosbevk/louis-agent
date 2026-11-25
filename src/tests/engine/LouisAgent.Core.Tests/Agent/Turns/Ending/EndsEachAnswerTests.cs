@@ -59,7 +59,7 @@ public class EndsEachAnswerTests
         { Thinking = ReasoningEffort.Low };
         var guide = new TurnIdentity("guide", false, endsWith, Stops);
         using var _ = TurnIdentity.Use(guide);
-        await foreach (var __ in engine.StreamPromptAsync(engine.StartHistory(), message))
+        await foreach (var __ in engine.StreamPromptAsync(engine.StartConversation(), message))
         {
         }
     }

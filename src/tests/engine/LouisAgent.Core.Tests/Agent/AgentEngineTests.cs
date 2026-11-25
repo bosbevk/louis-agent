@@ -99,7 +99,7 @@ public class AgentEngineTests
                 _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "done")));
             var engine = new AgentEngine(HelloSkills(), client, TestPaths.Agent(), toolsets: [tools],
                 concurrentToolCalls: concurrent);
-            await engine.ProcessPromptAsync(engine.StartHistory(), "go");
+            await engine.ProcessPromptAsync(engine.StartConversation(), "go");
             return tools.MostAtOnce;
         }
 
@@ -165,14 +165,15 @@ public class AgentEngineTests
                 return new ChatResponse(new ChatMessage(ChatRole.Assistant, $"Skill said: {toolResult.Result}"));
             });
         var engine = Engine(client);
-        var history = engine.StartHistory();
+        var history = engine.StartConversation();
 
         string answer = await engine.ProcessPromptAsync(history, "say hello");
 
         Assert.That(answer, Does.Contain("Hello, Agent!"));
         Assert.That(client.Requests, Has.Count.EqualTo(2));
         Assert.That(client.Requests[0].Options!.Tools!.Select(t => t.Name), Does.Contain("ExecuteSkill"));
-        Assert.That(history.Select(m => m.Role), Does.Contain(ChatRole.Tool), "tool result is kept in history");
+        Assert.That(history.Messages.Select(m => m.Role), Does.Contain(ChatRole.Tool),
+            "tool result is kept in history");
     }
 
     /// <summary>A model without tools is sent none, and is told so in the chat.</summary>
@@ -182,7 +183,7 @@ public class AgentEngineTests
         var client = new FakeChatClient(_ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "I can't do that")));
         var engine = Engine(client, supportsTools: false);
 
-        await engine.ProcessPromptAsync(engine.StartHistory(), "log time please");
+        await engine.ProcessPromptAsync(engine.StartConversation(), "log time please");
 
         Assert.That(client.Requests[0].Options!.Tools, Is.Null.Or.Empty);
         Assert.That(client.Requests[0].Messages.Select(m => m.Text), Does.Contain(TurnRunner.NoToolsNotice));
@@ -260,7 +261,7 @@ public class AgentEngineTests
                 });
             var engine = Engine(client);
 
-            string answer = await engine.ProcessPromptAsync(engine.StartHistory(), "what is in the file?");
+            string answer = await engine.ProcessPromptAsync(engine.StartConversation(), "what is in the file?");
 
             Assert.That(answer, Does.Contain("Summary:").And.Contain("a file full of x"));
             Assert.That(answer.Length, Is.LessThan(1_000), "raw output never reaches the main conversation");
@@ -306,7 +307,7 @@ public class AgentEngineTests
             });
         var engine = Engine(client);
 
-        string answer = await engine.ProcessPromptAsync(engine.StartHistory(), "make me a web page");
+        string answer = await engine.ProcessPromptAsync(engine.StartConversation(), "make me a web page");
 
         Assert.That(answer, Is.EqualTo(ToolCallGuards.TruncatedCallMessage));
         Assert.That(File.Exists(Path.Combine(TestPaths.RepoRoot, relative)), Is.False, "the partial call never ran");
@@ -329,7 +330,7 @@ public class AgentEngineTests
             });
         var engine = Engine(client);
 
-        string answer = await engine.ProcessPromptAsync(engine.StartHistory(), "write a file");
+        string answer = await engine.ProcessPromptAsync(engine.StartConversation(), "write a file");
 
         Assert.That(answer, Does.Contain("content"), "detailed error names the missing parameter");
     }
@@ -353,7 +354,7 @@ public class AgentEngineTests
             ])),
             _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "All done.")));
         var engine = Engine(client);
-        var history = engine.StartHistory();
+        var history = engine.StartConversation();
 
         var contents = new List<AIContent>();
         await foreach (var update in engine.StreamPromptAsync(history, "say hello"))
@@ -364,8 +365,9 @@ public class AgentEngineTests
         Assert.That(contents.OfType<FunctionCallContent>().Single().Name, Is.EqualTo("ExecuteSkill"));
         Assert.That(contents.OfType<FunctionResultContent>().Single().Result?.ToString(),
             Does.Contain("Hello, Agent!"));
-        Assert.That(history.Last().Text, Is.EqualTo("All done."));
-        Assert.That(history.Select(m => m.Role), Does.Contain(ChatRole.Tool), "tool result is kept in history");
+        Assert.That(history.Messages.Last().Text, Is.EqualTo("All done."));
+        Assert.That(history.Messages.Select(m => m.Role), Does.Contain(ChatRole.Tool),
+            "tool result is kept in history");
     }
 
     /// <summary>Streamed too, a tool call cut off by the output limit never runs.</summary>
@@ -384,7 +386,7 @@ public class AgentEngineTests
         var engine = Engine(client);
 
         var results = new List<FunctionResultContent>();
-        await foreach (var update in engine.StreamPromptAsync(engine.StartHistory(), "make me a web page"))
+        await foreach (var update in engine.StreamPromptAsync(engine.StartConversation(), "make me a web page"))
             results.AddRange(update.Contents.OfType<FunctionResultContent>());
 
         Assert.That(results.Single().Result, Is.EqualTo(ToolCallGuards.TruncatedCallMessage));
@@ -403,7 +405,7 @@ public class AgentEngineTests
             },
             _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "Done in smaller chunks.")));
         var engine = Engine(client);
-        var history = engine.StartHistory();
+        var history = engine.StartConversation();
 
         var text = new List<string>();
         await foreach (var update in engine.StreamPromptAsync(history, "write a big file"))
@@ -411,7 +413,7 @@ public class AgentEngineTests
 
         Assert.That(text, Is.EqualTo(new[] { "Now I'll append the rest:", "Done in smaller chunks." }));
         Assert.That(client.Requests[1].Messages.Last().Text, Is.EqualTo(TurnRunner.ContinueAfterCutOffMessage));
-        Assert.That(history.Last().Text, Is.EqualTo("Done in smaller chunks."));
+        Assert.That(history.Messages.Last().Text, Is.EqualTo("Done in smaller chunks."));
     }
 
     /// <summary>With thinking on, the request asks for it and the thinking streams out.</summary>
@@ -423,7 +425,7 @@ public class AgentEngineTests
         var engine = new AgentEngine(HelloSkills(), client, TestPaths.Agent()) { Thinking = ReasoningEffort.Medium };
 
         var contents = new List<AIContent>();
-        await foreach (var update in engine.StreamPromptAsync(engine.StartHistory(), "think about it"))
+        await foreach (var update in engine.StreamPromptAsync(engine.StartConversation(), "think about it"))
             contents.AddRange(update.Contents);
 
         Assert.That(client.Requests[0].Options!.Reasoning!.Effort, Is.EqualTo(ReasoningEffort.Medium));
@@ -437,7 +439,7 @@ public class AgentEngineTests
         var client = new FakeChatClient(_ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "Answer.")));
         var engine = Engine(client);
 
-        await foreach (var _ in engine.StreamPromptAsync(engine.StartHistory(), "hi"))
+        await foreach (var _ in engine.StreamPromptAsync(engine.StartConversation(), "hi"))
         {
         }
 

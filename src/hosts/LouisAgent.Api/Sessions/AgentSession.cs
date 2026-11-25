@@ -10,7 +10,6 @@ using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.SessionStream.Wire.Requests;
 using LouisAgent.SessionStream.Wire.Requests.Windows;
-using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Api.Sessions;
 
@@ -140,7 +139,7 @@ internal sealed class AgentSession(
     {
         foreach (var turn in turns)
         {
-            History.AddRange(turn.Messages);
+            Conversation.AddRange(turn.Messages);
             foreach (var (name, content) in turn.Attachments) Remember(name, content);
         }
 
@@ -154,7 +153,8 @@ internal sealed class AgentSession(
         _attachments[name] = text.Length <= MaxAttachmentChars ? text : text[..MaxAttachmentChars];
     }
 
-    public List<ChatMessage> History { get; } = engine.StartHistory();
+    /// <summary>The chat itself: everything said in it, the system prompt first.</summary>
+    public Conversation Conversation { get; } = engine.StartConversation();
 
     /// <summary>
     /// What the caller said the session is for (e.g. the orchestrator's fix and run); on every usage record.
@@ -187,6 +187,7 @@ internal sealed class AgentSession(
         return true;
     }
 
+    /// <summary>Ends the turn this session began, so the next one may start.</summary>
     public void EndTurn(CancellationTokenSource turn)
     {
         Interlocked.CompareExchange(ref _activeTurn, null, turn);

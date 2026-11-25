@@ -58,7 +58,7 @@
         "step": "message",
         "from": "H",
         "to": "E",
-        "text": "StreamPromptAsync(history, prompt)"
+        "text": "StreamPromptAsync(conversation, prompt)"
       },
       {
         "step": "message",

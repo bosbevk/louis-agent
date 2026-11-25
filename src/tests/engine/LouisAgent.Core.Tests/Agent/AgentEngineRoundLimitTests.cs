@@ -37,7 +37,7 @@ public class AgentEngineRoundLimitTests
         var client = NeverStopsCallingTools();
         var engine = Engine(client);
 
-        await foreach (var _ in engine.StreamPromptAsync(engine.StartHistory(), "go"))
+        await foreach (var _ in engine.StreamPromptAsync(engine.StartConversation(), "go"))
         {
         }
 
@@ -55,7 +55,7 @@ public class AgentEngineRoundLimitTests
         var client = NeverStopsCallingTools();
         var engine = Engine(client);
 
-        await engine.ProcessPromptAsync(engine.StartHistory(), "go");
+        await engine.ProcessPromptAsync(engine.StartConversation(), "go");
 
         Assert.That(client.Requests[^1].Options!.Tools, Has.Count.EqualTo(engine.Tools.Count));
         Assert.That(client.Requests[^1].Options!.ToolMode, Is.EqualTo(ChatToolMode.None));
@@ -68,7 +68,7 @@ public class AgentEngineRoundLimitTests
         var client = NeverStopsCallingTools();
         var engine = Engine(client);
 
-        await foreach (var _ in engine.StreamPromptAsync(engine.StartHistory(), "go"))
+        await foreach (var _ in engine.StreamPromptAsync(engine.StartConversation(), "go"))
         {
         }
 

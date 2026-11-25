@@ -49,7 +49,7 @@ public class AgentEngineUsageTests
         var engine = Engine(client, sink);
 
         using (UsageScope.Begin())
-            await foreach (var _ in engine.StreamPromptAsync(engine.StartHistory(), "say hello twice"))
+            await foreach (var _ in engine.StreamPromptAsync(engine.StartConversation(), "say hello twice"))
             {
             }
 
@@ -68,7 +68,7 @@ public class AgentEngineUsageTests
         var engine = Engine(client, sink);
 
         using (UsageScope.Begin())
-            await engine.ProcessPromptAsync(engine.StartHistory(), "say hello");
+            await engine.ProcessPromptAsync(engine.StartConversation(), "say hello");
 
         Assert.That(sink.Records.Select(r => r.Round), Is.EqualTo(new[] { 1, 2 }));
     }
@@ -95,7 +95,7 @@ public class AgentEngineUsageTests
 
             using (UsageScope.Begin(host: "api", session: "sess_1", turn: 4,
                        tags: new UsageTags("fix:e8b0", "run-1", "order-service")))
-                await engine.ProcessPromptAsync(engine.StartHistory(), "what is in the file?");
+                await engine.ProcessPromptAsync(engine.StartConversation(), "what is in the file?");
 
             Assert.That(sink.Records.Select(r => (r.Purpose, r.Round)), Is.EqualTo(new[]
             {
@@ -130,7 +130,7 @@ public class AgentEngineUsageTests
         var engine = Engine(client, sink);
 
         using (UsageScope.Begin())
-            await foreach (var _ in engine.StreamPromptAsync(engine.StartHistory(), "write a big file"))
+            await foreach (var _ in engine.StreamPromptAsync(engine.StartConversation(), "write a big file"))
             {
             }
 
@@ -154,7 +154,7 @@ public class AgentEngineUsageTests
             new ChatResponse(new ChatMessage(ChatRole.Assistant, "hi")) { Usage = usage });
         var engine = Engine(client, sink, new AnthropicUsageMapper());
 
-        await engine.ProcessPromptAsync(engine.StartHistory(), "hi");
+        await engine.ProcessPromptAsync(engine.StartConversation(), "hi");
 
         Assert.That(sink.Records.Single().Tokens, Is.EqualTo(new UsageTokens(39, 10_227, 0, 144, null)));
     }
@@ -168,6 +168,6 @@ public class AgentEngineUsageTests
             new MarkdownSkillProvider(TestPaths.SampleSkills), client,
             TestPaths.Agent());
 
-        Assert.That(await engine.ProcessPromptAsync(engine.StartHistory(), "hi"), Is.EqualTo("hi"));
+        Assert.That(await engine.ProcessPromptAsync(engine.StartConversation(), "hi"), Is.EqualTo("hi"));
     }
 }

@@ -239,7 +239,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <path class="pic-march" d="M75.2 499H890.7" />
       <path class="seq-tip" d="M890.7 499H898.7" marker-end="url(#arrow-blue)" />
       <circle class="mrq-node" cx="75.2" cy="499" r="4.5" />
-      <text class="seq-call-words" x="487" y="490" text-anchor="middle">StreamPromptAsync(history, input)</text>
+      <text class="seq-call-words" x="487" y="490" text-anchor="middle">StreamPromptAsync(conversation, input)</text>
       <rect class="seq-beam seq-beam-glow" x="898.7" y="546" width="194" height="8" rx="0" />
       <rect class="seq-beam" x="898.7" y="549" width="186" height="2" rx="0" />
       <path class="pic-march" d="M898.7 550H1084.7" />

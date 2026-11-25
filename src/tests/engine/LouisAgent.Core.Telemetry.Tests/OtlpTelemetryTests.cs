@@ -170,6 +170,6 @@ public class OtlpTelemetryTests
             usageSink: new ListUsageSink());
 
         using (UsageScope.Begin())
-            await engine.ProcessPromptAsync(engine.StartHistory(), "Hallo?");
+            await engine.ProcessPromptAsync(engine.StartConversation(), "Hallo?");
     }
 }

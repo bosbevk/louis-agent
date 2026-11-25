@@ -43,7 +43,7 @@ public class ToolReplayThroughTheEngineTests
     /// <summary>One streamed turn, its text.</summary>
     private static async Task<string> TurnAsync(AgentEngine engine)
     {
-        var history = engine.StartHistory();
+        var history = engine.StartConversation();
         var text = new System.Text.StringBuilder();
         using (UsageScope.Begin(host: "test", session: "s1", turn: 1))
             await foreach (var update in engine.StreamPromptAsync(history, "what is in the file?"))
