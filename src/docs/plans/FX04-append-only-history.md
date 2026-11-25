@@ -208,5 +208,9 @@ second the orchestrator, each small enough to review on its own.
 rename reaches lacked about 160 summaries (ADR 0050); they get them in two commits, the engine's tests first, then
 usage and pricing.
 
+**A fourth tidy, before step 6** (his "tidy first, own commit", applied again). Step 6 changes texts in
+`AgentToolMessage` and `UserText`, whose holed messages named no records; their 48 records come first, a commit for
+each enum, the texts byte for byte as they were.
+
 ---
 [Docs index](../README.md) · Related: [Plans](README.md) · [FX4](../fixes/FX04-append-only-history.md)
