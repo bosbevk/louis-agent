@@ -1,10 +1,11 @@
 // What louis-agent.dev and framework.louis-agent.dev stand on in Azure, so it can be made again from code (F170).
-// Every resource is one of Microsoft's Azure Verified Modules, pinned to a version, but two: the network and the
-// environment are plain resources, since the environment's module can't set its telemetry agent and the network's
-// renames the subnet's delegation (Louis's pick, 2026-11-22). Every name is a parameter: our own instance's values
-// are in main.bicepparam beside this file. The two apps and their domains are released by deploy.ps1, which reads
-// this deployment's outputs. Each part is told what stands wherever a default differs, so a deploy over the running
-// sites changes nothing; what-if shows it (deploy.ps1 infra).
+// Every resource is one of Microsoft's Azure Verified Modules, pinned to a version, but the apps' environment, a
+// plain resource in apps-environment.bicep, since its module can't set its telemetry agent. That environment sits in
+// the apps' own resource group on no network of ours (FX249), so no load balancer is billed for it. Every name is a
+// parameter: our own instance's values are in main.bicepparam beside this file. The two apps and their domains are
+// released by deploy.ps1, which reads this deployment's outputs. Each part is told what stands wherever a default
+// differs, so a deploy over the running sites changes nothing but what a change means to; what-if shows it
+// (deploy.ps1 infra).
 //
 //   az deployment group what-if -g <group> -f main.bicep -p main.bicepparam
 
@@ -23,32 +24,17 @@ param insightsName string
 @description('How many days Application Insights keeps its data.')
 param insightsRetentionDays int
 
-@description('The network the environment sits on.')
-param networkName string
+@description('The resource group the apps and their environment have to themselves (FX249), made by deploy.ps1 infra.')
+param appsGroupName string
 
-@description('The network\'s address range.')
-param networkAddressPrefix string
-
-@description('The subnet the environment has to itself, delegated to Container Apps.')
-param appsSubnetName string
-
-@description('The apps subnet\'s range: an environment on a network wants a /23 of its own.')
-param appsSubnetPrefix string
-
-@description('The Container Apps environment the two apps run in.')
+@description('The Container Apps environment the two apps run in, in the apps\' group.')
 param environmentName string
-
-@description('The resource group Azure keeps the environment\'s own machinery in, named when the environment is made.')
-param environmentInfrastructureGroupName string
 
 @description('The name the environment knows the apps\' share by, which each app\'s yaml mounts.')
 param shareLinkName string
 
 @description('The registry the apps\' images are built in and pulled from.')
 param registryName string
-
-@description('The name of the environment\'s right to pull from the registry: a role assignment keeps its name for life, and Azure refuses a second one for the same right.')
-param registryPullAssignmentName string
 
 @description('The vault that holds the two apps\' secrets.')
 param vaultName string
@@ -73,6 +59,12 @@ param releaseVaultReadAssignmentName string
 
 @description('The name of the release identity\'s right to update the apps in the resource group.')
 param releaseGroupAssignmentName string
+
+@description('The name of the release identity\'s right to make and update the apps in the apps\' group.')
+param releaseAppsGroupAssignmentName string
+
+@description('The name of the apps\' environment\'s right to pull from the registry: a role assignment keeps its name for life, so a new environment takes a new one.')
+param appsRegistryPullAssignmentName string
 
 @description('The storage account that holds the apps\' file share.')
 param storageName string
@@ -123,93 +115,21 @@ module insights 'br/public:avm/res/insights/component:0.8.0' = {
   }
 }
 
-// The network, with the one subnet the environment has to itself. A plain resource: the network's module names the
-// delegation after its service, which would rename the live one on a subnet the environment uses.
-resource network 'Microsoft.Network/virtualNetworks@2025-05-01' = {
-  name: networkName
-  location: location
-  properties: {
-    addressSpace: {
-      addressPrefixes: [networkAddressPrefix]
-    }
-    privateEndpointVNetPolicies: 'Disabled'
-    subnets: [
-      {
-        name: appsSubnetName
-        properties: {
-          addressPrefix: appsSubnetPrefix
-          delegations: [
-            {
-              name: 'containerapps'
-              properties: {
-                serviceName: 'Microsoft.App/environments'
-              }
-            }
-          ]
-          privateEndpointNetworkPolicies: 'Disabled'
-          privateLinkServiceNetworkPolicies: 'Enabled'
-        }
-      }
-    ]
-  }
-}
-
-// The environment, on the apps subnet, open to the internet, on the Consumption profile alone. A plain resource: its
-// module has no setting for the telemetry agent, which sends the apps' logs and traces to Application Insights, so a
-// deploy through it would switch the agent off. It pulls the apps' images as itself (their yaml: system-environment).
-resource environment 'Microsoft.App/managedEnvironments@2026-01-01' = {
-  name: environmentName
-  location: location
-  identity: {
-    type: 'SystemAssigned'
-  }
-  properties: {
-    vnetConfiguration: {
-      infrastructureSubnetId: resourceId('Microsoft.Network/virtualNetworks/subnets', network.name, appsSubnetName)
-      internal: false
-    }
-    infrastructureResourceGroup: environmentInfrastructureGroupName
-    publicNetworkAccess: 'Enabled'
-    zoneRedundant: false
-    workloadProfiles: [
-      {
-        name: 'Consumption'
-        workloadProfileType: 'Consumption'
-      }
-    ]
-    peerAuthentication: {
-      mtls: {
-        enabled: false
-      }
-    }
-    peerTrafficConfiguration: {
-      encryption: {
-        enabled: false
-      }
-    }
-    appLogsConfiguration: {
-      destination: 'log-analytics'
-      logAnalyticsConfiguration: {
-        customerId: workspace.outputs.logAnalyticsWorkspaceId
-        sharedKey: workspace.outputs.primarySharedKey
-      }
-    }
-    // Bicep's bundled types for this version leave out the two settings below, but the API has them: a read of the
-    // environment at 2025-07-01, 2026-01-01 and 2026-07-01 returns both. The connection string is never read back.
-    #disable-next-line BCP037
-    appInsightsConfiguration: {
-      connectionString: insights.outputs.connectionString
-    }
-    #disable-next-line BCP037
-    openTelemetryConfiguration: {
-      tracesConfiguration: {
-        destinations: ['appInsights']
-        includeDapr: false
-      }
-      logsConfiguration: {
-        destinations: ['appInsights']
-      }
-    }
+// The apps' environment and its share link, in the apps' own group (FX249). The keys travel as secure parameters.
+module appsEnvironment 'apps-environment.bicep' = {
+  name: 'appsEnvironment'
+  scope: resourceGroup(appsGroupName)
+  dependsOn: [storage]
+  params: {
+    location: location
+    environmentName: environmentName
+    workspaceCustomerId: workspace.outputs.logAnalyticsWorkspaceId
+    workspaceSharedKey: workspace.outputs.primarySharedKey
+    insightsConnectionString: insights.outputs.connectionString
+    shareLinkName: shareLinkName
+    storageName: storageName
+    storageKey: storageAccount.listKeys().keys[0].value
+    shareName: shareName
   }
 }
 
@@ -234,8 +154,8 @@ module registry 'br/public:avm/res/container-registry/registry:0.13.2' = {
     retentionPolicyDays: 7
     roleAssignments: [
       {
-        name: registryPullAssignmentName
-        principalId: environment.identity.principalId
+        name: appsRegistryPullAssignmentName
+        principalId: appsEnvironment.outputs.principalId
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: acrPullRole
       }
@@ -313,6 +233,19 @@ module releaseGroupRight 'br/public:avm/res/authorization/role-assignment/rg-sco
   }
 }
 
+// The same right on the apps' group (FX249), where a release makes and updates the two apps.
+module releaseAppsGroupRight 'br/public:avm/res/authorization/role-assignment/rg-scope:0.1.1' = {
+  name: 'releaseAppsGroupRight'
+  scope: resourceGroup(appsGroupName)
+  params: {
+    name: releaseAppsGroupAssignmentName
+    principalId: releasePrincipalId
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: contributorRole
+    enableTelemetry: false
+  }
+}
+
 // The storage account and the apps' share. The environment mounts the share with the account's key, so key access
 // stays on and no address is denied; the module's defaults would deny every address, turn on infrastructure
 // encryption (which can't change on an account that stands) and replicate to a second region.
@@ -371,30 +304,15 @@ module storage 'br/public:avm/res/storage/storage-account:0.33.2' = {
   }
 }
 
-// The storage account as Azure holds it once its module has run, so the share's link can read its key.
+// The storage account as Azure holds it once its module has run, so the apps' environment can mount the share with
+// its key.
 resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing = {
   name: storageName
 }
 
-// The environment's link to the apps' share, by the name each app's yaml mounts, read and write, with the account's
-// key. A plain resource beside the environment, since it is the environment's own.
-resource shareLink 'Microsoft.App/managedEnvironments/storages@2026-01-01' = {
-  parent: environment
-  name: shareLinkName
-  dependsOn: [storage]
-  properties: {
-    azureFile: {
-      accountName: storageName
-      accountKey: storageAccount.listKeys().keys[0].value
-      shareName: shareName
-      accessMode: 'ReadWrite'
-    }
-  }
-}
-
 // What deploy.ps1 reads for every release, by the names it has always read them by: the environment the apps run in
 // and its address for the apex's DNS record, the identity the apps read the vault with, and the vault's address.
-output environmentId string = environment.id
-output environmentStaticIp string = environment.properties.staticIp
+output environmentId string = appsEnvironment.outputs.environmentId
+output environmentStaticIp string = appsEnvironment.outputs.staticIp
 output codingAppIdentityId string = appIdentity.outputs.resourceId
 output vaultUri string = vault.outputs.uri
