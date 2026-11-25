@@ -157,7 +157,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <rect class="mrq-rule" x="0" y="26" width="2051" height="1" rx="0" />
     <g class="flow" transform="translate(0 44)">
       <rect class="pic-panel" x="841.9" y="0" width="432" height="200" rx="14" />
-      <text class="pic-group" x="855.9" y="19" text-anchor="start">puls-env, Consumption, asleep at no replicas</text>
+      <text class="pic-group" x="855.9" y="19" text-anchor="start">louis-agent-env, Consumption, asleep at no replicas</text>
       <path class="pic-line pic-edge tone-blue" d="M418.4 154L514.6 154" marker-end="url(#arrow-blue)" />
       <path class="pic-march" d="M418.4 154L514.6 154" />
       <path class="pic-line pic-edge tone-red" d="M785.8 154L853.9 154" marker-end="url(#arrow-red)" />
@@ -319,7 +319,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <path d="M11 12h1v4h1" />
   </g>
   <text class="notes" x="38" y="542">
-    <tspan class="note-head">Two apps in one environment in rg-puls-za, each asleep until someone visits:</tspan>
+    <tspan class="note-head">Two apps in one environment in rg-louis-agent-za, on no network of ours, each asleep until someone visits:</tspan>
     <tspan class="note-rest">they share an identity that reads the vault and a share that holds each one's logs in a folder of its own.</tspan>
   </text>
 </svg>

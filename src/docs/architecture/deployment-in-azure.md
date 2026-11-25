@@ -14,21 +14,23 @@ network lets in.
 
 ## What runs where
 
-Two apps run in one Container Apps environment, `puls-env`, in the resource group `rg-puls-za`. louis-agent.dev is
-`louis-agent-app`, and framework.louis-agent.dev is `louis-agent-framework-app`. They are the only things with a
+Two apps run in one Container Apps environment, `louis-agent-env`, in a resource group of their own,
+`rg-louis-agent-za`. The environment sits on no network of ours, since one on its own network is billed a load
+balancer and a public IP. What the apps share is in `rg-puls-za`. louis-agent.dev is `louis-agent-app`, and
+framework.louis-agent.dev is `louis-agent-framework-app`. They are the only things with a
 public address, and each sleeps at no replicas until someone visits.
 
 They share what they can. One identity reads the vault for both, and one file share holds each app's logs in a
-folder of its own, so the framework's site added nothing to Azure but its app. Each app has its own image, built in
-the registry, and calls the model with the key both sites share. Their logs and traces go to the same
+folder of its own, so the framework's site added nothing to Azure but its app. Each app has its own image, built on the
+release's runner and pushed to the registry, and calls the model with the key both sites share. Their logs and traces go to the same
 Application Insights.
 
 ![Two apps in one environment, each asleep until someone visits, sharing an identity that reads the vault and a share that holds each one's logs](diagrams/deployment-in-azure-what-runs-where.svg)
 
 ## Made from code
 
-Everything the two apps stand on is described in one Bicep file, `src/site/deploy/azure/main.bicep`: the network and
-its subnet, the environment with its telemetry agent, the registry, the vault and the identity that reads it, the
+Everything the two apps stand on is described in one Bicep file, `src/site/deploy/azure/main.bicep`: the
+environment with its telemetry agent, which it deploys into the apps' group from `apps-environment.bicep`, the registry, the vault and the identity that reads it, the
 storage account and its share, the logs and Application Insights, and the rights between them. The apps themselves
 aren't in it. Each merge releases them, and a Bicep deploy would fight the release over them. The file is deployed by
 a person, since it gives rights the release identity doesn't hold, and Azure shows its what-if before anything
@@ -40,8 +42,8 @@ what lets the same file build someone else's sites.
 
 A merge to `main` signs in to Azure with no password and runs one job. It releases louis-agent.dev first, then the
 framework's site, so a failure in the second never holds back the site that sells. Each release makes the folders
-its app names on the share, which only the framework's does, builds the image and updates the app as its next
-revision.
+its app names on the share, which only the framework's does, builds the image with the runner's Docker and pushes
+it to the registry, and updates the app as its next revision.
 
 ![A merge signs in by OpenID Connect and releases louis-agent.dev, then the framework's site: its folders, its image, its next revision](diagrams/deployment-in-azure-a-release.svg)
 
@@ -66,7 +68,7 @@ from one address. The answer streams back from the model.
 |---|---|---|---|
 | The internet | `louis-agent-app`, `louis-agent-framework-app` | 443 | The environment's ingress, with each app's managed certificate; each yaml sets `allowInsecure: false` |
 
-Nothing else in the resource group has a public address. What the environment lets out is Azure's default for it;
+Nothing else in either resource group has a public address. What the environment lets out is Azure's default for it;
 no rule of ours narrows it.
 
 ---

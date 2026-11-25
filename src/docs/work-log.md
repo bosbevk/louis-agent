@@ -13,16 +13,15 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 167 | 74 |
-| Fixes (`FX`) | 237 | 5 |
+| Fixes (`FX`) | 238 | 4 |
 | Cleanups (`CL`) | 47 | 24 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (103 in the TODO)
+## Open (102 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
-| FX249 | The sites' environment sits on a network of our own, so Azure bills a load balancer and its public IP, about R370 a month: the apps move to an environment with no network, in a group of their own | Now, before F43's first child |
 | F171 | The bill checker (Louis, 2026-11-21; 2026-11-22: "this feature is next"): a phone app that reads a Western Cape municipal account from a photo or a PDF, checks every line against Cape Town's, Swartland's and Overstrand's own tariffs and drafts the dispute, free to download with one subscription; the product in its own private `bill-checker` repository on the framework's packages, the framework's parts here: F171.1 a photo or PDF reaches a tool (done 2026-11-24); F171.2 the bills pack reads and checks; F171.3 the dispute letter; F171.4 the identity and evals; F171.5 the account, consent and our own subscriptions part; F171.6 the phone app; F171.7 the stores; F171.8 the monthly report | Now, F171.2 on after F140 |
 | F43 | Accounts, tenants and durable sessions; its first child, durable sessions, after F171.1 and before F157 | Now, its first child after F171.1 |
 | FX4 | Append-only history | Now, after F43's first child |
@@ -298,10 +297,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (237 done)
+## Fixes (238 done)
 
 | Id | When | What |
 |---|---|---|
+| FX249 | 2026-11-25 | The sites moved to an environment on no network, in a group of their own, so no load balancer or public IP is billed (about R370 a month) |
 | FX248 | 2026-11-25 | The sites' images build with Docker on the release's runner and are pushed, not built in the registry by the minute (about R850 a month) |
 | FX247 | 2026-11-24 | On a page of slides the guide's bar stands as the corner button, so a slide has the whole screen |
 | FX246 | 2026-11-24 | A long slide keeps its heading on its first page: a row of tiles or a list breaks between its items |

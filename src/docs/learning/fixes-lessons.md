@@ -1286,6 +1286,10 @@ first link, right after the topic. Letting the row break between its tiles, and 
 chain short enough to fit, so the heading stays on page one. It was found by measuring where each part landed in a
 real browser, not by reading the rules. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX249 · A setting fixed at birth is paid for until you rebuild
+
+An environment's network is chosen when it is made and can't change after, so a network kept for one VM went on costing a load balancer and an IP a month after the VM left. The only way out was a new environment, and the way to move without an outage was to build it beside the old one: a group of its own so the apps kept their names, the certificates issued before the DNS moved, and the old deleted only once all three names answered. One step needed a second road: Azure's bind command answered an internal error twice for the apex, and setting the same binding on the app directly worked. Skill 13 (cost and token economics: what a choice costs every month) and 18 (testing and shipping: a move with the old beside the new).
+
 ## FX248 · A convenience that is billed by the minute
 
 Building the image in the registry meant no machine needed Docker, which was handy when every release ran from a PC. Once every merge released both sites from GitHub, the same convenience ran twice per merge on Azure's machines, and it became the biggest line on the bill, ahead of the apps themselves. The runner already has Docker and builds for nothing, so the image is built there and pushed. Reading the bill by meter, not by service, is what showed it: "Container Registry" looked like storage, and the meter said it was build minutes. Skill 13 (cost and token economics: measure what each part costs before guessing).
