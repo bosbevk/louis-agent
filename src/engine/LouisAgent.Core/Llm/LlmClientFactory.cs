@@ -4,6 +4,7 @@ using LouisAgent.Core.Llm.Caching;
 using LouisAgent.Core.Llm.Messages;
 using LouisAgent.Core.Llm.Messages.Holes.Providers;
 using LouisAgent.Core.Llm.Providers;
+using LouisAgent.Core.Llm.Thinking;
 using LouisAgent.Core.Llm.UsageMapping;
 using Microsoft.Extensions.AI;
 
@@ -44,6 +45,9 @@ public sealed class LlmClientFactory : ILlmClientFactory
 
     /// <summary>The provider's own way of counting tokens.</summary>
     public IUsageMapper CreateUsageMapper(LlmOptions options) => Provider(options).CreateUsageMapper();
+
+    /// <summary>The provider's own way with a resumed chat's thinking once its tools moved.</summary>
+    public IStaleThinking CreateStaleThinking(LlmOptions options) => Provider(options).CreateStaleThinking();
 
     /// <summary>
     /// The provider's markers when <c>LLM_CACHE</c> is on; nothing when it's off, whoever the provider is.

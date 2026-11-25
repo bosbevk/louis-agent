@@ -1,5 +1,6 @@
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Llm.Caching;
+using LouisAgent.Core.Llm.Thinking;
 using LouisAgent.Core.Llm.UsageMapping;
 using Microsoft.Extensions.AI;
 
@@ -17,7 +18,9 @@ namespace LouisAgent.Core.Llm;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0003-provider-strategies.md">ADR 0003: provider strategies</seealso>
 public interface ILlmClientFactory
 {
-    /// <summary>The chat client for these settings, wrapped for the engine's pipeline; refuses settings it can't work with.</summary>
+    /// <summary>
+    /// The chat client for these settings, wrapped for the engine's pipeline; refuses settings it can't work with.
+    /// </summary>
     IChatClient Create(LlmOptions options);
 
     /// <summary>How this provider's usage maps to the ledger's token kinds.</summary>
@@ -25,4 +28,7 @@ public interface ILlmClientFactory
 
     /// <summary>How this provider marks requests for its prompt cache (F4).</summary>
     IPromptCachingStrategy CreatePromptCaching(LlmOptions options) => NoPromptCaching.Instance;
+
+    /// <summary>What a chat resumed on moved tools does with its saved thinking, on this provider.</summary>
+    IStaleThinking CreateStaleThinking(LlmOptions options) => StripStaleThinking.Instance;
 }

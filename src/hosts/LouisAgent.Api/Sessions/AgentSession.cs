@@ -10,6 +10,7 @@ using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.SessionStream.Wire.Requests;
 using LouisAgent.SessionStream.Wire.Requests.Windows;
+using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Api.Sessions;
 
@@ -140,12 +141,9 @@ internal sealed class AgentSession(
     {
         var turns = saved.Turns;
         var savedTools = turns.LastOrDefault(turn => turn.Tools is not null)?.Tools;
-        Conversation = Engine.ResumeConversation(saved.Session.SystemPrompt, savedTools);
-        foreach (var turn in turns)
-        {
-            Conversation.AddRange(turn.Messages);
-            foreach (var (name, content) in turn.Attachments) Remember(name, content);
-        }
+        List<ChatMessage> said = [.. turns.SelectMany(turn => turn.Messages)];
+        Conversation = Engine.ResumeConversation(saved.Session.SystemPrompt, savedTools, said);
+        foreach (var (name, content) in turns.SelectMany(turn => turn.Attachments)) Remember(name, content);
 
         Turns = turns.Count;
     }

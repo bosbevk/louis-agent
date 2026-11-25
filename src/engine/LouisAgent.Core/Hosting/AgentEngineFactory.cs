@@ -4,6 +4,7 @@ using LouisAgent.Choices;
 using LouisAgent.Core.Hosting.Engines;
 using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Hosting.SessionLlms;
+using LouisAgent.Core.Llm.Thinking;
 using LouisAgent.Core.Llm.UsageMapping;
 using LouisAgent.Core.Pricing.Rates;
 using LouisAgent.Core.Usage.Sinks;
@@ -82,6 +83,12 @@ public sealed class AgentEngineFactory
     private readonly ReplayStore? _replay;
 
     /// <summary>
+    /// The instance's provider's way with a resumed chat's thinking once its tools moved; an engine on a session's
+    /// own model profile strips it, which every provider takes.
+    /// </summary>
+    private readonly IStaleThinking? _staleThinking;
+
+    /// <summary>
     /// The factory over the instance's model, settings, ledger, prices and packs: one store, one browser and one
     /// clock for every engine it builds.
     /// </summary>
@@ -89,9 +96,10 @@ public sealed class AgentEngineFactory
         IUsageSink? usageSink = null, IUsageMapper? usageMapper = null, DisplayCurrency? display = null,
         ReasoningEffort? thinking = null, HostServices? services = null, int capacity = DefaultCapacity,
         ExchangeRates? rates = null, IReadOnlyList<SessionLlm>? sessionLlms = null, AgentCatalog? catalog = null,
-        ReplayStore? recordings = null)
+        ReplayStore? recordings = null, IStaleThinking? staleThinking = null)
     {
         Catalog = catalog ?? AgentCatalog.CoreOnly;
+        _staleThinking = staleThinking;
         _chatClient = chatClient;
         _agent = agent;
         _agent.DefaultVoice ??= Catalog.DefaultVoice;
@@ -212,7 +220,7 @@ public sealed class AgentEngineFactory
             _agent,
             model?.SupportsTools ?? _supportsTools, toolsets: skills.HasAny ? [.. tools, skills] : tools, _usageSink,
             model is null ? _usageMapper : model.UsageMapper, selfExtension, ToolsetCatalog.RunsInParallel(resolved),
-            clock: _clock, replay: _replay)
+            clock: _clock, replay: _replay, staleThinking: model is null ? _staleThinking : null)
         {
             SkillsDirectory = SkillFolder.Find(_agent),
             // An agent-built tool may take no name of the catalogue's, a pack's included (CL15).

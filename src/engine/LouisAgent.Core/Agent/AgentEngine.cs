@@ -6,6 +6,7 @@ using LouisAgent.Core.Agent.Messages;
 using LouisAgent.Core.Agent.Turns;
 using LouisAgent.Core.Agent.Turns.Pacing;
 using LouisAgent.Core.Config;
+using LouisAgent.Core.Llm.Thinking;
 using LouisAgent.Core.Llm.UsageMapping;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
@@ -52,6 +53,9 @@ public class AgentEngine
 
     /// <summary>What the user types that the model never sees.</summary>
     private readonly UserCommands _commands;
+
+    /// <summary>What a chat resumed on moved tools does with its saved thinking: the provider's way.</summary>
+    private readonly IStaleThinking _staleThinking;
 
     /// <summary>Combined default instructions and skill documentation used as the system prompt.</summary>
     public string SkillDocumentation => _skillTools.Documentation;
@@ -145,6 +149,10 @@ public class AgentEngine
     /// <param name="concurrentToolCalls">
     /// Run a round's tool calls at once (F34); only for toolsets that allow it.
     /// </param>
+    /// <param name="staleThinking">
+    /// The provider's way with a resumed chat's thinking once its tools moved
+    /// (<c>LlmClientFactory.CreateStaleThinking</c>); null strips it, which every provider takes.
+    /// </param>
     /// <param name="selfExtension">
     /// On a toolsets engine, also register the self-extension tools (CreateSkillFile, ReloadSkills, CreateTool,
     /// ListAgentTools): the <c>skills</c> toolset. Ignored when <paramref name="toolsets"/> is null, which always
@@ -154,9 +162,11 @@ public class AgentEngine
         bool supportsTools = true,
         IEnumerable<object>? toolsets = null,
         IUsageSink? usageSink = null, IUsageMapper? usageMapper = null, bool selfExtension = false,
-        bool concurrentToolCalls = false, TimeProvider? clock = null, Sessions.Replay.Store.ReplayStore? replay = null)
+        bool concurrentToolCalls = false, TimeProvider? clock = null, Sessions.Replay.Store.ReplayStore? replay = null,
+        IStaleThinking? staleThinking = null)
     {
         SupportsTools = supportsTools;
+        _staleThinking = staleThinking ?? StripStaleThinking.Instance;
         WorkspaceRoot = Path.GetFullPath(options.WorkspaceRoot);
         _registry = new ToolRegistry(supportsTools, replay);
         var python = new PythonRunner(WorkspaceRoot);
@@ -208,8 +218,16 @@ public class AgentEngine
     /// </summary>
     /// <param name="systemPrompt">The system prompt the chat was saved with.</param>
     /// <param name="savedTools">The mark of the tools its saved turns were sent with; none when it had no turn.</param>
-    public Conversation ResumeConversation(string systemPrompt, ToolsFingerprint? savedTools) =>
-        _turns.ResumedConversation(systemPrompt, savedTools);
+    /// <param name="savedMessages">Its saved turns' messages, in order.</param>
+    public Conversation ResumeConversation(string systemPrompt, ToolsFingerprint? savedTools,
+        IReadOnlyList<ChatMessage> savedMessages)
+    {
+        var conversation = _turns.ResumedConversation(systemPrompt, savedTools);
+        // Thinking saved under other tools may no longer match them; the provider's strategy says what to send.
+        var said = conversation.ToolsChangedSinceSaved ? _staleThinking.Restore(savedMessages) : savedMessages;
+        conversation.AddRange(said);
+        return conversation;
+    }
 
     /// <summary>
     /// One prompt, the reply whole (<see cref="TurnRunner.ProcessAsync"/>): the turn, tool calls included, lands in
