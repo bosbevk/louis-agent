@@ -14,11 +14,11 @@ page doesn't repeat the list, so the two can't drift apart.
 
 ## The open fix
 
-One fix is open because it breaks a rule the design depends on. A Haiku 5.5 chat rejects a request once its system
-prompt or tool list changed after thinking blocks were written. So a tool the agent creates mid-message, an
-`/approve`, a `/reject` or a skill reload can break the chat. History is meant to be append-only
-([ADR 0008](../adr/0008-history-is-append-only.md)), and until [FX4](../fixes/FX04-append-only-history.md) lands,
-that rule isn't fully held.
+A Haiku 5.5 chat rejects a request once its system prompt or tool list changed after thinking blocks were written,
+so history must stay append-only ([ADR 0008](../adr/0008-history-is-append-only.md)). Since FX4 that holds: a chat
+keeps the tools and the prompt it started with, and a change reaches the next chat. What remains is a cost, not a
+break: a chat resumed after a release moved its tools loses the thinking that no longer matches, stripped by us or
+dropped by Anthropic's API.
 
 ## Open decisions
 

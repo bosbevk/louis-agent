@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 168 | 74 |
-| Fixes (`FX`) | 239 | 4 |
+| Fixes (`FX`) | 240 | 3 |
 | Cleanups (`CL`) | 48 | 25 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -24,7 +24,6 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 |---|---|---|
 | F171 | The bill checker (Louis, 2026-11-21; 2026-11-22: "this feature is next"): a phone app that reads a Western Cape municipal account from a photo or a PDF, checks every line against Cape Town's, Swartland's and Overstrand's own tariffs and drafts the dispute, free to download with one subscription; the product in its own private `bill-checker` repository on the framework's packages, the framework's parts here: F171.1 a photo or PDF reaches a tool (done 2026-11-24); F171.2 the bills pack reads and checks; F171.3 the dispute letter; F171.4 the identity and evals; F171.5 the account, consent and our own subscriptions part; F171.6 the phone app; F171.7 the stores; F171.8 the monthly report | Now, F171.2 on after F140 |
 | F43 | Accounts, tenants and durable sessions; its first child, durable sessions, after F171.1 and before F157 | Now, F43.1 done; accounts and tenants not yet planned |
-| FX4 | Append-only history | Now |
 | F8 | Reliability | Now, after FX4 |
 | F7 | Cost you can see and stop | Now, after F8 |
 | F41 | Drafts and approvals | Now, after F7 |
@@ -299,10 +298,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (239 done)
+## Fixes (240 done)
 
 | Id | When | What |
 |---|---|---|
+| FX4 | 2026-11-25 | A chat keeps the tools and the system prompt it started with: a Conversation freezes them, frozen tools keep what they were sent and a rejected one never runs, the round limit's final request reads them from TurnTools, a resume sends its saved prompt and handles stale thinking per provider (stripped, or Anthropic's drop_block, proved live); five tidies and CL61 on the way |
 | FX250 | 2026-11-25 | The framework's site keeps its chats too, in the same database as louis-agent.dev's, and its Comparison page no longer says that is planned |
 | FX249 | 2026-11-25 | The sites moved to an environment on no network, in a group of their own, so no load balancer or public IP is billed (about R370 a month) |
 | FX248 | 2026-11-25 | The sites' images build with Docker on the release's runner and are pushed, not built in the registry by the minute (about R850 a month) |
