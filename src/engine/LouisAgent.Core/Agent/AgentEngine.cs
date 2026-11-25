@@ -185,7 +185,7 @@ public class AgentEngine
         _clock = clock ?? TimeProvider.System;
         _turns = new TurnRunner(
             ChatPipeline.Build(chatClient, _guards, usageSink, usageMapper, concurrentToolCalls, replay), _registry,
-            () => SkillDocumentation, () => Thinking, supportsTools, () => Name);
+            () => SkillDocumentation, () => Thinking, supportsTools, () => Name, _staleThinking);
 
         if (!supportsTools)
         {

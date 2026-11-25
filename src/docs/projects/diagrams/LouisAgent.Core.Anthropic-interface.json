@@ -1,7 +1,7 @@
 {
   "kind": "classes",
   "title": "LouisAgent.Core.Anthropic: the interface design",
-  "caption": "Core's three seams made real for Claude: the client, its usage read whole, and the cache marks on the prompt.",
+  "caption": "Core's four seams made real for Claude: the client, its usage read whole, the cache marks on the prompt, and a resumed chat's thinking.",
   "classes": {
     "types": [
       {
@@ -13,7 +13,8 @@
           "+Name",
           "+Create(LlmOptions) IChatClient",
           "+CreateUsageMapper() IUsageMapper",
-          "+CreatePromptCaching(options) IPromptCachingStrategy"
+          "+CreatePromptCaching(options) IPromptCachingStrategy",
+          "+CreateStaleThinking(options) IStaleThinking"
         ]
       },
       {
@@ -23,8 +24,25 @@
         "members": [
           "+Create(LlmOptions) IChatClient",
           "+CreateUsageMapper() IUsageMapper",
-          "+CreatePromptCaching(options) IPromptCachingStrategy"
+          "+CreatePromptCaching(options) IPromptCachingStrategy",
+          "+CreateStaleThinking(options) IStaleThinking"
         ]
+      },
+      {
+        "id": "dropblock",
+        "name": "AnthropicDropBlock",
+        "kind": "a resumed chat's thinking",
+        "members": [
+          "+Supports(model) bool",
+          "+Restore(saved) messages",
+          "+Prepare(options) ChatOptions"
+        ]
+      },
+      {
+        "id": "istale",
+        "name": "IStaleThinking",
+        "kind": "interface, LouisAgent.Core",
+        "tone": "violet"
       },
       {
         "id": "budget",
@@ -72,7 +90,9 @@
       { "from": "provider", "to": "mapper", "kind": "creates" },
       { "from": "provider", "to": "caching", "kind": "creates" },
       { "from": "mapper", "to": "imapper", "kind": "implements" },
-      { "from": "caching", "to": "icaching", "kind": "implements" }
+      { "from": "caching", "to": "icaching", "kind": "implements" },
+      { "from": "provider", "to": "dropblock", "kind": "creates", "word": "on the models that take it" },
+      { "from": "dropblock", "to": "istale", "kind": "implements" }
     ]
   }
 }

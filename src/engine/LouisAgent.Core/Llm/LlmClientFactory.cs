@@ -47,7 +47,7 @@ public sealed class LlmClientFactory : ILlmClientFactory
     public IUsageMapper CreateUsageMapper(LlmOptions options) => Provider(options).CreateUsageMapper();
 
     /// <summary>The provider's own way with a resumed chat's thinking once its tools moved.</summary>
-    public IStaleThinking CreateStaleThinking(LlmOptions options) => Provider(options).CreateStaleThinking();
+    public IStaleThinking CreateStaleThinking(LlmOptions options) => Provider(options).CreateStaleThinking(options);
 
     /// <summary>
     /// The provider's markers when <c>LLM_CACHE</c> is on; nothing when it's off, whoever the provider is.

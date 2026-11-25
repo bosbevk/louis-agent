@@ -1,11 +1,15 @@
 using Anthropic.Models.Messages;
+using LouisAgent.Core.Anthropic.Thinking;
 using Microsoft.Extensions.AI;
 
-namespace LouisAgent.Core.Anthropic.Tests;
+namespace LouisAgent.Core.Anthropic.Tests.Thinking;
 
-/// <summary>Older Claude models take a fixed thinking budget in place of adaptive thinking; the swap, and who gets it.</summary>
+/// <summary>
+/// Older Claude models take a fixed thinking budget in place of adaptive thinking; the swap, and who gets it.
+/// </summary>
 public class ThinkingBudgetTests
 {
+    /// <summary>Only the models before adaptive thinking get a budget.</summary>
     [TestCase("claude-haiku-4-5-20251001", true)]
     [TestCase("claude-haiku-5-5", false)]
     [TestCase("claude-sonnet-4-5", true)]
@@ -14,6 +18,7 @@ public class ThinkingBudgetTests
     public void UsesThinkingBudget_OnlyForModelsBeforeAdaptiveThinking(string model, bool expected) =>
         Assert.That(ThinkingBudget.UsesThinkingBudget(model), Is.EqualTo(expected));
 
+    /// <summary>The budget replaces adaptive reasoning, and stays below the reply's maximum.</summary>
     [Test]
     public void WithThinkingBudget_ReplacesReasoningWithABudgetBelowMaxTokens()
     {
@@ -38,6 +43,7 @@ public class ThinkingBudgetTests
             Is.EqualTo(4_096).And.LessThan(raw.MaxTokens));
     }
 
+    /// <summary>With thinking off there is nothing to swap.</summary>
     [Test]
     public void WithThinkingBudget_WithoutReasoning_LeavesOptionsAlone()
     {

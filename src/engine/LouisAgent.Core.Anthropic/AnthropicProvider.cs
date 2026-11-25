@@ -2,9 +2,11 @@ using Anthropic;
 using Anthropic.Core;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Anthropic.Messages;
+using LouisAgent.Core.Anthropic.Thinking;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Llm.Caching;
 using LouisAgent.Core.Llm.Providers;
+using LouisAgent.Core.Llm.Thinking;
 using LouisAgent.Core.Llm.UsageMapping;
 using Microsoft.Extensions.AI;
 
@@ -26,13 +28,16 @@ public sealed class AnthropicProvider : ILlmProvider
     /// <summary>The one instance: it holds nothing of its own.</summary>
     public static readonly AnthropicProvider Instance = new();
 
+    /// <summary>Only <see cref="Instance"/> is made.</summary>
     private AnthropicProvider()
     {
     }
 
     public string Name => LlmOptions.Anthropic;
 
-    /// <summary>The SDK's client as an <see cref="IChatClient"/>, with the thinking budget for models that need one.</summary>
+    /// <summary>
+    /// The SDK's client as an <see cref="IChatClient"/>, with the thinking budget for models that need one.
+    /// </summary>
     public IChatClient Create(LlmOptions options)
     {
         if (string.IsNullOrWhiteSpace(options.ApiKey))
@@ -57,4 +62,12 @@ public sealed class AnthropicProvider : ILlmProvider
     /// <summary>The two markers, the prefix's lifetime from <c>LLM_CACHE_TTL</c>.</summary>
     public IPromptCachingStrategy CreatePromptCaching(LlmOptions options) =>
         new AnthropicPromptCaching(options.ResolveCacheTtl(), options.Model, LlmLimits.MaxOutputTokens);
+
+    /// <summary>
+    /// On the models that take it, the API drops the thinking that no longer matches; on any other, it is stripped.
+    /// </summary>
+    public IStaleThinking CreateStaleThinking(LlmOptions options) =>
+        AnthropicDropBlock.Supports(options.Model)
+            ? new AnthropicDropBlock(options.Model)
+            : StripStaleThinking.Instance;
 }

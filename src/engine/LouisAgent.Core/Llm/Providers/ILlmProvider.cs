@@ -40,5 +40,5 @@ public interface ILlmProvider
     /// What a chat resumed on moved tools does with its saved thinking; stripping it, which every provider takes,
     /// unless this one can do better.
     /// </summary>
-    IStaleThinking CreateStaleThinking() => StripStaleThinking.Instance;
+    IStaleThinking CreateStaleThinking(LlmOptions options) => StripStaleThinking.Instance;
 }

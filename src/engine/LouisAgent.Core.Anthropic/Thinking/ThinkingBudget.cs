@@ -2,7 +2,7 @@ using Anthropic.Models.Messages;
 using LouisAgent.Core.Llm.Providers;
 using Microsoft.Extensions.AI;
 
-namespace LouisAgent.Core.Anthropic;
+namespace LouisAgent.Core.Anthropic.Thinking;
 
 /// <summary>
 /// Claude models before 4.6 reject adaptive thinking (which the adapter sends for <c>ChatOptions.Reasoning</c>) and
@@ -20,7 +20,9 @@ public static class ThinkingBudget
     public static bool UsesThinkingBudget(string model) =>
         ThinkingBudgetModelPrefixes.Any(p => model.StartsWith(p, StringComparison.OrdinalIgnoreCase));
 
-    /// <summary>Thinking tokens count toward max_tokens, so the budget leaves room for the answer and tool calls.</summary>
+    /// <summary>
+    /// Thinking tokens count toward max_tokens, so the budget leaves room for the answer and tool calls.
+    /// </summary>
     public static long Budget(ReasoningEffort effort) => effort switch
     {
         ReasoningEffort.Low => 2_048,

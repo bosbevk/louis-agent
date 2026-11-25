@@ -223,7 +223,10 @@ its own class, the folder into subfolders, the guards' holes into records, the t
 then `TurnTools` goes in the turn's folder.
 
 **Step 9's paid proof, yes** (Louis, 2026-11-25, on a card: "Yes, run it"), after reading whether the Anthropic
-adapter can send the header and the field.
+adapter can send the header and the field. It can, through the regular request's raw data. On Haiku 5.5 a thought-out
+answer followed by a message on a changed tool was a 400 ("bound to a different conversation"); the same request with
+the header and `drop_block` answered, the API reporting `thinking_dropped`. Three runs cost about $0.002. The proof
+showed one more need: the setting rides on every request of such a chat, so `IStaleThinking` gained `Prepare`.
 
 ---
 [Docs index](../README.md) · Related: [Plans](README.md) · [FX4](../fixes/FX04-append-only-history.md)

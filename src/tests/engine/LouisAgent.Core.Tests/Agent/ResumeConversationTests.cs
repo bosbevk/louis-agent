@@ -1,4 +1,5 @@
 using LouisAgent.Core.Agent;
+using LouisAgent.Core.Llm.Thinking;
 using LouisAgent.Core.Skills.Providers;
 using Microsoft.Extensions.AI;
 
@@ -50,6 +51,41 @@ public class ResumeConversationTests
             Assert.That(restored.OfType<FunctionCallContent>().Single().Name, Is.EqualTo("GetToday"), "the call");
             Assert.That(restored.OfType<FunctionResultContent>().Single().Result, Is.EqualTo("Tuesday"), "its result");
         });
+    }
+
+    /// <summary>A strategy that keeps the turns and marks every request it prepares.</summary>
+    private sealed class Marking : IStaleThinking
+    {
+        /// <summary>The saved turns, as they were.</summary>
+        public IReadOnlyList<ChatMessage> Restore(IReadOnlyList<ChatMessage> saved) => saved;
+
+        /// <summary>The request, marked as prepared.</summary>
+        public ChatOptions Prepare(ChatOptions options)
+        {
+            var prepared = options.Clone();
+            (prepared.AdditionalProperties ??= [])["prepared"] = true;
+            return prepared;
+        }
+    }
+
+    /// <summary>
+    /// Each request of a chat resumed on moved tools goes through the provider's strategy; one on the same tools
+    /// doesn't.
+    /// </summary>
+    [TestCase(true)]
+    [TestCase(false)]
+    public async Task ARequestOfAChatResumedOnMovedTools_IsPreparedByTheStrategy(bool moved)
+    {
+        var client = new FakeChatClient(_ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "Wednesday.")));
+        var engine = new AgentEngine(new MarkdownSkillProvider(TestPaths.SampleSkills), client, TestPaths.Agent(),
+            staleThinking: new Marking());
+        var saved = moved ? new ToolsFingerprint("older tools") : ToolsFingerprint.Of(engine.Tools);
+        var conversation = engine.ResumeConversation("You tell the time.", saved, SavedTurn());
+
+        await engine.ProcessPromptAsync(conversation, "And tomorrow?");
+
+        Assert.That(client.Requests[0].Options!.AdditionalProperties?.ContainsKey("prepared") == true,
+            Is.EqualTo(moved));
     }
 
     /// <summary>On the tools it was saved with, the chat comes back whole, thinking and all.</summary>

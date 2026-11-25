@@ -17,4 +17,10 @@ public interface IStaleThinking
 {
     /// <summary>The saved turns' messages, as a chat resumed on moved tools sends them.</summary>
     IReadOnlyList<ChatMessage> Restore(IReadOnlyList<ChatMessage> saved);
+
+    /// <summary>
+    /// A request of such a chat, as this provider sends it; unchanged unless the provider needs to ask for something
+    /// on every request, as Anthropic asks to drop the blocks that fail.
+    /// </summary>
+    ChatOptions Prepare(ChatOptions options) => options;
 }

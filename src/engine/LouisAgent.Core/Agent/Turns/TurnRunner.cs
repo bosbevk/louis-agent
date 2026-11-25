@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using LouisAgent.Core.Agent.Messages;
 using LouisAgent.Core.Agent.Messages.Holes;
 using LouisAgent.Core.Llm.Providers;
+using LouisAgent.Core.Llm.Thinking;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Telemetry;
 using LouisAgent.Core.Usage.Records;
@@ -26,13 +27,17 @@ namespace LouisAgent.Core.Agent.Turns;
 /// </param>
 /// <param name="thinking">Reasoning effort for each turn, as the engine has it; null disables thinking.</param>
 /// <param name="agentName">The agent a trace names the turn for, as the engine has it.</param>
+/// <param name="staleThinking">
+/// The provider's way with a chat resumed on moved tools: what its saved turns send, and each of its requests.
+/// </param>
 internal sealed class TurnRunner(
     IChatClient chatClient,
     ToolRegistry registry,
     Func<string> systemPrompt,
     Func<ReasoningEffort?> thinking,
     bool supportsTools,
-    Func<string> agentName)
+    Func<string> agentName,
+    IStaleThinking staleThinking)
 {
     /// <summary>The turn's own lines: a reply cut off by the output limit.</summary>
     private static readonly ILogger Log = AgentLogging.For<TurnRunner>();
@@ -256,6 +261,7 @@ internal sealed class TurnRunner(
             chatOptions.ToolMode = ChatToolMode.Auto;
         }
 
-        return chatOptions;
+        // A chat brought back on tools a release moved: the provider says how its requests carry the old thinking.
+        return conversation.ToolsChangedSinceSaved ? staleThinking.Prepare(chatOptions) : chatOptions;
     }
 }
