@@ -229,7 +229,8 @@ page in F177, FX246 and FX247.
 ### 10. Privacy and trust
 
 `/privacy` tells a visitor what happens to what they type, in the order they meet it. Their messages go to Anthropic,
-whose model writes the answers, in the United States, and the site holds the chat in memory only. Their details reach
+whose model writes the answers, in the United States, and the site keeps the chat in Microsoft Azure for 30 days
+after the last message, photos and PDFs never. Their details reach
 Louis by mail, through Resend, and only when they press Send it. Their address counts their chats for a day, also in
 memory. What's written down is the cost, the page and the tools of each answer, never their words, and the timing of
 each step goes to Azure's monitoring, also without their words. The look they pick stays in their own browser.

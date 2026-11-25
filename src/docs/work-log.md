@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 168 | 74 |
-| Fixes (`FX`) | 238 | 4 |
+| Fixes (`FX`) | 239 | 4 |
 | Cleanups (`CL`) | 47 | 24 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -298,10 +298,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (238 done)
+## Fixes (239 done)
 
 | Id | When | What |
 |---|---|---|
+| FX250 | 2026-11-25 | The framework's site keeps its chats too, in the same database as louis-agent.dev's, and its Comparison page no longer says that is planned |
 | FX249 | 2026-11-25 | The sites moved to an environment on no network, in a group of their own, so no load balancer or public IP is billed (about R370 a month) |
 | FX248 | 2026-11-25 | The sites' images build with Docker on the release's runner and are pushed, not built in the registry by the minute (about R850 a month) |
 | FX247 | 2026-11-24 | On a page of slides the guide's bar stands as the corner button, so a slide has the whole screen |

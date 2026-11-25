@@ -57,9 +57,9 @@ are there.
 host. The `framework` service is the framework's own site on `127.0.0.1:${FRAMEWORK_PORT:-5084}`, built by
 `Dockerfile.framework`. Both run on the smaller ASP.NET image, since neither runs `dotnet` tools.
 
-The `site` service keeps its chats in a MongoDB beside it, the `sessions-mongo` service, so restarting the site
-doesn't end a visitor's conversation. It runs `mongo:7.0`, the same image CI tests the store on. It has no port on
-the PC: only the site reaches it, over the compose network, which is why it needs no password. Its data lives in the
+Both services keep their chats in a MongoDB beside them, the `sessions-mongo` service, in the one database, so
+restarting a site doesn't end a visitor's conversation. It runs `mongo:7.0`, the same image CI tests the store on. It
+has no port on the PC: only the two sites reach it, over the compose network, which is why it needs no password. Its data lives in the
 `sessions-mongo` volume, so it survives the container being made again.
 
 ### The dashboard
@@ -83,7 +83,7 @@ app as its next revision. Each name points at its app by DNS-only records in Clo
 | Where | What runs | Reaches |
 |---|---|---|
 | `rg-louis-agent-za`, `louis-agent-env` | `louis-agent-app`: louis-agent.dev's host on the image `src/site/docker/Dockerfile` builds, the public Orbi on the docs, leads and site packs | the vault with `louis-agent-app-identity`; its logs in `logs/` and its saved CV in `data/` on `louis-agent-workspace`; its chats in `louis-agent-chats`, a free DocumentDB cluster, once the vault holds its address; the model; `puls-insights` through the environment's OpenTelemetry agent |
-| `rg-louis-agent-za`, `louis-agent-env` | `louis-agent-framework-app`: framework.louis-agent.dev's host on the image `Dockerfile.framework` builds, the framework Orbi on the docs and site packs | the vault with the same identity; its logs in `framework/logs/` on the same share; the model; `puls-insights` |
+| `rg-louis-agent-za`, `louis-agent-env` | `louis-agent-framework-app`: framework.louis-agent.dev's host on the image `Dockerfile.framework` builds, the framework Orbi on the docs and site packs | the vault with the same identity; its logs in `framework/logs/` on the same share; its chats in `louis-agent-chats`, the same database as louis-agent.dev's; the model; `puls-insights` |
 
 The how-to is [Deploy the sites](../guides/deploy-the-sites.md), and the pictures of what runs where, a release, a
 secret's path and a chat are in [the sites in Azure](deployment-in-azure.md), beside this page.

@@ -195,8 +195,10 @@ a day in the compose file, the run profile and the Azure yaml alike. `DOCS_ROOT`
 and the Azure yaml set it to `/app/docs`, the compose file keeps the image's, and the run profile points it at the
 repo. `SITE_DATA_DIRECTORY` and `REPLAY_DIRECTORY` say where the evals keep their runs and what a live run records:
 `/data` and `/data/recordings` in the compose file, on `src/site/data/framework/`, and in the Azure yaml, on the
-share's `framework/data`; the run profile points both at the same folder on the PC.
-`FRAMEWORK_PORT` picks the review copy's port.
+share's `framework/data`; the run profile points both at the same folder on the PC. `SESSION_STORE` and
+`SESSION_STORE_URL` keep Orbi's chats in MongoDB, in the same database as louis-agent.dev's, so a restart doesn't end
+one: the compose file's `sessions-mongo`, and in Azure the free cluster `louis-agent-chats` once the vault holds its
+address. The run profile keeps them in memory. `FRAMEWORK_PORT` picks the review copy's port.
 
 ## Extending it
 

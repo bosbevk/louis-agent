@@ -94,6 +94,21 @@ public class ComparisonPageTests
         });
     }
 
+    /// <summary>
+    /// Our sessions survive a restart since F43.1, so the comparison says so, proved by the store's seam (FX250).
+    /// </summary>
+    [Test]
+    public void OurSessions_SurviveARestart_ProvedByTheStore()
+    {
+        var sessions = Comparisons.Claims[ComparisonTopic.SessionsAndMemory];
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(sessions.Ours, Does.Contain("survive a restart").And.Not.Contain("planned"));
+            Assert.That(sessions.Proof, Is.EqualTo("src/hosts/LouisAgent.Api/Sessions/Store/ISessionStore.cs"));
+        });
+    }
+
     /// <summary>The others' pages are linked, with the date they were read on, shown on the page.</summary>
     [Test]
     public void TheOthersPages_AreLinked_WithTheDayTheyWereRead()

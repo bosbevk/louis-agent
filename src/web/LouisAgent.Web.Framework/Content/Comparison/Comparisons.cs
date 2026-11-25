@@ -75,8 +75,9 @@ public static class Comparisons
                 "src/engine/LouisAgent.Core.Ollama/LouisAgent.Core.Ollama.csproj", "Ollama among its providers",
                 "Ollama, LMStudio or ONNX"),
             ComparisonTopic.SessionsAndMemory => new ComparisonClaim("Sessions and memory",
-                "Sessions live in memory, and a subagent's chat stays open for a follow-up. Sessions that survive a " +
-                "restart are planned", "src/hosts/LouisAgent.Api/Sessions/AgentSessions.cs",
+                "Sessions survive a restart, kept in MongoDB for a set time after their last message, and a " +
+                "subagent's chat stays open for a follow-up",
+                "src/hosts/LouisAgent.Api/Sessions/Store/ISessionStore.cs",
                 "Session state, checkpointing and time-travel", "Memory and vector database support"),
             ComparisonTopic.Guards => new ComparisonClaim("Guards",
                 "Built in: an oversized tool result is summarised, a cut-off call is never run, and every fetch asks " +

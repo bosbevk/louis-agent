@@ -210,6 +210,20 @@ public class DeployFilesTests
     public void EachApp_ReadsItsKeys_FromItsOwnFile(string text) => Assert.That(Script, Does.Contain(text));
 
     /// <summary>
+    /// Both apps keep their chats in the one database (FX250, Louis: "can share the db"): one vault secret holds its
+    /// address for every app, its password is the cluster's one, read from the site's secrets file whichever app is
+    /// released, and no app's entry names a chats secret of its own.
+    /// </summary>
+    [Test]
+    public void BothApps_KeepTheirChats_InTheOneSharedDatabase()
+    {
+        Assert.That(Script, Does.Contain("$ChatsSecret = 'session-store-url'"));
+        Assert.That(Script,
+            Does.Contain("Get-EnvValue (Join-Path $AppConfig '.env.secrets') 'CHATS_DATABASE_PASSWORD'"));
+        Assert.That(Script, Does.Not.Contain("Chats = '"));
+    }
+
+    /// <summary>
     /// The framework's keys file is git-ignored, as every other secrets file is, and its example says what to fill
     /// in.
     /// </summary>
