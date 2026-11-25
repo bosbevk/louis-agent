@@ -1,4 +1,4 @@
-<svg viewBox="-24 -24 2504 1005" width="2504" height="1005" role="img" aria-label="LouisAgent.Core: the interface design" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 2539 1075" width="2539" height="1075" role="img" aria-label="LouisAgent.Core: the interface design" xmlns="http://www.w3.org/2000/svg">
   <title>LouisAgent.Core: the interface design</title>
   <style>svg {
   --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #e2dfff; --violet-line: #6b4dff; --violet-ink: #3a22c4; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
@@ -201,178 +201,179 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <stop class="mrq-glass-1" offset="1" />
     </linearGradient>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="2504" height="1005" rx="14" />
+  <rect class="ground" x="-24" y="-24" width="2539" height="1075" rx="14" />
   <g class="drawing" transform="translate(0 0)">
-    <path class="mrq-light" d="M-24 74a1252 190 0 1 0 2504 0a1252 190 0 1 0 -2504 0Z" />
+    <path class="mrq-light" d="M-24 74a1269.5 190 0 1 0 2539 0a1269.5 190 0 1 0 -2539 0Z" />
     <text class="mrq-title" x="16" y="14" text-anchor="start">LouisAgent.Core: the interface design</text>
-    <text class="pic-group" x="2440" y="14" text-anchor="end">Class diagram</text>
-    <rect class="mrq-rule" x="0" y="26" width="2456" height="1" rx="0" />
+    <text class="pic-group" x="2475" y="14" text-anchor="end">Class diagram</text>
+    <rect class="mrq-rule" x="0" y="26" width="2491" height="1" rx="0" />
     <g class="cls-drawing" transform="translate(0 44)">
-      <path class="cls-line uses" d="M434 228L554 228Q578 228 578 252L578 520Q578 544 602 544L738 544" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M434 228L554 228Q578 228 578 252L578 371Q578 395 602 395L738 395L1039 395L1231 395L1546 395L1746 395" marker-end="url(#open)" />
-      <path class="cls-line uses" d="M434 228L738 228" marker-end="url(#open)" />
-      <path class="cls-line creates" d="M434 228L554 228Q578 228 578 204L578 94Q578 70 602 70L738 70" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M434 228L554 228Q578 228 578 204L578 94Q578 70 602 70L738 70" />
-      <path class="cls-line creates" d="M1546 228L1746 228" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M1546 228L1746 228" />
-      <path class="cls-line holds" d="M1039 70L1071 70Q1095 70 1095 94L1095 204Q1095 228 1119 228L1231 228" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M1039 70L1071 70Q1095 70 1095 94L1095 204Q1095 228 1119 228L1231 228" />
-      <path class="cls-line holds" d="M1039 70L1231 70L1546 70L1558 70Q1570 70 1570 82L1570 186Q1570 210 1594 210L1746 210" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M1039 70L1231 70L1546 70L1558 70Q1570 70 1570 82L1570 186Q1570 210 1594 210L1746 210" />
-      <path class="cls-line holds" d="M1546 228L1558 228Q1570 228 1570 240L1570 353Q1570 377 1594 377L1746 377" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M1546 228L1558 228Q1570 228 1570 240L1570 353Q1570 377 1594 377L1746 377" />
-      <path class="cls-line holds" d="M2110 386L2190 386" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M2110 386L2190 386" />
-      <path class="cls-line holds" d="M2110 386L2142 386Q2166 386 2166 410L2166 532Q2166 544 2178 544L2190 544" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M2110 386L2142 386Q2166 386 2166 410L2166 532Q2166 544 2178 544L2190 544" />
-      <path class="cls-line holds" d="M2110 228L2190 228" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M2110 228L2190 228" />
-      <path class="cls-line holds" d="M434 702L738 702L1039 702L1071 702Q1095 702 1095 678L1095 586Q1095 562 1119 562L1231 562" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M434 702L738 702L1039 702L1071 702Q1095 702 1095 678L1095 586Q1095 562 1119 562L1231 562" />
-      <path class="cls-line holds" d="M1039 544L1231 544" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M1039 544L1231 544" />
-      <rect class="pic-pill cls-chip uses" x="636.5" y="535" width="43" height="18" rx="9" />
-      <text class="pic-pill-word cls-word quiet" x="658" y="547" text-anchor="middle">takes</text>
-      <rect class="pic-pill cls-chip uses" x="591" y="219" width="134" height="18" rx="9" />
-      <text class="pic-pill-word cls-word quiet" x="658" y="231" text-anchor="middle">asks for the model</text>
-      <rect class="pic-pill cls-chip creates" x="629.5" y="61" width="57" height="18" rx="9" />
-      <text class="pic-pill-word cls-word" x="658" y="73" text-anchor="middle">creates</text>
-      <rect class="pic-pill cls-chip holds" x="1141.5" y="219" width="43" height="18" rx="9" />
-      <text class="pic-pill-word cls-word" x="1163" y="231" text-anchor="middle">holds</text>
-      <rect class="pic-pill cls-chip holds" x="1106.5" y="61" width="113" height="18" rx="9" />
-      <text class="pic-pill-word cls-word" x="1163" y="73" text-anchor="middle">the default one</text>
-      <rect class="pic-pill cls-chip holds" x="1636.5" y="368" width="43" height="18" rx="9" />
-      <text class="pic-pill-word cls-word" x="1658" y="380" text-anchor="middle">holds</text>
-      <rect class="pic-pill cls-chip creates" x="1584" y="219" width="148" height="18" rx="9" />
-      <text class="pic-pill-word cls-word" x="1658" y="231" text-anchor="middle">one per toolset list</text>
-      <rect class="pic-pill cls-chip holds" x="2128" y="377" width="43" height="18" rx="9" />
-      <text class="pic-pill-word cls-word" x="2149.5" y="389" text-anchor="middle">holds</text>
-      <rect class="pic-pill cls-chip holds" x="2128" y="219" width="43" height="18" rx="9" />
-      <text class="pic-pill-word cls-word" x="2149.5" y="231" text-anchor="middle">holds</text>
-      <rect class="pic-pill cls-chip holds" x="452" y="693" width="120" height="18" rx="9" />
-      <text class="pic-pill-word cls-word" x="512" y="705" text-anchor="middle">one per provider</text>
-      <rect class="pic-pill cls-chip holds" x="1057" y="535" width="43" height="18" rx="9" />
-      <text class="pic-pill-word cls-word" x="1078.5" y="547" text-anchor="middle">holds</text>
-      <rect class="cls-cover" x="0" y="173" width="434" height="110" rx="14" />
-      <rect class="mrq-glass" x="0" y="173" width="434" height="110" rx="14" />
-      <rect class="cls-badge tone-green" x="14" y="191" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="28" y="209.5" text-anchor="middle">S</text>
-      <text class="pic-name" x="52" y="201" text-anchor="start">AgentHost</text>
-      <text class="pic-note" x="52" y="217" text-anchor="start">static, the start</text>
-      <path class="cls-divide" d="M14 237H420" />
-      <text class="cls-member" x="14" y="255" text-anchor="start">Build(catalog, services, clientFactory?) AgentHostContext</text>
-      <text class="cls-member" x="14" y="269" text-anchor="start">BuildToolHost(catalog, services?) AgentEngine</text>
-      <rect class="cls-cover" x="0" y="664" width="434" height="76" rx="14" />
-      <rect class="mrq-glass" x="0" y="664" width="434" height="76" rx="14" />
-      <rect class="cls-badge tone-green" x="14" y="688" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="28" y="706.5" text-anchor="middle">C</text>
-      <text class="pic-name" x="52" y="692" text-anchor="start">LlmClientFactory</text>
-      <text class="pic-note" x="52" y="708" text-anchor="start">implements</text>
-      <text class="pic-note" x="52" y="720" text-anchor="start">ILlmClientFactory</text>
-      <rect class="cls-cover" x="738" y="1" width="301" height="138" rx="14" />
-      <rect class="mrq-glass" x="738" y="1" width="301" height="138" rx="14" />
-      <rect class="mrq-edge" x="762" y="0.5" width="253" height="1.6" rx="0" />
-      <rect class="cls-badge tone-teal" x="752" y="19" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="766" y="37.5" text-anchor="middle">R</text>
-      <text class="pic-name" x="790" y="29" text-anchor="start">AgentHostContext</text>
-      <text class="pic-note" x="790" y="45" text-anchor="start">record</text>
-      <path class="cls-divide" d="M752 65H1025" />
-      <text class="cls-member" x="752" y="83" text-anchor="start">AgentEngine Engine</text>
-      <text class="cls-member" x="752" y="97" text-anchor="start">AgentEngineFactory Engines</text>
-      <text class="cls-member" x="752" y="111" text-anchor="start">LlmOptions Llm, AgentOptions Agent</text>
-      <text class="cls-member" x="752" y="125" text-anchor="start">PriceTable Prices, ExchangeRates Rates</text>
-      <rect class="cls-cover" x="738" y="166" width="301" height="124" rx="14" />
-      <rect class="mrq-glass" x="738" y="166" width="301" height="124" rx="14" />
-      <rect class="mrq-edge" x="762" y="165.5" width="253" height="1.6" rx="0" />
-      <rect class="cls-badge tone-teal" x="752" y="184" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="766" y="202.5" text-anchor="middle">I</text>
-      <text class="pic-name" x="790" y="194" text-anchor="start">ILlmClientFactory</text>
-      <text class="pic-note" x="790" y="210" text-anchor="start">interface</text>
-      <path class="cls-divide" d="M752 230H1025" />
-      <text class="cls-member" x="752" y="248" text-anchor="start">Create(LlmOptions) IChatClient</text>
-      <text class="cls-member" x="752" y="262" text-anchor="start">CreateUsageMapper(options)</text>
-      <text class="cls-member" x="752" y="276" text-anchor="start">CreatePromptCaching(options)</text>
-      <rect class="cls-cover" x="738" y="489" width="301" height="110" rx="14" />
-      <rect class="mrq-glass" x="738" y="489" width="301" height="110" rx="14" />
-      <rect class="mrq-edge" x="762" y="488.5" width="253" height="1.6" rx="0" />
-      <rect class="cls-badge tone-teal" x="752" y="507" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="766" y="525.5" text-anchor="middle">R</text>
-      <text class="pic-name" x="790" y="517" text-anchor="start">HostServices</text>
-      <text class="pic-note" x="790" y="533" text-anchor="start">record</text>
-      <path class="cls-divide" d="M752 553H1025" />
-      <text class="cls-member" x="752" y="571" text-anchor="start">Web Telemetry Discovery</text>
-      <text class="cls-member" x="752" y="585" text-anchor="start">IReadOnlyList&lt;ILlmProvider&gt;? Providers</text>
-      <rect class="cls-cover" x="1231" y="179" width="315" height="98" rx="14" />
-      <rect class="mrq-glass" x="1231" y="179" width="315" height="98" rx="14" />
-      <rect class="cls-badge tone-green" x="1245" y="191" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="1259" y="209.5" text-anchor="middle">C</text>
-      <text class="pic-name" x="1283" y="210" text-anchor="start">AgentEngineFactory</text>
-      <path class="cls-divide" d="M1245 231H1532" />
-      <text class="cls-member" x="1245" y="249" text-anchor="start">GetOrCreate(toolsets, role?) AgentEngine</text>
-      <text class="cls-member" x="1245" y="263" text-anchor="start">Catalog</text>
-      <rect class="cls-cover" x="1231" y="489" width="315" height="110" rx="14" />
-      <rect class="mrq-glass" x="1231" y="489" width="315" height="110" rx="14" />
-      <rect class="mrq-edge" x="1255" y="488.5" width="267" height="1.6" rx="0" />
-      <rect class="cls-badge tone-teal" x="1245" y="507" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="1259" y="525.5" text-anchor="middle">I</text>
-      <text class="pic-name" x="1283" y="517" text-anchor="start">ILlmProvider</text>
-      <text class="pic-note" x="1283" y="533" text-anchor="start">interface</text>
-      <path class="cls-divide" d="M1245 553H1532" />
-      <text class="cls-member" x="1245" y="571" text-anchor="start">Name</text>
-      <text class="cls-member" x="1245" y="585" text-anchor="start">Create(LlmOptions) IChatClient</text>
-      <rect class="cls-cover" x="1746" y="158" width="364" height="140" rx="14" />
-      <rect class="mrq-glass" x="1746" y="158" width="364" height="140" rx="14" />
-      <rect class="cls-badge tone-green" x="1760" y="170" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="1774" y="188.5" text-anchor="middle">C</text>
-      <text class="pic-name" x="1798" y="189" text-anchor="start">AgentEngine</text>
-      <path class="cls-divide" d="M1760 210H2096" />
-      <text class="cls-member" x="1760" y="228" text-anchor="start">StreamPromptAsync(history, input)</text>
-      <text class="cls-member" x="1760" y="242" text-anchor="start">  IAsyncEnumerable&lt;ChatResponseUpdate&gt;</text>
-      <text class="cls-member" x="1760" y="256" text-anchor="start">ProcessPromptAsync(history, input) Task&lt;string&gt;</text>
-      <text class="cls-member" x="1760" y="270" text-anchor="start">Tools</text>
-      <text class="cls-member" x="1760" y="284" text-anchor="start">ToolsChanged</text>
-      <rect class="cls-cover" x="1746" y="330" width="364" height="112" rx="14" />
-      <rect class="mrq-glass" x="1746" y="330" width="364" height="112" rx="14" />
-      <rect class="cls-badge tone-green" x="1760" y="342" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="1774" y="360.5" text-anchor="middle">C</text>
-      <text class="pic-name" x="1798" y="361" text-anchor="start">AgentCatalog</text>
-      <path class="cls-divide" d="M1760 382H2096" />
-      <text class="cls-member" x="1760" y="400" text-anchor="start">Identities, Packs, Toolsets</text>
-      <text class="cls-member" x="1760" y="414" text-anchor="start">Identity(name) IAgentIdentity?</text>
-      <text class="cls-member" x="1760" y="428" text-anchor="start">ToolsetsOf(identity) IReadOnlyList&lt;string&gt;</text>
-      <rect class="cls-cover" x="2190" y="173" width="266" height="110" rx="14" />
-      <rect class="mrq-glass" x="2190" y="173" width="266" height="110" rx="14" />
-      <rect class="mrq-edge" x="2214" y="172.5" width="218" height="1.6" rx="0" />
-      <rect class="cls-badge tone-teal" x="2204" y="191" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="2218" y="209.5" text-anchor="middle">I</text>
-      <text class="pic-name" x="2242" y="201" text-anchor="start">ISkillProvider</text>
-      <text class="pic-note" x="2242" y="217" text-anchor="start">interface</text>
-      <path class="cls-divide" d="M2204 237H2442" />
-      <text class="cls-member" x="2204" y="255" text-anchor="start">Skills</text>
-      <text class="cls-member" x="2204" y="269" text-anchor="start">Documentation</text>
-      <rect class="cls-cover" x="2190" y="332" width="266" height="108" rx="14" />
-      <rect class="mrq-glass" x="2190" y="332" width="266" height="108" rx="14" />
-      <rect class="mrq-edge" x="2214" y="331.5" width="218" height="1.6" rx="0" />
-      <rect class="cls-badge tone-violet" x="2204" y="356" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="2218" y="374.5" text-anchor="middle">I</text>
-      <text class="pic-name" x="2242" y="360" text-anchor="start">IAgentIdentity</text>
-      <text class="pic-note" x="2242" y="376" text-anchor="start">interface,</text>
-      <text class="pic-note" x="2242" y="388" text-anchor="start">LouisAgent.Composition</text>
-      <path class="cls-divide" d="M2204 408H2442" />
-      <text class="cls-member" x="2204" y="426" text-anchor="start">Name, Prompts, Packs, Calls</text>
-      <rect class="cls-cover" x="2190" y="490" width="266" height="108" rx="14" />
-      <rect class="mrq-glass" x="2190" y="490" width="266" height="108" rx="14" />
-      <rect class="mrq-edge" x="2214" y="489.5" width="218" height="1.6" rx="0" />
-      <rect class="cls-badge tone-violet" x="2204" y="514" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="2218" y="532.5" text-anchor="middle">I</text>
-      <text class="pic-name" x="2242" y="518" text-anchor="start">IAgentPack</text>
-      <text class="pic-note" x="2242" y="534" text-anchor="start">interface,</text>
-      <text class="pic-note" x="2242" y="546" text-anchor="start">LouisAgent.Composition</text>
-      <path class="cls-divide" d="M2204 566H2442" />
-      <text class="cls-member" x="2204" y="584" text-anchor="start">Name, Toolsets, Prompts, Requires</text>
+      <path class="cls-line uses" d="M434 249L554 249Q578 249 578 273L578 569Q578 593 602 593L738 593" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M434 249L554 249Q578 249 578 273L578 406Q578 430 602 430L738 430L1039 430L1231 430L1546 430L1746 430" marker-end="url(#open)" />
+      <path class="cls-line uses" d="M434 249L738 249" marker-end="url(#open)" />
+      <path class="cls-line creates" d="M434 249L554 249Q578 249 578 225L578 101Q578 77 602 77L738 77" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M434 249L554 249Q578 249 578 225L578 101Q578 77 602 77L738 77" />
+      <path class="cls-line creates" d="M1546 249L1746 249" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M1546 249L1746 249" />
+      <path class="cls-line holds" d="M1039 77L1071 77Q1095 77 1095 101L1095 225Q1095 249 1119 249L1231 249" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M1039 77L1071 77Q1095 77 1095 101L1095 225Q1095 249 1119 249L1231 249" />
+      <path class="cls-line holds" d="M1039 77L1231 77L1546 77L1558 77Q1570 77 1570 89L1570 207Q1570 231 1594 231L1746 231" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M1039 77L1231 77L1546 77L1558 77Q1570 77 1570 89L1570 207Q1570 231 1594 231L1746 231" />
+      <path class="cls-line holds" d="M1546 249L1558 249Q1570 249 1570 261L1570 388Q1570 412 1594 412L1746 412" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M1546 249L1558 249Q1570 249 1570 261L1570 388Q1570 412 1594 412L1746 412" />
+      <path class="cls-line holds" d="M2145 421L2225 421" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M2145 421L2225 421" />
+      <path class="cls-line holds" d="M2145 421L2177 421Q2201 421 2201 445L2201 581Q2201 593 2213 593L2225 593" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M2145 421L2177 421Q2201 421 2201 445L2201 581Q2201 593 2213 593L2225 593" />
+      <path class="cls-line holds" d="M2145 249L2225 249" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M2145 249L2225 249" />
+      <path class="cls-line holds" d="M434 765L738 765L1039 765L1071 765Q1095 765 1095 741L1095 635Q1095 611 1119 611L1231 611" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M434 765L738 765L1039 765L1071 765Q1095 765 1095 741L1095 635Q1095 611 1119 611L1231 611" />
+      <path class="cls-line holds" d="M1039 593L1231 593" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M1039 593L1231 593" />
+      <rect class="pic-pill cls-chip uses" x="636.5" y="584" width="43" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="658" y="596" text-anchor="middle">takes</text>
+      <rect class="pic-pill cls-chip uses" x="591" y="240" width="134" height="18" rx="9" />
+      <text class="pic-pill-word cls-word quiet" x="658" y="252" text-anchor="middle">asks for the model</text>
+      <rect class="pic-pill cls-chip creates" x="629.5" y="68" width="57" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="658" y="80" text-anchor="middle">creates</text>
+      <rect class="pic-pill cls-chip holds" x="1141.5" y="240" width="43" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="1163" y="252" text-anchor="middle">holds</text>
+      <rect class="pic-pill cls-chip holds" x="1106.5" y="68" width="113" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="1163" y="80" text-anchor="middle">the default one</text>
+      <rect class="pic-pill cls-chip holds" x="1636.5" y="403" width="43" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="1658" y="415" text-anchor="middle">holds</text>
+      <rect class="pic-pill cls-chip creates" x="1584" y="240" width="148" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="1658" y="252" text-anchor="middle">one per toolset list</text>
+      <rect class="pic-pill cls-chip holds" x="2163" y="412" width="43" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="2184.5" y="424" text-anchor="middle">holds</text>
+      <rect class="pic-pill cls-chip holds" x="2163" y="240" width="43" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="2184.5" y="252" text-anchor="middle">holds</text>
+      <rect class="pic-pill cls-chip holds" x="452" y="756" width="120" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="512" y="768" text-anchor="middle">one per provider</text>
+      <rect class="pic-pill cls-chip holds" x="1057" y="584" width="43" height="18" rx="9" />
+      <text class="pic-pill-word cls-word" x="1078.5" y="596" text-anchor="middle">holds</text>
+      <rect class="cls-cover" x="0" y="194" width="434" height="110" rx="14" />
+      <rect class="mrq-glass" x="0" y="194" width="434" height="110" rx="14" />
+      <rect class="cls-badge tone-green" x="14" y="212" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="28" y="230.5" text-anchor="middle">S</text>
+      <text class="pic-name" x="52" y="222" text-anchor="start">AgentHost</text>
+      <text class="pic-note" x="52" y="238" text-anchor="start">static, the start</text>
+      <path class="cls-divide" d="M14 258H420" />
+      <text class="cls-member" x="14" y="276" text-anchor="start">Build(catalog, services, clientFactory?) AgentHostContext</text>
+      <text class="cls-member" x="14" y="290" text-anchor="start">BuildToolHost(catalog, services?) AgentEngine</text>
+      <rect class="cls-cover" x="0" y="727" width="434" height="76" rx="14" />
+      <rect class="mrq-glass" x="0" y="727" width="434" height="76" rx="14" />
+      <rect class="cls-badge tone-green" x="14" y="751" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="28" y="769.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="52" y="755" text-anchor="start">LlmClientFactory</text>
+      <text class="pic-note" x="52" y="771" text-anchor="start">implements</text>
+      <text class="pic-note" x="52" y="783" text-anchor="start">ILlmClientFactory</text>
+      <rect class="cls-cover" x="738" y="8" width="301" height="138" rx="14" />
+      <rect class="mrq-glass" x="738" y="8" width="301" height="138" rx="14" />
+      <rect class="mrq-edge" x="762" y="7.5" width="253" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="752" y="26" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="766" y="44.5" text-anchor="middle">R</text>
+      <text class="pic-name" x="790" y="36" text-anchor="start">AgentHostContext</text>
+      <text class="pic-note" x="790" y="52" text-anchor="start">record</text>
+      <path class="cls-divide" d="M752 72H1025" />
+      <text class="cls-member" x="752" y="90" text-anchor="start">AgentEngine Engine</text>
+      <text class="cls-member" x="752" y="104" text-anchor="start">AgentEngineFactory Engines</text>
+      <text class="cls-member" x="752" y="118" text-anchor="start">LlmOptions Llm, AgentOptions Agent</text>
+      <text class="cls-member" x="752" y="132" text-anchor="start">PriceTable Prices, ExchangeRates Rates</text>
+      <rect class="cls-cover" x="738" y="187" width="301" height="124" rx="14" />
+      <rect class="mrq-glass" x="738" y="187" width="301" height="124" rx="14" />
+      <rect class="mrq-edge" x="762" y="186.5" width="253" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="752" y="205" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="766" y="223.5" text-anchor="middle">I</text>
+      <text class="pic-name" x="790" y="215" text-anchor="start">ILlmClientFactory</text>
+      <text class="pic-note" x="790" y="231" text-anchor="start">interface</text>
+      <path class="cls-divide" d="M752 251H1025" />
+      <text class="cls-member" x="752" y="269" text-anchor="start">Create(LlmOptions) IChatClient</text>
+      <text class="cls-member" x="752" y="283" text-anchor="start">CreateUsageMapper(options)</text>
+      <text class="cls-member" x="752" y="297" text-anchor="start">CreatePromptCaching(options)</text>
+      <rect class="cls-cover" x="738" y="538" width="301" height="110" rx="14" />
+      <rect class="mrq-glass" x="738" y="538" width="301" height="110" rx="14" />
+      <rect class="mrq-edge" x="762" y="537.5" width="253" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="752" y="556" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="766" y="574.5" text-anchor="middle">R</text>
+      <text class="pic-name" x="790" y="566" text-anchor="start">HostServices</text>
+      <text class="pic-note" x="790" y="582" text-anchor="start">record</text>
+      <path class="cls-divide" d="M752 602H1025" />
+      <text class="cls-member" x="752" y="620" text-anchor="start">Web Telemetry Discovery</text>
+      <text class="cls-member" x="752" y="634" text-anchor="start">IReadOnlyList&lt;ILlmProvider&gt;? Providers</text>
+      <rect class="cls-cover" x="1231" y="200" width="315" height="98" rx="14" />
+      <rect class="mrq-glass" x="1231" y="200" width="315" height="98" rx="14" />
+      <rect class="cls-badge tone-green" x="1245" y="212" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="1259" y="230.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="1283" y="231" text-anchor="start">AgentEngineFactory</text>
+      <path class="cls-divide" d="M1245 252H1532" />
+      <text class="cls-member" x="1245" y="270" text-anchor="start">GetOrCreate(toolsets, role?) AgentEngine</text>
+      <text class="cls-member" x="1245" y="284" text-anchor="start">Catalog</text>
+      <rect class="cls-cover" x="1231" y="538" width="315" height="110" rx="14" />
+      <rect class="mrq-glass" x="1231" y="538" width="315" height="110" rx="14" />
+      <rect class="mrq-edge" x="1255" y="537.5" width="267" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="1245" y="556" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="1259" y="574.5" text-anchor="middle">I</text>
+      <text class="pic-name" x="1283" y="566" text-anchor="start">ILlmProvider</text>
+      <text class="pic-note" x="1283" y="582" text-anchor="start">interface</text>
+      <path class="cls-divide" d="M1245 602H1532" />
+      <text class="cls-member" x="1245" y="620" text-anchor="start">Name</text>
+      <text class="cls-member" x="1245" y="634" text-anchor="start">Create(LlmOptions) IChatClient</text>
+      <rect class="cls-cover" x="1746" y="172" width="399" height="154" rx="14" />
+      <rect class="mrq-glass" x="1746" y="172" width="399" height="154" rx="14" />
+      <rect class="cls-badge tone-green" x="1760" y="184" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="1774" y="202.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="1798" y="203" text-anchor="start">AgentEngine</text>
+      <path class="cls-divide" d="M1760 224H2131" />
+      <text class="cls-member" x="1760" y="242" text-anchor="start">StartConversation() Conversation</text>
+      <text class="cls-member" x="1760" y="256" text-anchor="start">StreamPromptAsync(conversation, input)</text>
+      <text class="cls-member" x="1760" y="270" text-anchor="start">  IAsyncEnumerable&lt;ChatResponseUpdate&gt;</text>
+      <text class="cls-member" x="1760" y="284" text-anchor="start">ProcessPromptAsync(conversation, input) Task&lt;string&gt;</text>
+      <text class="cls-member" x="1760" y="298" text-anchor="start">Tools</text>
+      <text class="cls-member" x="1760" y="312" text-anchor="start">ToolsChanged</text>
+      <rect class="cls-cover" x="1746" y="365" width="399" height="112" rx="14" />
+      <rect class="mrq-glass" x="1746" y="365" width="399" height="112" rx="14" />
+      <rect class="cls-badge tone-green" x="1760" y="377" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="1774" y="395.5" text-anchor="middle">C</text>
+      <text class="pic-name" x="1798" y="396" text-anchor="start">AgentCatalog</text>
+      <path class="cls-divide" d="M1760 417H2131" />
+      <text class="cls-member" x="1760" y="435" text-anchor="start">Identities, Packs, Toolsets</text>
+      <text class="cls-member" x="1760" y="449" text-anchor="start">Identity(name) IAgentIdentity?</text>
+      <text class="cls-member" x="1760" y="463" text-anchor="start">ToolsetsOf(identity) IReadOnlyList&lt;string&gt;</text>
+      <rect class="cls-cover" x="2225" y="194" width="266" height="110" rx="14" />
+      <rect class="mrq-glass" x="2225" y="194" width="266" height="110" rx="14" />
+      <rect class="mrq-edge" x="2249" y="193.5" width="218" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="2239" y="212" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="2253" y="230.5" text-anchor="middle">I</text>
+      <text class="pic-name" x="2277" y="222" text-anchor="start">ISkillProvider</text>
+      <text class="pic-note" x="2277" y="238" text-anchor="start">interface</text>
+      <path class="cls-divide" d="M2239 258H2477" />
+      <text class="cls-member" x="2239" y="276" text-anchor="start">Skills</text>
+      <text class="cls-member" x="2239" y="290" text-anchor="start">Documentation</text>
+      <rect class="cls-cover" x="2225" y="367" width="266" height="108" rx="14" />
+      <rect class="mrq-glass" x="2225" y="367" width="266" height="108" rx="14" />
+      <rect class="mrq-edge" x="2249" y="366.5" width="218" height="1.6" rx="0" />
+      <rect class="cls-badge tone-violet" x="2239" y="391" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="2253" y="409.5" text-anchor="middle">I</text>
+      <text class="pic-name" x="2277" y="395" text-anchor="start">IAgentIdentity</text>
+      <text class="pic-note" x="2277" y="411" text-anchor="start">interface,</text>
+      <text class="pic-note" x="2277" y="423" text-anchor="start">LouisAgent.Composition</text>
+      <path class="cls-divide" d="M2239 443H2477" />
+      <text class="cls-member" x="2239" y="461" text-anchor="start">Name, Prompts, Packs, Calls</text>
+      <rect class="cls-cover" x="2225" y="539" width="266" height="108" rx="14" />
+      <rect class="mrq-glass" x="2225" y="539" width="266" height="108" rx="14" />
+      <rect class="mrq-edge" x="2249" y="538.5" width="218" height="1.6" rx="0" />
+      <rect class="cls-badge tone-violet" x="2239" y="563" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="2253" y="581.5" text-anchor="middle">I</text>
+      <text class="pic-name" x="2277" y="567" text-anchor="start">IAgentPack</text>
+      <text class="pic-note" x="2277" y="583" text-anchor="start">interface,</text>
+      <text class="pic-note" x="2277" y="595" text-anchor="start">LouisAgent.Composition</text>
+      <path class="cls-divide" d="M2239 615H2477" />
+      <text class="cls-member" x="2239" y="633" text-anchor="start">Name, Toolsets, Prompts, Requires</text>
     </g>
-    <g class="cls-legend" transform="translate(0 842)">
-      <rect class="mrq-rule" x="0" y="0" width="2456" height="1" rx="0" />
+    <g class="cls-legend" transform="translate(0 912)">
+      <rect class="mrq-rule" x="0" y="0" width="2491" height="1" rx="0" />
       <text class="pic-group" x="0" y="22" text-anchor="start">How to read it</text>
       <rect class="cls-badge tone-green" x="0" y="39" width="18" height="18" rx="6" />
       <text class="pic-means" x="28" y="52.5" text-anchor="start">this project</text>
@@ -400,16 +401,16 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="pic-means" x="1241.4" y="52.5" text-anchor="start">uses</text>
     </g>
     <g class="pic-brand" transform="translate(0 0)">
-      <text class="pic-name" x="2440" y="864" text-anchor="end" aria-label="louis-agent">l<tspan class="pic-mark" dy="1.5">•</tspan><tspan dy="-1.5">uis-agent</tspan></text>
+      <text class="pic-name" x="2475" y="934" text-anchor="end" aria-label="louis-agent">l<tspan class="pic-mark" dy="1.5">•</tspan><tspan dy="-1.5">uis-agent</tspan></text>
     </g>
   </g>
-  <rect class="notebar" x="0" y="920" width="2456" height="37" rx="8" />
-  <g class="note-icon" transform="translate(12 930) scale(0.6667)">
+  <rect class="notebar" x="0" y="990" width="2491" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 1000) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />
     <path d="M11 12h1v4h1" />
   </g>
-  <text class="notes" x="38" y="942">
+  <text class="notes" x="38" y="1012">
     <tspan class="note-head">One start, one catalogue, one engine per toolset list:</tspan>
     <tspan class="note-rest">a host builds the context, and the model comes from a provider it names.</tspan>
   </text>

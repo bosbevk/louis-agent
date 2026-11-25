@@ -3,14 +3,17 @@ using System.Text.Json.Nodes;
 using Anthropic;
 using Anthropic.Core;
 using Anthropic.Models.Messages;
+using LouisAgent.Core.Anthropic.Thinking;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Llm;
 
 namespace LouisAgent.Core.Anthropic.Tests;
 
-// F4 step 1, the spike: what the Anthropic adapter (Microsoft.Extensions.AI over Anthropic 12.53) puts on the wire for
-// cache markers, checked on the captured request body; no model call. Kept as a regression test: if an SDK update stops
-// sending a marker, caching silently stops (the API raises no error), and this fails instead.
+/// <summary>
+/// What the Anthropic adapter (Microsoft.Extensions.AI over Anthropic 12.53) puts on the wire for cache markers,
+/// checked on the captured request body; no model call. If an SDK update stops sending a marker, caching silently
+/// stops (the API raises no error), and this fails instead.
+/// </summary>
 public class AnthropicCachingWireTests
 {
     // A Messages API reply, with cache writes split by lifetime as the API reports them.
@@ -21,6 +24,7 @@ public class AnthropicCachingWireTests
                                            "cache_creation":{"ephemeral_5m_input_tokens":148,"ephemeral_1h_input_tokens":100}}}
                                  """;
 
+    /// <summary>The adapter over a stub of the API that answers with the reply above and keeps each request.</summary>
     private static (IChatClient Client, StubHandler Handler) Client()
     {
         var handler = new StubHandler(_ => new HttpResponseMessage(HttpStatusCode.OK)
@@ -35,9 +39,12 @@ public class AnthropicCachingWireTests
         return (anthropic.AsIChatClient("claude-haiku-5-5", 1024), handler);
     }
 
+    /// <summary>The body of the one request the stub received.</summary>
     private static JsonNode Body(StubHandler handler) => JsonNode.Parse(handler.Requests.Single().Body!)!;
 
-    /// <summary>The request's top-level <c>cache_control</c> (automatic caching), set the way F4's strategy will.</summary>
+    /// <summary>
+    /// The request's top-level <c>cache_control</c> (automatic caching), set the way F4's strategy does.
+    /// </summary>
     private static ChatOptions AutomaticCaching(Ttl ttl) => new()
     {
         RawRepresentationFactory = _ => new MessageCreateParams
@@ -49,12 +56,14 @@ public class AnthropicCachingWireTests
         },
     };
 
+    /// <summary>A system prompt marked for the cache with the lifetime given, and a user's hi.</summary>
     private static List<ChatMessage> Messages(Ttl systemTtl) =>
     [
         new(ChatRole.System, [new TextContent("You are louis-agent.").WithCacheControl(systemTtl)]),
         new(ChatRole.User, "hi"),
     ];
 
+    /// <summary>The system prompt's marker reaches the wire with its lifetime.</summary>
     [Test]
     public async Task SystemMarker_ReachesTheWire_WithItsLifetime()
     {
@@ -67,6 +76,9 @@ public class AnthropicCachingWireTests
         Assert.That(system["cache_control"]!.ToJsonString(), Is.EqualTo("""{"type":"ephemeral","ttl":"1h"}"""));
     }
 
+    /// <summary>
+    /// The automatic marker goes on the request beside the system prompt's, and none on the messages.
+    /// </summary>
     [Test]
     public async Task TopLevelCacheControl_ReachesTheWire_BesideTheSystemMarker()
     {
@@ -82,6 +94,7 @@ public class AnthropicCachingWireTests
             "no marker on the messages themselves");
     }
 
+    /// <summary>The caching hook keeps thinking and the tools on the request.</summary>
     [Test]
     public async Task TopLevelCacheControl_KeepsThinkingAndTheRest()
     {
@@ -99,6 +112,7 @@ public class AnthropicCachingWireTests
         Assert.That(body["tools"]!.AsArray().Single()!["name"]!.GetValue<string>(), Is.EqualTo("Probe"));
     }
 
+    /// <summary>The marker survives the thinking budget's hook, which chains to the one before it.</summary>
     [Test]
     public async Task TopLevelCacheControl_SurvivesTheThinkingBudgetWrapper()
     {
@@ -115,6 +129,7 @@ public class AnthropicCachingWireTests
         Assert.That(body["thinking"]!["budget_tokens"]!.GetValue<long>(), Is.EqualTo(4_096));
     }
 
+    /// <summary>Cache writes split by lifetime are only on the SDK's own reply, which the adapter hands back.</summary>
     [Test]
     public async Task Usage_WritesByLifetime_OnlyInTheRawResponse()
     {

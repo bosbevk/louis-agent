@@ -119,7 +119,7 @@ message as fenced code blocks (`[Attached file: name]`).
 **2. The host streams the turn**
 
 ```csharp
-await foreach (var update in engine.StreamPromptAsync(history, message, cancellationToken))
+await foreach (var update in engine.StreamPromptAsync(conversation, message, cancellationToken))
 {
     // update.Contents: TextReasoningContent (thinking), TextContent (answer),
     // FunctionCallContent (a tool call), FunctionResultContent (its result)

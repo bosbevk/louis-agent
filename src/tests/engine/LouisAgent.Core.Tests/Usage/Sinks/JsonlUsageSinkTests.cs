@@ -12,25 +12,33 @@ using LouisAgent.Core.Hosting;
 
 namespace LouisAgent.Core.Tests.Usage.Sinks;
 
-// F1-S1: records land in {LOG_DIRECTORY}/usage-YYYY-MM.jsonl. F1-S4: no prompt text in the file.
+/// <summary>
+/// The ledger's file: each record a JSON line in {LOG_DIRECTORY}/usage-YYYY-MM.jsonl, with no prompt text in it, and
+/// older lines still read back.
+/// </summary>
 public class JsonlUsageSinkTests
 {
     private string _directory = null!;
 
+    /// <summary>Each test gets a ledger folder of its own.</summary>
     [SetUp]
     public void SetUp() => _directory = Directory.CreateTempSubdirectory("usage-ledger-").FullName;
 
+    /// <summary>The folder goes when the test is done.</summary>
     [TearDown]
     public void TearDown() => Directory.Delete(_directory, recursive: true);
 
+    /// <summary>A request's record made at the time given, with the tokens given or none.</summary>
     private static UsageRecord Record(DateTimeOffset at, UsageTokens? tokens = null) => new(
         At: at, Round: 1, Purpose: UsagePurpose.Turn, Host: null, Session: null, Turn: null, Task: null, Run: null,
         Service: null, Model: "claude-haiku-4-5-20251001",
         Tokens: tokens ?? new UsageTokens(39, null, 10_227, 206, null),
         DurationMs: 1_234, Stop: "stop");
 
+    /// <summary>The lines of a ledger file in the test's folder.</summary>
     private string[] ReadLines(string fileName) => File.ReadAllLines(Path.Combine(_directory, fileName));
 
+    /// <summary>Each record adds one JSON line.</summary>
     [Test]
     public void Record_AppendsOneJsonLinePerRecord()
     {
@@ -45,6 +53,7 @@ public class JsonlUsageSinkTests
         Assert.That(JsonSerializer.Deserialize<UsageRecord>(lines[0], JsonlUsageSink.Json), Is.EqualTo(Record(at)));
     }
 
+    /// <summary>A line uses the field names the ledger's spec sets.</summary>
     [Test]
     public void Record_UsesTheSpecsFieldNames()
     {
@@ -57,6 +66,7 @@ public class JsonlUsageSinkTests
         Assert.That(root.GetProperty("purpose").GetString(), Is.EqualTo("turn"));
     }
 
+    /// <summary>A priced record writes its cost in the spec's shape.</summary>
     [Test]
     public void Record_WithCost_WritesTheSpecsCostShape()
     {
@@ -70,6 +80,7 @@ public class JsonlUsageSinkTests
         Assert.That(cost.GetProperty("price_table").GetString(), Is.EqualTo("2026-10-10"));
     }
 
+    /// <summary>A line written before costs were recorded reads back with no cost.</summary>
     [Test]
     public void Record_LineWrittenBeforeF2_ReadsBackWithNoCost()
     {
@@ -83,6 +94,7 @@ public class JsonlUsageSinkTests
         Assert.That(record.Tokens.Input, Is.EqualTo(47_605));
     }
 
+    /// <summary>A record with a prompt hash is the same line, with the hash added last.</summary>
     [Test]
     public void Record_WithAPromptHash_IsTheSameLinePlusTheHashLast()
     {
@@ -98,6 +110,7 @@ public class JsonlUsageSinkTests
         Assert.That(lines[0], Does.Not.Contain("prompt_hash"));
     }
 
+    /// <summary>A line written before prompt hashes reads back with none.</summary>
     [Test]
     public void Record_LineWrittenBeforeStep4c_ReadsBackWithANullPromptHash()
     {
@@ -109,6 +122,7 @@ public class JsonlUsageSinkTests
         Assert.That(record.PromptHash, Is.Null, "unknown, never \"\"");
     }
 
+    /// <summary>A record goes in the file of the month it was made.</summary>
     [Test]
     public void Record_FileNamedByRecordMonth()
     {
@@ -121,6 +135,7 @@ public class JsonlUsageSinkTests
             Is.EqualTo(new[] { "usage-2026-09.jsonl", "usage-2026-10.jsonl" }));
     }
 
+    /// <summary>The month is taken in UTC, whatever the record's own offset.</summary>
     [Test]
     public void Record_MonthIsTakenInUtc()
     {
@@ -130,6 +145,7 @@ public class JsonlUsageSinkTests
         Assert.That(File.Exists(Path.Combine(_directory, "usage-2026-09.jsonl")));
     }
 
+    /// <summary>A count the provider didn't give is written as null, never 0.</summary>
     [Test]
     public void Record_NullCountsWrittenAsNull()
     {
@@ -143,6 +159,7 @@ public class JsonlUsageSinkTests
         Assert.That(tokens.GetProperty("cache_write").ValueKind, Is.EqualTo(JsonValueKind.Null));
     }
 
+    /// <summary>Writing a record tells whoever listens.</summary>
     [Test]
     public void Record_RaisesUsageRecorded()
     {
@@ -156,6 +173,7 @@ public class JsonlUsageSinkTests
         Assert.That(seen, Is.EqualTo(new[] { record }));
     }
 
+    /// <summary>A folder that can't be written to gets a warning, and nothing throws.</summary>
     [Test]
     public void Record_DirectoryCannotBeWritten_WarnsAndDoesNotThrow()
     {
@@ -167,6 +185,7 @@ public class JsonlUsageSinkTests
         Assert.DoesNotThrow(() => sink.Record(Record(DateTimeOffset.UtcNow)));
     }
 
+    /// <summary>A host built the usual way records to the ledger, reading usage with its provider's mapper.</summary>
     [Test]
     public async Task AgentHostBuild_RecordsToTheLedgerWithTheProvidersMapper()
     {
@@ -186,7 +205,7 @@ public class JsonlUsageSinkTests
         agent.LogDirectory = _directory;
 
         AgentEngine engine = AgentHost.Build(new LlmOptions(), agent, factory).Engine;
-        await engine.ProcessPromptAsync(engine.StartHistory(), $"say hi {marker}");
+        await engine.ProcessPromptAsync(engine.StartConversation(), $"say hi {marker}");
 
         string line = ReadLines(JsonlUsageSink.FileNameFor(DateTimeOffset.UtcNow)).Single();
         using var json = JsonDocument.Parse(line);
@@ -195,6 +214,7 @@ public class JsonlUsageSinkTests
         Assert.That(line, Does.Not.Contain(marker), "F1-S4: no prompt text in the ledger");
     }
 
+    /// <summary>Whether there is a ledger, and where, follows USAGE_LEDGER and LOG_DIRECTORY.</summary>
     [Test]
     public void CreateUsageSink_FollowsUsageLedgerAndLogDirectory()
     {
@@ -213,6 +233,7 @@ public class JsonlUsageSinkTests
         Assert.That(UsageLedger.Open(new AgentOptions { LogDirectory = null }), Is.Null);
     }
 
+    /// <summary>USAGE_LEDGER is on unless it says off, in any case.</summary>
     [TestCase(null, true)]
     [TestCase("on", true)]
     [TestCase("off", false)]
@@ -224,12 +245,17 @@ public class JsonlUsageSinkTests
         Assert.That(options.UsageLedger, Is.EqualTo(expected));
     }
 
+    /// <summary>A client factory that hands back the fake model and the mapper given.</summary>
     private sealed class StubClientFactory(IChatClient client, IUsageMapper mapper) : ILlmClientFactory
     {
+        /// <summary>The fake model, whatever is asked for.</summary>
         public IChatClient Create(LlmOptions options) => client;
+
+        /// <summary>The mapper the test gave.</summary>
         public IUsageMapper CreateUsageMapper(LlmOptions options) => mapper;
     }
 
+    /// <summary>A record with a cache hit is the same line, with the hit added last.</summary>
     [Test]
     public void ACacheHit_IsTheSameLineWithCacheHitBeforeTheClosingBrace()
     {
@@ -244,6 +270,7 @@ public class JsonlUsageSinkTests
         Assert.That(lines[0], Does.Not.Contain("cache_hit"));
     }
 
+    /// <summary>A line with no cache hit reads back with none.</summary>
     [Test]
     public void ALineWithoutCacheHit_ReadsBackWithNull()
     {

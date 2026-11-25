@@ -19,11 +19,12 @@ with `tool_choice: none` (FX1); the finished turn is appended with its thinking 
 
 - Chats on Haiku 5.5 keep working across tool rounds (FX1 took the short demo from 2/4 to 4/4 fixes).
 - Toolsets are fixed per session ([0006](0006-toolsets-per-session.md)), which this rule requires as well as caching.
-- **Not yet fully held:** a tool the model creates (`CreateTool`), `/approve`, `/reject` and a skill reload still change
-  the tool list or prompt mid-chat, and break it. That is known limitation 8, removed by
-  [FX4](../fixes/FX04-append-only-history.md), which is open.
+- Held mid-chat since FX4: a chat keeps the tools and the system prompt it started with, so a tool the model creates,
+  an `/approve`, a `/reject` or a skill reload reaches the next chat, never the open one, and a rejected tool no longer
+  runs. A chat resumed from the store sends the prompt it was saved with; when a release moved its tools, the
+  provider's strategy keeps the request valid (strips the stale thinking, or asks Anthropic to drop it).
 
 ## Links
 
-[FX1](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/fixes/FX01-round-limit-tools.md) · [FX4](../fixes/FX04-append-only-history.md) ·
+[FX1](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/fixes/FX01-round-limit-tools.md) · [FX4](../fixes/README.md) ·
 [Known limitations](../../../TODO.md#known-limitations)

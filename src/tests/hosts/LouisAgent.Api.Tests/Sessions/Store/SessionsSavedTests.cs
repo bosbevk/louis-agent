@@ -79,7 +79,7 @@ public class SessionsSavedTests
         await using var _ = app;
 
         string id = await OpenAsync(client);
-        int before = sessions.Get(id)!.History.Count;
+        int before = sessions.Get(id)!.Conversation.Messages.Count;
         await SendAsync(client, id);
         var saved = await store.LoadAsync(id);
 
@@ -87,7 +87,7 @@ public class SessionsSavedTests
         Assert.Multiple(() =>
         {
             Assert.That(turn?.Number, Is.EqualTo(1));
-            Assert.That(turn?.Messages, Has.Count.EqualTo(sessions.Get(id)!.History.Count - before));
+            Assert.That(turn?.Messages, Has.Count.EqualTo(sessions.Get(id)!.Conversation.Messages.Count - before));
             Assert.That(turn?.Messages.SelectMany(message => message.Contents).OfType<TextReasoningContent>()
                 .Single().ProtectedData, Is.EqualTo("c2lnbmF0dXJl"));
             Assert.That(turn?.Attachments["list.txt"], Is.EqualTo("eggs"));
@@ -128,9 +128,9 @@ public class SessionsSavedTests
         await using var _ = app;
 
         string id = await OpenAsync(client);
-        int before = sessions.Get(id)!.History.Count;
+        int before = sessions.Get(id)!.Conversation.Messages.Count;
         await SendAsync(client, id);
-        int added = sessions.Get(id)!.History.Count - before;
+        int added = sessions.Get(id)!.Conversation.Messages.Count - before;
         var saved = await store.LoadAsync(id);
 
         Assert.That(saved?.Turns.Sum(turn => turn.Messages.Count) ?? -1, Is.EqualTo(added));

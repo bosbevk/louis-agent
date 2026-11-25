@@ -3,6 +3,7 @@ using LouisAgent.Core.Agent.Toolsets;
 using System.Diagnostics;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Agent.Turns;
+using LouisAgent.Core.Agent.Turns.Guards;
 using LouisAgent.Core.Skills.Providers;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Sinks;
@@ -70,11 +71,11 @@ public class ChatPipelineTests
         using (UsageScope.Begin())
         {
             if (streamed)
-                await foreach (var _ in engine.StreamPromptAsync(engine.StartHistory(), prompt))
+                await foreach (var _ in engine.StreamPromptAsync(engine.StartConversation(), prompt))
                 {
                 }
             else
-                await engine.ProcessPromptAsync(engine.StartHistory(), prompt);
+                await engine.ProcessPromptAsync(engine.StartConversation(), prompt);
         }
 
         lock (spans) return (root, spans.Where(a => a.TraceId == root.TraceId).ToList());
@@ -139,7 +140,7 @@ public class ChatPipelineTests
     [Test]
     public async Task Turn_SummaryIsATracedRequestToo()
     {
-        string path = WriteFile(new string('x', ToolCallGuards.MaxToolResultChars + 1), out string relative);
+        string path = WriteFile(new string('x', OversizedResults.MaxToolResultChars + 1), out string relative);
         try
         {
             var sink = new ListUsageSink();
@@ -173,7 +174,7 @@ public class ChatPipelineTests
             "the capture variable is on for this process (TelemetryCapture)");
 
         string[] markers = ["MARKER-USER-WORDS", "MARKER-FILE-NAME", "MARKER-FILE-CONTENT", "MARKER-REPLY"];
-        string path = WriteFile("MARKER-FILE-CONTENT" + new string('x', ToolCallGuards.MaxToolResultChars + 1),
+        string path = WriteFile("MARKER-FILE-CONTENT" + new string('x', OversizedResults.MaxToolResultChars + 1),
             out string relative, "MARKER-FILE-NAME");
         try
         {

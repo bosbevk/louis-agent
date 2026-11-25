@@ -57,7 +57,7 @@ internal static class TurnStream
             // This is an async iterator, so a scope it makes current is lost at its first yield: the scope is activated
             // around each step of the engine's stream instead, which is where the model requests run.
             usage = UsageScope.Begin(host: "api", session: session.Id, turn: session.Turns, tags: session.Tags);
-            await using var updates = engine.StreamPromptAsync(session.History, prompt, turn.Token)
+            await using var updates = engine.StreamPromptAsync(session.Conversation, prompt, turn.Token)
                 .GetAsyncEnumerator(turn.Token);
             string stopReason = "end_turn";
             string? error = null;

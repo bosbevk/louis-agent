@@ -31,7 +31,6 @@ known limitations below are facts about today, not tasks.
 |---|---|---|---|
 | F171 | The bill checker (Louis, 2026-11-21; 2026-11-22: "this feature is next"): a phone app that reads a Western Cape municipal account from a photo or a PDF, checks every line against Cape Town's, Swartland's and Overstrand's own tariffs and drafts the dispute, free to download with one subscription; the product in its own private `bill-checker` repository on the framework's packages, the framework's parts here: F171.1 a photo or PDF reaches a tool (done 2026-11-24); F171.2 the bills pack reads and checks; F171.3 the dispute letter; F171.4 the identity and evals; F171.5 the account, consent and our own subscriptions part; F171.6 the phone app; F171.7 the stores; F171.8 the monthly report | Now, F171.2 on after F140 | [plan](src/docs/plans/F171-the-bill-checker.md) |
 | F43 | Accounts, tenants and durable sessions; its first child is durable sessions (a session store behind one seam, with an in-memory and a MongoDB provider, and a session that resumes after a restart), built after F171.1 and before F157 (Louis's pick, 2026-11-22, after an outside comparison with Microsoft Agent Framework, LangGraph and OpenAI's Agents SDK found sessions lost on a restart the biggest gap) | Now, F43.1 done; its next children, accounts and tenants, not yet planned | [spec](src/docs/specs/SESSION_ARCHITECTURE.md) |
-| FX4 | Append-only history | Now, after F43's first child | [fix doc](src/docs/fixes/FX04-append-only-history.md) |
 | F8 | Reliability | Now, after FX4 | [feature doc](src/docs/features/F08-reliability.md) |
 | F7 | Cost you can see and stop | Now, after F8 | [feature doc](src/docs/features/F07-budgets.md) |
 | F41 | Drafts and approvals | Now, after F7 | — |
@@ -130,7 +129,8 @@ known limitations below are facts about today, not tasks.
 | CL53 | A price format per country | Cleanups | — |
 | CL54 | A pack can't add itself to a router | Cleanups | — |
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups | — |
-| CL61 | `ToolCallGuards` is over 200 lines once Rider lays out its message holes, and `Agent/Turns` holds six files: split it by responsibility (the oversized-result summary its own class, the folder into subfolders), its holes into records (ADR 0119), and have it end the turn through `TurnEnding.Ends` as `TurnRunner` does (found in F127.4.3 step 3) | Cleanups | — |
+| CL71 | The ACP server on Microsoft's StreamJsonRpc: methods as `[JsonRpcMethod]` on one target, notifications sent through it, our read loop and `JsonRpcWriter` gone; prove newline JSON with System.Text.Json and the golden transcript first; after FX4, plan first | Cleanups | — |
+| CL72 | The CLI's console drawn with Spectre.Console: thinking, answer and tool status through it, the cursor's state out of `ConsoleChat`; prove first that it streams text piece by piece and writes to stderr, and escape every model text; after FX4, plan first | Cleanups | — |
 
 ## Known limitations
 
@@ -157,9 +157,3 @@ above that removes it.
    memory) and drops the rest without an error: the ledger showed `input: 2050`. The `ollama-nvidia` and `ollama-amd`
    containers default to 32k, which covers it; the CPU `ollama` service still uses Ollama's default.
    → [**F15** Model limits and local models](src/docs/features/F15-model-limits.md) (sends `num_ctx`; takes in F13).
-8. **Changing the tools or skills during a chat can break it on Claude Haiku 5.5** (the default). The model rejects a
-   changed system prompt or tool list once thinking blocks are in the history (enforced for accounts created on or
-   after 2026-08-31). `BeginTurn` sends the engine's live tool list, so a tool the model creates (`CreateTool`) breaks
-   the rest of that message; `/approve`, `/reject` and a skill reload break the next one; and in the API every open
-   chat with the same toolsets shares one engine and its tool list (F5). Start a new chat afterwards.
-   → [**FX4** Append-only history](src/docs/fixes/FX04-append-only-history.md) (first in Phase 7).

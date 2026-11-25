@@ -43,7 +43,7 @@ public class ToolReplayThroughTheEngineTests
     /// <summary>One streamed turn, its text.</summary>
     private static async Task<string> TurnAsync(AgentEngine engine)
     {
-        var history = engine.StartHistory();
+        var history = engine.StartConversation();
         var text = new System.Text.StringBuilder();
         using (UsageScope.Begin(host: "test", session: "s1", turn: 1))
             await foreach (var update in engine.StreamPromptAsync(history, "what is in the file?"))
@@ -62,6 +62,7 @@ public class ToolReplayThroughTheEngineTests
     /// <summary>The model's answer in words.</summary>
     private static ChatResponse Say(string text) => new(new ChatMessage(ChatRole.Assistant, text));
 
+    /// <summary>A tool's recorded answer is played back even when the file it read is gone.</summary>
     [Test]
     public async Task AToolsAnswer_IsPlayedBack_WhenWhatItReadIsGone()
     {

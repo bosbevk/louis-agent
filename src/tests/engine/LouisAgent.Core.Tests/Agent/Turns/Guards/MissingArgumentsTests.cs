@@ -1,8 +1,9 @@
 using LouisAgent.Core.Agent.Turns;
+using LouisAgent.Core.Agent.Turns.Guards;
 using Microsoft.Extensions.AI;
 using ToolTextAttribute = System.ComponentModel.DescriptionAttribute;
 
-namespace LouisAgent.Core.Tests.Agent.Turns;
+namespace LouisAgent.Core.Tests.Agent.Turns.Guards;
 
 /// <summary>
 /// A tool call that leaves out an argument the tool needs is answered with that parameter's own description, its
@@ -14,9 +15,12 @@ public class MissingArgumentsTests
     /// <summary>A tool shaped like the investigator's: two needed choices and one optional note.</summary>
     [ToolText("Ends an investigation.")]
     private static string Report(
-        [ToolText("The run id you were given.")] string runId,
-        [ToolText("Whose area it is: code, data, hosting, third-party or unknown.")] string area,
-        [ToolText("Anything else worth saying.")] string? note = null) => $"{runId} {area} {note}";
+        [ToolText("The run id you were given.")]
+        string runId,
+        [ToolText("Whose area it is: code, data, hosting, third-party or unknown.")]
+        string area,
+        [ToolText("Anything else worth saying.")]
+        string? note = null) => $"{runId} {area} {note}";
 
     private static AIFunction Tool => AIFunctionFactory.Create(Report, "ReportInvestigation");
 
@@ -34,7 +38,11 @@ public class MissingArgumentsTests
     [Test]
     public void ACompleteCall_Passes()
     {
-        var arguments = new AIFunctionArguments { ["runId"] = "r1", ["area"] = "code" };
+        var arguments = new AIFunctionArguments
+        {
+            ["runId"] = "r1",
+            ["area"] = "code"
+        };
 
         Assert.That(MissingArguments.Message(Tool, arguments), Is.Null);
     }

@@ -7,21 +7,26 @@ using LouisAgent.Core.Usage.Sinks;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Providers;
 using LouisAgent.Core.Agent;
+using LouisAgent.Core.Agent.Turns.Guards;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Anthropic;
 
 namespace LouisAgent.Core.Tests.Agent;
 
-// F1-S1 through AgentEngine: every request of the tool loop, summaries and continuations are recorded.
-// Hosts open the turn's scope (F1 step 7); these tests do it the same way.
+/// <summary>
+/// Every request the engine makes is recorded: each round of the tool loop, a summary and a continuation. Hosts open
+/// the turn's usage scope, and these tests do it the same way.
+/// </summary>
 public class AgentEngineUsageTests
 {
+    /// <summary>An engine on the model given, recording into the sink given, with the mapper if one is given.</summary>
     private static AgentEngine Engine(IChatClient client, IUsageSink sink, IUsageMapper? mapper = null) =>
         new(new MarkdownSkillProvider(TestPaths.SampleSkills), client,
             TestPaths.Agent(),
             toolsets: TestPaths.Toolsets(TestPaths.Agent(), [TestToolset.Files.Wire()]), usageSink: sink,
             usageMapper: mapper);
 
+    /// <summary>The model's answer that runs the SayHello skill, under the call id given.</summary>
     private static ChatResponse CallSayHello(string callId) =>
         new(new ChatMessage(ChatRole.Assistant,
         [
@@ -33,6 +38,7 @@ public class AgentEngineUsageTests
                 })
         ]));
 
+    /// <summary>A streamed turn of three rounds records three requests, numbered 1 to 3.</summary>
     [Test]
     public async Task StreamPrompt_ThreeRoundToolLoop_RecordsRounds1To3()
     {
@@ -44,7 +50,7 @@ public class AgentEngineUsageTests
         var engine = Engine(client, sink);
 
         using (UsageScope.Begin())
-            await foreach (var _ in engine.StreamPromptAsync(engine.StartHistory(), "say hello twice"))
+            await foreach (var _ in engine.StreamPromptAsync(engine.StartConversation(), "say hello twice"))
             {
             }
 
@@ -52,6 +58,7 @@ public class AgentEngineUsageTests
         Assert.That(sink.Records.Select(r => r.Purpose), Is.All.EqualTo(UsagePurpose.Turn));
     }
 
+    /// <summary>A turn answered whole records its rounds too.</summary>
     [Test]
     public async Task ProcessPrompt_NonStreamingToolLoop_IsRecordedToo()
     {
@@ -62,17 +69,18 @@ public class AgentEngineUsageTests
         var engine = Engine(client, sink);
 
         using (UsageScope.Begin())
-            await engine.ProcessPromptAsync(engine.StartHistory(), "say hello");
+            await engine.ProcessPromptAsync(engine.StartConversation(), "say hello");
 
         Assert.That(sink.Records.Select(r => r.Round), Is.EqualTo(new[] { 1, 2 }));
     }
 
+    /// <summary>Summarising an oversized result adds one record, marked as a summary.</summary>
     [Test]
     public async Task ProcessPrompt_OversizedToolResult_AddsOneSummaryRecord()
     {
         string relative = $"big-{Guid.NewGuid():N}.txt";
         string path = Path.Combine(TestPaths.RepoRoot, relative);
-        File.WriteAllText(path, new string('x', ToolCallGuards.MaxToolResultChars + 1));
+        File.WriteAllText(path, new string('x', OversizedResults.MaxToolResultChars + 1));
         try
         {
             var sink = new ListUsageSink();
@@ -88,7 +96,7 @@ public class AgentEngineUsageTests
 
             using (UsageScope.Begin(host: "api", session: "sess_1", turn: 4,
                        tags: new UsageTags("fix:e8b0", "run-1", "order-service")))
-                await engine.ProcessPromptAsync(engine.StartHistory(), "what is in the file?");
+                await engine.ProcessPromptAsync(engine.StartConversation(), "what is in the file?");
 
             Assert.That(sink.Records.Select(r => (r.Purpose, r.Round)), Is.EqualTo(new[]
             {
@@ -109,6 +117,7 @@ public class AgentEngineUsageTests
         }
     }
 
+    /// <summary>The request that continues a cut-off reply is recorded as a continuation.</summary>
     [Test]
     public async Task StreamPrompt_ReplyCutOff_ContinuationIsRecordedAsContinue()
     {
@@ -122,7 +131,7 @@ public class AgentEngineUsageTests
         var engine = Engine(client, sink);
 
         using (UsageScope.Begin())
-            await foreach (var _ in engine.StreamPromptAsync(engine.StartHistory(), "write a big file"))
+            await foreach (var _ in engine.StreamPromptAsync(engine.StartConversation(), "write a big file"))
             {
             }
 
@@ -130,6 +139,7 @@ public class AgentEngineUsageTests
             Is.EqualTo(new[] { (UsagePurpose.Turn, 1, "length"), (UsagePurpose.Continue, 2, "stop"), }));
     }
 
+    /// <summary>The engine reads usage with the provider's mapper it was given.</summary>
     [Test]
     public async Task ProcessPrompt_UsesTheMapperItIsGiven()
     {
@@ -145,11 +155,12 @@ public class AgentEngineUsageTests
             new ChatResponse(new ChatMessage(ChatRole.Assistant, "hi")) { Usage = usage });
         var engine = Engine(client, sink, new AnthropicUsageMapper());
 
-        await engine.ProcessPromptAsync(engine.StartHistory(), "hi");
+        await engine.ProcessPromptAsync(engine.StartConversation(), "hi");
 
         Assert.That(sink.Records.Single().Tokens, Is.EqualTo(new UsageTokens(39, 10_227, 0, 144, null)));
     }
 
+    /// <summary>With no ledger the engine records nothing and answers all the same.</summary>
     [Test]
     public async Task ProcessPrompt_NoSink_RecordsNothingAndStillAnswers()
     {
@@ -158,6 +169,6 @@ public class AgentEngineUsageTests
             new MarkdownSkillProvider(TestPaths.SampleSkills), client,
             TestPaths.Agent());
 
-        Assert.That(await engine.ProcessPromptAsync(engine.StartHistory(), "hi"), Is.EqualTo("hi"));
+        Assert.That(await engine.ProcessPromptAsync(engine.StartConversation(), "hi"), Is.EqualTo("hi"));
     }
 }

@@ -69,7 +69,24 @@ all, whoever the provider is.
 
 *Decided in:* F4.
 
-### 5. Where the factory comes in
+### 5. A resumed chat's thinking
+
+Claude binds each thinking block to everything sent before it, the tools included. When a release changes a tool and
+a chat saved before it comes back, its saved thinking no longer matches, and a request carrying it is refused with a
+400 that says the block "is bound to a different conversation". Core gives every provider a way to deal with that,
+and `CreateStaleThinking(options)` gives Claude's: on the models Anthropic lists as taking it (the Fable, Mythos 5.1
+and 5.2 ones, and Opus, Sonnet and Haiku 5.5), `AnthropicDropBlock`; on any other, core's default, which strips the
+thinking.
+
+`AnthropicDropBlock` sends the saved turns as they were, and asks on each request of that chat for the API to drop the
+blocks that fail instead of refusing: the beta header `thinking-binding-controls-2026-08-01` and
+`thinking.block_binding.prefix_mismatch_behavior: "drop_block"`. Those fields aren't typed on the regular Messages
+request the adapter builds, so they go through its raw data, the SDK's way of sending a field it doesn't name. Once a
+request names its own thinking, the adapter stops adding the turn's effort and how thinking is shown, so the strategy
+carries them too. A request with thinking off is left alone, since the API refuses the setting there. The API then
+answers, and lists what it dropped as `thinking_dropped` in the reply's `input_transformations`.
+
+### 6. Where the factory comes in
 
 `LlmClientFactory`, in core, is the registry that ties this together. It finds the provider by its name, wraps the
 client for caching, and asks the provider for its mapper and its markers. If a program handed it no providers at
@@ -81,7 +98,7 @@ all, it says every name is unknown.
 
 These are the types involved:
 
-![The types: AnthropicProvider makes core's three seams real, the client, the usage mapper and the cache marks](diagrams/LouisAgent.Core.Anthropic-interface.svg)
+![The types: AnthropicProvider makes core's four seams real, the client, the usage mapper, the cache marks and a resumed chat's thinking](diagrams/LouisAgent.Core.Anthropic-interface.svg)
 
 ## Structure
 
@@ -90,9 +107,10 @@ src/engine/LouisAgent.Core.Anthropic/
 ├── AnthropicProvider.cs        # ILlmProvider made real: the client, the mapper, the markers
 ├── AnthropicUsageMapper.cs     # cache writes, split by lifetime, from the SDK's usage
 ├── AnthropicPromptCaching.cs   # the two cache markers (F4)
-├── ThinkingBudget.cs           # the budget swap for Claude models before 4.6
+├── Thinking/ThinkingBudget.cs      # the budget swap for Claude models before 4.6
+├── Thinking/AnthropicDropBlock.cs  # a resumed chat's thinking: the API asked to drop the blocks that fail
 └── Messages/AnthropicErrorMessage.cs
-src/tests/engine/LouisAgent.Core.Anthropic.Tests/   # the provider, the budget, the markers on the wire, the mapper, the lifetimes
+src/tests/engine/LouisAgent.Core.Anthropic.Tests/   # the provider, the budget and drop_block, the markers on the wire, the mapper, the lifetimes
 ```
 
 ## Configuration

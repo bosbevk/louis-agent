@@ -8,7 +8,7 @@
 Each fix's symptom and cause stay in its row of the [fixes table](../fixes/README.md); the whole doc as it was is at
 the tag [`pre-cl24`](https://github.com/bosbevk/louis-agent/tree/pre-cl24/docs/fixes). Here is what each one taught,
 with its skill in the [goal](../GOAL.md)'s map. The ones with a write-up of their own skill are told at more length
-there: FX1 and FX5 to FX7 in [13](13-cost-and-token-economics.md), FX10 to FX14 in
+there: FX1 and FX5 to FX7 in [13](13-cost-and-token-economics.md), FX4 in [9](09-sessions-and-state.md), FX10 to FX14 in
 [10](10-multi-agent-orchestration.md), FX18 to FX20 in [15](15-safety-and-security.md), FX25 in
 [12](12-evaluation.md).
 
@@ -16,7 +16,7 @@ there: FX1 and FX5 to FX7 in [13](13-cost-and-token-economics.md), FX10 to FX14 
 
 **Preserved thinking**: newer Claude models tie their thinking blocks to the exact conversation (system prompt, tools,
 earlier messages), so any layer that edits a request in flight, even a library's, must keep it append-only. Skill map #2
-(reasoning and extended thinking) and #14 (reliability). The same rule is behind [FX4](../fixes/FX04-append-only-history.md).
+(reasoning and extended thinking) and #14 (reliability). The same rule is behind FX4.
 
 ## FX2 · The usage probe says which model to pull on an Ollama 404
 
@@ -26,6 +26,18 @@ An error a person will meet should say what to do next, not only what failed (sk
 
 A shell script run inside a Linux container must have LF endings however it is checked out on Windows; `.gitattributes`
 protects new checkouts, not old ones (skill map #18, testing and shipping).
+
+## FX4 · Keep conversations append-only, so changing the tools or skills mid-chat doesn't break Haiku 5.5 chats
+
+**What a chat was sent is part of the chat.** A thinking model checks its earlier thinking against everything sent
+before it: the system prompt, the tools, the messages. So a chat has to own the tools and the prompt it started
+with, as it owns its messages, and a change to the engine reaches the next chat. The bug lived in shared, mutable
+state, an engine's live tool list that every chat's requests pointed at; the fix was to give each chat its own frozen
+copy, keep each tool as it was sent (a Decorator that also stops a rejected tool from running), and save the prompt
+with a stored chat. Where a change can't be avoided, a release that moved the tools under a saved chat, the provider
+decides what to send: we strip the stale thinking; Anthropic's API, asked on each request, drops only what fails. A
+live proof on Haiku 5.5 showed the 400 and the fix side by side for about $0.002. Skill map #9 (sessions and state)
+and #2 (reasoning and extended thinking); told at more length in [09](09-sessions-and-state.md).
 
 ## FX5 · Requests outside a usage scope are written to the ledger again
 

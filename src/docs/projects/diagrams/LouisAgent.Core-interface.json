@@ -72,8 +72,9 @@
         "id": "engine",
         "name": "AgentEngine",
         "members": [
-          "+StreamPromptAsync(history, input) IAsyncEnumerable<ChatResponseUpdate>",
-          "+ProcessPromptAsync(history, input) Task<string>",
+          "+StartConversation() Conversation",
+          "+StreamPromptAsync(conversation, input) IAsyncEnumerable<ChatResponseUpdate>",
+          "+ProcessPromptAsync(conversation, input) Task<string>",
           "+Tools",
           "+ToolsChanged"
         ]

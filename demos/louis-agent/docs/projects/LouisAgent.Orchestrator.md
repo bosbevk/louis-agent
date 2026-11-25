@@ -76,7 +76,7 @@ The pieces:
 | the triage pack's `Feed/JsonLinesErrorFeed` | Reads the error log, skips handled and malformed events, accepts only plain-token ids; moved out of this project in F106.3.1, so every department's workflow reads the same feed |
 | `Comms/CommsLog.cs` | The Markdown conversation log: per error, messages, replies, checks, summary; a run summary table |
 | `OrchestratorOptions.cs` | Settings |
-| `Messages/` | `OrchestratorToolMessage` (what its tools return and send louis-agent), `OrchestratorLogMessage` (its log lines: stderr, tagged `[orchestrator]`, and the run file with `LOG_DIRECTORY`), `OrchestratorErrorMessage` |
+| `Messages/` | `OrchestratorToolMessage` (what its tools return and send louis-agent), `OrchestratorLogMessage` (its log lines: stderr, tagged `[orchestrator]`, and the run file with `LOG_DIRECTORY`), `OrchestratorErrorMessage`; in `Holes/` the records that fill the log lines, by what the orchestrator is doing (starting up, the comms log, an error event, a fix, the checks; ADR 0119) |
 | `demos/louis-agent/identity/LouisAgent.Identities.Coding/agents/louis-agent/voice-orchestrator.md` | The workflow every error goes through: its mode, one of the coding identity's prompts |
 | `Skills/<service>/` | `service.md` (owners, policies) and one runbook per API method — see [Runbooks](orchestrator-runbooks.md) |
 

@@ -140,7 +140,7 @@ public class AgentSessionsTests
         Assert.That(git.Engine, Is.Not.SameAs(files.Engine));
         Assert.That(Names(git), Does.Not.Contain("ReadWorkspaceFile"));
         Assert.That(filesAgain.Engine, Is.SameAs(files.Engine), "one engine, one cacheable prefix per profile");
-        Assert.That(filesAgain.History, Is.Not.SameAs(files.History), "but each session its own history");
+        Assert.That(filesAgain.Conversation, Is.Not.SameAs(files.Conversation), "but each session its own history");
     }
 
     /// <summary>

@@ -6,7 +6,7 @@ TODO on 2026-10-07 · **First slice of context building:** bounded history is pl
 
 ## Today
 
-In the API, `AgentSession` (`src/hosts/LouisAgent.Api/Sessions/AgentSession.cs`) holds a `List<ChatMessage>` per
+In the API, `AgentSession` (`src/hosts/LouisAgent.Api/Sessions/AgentSession.cs`) holds a `Conversation` per
 session id in memory, dropped from memory after four hours idle. Since F43.1 each session is also written to a store,
 how it opened and then a document per finished turn, and read back when a call names one the API doesn't hold, so a
 restart no longer ends it ([LouisAgent.Api](../projects/LouisAgent.Api.md#8-sessions)). It still mixes "conversation

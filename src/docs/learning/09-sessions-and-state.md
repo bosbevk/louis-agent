@@ -77,6 +77,47 @@ store; FX250 gave the framework's site the same database the same day, since a s
 repeat. The free cluster has no backup, and pauses after 60 days with no use. Accounts and tenants come next in F43,
 on a relational database of their own.
 
+## FX4: a chat owns what it was sent (2026-11-25)
+
+A thinking model ties each thinking block to everything it was sent before it: the system prompt, the tools, the
+earlier messages. Change any of those, and the next request that carries the old thinking is refused with a 400 that
+says the block "is bound to a different conversation". Our engine changed them in six places. Every request was
+handed the engine's live tool list, so a tool the model made mid-message, an `/approve` or a `/reject`, or a tool
+another chat made on the same shared engine, changed the list under an open chat. A skill reload rewrote the first
+message. And since F43.1 a chat brought back from the store was given today's prompt and tools.
+
+The fix gives the chat what belongs to it. A `Conversation` owns its messages (Fowler's *Encapsulate Collection*:
+adding is the only way in) and, from its first turn, its own copy of the tools. Each copied tool is wrapped in a
+`FrozenTool` (a Decorator), which keeps the description and schema it was sent with, so an approval waits for the
+next chat, and refuses to run once the user rejected it, so a rejected script never runs in a chat that still lists
+it. The round limit's final request finds the same copy through `TurnTools`, an ambient scope like `UsageScope`; an
+async iterator hands its caller's context back at every `yield`, so the streamed turn makes the scope current again
+before each step, as it does its trace span. The system prompt is written once. The replies now say a change reaches
+"your next chat", so the model doesn't promise to use what it can't call.
+
+A saved chat keeps its prompt and, per turn, a fingerprint of the tools it was sent: each tool's name, description and
+schema, hashed. A resume sends the saved prompt, takes today's tools, and knows whether they moved. When they did, the
+provider decides what to do with the old thinking, a Strategy chosen once (ADR 0003): ours strips it and keeps the
+words, calls and results; Anthropic's keeps it and asks, on every request, for the API to drop just the blocks that
+fail. Louis approved a paid proof first, and it was worth it: the plan's one-member interface couldn't have carried a
+setting that rides on every request, and a first try showed Haiku didn't think at all about an easy question, so the
+proof only bit once the first answer was one that needed thought. Then the same request was a 400 without
+`drop_block` and answered with it, the API reporting `thinking_dropped`, for about $0.002 across three runs.
+
+What didn't go well. The rule that a file a commit touches leaves it whole kept widening the work: Rider's rename
+reached 37 files, and five tidies and CL61 came before the steps they made room for, each put to Louis or following
+his first pick. A test passed before any code, which said the test was wrong: the fake model kept each request's
+options by reference, so every request showed the final tool list; it now notes each request's tools as it sends
+them. Some record files were written with a shell command at the start, against the rule of editing files only. And
+two smaller pieces of code, the fingerprint and the Anthropic strategy, were written alongside their tests rather
+than after seeing them fail; the commits say which.
+
+What it cost: about $0.002 for the proof, on Louis's word.
+
+Concept: *9 Sessions and state* in the [goal](../GOAL.md): what a session was sent is part of its state, and only
+appending keeps it valid. And *2 Reasoning and extended thinking*: the prefix a thinking model checks, and what each
+provider lets you do when it can't be kept.
+
 ---
 [Docs index](../README.md) · Related: [Learning write-ups](README.md) ·
 [LouisAgent.Api](../projects/LouisAgent.Api.md#8-sessions) · [Session architecture](../specs/SESSION_ARCHITECTURE.md)

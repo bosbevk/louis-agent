@@ -1299,3 +1299,27 @@ What it cost: nothing was paid for.
 Concept: *20 Extensibility* in the [goal](../GOAL.md): a method object is how a method too tangled to split becomes
 steps you can read, and a new check is now one small method in its place in the list. And *18 Testing and shipping*:
 a refactoring is safe when the tests stay still while the shape changes.
+
+## CL61: the turn's folder split, so the next part has room (2026-11-25)
+
+FX4 needed a new type for the turn, `TurnTools`, and its home, `Agent/Turns/`, already held six files, the most a
+folder may. Three ways were put to Louis on a card: a small `Scope/` folder for it, putting it beside `Conversation`,
+or doing CL61 now, the split that folder had been waiting for since F127.4.3. He picked the split.
+
+The tool-call guards were the folder's biggest file: every call logged, a cut-off call refused, a call missing an
+argument refused, an oversized result summarised, the final request's tools kept, a sub-session's prompt held to its
+budget. The summary was a job of its own, with its own model client, its own two limits and its own records, so it
+became a class of its own, `OversizedResults` (*Extract Class*, Fowler); the guards now only decide when to ask it.
+The guards, the summary and `MissingArguments` moved together to `Agent/Turns/Guards/`, through Rider's move to
+another namespace, which changed every reference, and `git mv` for the files, so the moves read as moves. Every log
+line the guards wrote with an anonymous object now names its holes record (ADR 0119); all of them existed already,
+the last ones from FX4's fourth tidy. And the guard that ended a turn when a tool asks the person now calls
+`TurnEnding.Ends`, the same check the turn itself uses, instead of writing it out a second time.
+
+It changed no behaviour, so no test came first: the core suite's 1,407 tests passed unchanged, and the five that
+reached into the guards for the summary's limit or the summary itself now ask `OversizedResults`.
+
+What it cost: nothing was paid for.
+
+Concept: *20 Extensibility* in the [goal](../GOAL.md): a folder at its limit is a sign that a class has two jobs, and
+splitting by job gives the next part a place to go.

@@ -5,6 +5,7 @@ using LouisAgent.Core.Agent.Toolsets;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using LouisAgent.Core.Agent;
+using LouisAgent.Core.Agent.Turns.Guards;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Skills;
@@ -13,9 +14,11 @@ using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Coding.Tests.Golden;
 
-// CL2: what the model is sent must not change while AgentEngine is split. The tools (names, descriptions, schemas, in
-// order), the system prompt and the engine's fixed texts are compared with a committed golden file. A deliberate change
-// regenerates it: set LOUIS_UPDATE_GOLDEN=1, run this test, review the file's diff, commit it.
+/// <summary>
+/// What the model is sent never changes by accident. The tools (names, descriptions, schemas, in order), the system
+/// prompt and the engine's fixed texts are compared with a committed golden file. A deliberate change regenerates it:
+/// set LOUIS_UPDATE_GOLDEN=1, run this test, review the file's diff, commit it.
+/// </summary>
 public class ModelRequestSnapshotTests
 {
     private static readonly string GoldenFile =
@@ -31,15 +34,18 @@ public class ModelRequestSnapshotTests
     private string _skillsDir = null!;
 
 
+    /// <summary>Each test gets an empty skills folder of its own.</summary>
     [SetUp]
     public void SetUp()
     {
         _skillsDir = Directory.CreateTempSubdirectory("model-request-").FullName;
     }
 
+    /// <summary>The folder goes when the test is done.</summary>
     [TearDown]
     public void TearDown() => Directory.Delete(_skillsDir, recursive: true);
 
+    /// <summary>The coding agent's engine with every toolset loaded, with or without tool support.</summary>
     private AgentEngine Engine(bool supportsTools = true)
     {
         // The settings every toolset needs, so all of them load.
@@ -82,7 +88,7 @@ public class ModelRequestSnapshotTests
                     Schema = JsonDocument.Parse(t.JsonSchema.GetRawText()).RootElement
                 }),
             SystemPrompt = engine.SkillDocumentation,
-            NoToolsHistory = Engine(supportsTools: false).StartHistory().Select(m => new
+            NoToolsHistory = Engine(supportsTools: false).StartConversation().Messages.Select(m => new
             {
                 Role = m.Role.Value,
                 m.Text
@@ -96,6 +102,7 @@ public class ModelRequestSnapshotTests
             .ReplaceLineEndings("\n") + "\n";
     }
 
+    /// <summary>What the model is sent matches the golden file.</summary>
     [Test]
     public void WhatTheModelSees_MatchesTheGoldenFile()
     {
@@ -113,6 +120,9 @@ public class ModelRequestSnapshotTests
             "diff.");
     }
 
+    /// <summary>
+    /// Two engines in two folders give the same snapshot, so nothing in it depends on the machine or run.
+    /// </summary>
     [Test]
     public void TheSnapshot_IsTheSameOnEveryBuild()
     {

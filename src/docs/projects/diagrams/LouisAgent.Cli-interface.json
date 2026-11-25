@@ -48,7 +48,7 @@
         "kind": "LouisAgent.Core",
         "tone": "violet",
         "members": [
-          "+StreamPromptAsync(history, input)"
+          "+StreamPromptAsync(conversation, input)"
         ]
       }
     ],

@@ -195,6 +195,7 @@ providers really differ; a job every provider does the same way needs none.
 |---|---|---|---|
 | How usage is reported | `IUsageMapper` | `StandardUsageMapper` (default), `AnthropicUsageMapper` (cache writes, and their split by lifetime from the raw response, F4) | Built (F1) |
 | Prompt caching | `IPromptCachingStrategy` | `AnthropicPromptCaching` (two markers), `NoPromptCaching` (default: OpenAI-compatible caches prefixes on its own, Ollama), applied by `PromptCachingChatClient` | Built ([F4](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F04-prompt-caching.md)) |
+| Thinking a resumed chat can't keep | `IStaleThinking` | `StripStaleThinking` (default: takes the thinking out of a resumed chat's saved turns once a release moved its tools, and keeps their words, calls and results), `AnthropicDropBlock` (keeps it, and asks the API on each request to drop the blocks that fail, on the models that take it) | Built (FX4) |
 | Thinking settings | `ThinkingBudget` (core.anthropic) | Anthropic's fixed budget for pre-4.6 models, wrapped on the client by `AnthropicProvider` | Built (CL57) |
 | Context window | to be designed | Ollama needs `num_ctx` sent; Claude's window is fixed | Planned ([F15](../features/F15-model-limits.md)) |
 | Errors, retries and limits | to be designed | Each provider reports rate and account limits differently | Planned ([F8](../features/F08-reliability.md)) |
@@ -208,14 +209,16 @@ The same pattern shows up away from the providers too: `IRatesMapper` for where 
 
 `AgentEngine` (`Agent/AgentEngine.cs`) doesn't care which provider it talks to. It owns the turn loop, the rules of
 the history and the chain of chat clients, and it's the one face the hosts talk to. The rest has its own classes:
-`ToolRegistry` keeps the tools in name order, `ToolCallGuards` (in `Agent/Turns/`) guards each call, `SkillTools`
+`ToolRegistry` keeps the tools in name order, `ToolCallGuards` (in `Agent/Turns/Guards/`) guards each call, `SkillTools`
 holds `ExecuteSkill`, `CreateSkillFile`, `ReloadSkills` and the skills the system prompt is built from, and
 `AgentBuiltTools` holds `CreateTool`, `/approve` and `/reject`. Core's pure safety checks are in `Guardrails/`: the
 hosts' key rule (`Auth/`) and the address rule (`Network/SsrfGuard`). The console chat belongs to the CLI
 (`ConsoleChat`). Everything the engine sends uses LF line endings, whatever the checkout.
 
-A host hands it a message with `StreamPromptAsync(history, input)`. That streams `ChatResponseUpdate`s back (text,
-`TextReasoningContent`, tool calls and their results) and records the finished turn in `history`.
+A host starts a chat with `StartConversation()`, which gives it a `Conversation`: the chat's messages, opening with
+the system prompt, which the host can read and add to but never change. It hands the engine a message with
+`StreamPromptAsync(conversation, input)`. That streams `ChatResponseUpdate`s back (text, `TextReasoningContent`, tool
+calls and their results) and adds the finished turn to the conversation.
 `ProcessPromptAsync` does the same without streaming. `FunctionInvokingChatClient` runs the loop, up to 10 tool rounds
 per request, and gives the model the full error when a tool fails. A reply may be up to 16,000 tokens, and
 `LLM_THINKING` sets `ChatOptions.Reasoning`.

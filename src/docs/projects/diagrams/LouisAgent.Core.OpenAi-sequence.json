@@ -18,7 +18,7 @@
         "else": [ { "label": "an endpoint",
           "steps": [ { "step": "reply", "from": "provider", "to": "factory", "text": "the SDK's chat client, the key or \"none\"" } ] } ] },
       { "step": "reply", "from": "factory", "to": "host", "text": "the IChatClient" },
-      { "step": "message", "from": "host", "to": "engine", "text": "StreamPromptAsync(history, input)" },
+      { "step": "message", "from": "host", "to": "engine", "text": "StreamPromptAsync(conversation, input)" },
       { "step": "message", "from": "engine", "to": "server", "text": "POST /chat/completions" },
       { "step": "reply", "from": "server", "to": "engine", "text": "the reply, streamed" },
       { "step": "reply", "from": "engine", "to": "host", "text": "the updates, the usage in the standard fields" }

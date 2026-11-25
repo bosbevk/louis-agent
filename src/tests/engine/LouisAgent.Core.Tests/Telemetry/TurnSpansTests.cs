@@ -186,11 +186,11 @@ public class TurnSpansTests
         {
             using var opened = scope?.Invoke();
             if (streamed)
-                await foreach (var _ in engine.StreamPromptAsync(engine.StartHistory(), prompt))
+                await foreach (var _ in engine.StreamPromptAsync(engine.StartConversation(), prompt))
                 {
                 }
             else
-                await engine.ProcessPromptAsync(engine.StartHistory(), prompt);
+                await engine.ProcessPromptAsync(engine.StartConversation(), prompt);
         }
         finally
         {

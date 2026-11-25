@@ -55,10 +55,13 @@ toolset, such as a Puls chat with only `agents` and `web`, gets its mode and its
 A name that a built-in prompt already uses, such as a toolset's guide, is refused, because what's embedded is built
 in (`SkillFiles.IsBuiltIn`).
 
-## Start a new chat afterwards
+## A change reaches your next chat
 
-On Claude Haiku 5.5, `/approve`, `/reject` and a skill reload change the tool list under a running chat, and that
-breaks the chat with a 400 ([FX4](../fixes/FX04-append-only-history.md)). Start a new chat after any of them.
+An open chat keeps the tools and the system prompt it started with, because the model checks its earlier thinking
+against them and a change under it would break the chat. So `/approve`, a skill reload and a new skill reach your
+next chat, and the replies say so. A skill file you just wrote already runs through `ExecuteSkill` in the open chat;
+the next chat's prompt describes it. A `/reject` stops the tool at once: in an open chat it stays in the list, so
+nothing sent changes, but a call to it is answered as rejected and never runs.
 
 ---
 [Guides](README.md) · [Docs index](../README.md)

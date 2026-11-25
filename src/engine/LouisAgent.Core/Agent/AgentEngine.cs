@@ -6,12 +6,14 @@ using LouisAgent.Core.Agent.Messages;
 using LouisAgent.Core.Agent.Turns;
 using LouisAgent.Core.Agent.Turns.Pacing;
 using LouisAgent.Core.Config;
+using LouisAgent.Core.Llm.Thinking;
 using LouisAgent.Core.Llm.UsageMapping;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Pricing.Rates;
 using LouisAgent.Core.Skills;
 using LouisAgent.Composition.Tools.Scripts;
+using LouisAgent.Core.Agent.Turns.Guards;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Sinks;
 using Microsoft.Extensions.AI;
@@ -52,6 +54,9 @@ public class AgentEngine
 
     /// <summary>What the user types that the model never sees.</summary>
     private readonly UserCommands _commands;
+
+    /// <summary>What a chat resumed on moved tools does with its saved thinking: the provider's way.</summary>
+    private readonly IStaleThinking _staleThinking;
 
     /// <summary>Combined default instructions and skill documentation used as the system prompt.</summary>
     public string SkillDocumentation => _skillTools.Documentation;
@@ -145,6 +150,10 @@ public class AgentEngine
     /// <param name="concurrentToolCalls">
     /// Run a round's tool calls at once (F34); only for toolsets that allow it.
     /// </param>
+    /// <param name="staleThinking">
+    /// The provider's way with a resumed chat's thinking once its tools moved
+    /// (<c>LlmClientFactory.CreateStaleThinking</c>); null strips it, which every provider takes.
+    /// </param>
     /// <param name="selfExtension">
     /// On a toolsets engine, also register the self-extension tools (CreateSkillFile, ReloadSkills, CreateTool,
     /// ListAgentTools): the <c>skills</c> toolset. Ignored when <paramref name="toolsets"/> is null, which always
@@ -154,9 +163,11 @@ public class AgentEngine
         bool supportsTools = true,
         IEnumerable<object>? toolsets = null,
         IUsageSink? usageSink = null, IUsageMapper? usageMapper = null, bool selfExtension = false,
-        bool concurrentToolCalls = false, TimeProvider? clock = null, Sessions.Replay.Store.ReplayStore? replay = null)
+        bool concurrentToolCalls = false, TimeProvider? clock = null, Sessions.Replay.Store.ReplayStore? replay = null,
+        IStaleThinking? staleThinking = null)
     {
         SupportsTools = supportsTools;
+        _staleThinking = staleThinking ?? StripStaleThinking.Instance;
         WorkspaceRoot = Path.GetFullPath(options.WorkspaceRoot);
         _registry = new ToolRegistry(supportsTools, replay);
         var python = new PythonRunner(WorkspaceRoot);
@@ -174,7 +185,7 @@ public class AgentEngine
         _clock = clock ?? TimeProvider.System;
         _turns = new TurnRunner(
             ChatPipeline.Build(chatClient, _guards, usageSink, usageMapper, concurrentToolCalls, replay), _registry,
-            () => SkillDocumentation, () => Thinking, supportsTools, () => Name);
+            () => SkillDocumentation, () => Thinking, supportsTools, () => Name, _staleThinking);
 
         if (!supportsTools)
         {
@@ -197,26 +208,45 @@ public class AgentEngine
     public bool RegisterDiscoveredTool(string name, string description) =>
         _registry.RegisterDiscovered(name, description);
 
-    /// <summary>A history seeded with the system prompt (and the no-tools notice when applicable).</summary>
-    public List<ChatMessage> StartHistory() => _turns.NewHistory();
+    /// <summary>
+    /// A new chat, opening with the system prompt, and the no-tools notice when the model takes none.
+    /// </summary>
+    public Conversation StartConversation() => _turns.NewConversation();
+
+    /// <summary>
+    /// A saved chat brought back: it opens with the system prompt it was saved with, not today's, and sends today's
+    /// tools, knowing whether they differ from those its saved turns were sent with. The host adds the turns after.
+    /// </summary>
+    /// <param name="systemPrompt">The system prompt the chat was saved with.</param>
+    /// <param name="savedTools">The mark of the tools its saved turns were sent with; none when it had no turn.</param>
+    /// <param name="savedMessages">Its saved turns' messages, in order.</param>
+    public Conversation ResumeConversation(string systemPrompt, ToolsFingerprint? savedTools,
+        IReadOnlyList<ChatMessage> savedMessages)
+    {
+        var conversation = _turns.ResumedConversation(systemPrompt, savedTools);
+        // Thinking saved under other tools may no longer match them; the provider's strategy says what to send.
+        var said = conversation.ToolsChangedSinceSaved ? _staleThinking.Restore(savedMessages) : savedMessages;
+        conversation.AddRange(said);
+        return conversation;
+    }
 
     /// <summary>
     /// One prompt, the reply whole (<see cref="TurnRunner.ProcessAsync"/>): the turn, tool calls included, lands in
-    /// <paramref name="history"/>.
+    /// <paramref name="conversation"/>.
     /// </summary>
-    public Task<string> ProcessPromptAsync(List<ChatMessage> history, string userInput,
+    public Task<string> ProcessPromptAsync(Conversation conversation, string userInput,
         CancellationToken cancellationToken = default) =>
-        _turns.ProcessAsync(history, userInput, cancellationToken);
+        _turns.ProcessAsync(conversation, userInput, cancellationToken);
 
     /// <summary>
     /// One prompt, the reply streamed (<see cref="TurnRunner.StreamAsync"/>): text, each tool call and its outcome as
     /// they happen; the text at a steady pace in whole words when the host turned STREAM_PACE on (F155), the turn
-    /// itself and its history untouched by it.
+    /// itself and its conversation untouched by it.
     /// </summary>
-    public IAsyncEnumerable<ChatResponseUpdate> StreamPromptAsync(List<ChatMessage> history, string userInput,
+    public IAsyncEnumerable<ChatResponseUpdate> StreamPromptAsync(Conversation conversation, string userInput,
         CancellationToken cancellationToken = default)
     {
-        var turn = _turns.StreamAsync(history, userInput, cancellationToken);
+        var turn = _turns.StreamAsync(conversation, userInput, cancellationToken);
         return _paced ? turn.Paced(_clock, cancellationToken) : turn;
     }
 

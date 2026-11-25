@@ -3,7 +3,7 @@ using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Agent.Messages;
 using Microsoft.Extensions.AI;
 
-namespace LouisAgent.Core.Agent.Turns;
+namespace LouisAgent.Core.Agent.Turns.Guards;
 
 /// <summary>
 /// Says what a tool call left out, in the tool's own words (FX108): every argument the tool needs that the call didn't
@@ -33,9 +33,17 @@ internal static class MissingArguments
         if (missing.Count == 0) return null;
 
         var lines = missing.Select(name => MessageText.Format(AgentToolMessage.ArgumentMissing,
-            new { Name = name, Meaning = MeaningOf(schema, name) }));
+            new
+            {
+                Name = name,
+                Meaning = MeaningOf(schema, name)
+            }));
         return MessageText.Format(AgentToolMessage.ArgumentsMissing,
-            new { Tool = function.Name, Missing = string.Join("\n", lines) });
+            new
+            {
+                Tool = function.Name,
+                Missing = string.Join("\n", lines)
+            });
     }
 
     /// <summary>A parameter's description from the schema, or its type when the tool gave none.</summary>

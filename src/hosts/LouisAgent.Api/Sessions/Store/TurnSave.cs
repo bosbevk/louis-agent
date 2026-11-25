@@ -13,10 +13,11 @@ internal sealed record TurnSave(ISessionStore Store, int HistoryFrom, IReadOnlyD
     /// <summary>Appends what the turn added to the chat's history, under the turn's number.</summary>
     public async Task AppendAsync(AgentSession session, CancellationToken cancellationToken = default)
     {
-        var added = session.History.Skip(HistoryFrom).ToList();
+        var added = session.Conversation.Messages.Skip(HistoryFrom).ToList();
         if (added.Count == 0) return;
 
-        var turn = new StoredTurn(session.Turns, DateTimeOffset.UtcNow, added, Attachments);
+        var turn = new StoredTurn(session.Turns, DateTimeOffset.UtcNow, added, Attachments,
+            session.Conversation.ToolsFingerprint);
         await Store.AppendTurnAsync(session.Id, turn, cancellationToken);
     }
 }

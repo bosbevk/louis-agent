@@ -163,7 +163,7 @@ public class AgentEngineFactoryTests
             async Task<string> AskAsync(AgentEngineFactory factory)
             {
                 var engine = factory.GetOrCreate([]);
-                return await engine.ProcessPromptAsync(engine.StartHistory(), "hello");
+                return await engine.ProcessPromptAsync(engine.StartConversation(), "hello");
             }
 
             string recorded, replayed;
@@ -197,9 +197,9 @@ public class AgentEngineFactoryTests
         var factory = new AgentEngineFactory(own, Options(), sessionLlms: [new SessionLlm("ollama-puls", local)]);
 
         var onLocal = factory.GetOrCreate([], llm: "ollama-puls");
-        Assert.That(await onLocal.ProcessPromptAsync(onLocal.StartHistory(), "prices?"), Is.EqualTo("qwen"));
+        Assert.That(await onLocal.ProcessPromptAsync(onLocal.StartConversation(), "prices?"), Is.EqualTo("qwen"));
         var onOwn = factory.GetOrCreate([]);
-        Assert.That(await onOwn.ProcessPromptAsync(onOwn.StartHistory(), "hello"), Is.EqualTo("haiku"));
+        Assert.That(await onOwn.ProcessPromptAsync(onOwn.StartConversation(), "hello"), Is.EqualTo("haiku"));
 
         Assert.That((own.Requests.Count, local.Requests.Count), Is.EqualTo((1, 1)),
             "each request went to its own model");

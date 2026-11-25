@@ -2,7 +2,9 @@ using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Llm.Caching;
 using LouisAgent.Core.Llm.Messages;
+using LouisAgent.Core.Llm.Messages.Holes.Providers;
 using LouisAgent.Core.Llm.Providers;
+using LouisAgent.Core.Llm.Thinking;
 using LouisAgent.Core.Llm.UsageMapping;
 using Microsoft.Extensions.AI;
 
@@ -22,12 +24,16 @@ public sealed class LlmClientFactory : ILlmClientFactory
 {
     private readonly Dictionary<string, ILlmProvider> _providers;
 
+    /// <summary>The factory over the providers the host gave, found by name without regard to case.</summary>
     public LlmClientFactory(IEnumerable<ILlmProvider> providers) =>
         _providers = providers.ToDictionary(p => p.Name, StringComparer.OrdinalIgnoreCase);
 
     /// <summary>The names a host gave, for a message.</summary>
     public IReadOnlyCollection<string> Supported => _providers.Keys;
 
+    /// <summary>
+    /// The named provider's client for these settings, wrapped for its prompt cache; a model must be named.
+    /// </summary>
     public IChatClient Create(LlmOptions options)
     {
         if (string.IsNullOrWhiteSpace(options.Model))
@@ -40,7 +46,12 @@ public sealed class LlmClientFactory : ILlmClientFactory
     /// <summary>The provider's own way of counting tokens.</summary>
     public IUsageMapper CreateUsageMapper(LlmOptions options) => Provider(options).CreateUsageMapper();
 
-    /// <summary>The provider's markers when <c>LLM_CACHE</c> is on; nothing when it's off, whoever the provider is.</summary>
+    /// <summary>The provider's own way with a resumed chat's thinking once its tools moved.</summary>
+    public IStaleThinking CreateStaleThinking(LlmOptions options) => Provider(options).CreateStaleThinking(options);
+
+    /// <summary>
+    /// The provider's markers when <c>LLM_CACHE</c> is on; nothing when it's off, whoever the provider is.
+    /// </summary>
     public IPromptCachingStrategy CreatePromptCaching(LlmOptions options)
     {
         bool cache = options.ResolveCache();
@@ -53,13 +64,7 @@ public sealed class LlmClientFactory : ILlmClientFactory
     {
         if (_providers.TryGetValue(options.Provider ?? string.Empty, out var provider)) return provider;
 
-        throw new ArgumentException(
-            MessageText.Format(LlmErrorMessage.UnknownProvider,
-                new
-                {
-                    options.Provider,
-                    Supported = string.Join(", ", Supported)
-                }),
-            nameof(options));
+        var unknown = new UnknownProviderHoles(options.Provider, string.Join(", ", Supported));
+        throw new ArgumentException(MessageText.Format(LlmErrorMessage.UnknownProvider, unknown), nameof(options));
     }
 }
