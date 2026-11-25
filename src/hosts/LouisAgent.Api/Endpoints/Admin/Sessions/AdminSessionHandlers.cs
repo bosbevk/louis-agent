@@ -23,9 +23,9 @@ internal static class AdminSessionHandlers
         admin.MapPost("/sessions/{id}/mine", MarkMine);
 
     /// <summary>Marks the session as the admin's; a session the API doesn't hold is a 404.</summary>
-    public static MarkAnswer MarkMine(string id, AgentSessions sessions)
+    public static async Task<MarkAnswer> MarkMine(string id, AgentSessions sessions)
     {
-        if (sessions.Get(id) is not { } session)
+        if (await sessions.GetAsync(id) is not { } session)
         {
             var unknown = new UnknownSessionHoles(id);
             return ApiErrors.NotFound(MessageText.Format(ApiUserText.UnknownSession, unknown));

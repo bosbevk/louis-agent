@@ -1,3 +1,4 @@
+using LouisAgent.Api.Endpoints.Routing;
 using LouisAgent.Api.Sessions.Opening;
 using LouisAgent.Api.Sessions.Store;
 using LouisAgent.SessionStream.Wire.Requests;
@@ -41,7 +42,11 @@ internal sealed class AgentSessions(AgentEngineFactory engines, ISessionStore? s
     /// keeps it, in memory and in the store (F43.1); idle sessions are dropped from memory first, so it doesn't grow.
     /// An eval trial's session is never stored: it replays from its recordings and has no next day.
     /// </summary>
-    public async Task<AgentSession> CreateAsync(SessionRequest request, CancellationToken cancellationToken = default)
+    /// <param name="request">What the session is asked to open with.</param>
+    /// <param name="admittedAs">The identity the open door opened it as, for a visitor; none with the key.</param>
+    /// <param name="cancellationToken">Stops the store's write.</param>
+    public async Task<AgentSession> CreateAsync(SessionRequest request, string? admittedAs = null,
+        CancellationToken cancellationToken = default)
     {
         var opening = new SessionOpening(engines, request, Get);
         var session = opening.Open();
@@ -49,12 +54,42 @@ internal sealed class AgentSessions(AgentEngineFactory engines, ISessionStore? s
         DropIdle(DateTimeOffset.UtcNow);
         _sessions[session.Id] = session;
         if (request.Replay is null)
-            await _store.SaveOpeningAsync(new StoredSession(session.Id, request, session.CreatedAt), cancellationToken);
+        {
+            var stored = new StoredSession(session.Id, request, session.CreatedAt, admittedAs);
+            await _store.SaveOpeningAsync(stored, cancellationToken);
+        }
+
         return session;
     }
 
-    /// <summary>The session by its id, if this instance has it.</summary>
+    /// <summary>The session by its id, if this instance holds it in memory.</summary>
     public AgentSession? Get(string id) => _sessions.GetValueOrDefault(id);
+
+    /// <summary>
+    /// The session by its id: from memory, or read back from the store after a restart or an idle drop (F43.1), opened
+    /// again from the request it opened with, under the same id, its turns restored; none when neither has it.
+    /// </summary>
+    public async Task<AgentSession?> GetAsync(string id, CancellationToken cancellationToken = default)
+    {
+        if (Get(id) is { } held) return held;
+        if (await _store.LoadAsync(id, cancellationToken) is not { } saved) return null;
+
+        var session = new SessionOpening(engines, saved.Session.Opening, Get).Open(saved.Session.Id);
+        session.Restore(saved.Turns);
+        // Two messages for the same chat at once resume it once: the first one kept is the one both get.
+        return _sessions.GetOrAdd(session.Id, session);
+    }
+
+    /// <summary>
+    /// Whether this instance has the chat, in memory or in its store, and the identity a visitor's chat was admitted
+    /// as, for the open door (F43.1).
+    /// </summary>
+    public async Task<SessionHolding> HoldingAsync(string id, CancellationToken cancellationToken = default)
+    {
+        if (await _store.LoadAsync(id, cancellationToken) is { } saved)
+            return new SessionHolding(true, saved.Session.AdmittedAs);
+        return new SessionHolding(Get(id) is not null, null);
+    }
 
     /// <summary>
     /// Ends a session and the sub-sessions it kept, and forgets it in the store; false when there was none by that id.

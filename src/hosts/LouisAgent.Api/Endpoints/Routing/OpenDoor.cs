@@ -42,10 +42,12 @@ internal enum OpenDoorAnswer
 /// chosen over the gate answering every unknown session on every host, and over the page guessing from a 401).
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0099-the-guide-answers-without-a-sign-in-within-a-cap.md">ADR 0099: the guide answers without a sign-in, within a cap</seealso>
-public sealed class OpenDoor(OpenDoorOptions options, TimeProvider? clock = null, Func<string, bool>? holds = null)
+public sealed class OpenDoor(OpenDoorOptions options, TimeProvider? clock = null,
+    Func<string, Task<SessionHolding>>? holds = null)
 {
     /// <summary>Asks the host whether it has a session; with none to ask, every session counts as there.</summary>
-    private readonly Func<string, bool> _holds = holds ?? (_ => true);
+    private readonly Func<string, Task<SessionHolding>> _holds =
+        holds ?? (_ => Task.FromResult(new SessionHolding(true, null)));
 
     /// <summary>
     /// The mark on a request the door admitted, holding the identity it admitted, which the session handler reads.
@@ -92,8 +94,20 @@ public sealed class OpenDoor(OpenDoorOptions options, TimeProvider? clock = null
     {
         if (!Options.IsOpen) return OpenDoorAnswer.NotMine;
         if (SessionIdOf(context.Request.Path) is { } id && _admitted.ContainsKey(id)) return OpenDoorAnswer.Pass;
-        // A session the host doesn't have, as after a restart: its handler says it is gone, which needs no key.
-        if (SessionIdOf(context.Request.Path) is { } unknown && !_holds(unknown)) return OpenDoorAnswer.Pass;
+        if (SessionIdOf(context.Request.Path) is { } named)
+        {
+            var holding = await _holds(named);
+            // A session the host has nowhere: its handler says it is gone, which needs no key.
+            if (!holding.Held) return OpenDoorAnswer.Pass;
+            // A visitor's chat the door opened before a restart (F43.1): admitted again, as it was used; a chat
+            // opened with the key falls through and still needs it.
+            if (holding.AdmittedAs is not null)
+            {
+                Admit(named, context);
+                return OpenDoorAnswer.Pass;
+            }
+        }
+
         if (!IsOpeningASession(context.Request)) return OpenDoorAnswer.NotMine;
         if (await OpeningAsync(context.Request) is not { Identity: { } identity } opening)
             return OpenDoorAnswer.NotMine;

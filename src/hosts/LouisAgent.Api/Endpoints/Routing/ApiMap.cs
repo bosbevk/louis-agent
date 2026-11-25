@@ -41,7 +41,7 @@ internal static class ApiMap
         // whether one is there, so a visitor's session lost to a restart is told it is gone (FX157).
         var doorOptions = openDoor ?? OpenDoorOptions.FromEnvironment();
         services.AddSingleton(provider => new OpenDoor(doorOptions,
-            holds: id => provider.GetRequiredService<AgentSessions>().Get(id) is not null));
+            holds: id => provider.GetRequiredService<AgentSessions>().HoldingAsync(id)));
         // host.Engine (every toolset this instance can load) serves /v1/workspace and /v1/git; sessions get their own
         // (F5).
         services.AddSingleton(host.Engine);

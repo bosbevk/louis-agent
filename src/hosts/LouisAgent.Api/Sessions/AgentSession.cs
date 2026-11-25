@@ -1,4 +1,5 @@
 using LouisAgent.Api.Sessions.Files;
+using LouisAgent.Api.Sessions.Store;
 using LouisAgent.Api.Sessions.Streaming;
 using LouisAgent.Composition.Sessions;
 using LouisAgent.Core.Sessions.SubSessions;
@@ -130,6 +131,21 @@ internal sealed class AgentSession(
     /// kept.
     /// </summary>
     public SessionFileStore Files { get; } = new();
+
+    /// <summary>
+    /// Brings back a chat read from the store (F43.1): its turns' messages after the system prompt, in order, their
+    /// text attachments, and its turn count, so its next turn runs as if nothing happened.
+    /// </summary>
+    public void Restore(IReadOnlyList<StoredTurn> turns)
+    {
+        foreach (var turn in turns)
+        {
+            History.AddRange(turn.Messages);
+            foreach (var (name, content) in turn.Attachments) Remember(name, content);
+        }
+
+        Turns = turns.Count;
+    }
 
     /// <summary>Keeps an attachment for later turns; the same name again replaces it.</summary>
     public void Remember(string name, string? content)

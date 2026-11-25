@@ -16,15 +16,15 @@ public class SessionHandlersTests
         yield return new TestCaseData("CreateSession",
             typeof(Task<Results<CreatedJson<SessionCreatedReply>, JsonHttpResult<ApiError>>>));
         yield return new TestCaseData("GetSession",
-            typeof(Results<JsonHttpResult<SessionReply>, JsonHttpResult<ApiError>>));
+            typeof(Task<Results<JsonHttpResult<SessionReply>, JsonHttpResult<ApiError>>>));
         yield return new TestCaseData("GetSessionWork",
-            typeof(Results<JsonHttpResult<SessionWorkReply>, JsonHttpResult<ApiError>>));
+            typeof(Task<Results<JsonHttpResult<SessionWorkReply>, JsonHttpResult<ApiError>>>));
         yield return new TestCaseData("DeleteSession",
             typeof(Task<Results<JsonHttpResult<SessionDeletedReply>, JsonHttpResult<ApiError>>>));
         yield return new TestCaseData("CancelSession",
-            typeof(Results<JsonHttpResult<SessionCancelledReply>, JsonHttpResult<ApiError>>));
+            typeof(Task<Results<JsonHttpResult<SessionCancelledReply>, JsonHttpResult<ApiError>>>));
         yield return new TestCaseData("SendMessage",
-            typeof(Results<ServerSentEventsResult<string>, JsonHttpResult<ApiError>>));
+            typeof(Task<Results<ServerSentEventsResult<string>, JsonHttpResult<ApiError>>>));
     }
 
     /// <summary>A handler's signature names every answer it can give.</summary>

@@ -11,4 +11,12 @@ namespace LouisAgent.Api.Sessions.Store;
 /// What the chat was asked to open with: its toolsets, identity, role, place and the rest.
 /// </param>
 /// <param name="OpenedAt">When it opened, in UTC.</param>
-internal sealed record StoredSession(string Id, SessionRequest Opening, DateTimeOffset OpenedAt);
+/// <param name="AdmittedAs">
+/// The identity the open door opened it as, for a visitor's chat, so the door lets it in again after a restart; none
+/// for a chat opened with the key, which still needs the key.
+/// </param>
+internal sealed record StoredSession(
+    string Id,
+    SessionRequest Opening,
+    DateTimeOffset OpenedAt,
+    string? AdmittedAs = null);
