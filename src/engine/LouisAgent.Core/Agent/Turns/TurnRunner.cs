@@ -22,7 +22,7 @@ namespace LouisAgent.Core.Agent.Turns;
 /// named for the agent (F52).
 /// </summary>
 /// <param name="systemPrompt">
-/// The system prompt as it is now: skills may have been reloaded since a conversation started.
+/// The system prompt as it is now, which a new conversation opens with; skills reloaded later reach the next one.
 /// </param>
 /// <param name="thinking">Reasoning effort for each turn, as the engine has it; null disables thinking.</param>
 /// <param name="agentName">The agent a trace names the turn for, as the engine has it.</param>
@@ -214,14 +214,11 @@ internal sealed class TurnRunner(
     }
 
     /// <summary>
-    /// Starts a turn: the system prompt brought up to date, the user's words added, and the request's options (the
-    /// output limit, thinking, the tools).
+    /// Starts a turn: the user's words added, and the request's options (the output limit, thinking, the
+    /// conversation's tools). Nothing already sent is changed, the system prompt included.
     /// </summary>
     private ChatOptions Begin(Conversation conversation, string userInput)
     {
-        // Skills may have been reloaded since this conversation started; keep its system prompt current.
-        conversation.BringSystemPromptUpToDate(systemPrompt());
-
         conversation.Add(new ChatMessage(ChatRole.User, userInput));
 
         var chatOptions = new ChatOptions { MaxOutputTokens = MaxOutputTokens };

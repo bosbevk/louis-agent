@@ -5,8 +5,7 @@ namespace LouisAgent.Core.Agent;
 /// <summary>
 /// One chat with the agent: everything said in it so far, starting with the system prompt, and the tools it was
 /// started with. A host keeps one per chat and hands it to every turn; it can read the messages and add to them,
-/// never change one already there. Only the engine still brings the system prompt up to date after the skills are
-/// reloaded.
+/// never change one already there, the system prompt included: skills reloaded mid-chat reach the next chat.
 /// </summary>
 /// <remarks>
 /// Encapsulate Collection (Fowler). The history used to be a bare list every host held and anyone could edit, and the
@@ -45,11 +44,4 @@ public sealed class Conversation
 
     /// <summary>Adds a streamed reply at the end, its updates joined into whole messages.</summary>
     internal void AddMessages(IEnumerable<ChatResponseUpdate> updates) => _messages.AddMessages(updates);
-
-    /// <summary>Swaps the opening system prompt for the one given, when the skills have changed it since.</summary>
-    internal void BringSystemPromptUpToDate(string prompt)
-    {
-        if (_messages.Count == 0 || _messages[0].Role != ChatRole.System || _messages[0].Text == prompt) return;
-        _messages[0] = new ChatMessage(ChatRole.System, prompt);
-    }
 }

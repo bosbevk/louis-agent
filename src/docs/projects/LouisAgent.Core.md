@@ -81,7 +81,9 @@ model three things: the history, the tools it may call, and the reasoning settin
 The tools are the conversation's own. At its first turn the conversation takes a copy of the engine's tools, and
 every request of that chat sends the copy from then on. That matters because the model checks its earlier thinking
 against everything it was sent before, the tools included, and a list that changed under it can make a request fail.
-So a tool the agent makes, or one you reject, changes the engine's tools, and the next chat gets them.
+So a tool the agent makes, or one you reject, changes the engine's tools, and the next chat gets them. The system
+prompt is the same: it is written once, when the conversation starts, and skills written or reloaded mid-chat reach
+the next chat's prompt, never the open one's.
 Engines are shared by every chat with the same toolsets, so this also keeps one chat's new tool out of another's.
 
 The model usually answers by asking for a tool. `FunctionInvokingChatClient`, from Microsoft.Extensions.AI, runs
@@ -406,7 +408,7 @@ This part is for looking things up: every folder and file of core, and what's in
 | Path | What's in it |
 |---|---|
 | `Agent/AgentEngine.cs` | The engine as a facade (S, CL15): wires the skills, the tools, the guards and the pipeline once; a turn, a command and the self-extension tools go to the classes below |
-| `Agent/Turns/` | `TurnRunner` (one turn: the history seeded and kept current, the reply whole or streamed, a cut-off reply continued; it opens the turn's span (F52), made current again after every `yield` of the streamed form), `ChatPipeline` (the middleware in its order, and the summaries' client; every model request traced (OpenTelemetry, no content)), `ToolCallText` (a call's arguments on one line for the CLI and Rider), `MissingArguments` (what a call left out, in the tool's own words, FX108), `TurnEnding` (when a tool ends the turn, and whether the person said stop) |
+| `Agent/Turns/` | `TurnRunner` (one turn: the conversation started and added to, its tools and system prompt as they were at its start, the reply whole or streamed, a cut-off reply continued; it opens the turn's span (F52), made current again after every `yield` of the streamed form), `ChatPipeline` (the middleware in its order, and the summaries' client; every model request traced (OpenTelemetry, no content)), `ToolCallText` (a call's arguments on one line for the CLI and Rider), `MissingArguments` (what a call left out, in the tool's own words, FX108), `TurnEnding` (when a tool ends the turn, and whether the person said stop) |
 | `Agent/Turns/Pacing/` | `PacedStream` (the stream operator `turn.Paced(clock)`: a turn's text handed out at `WordPace`'s pace in whole words, everything else in the turn's order, when `STREAM_PACE` is on, F155), `WaitingText` (the text not yet handed out, cut on a whole word) |
 | `Agent/EngineTools/Skills/SkillReadTools.cs` | `ReadSkill`: one of the identity's on-demand skills by its name (F129), only that identity's |
 | `Agent/EngineTools/OwnTools.cs` | The tools an engine registers itself: `ExecuteSkill` and the clock in every session, the toolsets' objects, and the four self-extension tools as the `skills` toolset |

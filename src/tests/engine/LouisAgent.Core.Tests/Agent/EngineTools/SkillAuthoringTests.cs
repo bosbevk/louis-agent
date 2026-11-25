@@ -363,21 +363,26 @@ public class SkillAuthoringTests
         Assert.That(engine.ReloadSkills(), Does.Contain("Greet"));
     }
 
-    /// <summary>A skill written mid-chat changes the system prompt the chat's next request sends.</summary>
+    /// <summary>
+    /// A skill written mid-chat leaves the open chat's system prompt as it was sent; the next chat gets the new one.
+    /// </summary>
     [Test]
-    public async Task ProcessPrompt_UsesReloadedSystemPromptInExistingConversation()
+    public async Task ProcessPrompt_KeepsTheSystemPromptItStarted_TheNextConversationGetsTheNewOne()
     {
         var client = new FakeChatClient(
             _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "first")),
-            _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "second")));
+            _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "second")),
+            _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "third")));
         var engine = Engine(client: client);
-        var history = engine.StartConversation();
+        var open = engine.StartConversation();
 
-        await engine.ProcessPromptAsync(history, "before");
+        await engine.ProcessPromptAsync(open, "before");
         engine.CreateSkillFile("greeting", EchoSkill);
-        await engine.ProcessPromptAsync(history, "after");
+        await engine.ProcessPromptAsync(open, "after");
+        await engine.ProcessPromptAsync(engine.StartConversation(), "a new chat");
 
-        Assert.That(client.Requests[0].Messages[0].Text, Does.Not.Contain("# Greeting Skills"));
-        Assert.That(client.Requests[1].Messages[0].Text, Does.Contain("# Greeting Skills"));
+        Assert.That(client.Requests[1].Messages[0].Text, Is.EqualTo(client.Requests[0].Messages[0].Text),
+            "the open chat's prompt is as it was sent");
+        Assert.That(client.Requests[2].Messages[0].Text, Does.Contain("# Greeting Skills"), "the next chat's has it");
     }
 }
