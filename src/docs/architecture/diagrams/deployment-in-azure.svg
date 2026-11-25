@@ -227,8 +227,8 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
         <path d="M7 16l0 .01" />
       </g>
       <text class="crd-headline" x="448" y="92" text-anchor="middle">The framework's two sites in Azure</text>
-      <rect class="mrq-pill" x="402" y="108" width="92" height="24" rx="12" />
-      <text class="mrq-code" x="448" y="124" text-anchor="middle">rg-puls-za</text>
+      <rect class="mrq-pill" x="378.2" y="108" width="139.6" height="24" rx="12" />
+      <text class="mrq-code" x="448" y="124" text-anchor="middle">rg-louis-agent-za</text>
       <text class="crd-summary" x="448" y="160" text-anchor="middle">louis-agent.dev and framework.louis-agent.dev, two Container Apps in one environment.</text>
       <rect class="mrq-glass" x="0" y="222" width="207.5" height="150" rx="14" />
       <rect class="mrq-edge" x="28" y="221.5" width="151.5" height="1.6" rx="0" />

@@ -2,7 +2,7 @@
   "kind": "flow",
   "type": "deployment",
   "title": "The framework's two sites in Azure: what runs where",
-  "caption": "Two apps in one environment in rg-puls-za, each asleep until someone visits: they share an identity that reads the vault and a share that holds each one's logs in a folder of its own.",
+  "caption": "Two apps in one environment in rg-louis-agent-za, on no network of ours, each asleep until someone visits: they share an identity that reads the vault and a share that holds each one's logs in a folder of its own.",
   "flow": {
     "nodes": [
       { "id": "person", "shape": "terminal", "icon": "user", "tone": "blue", "label": "A visitor's browser" },
@@ -32,7 +32,7 @@
       { "from": "framework", "to": "model" }
     ],
     "groups": [
-      { "id": "env", "label": "puls-env, Consumption, asleep at no replicas" }
+      { "id": "env", "label": "louis-agent-env, Consumption, asleep at no replicas" }
     ]
   }
 }

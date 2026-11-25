@@ -4,7 +4,7 @@
   "cards": {
     "rows": [
       { "cards": [
-        { "id": "azure", "icon": "server", "title": "The framework's two sites in Azure", "code": "rg-puls-za",
+        { "id": "azure", "icon": "server", "title": "The framework's two sites in Azure", "code": "rg-louis-agent-za",
           "look": "highlight",
           "text": "louis-agent.dev and framework.louis-agent.dev, two Container Apps in one environment." }
       ] },

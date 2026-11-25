@@ -198,45 +198,6 @@ the films left out, and the price tables, at `/app/config`. A new revision carri
 | `framework/data/` | framework.louis-agent.dev's evals: their runs and what a live run records; its release makes the folder |
 | `config/` | The price tables `deploy.ps1 workspace` copies, which neither image needs now |
 
-## Moving the apps to their own group
-
-This is how the two apps move from `puls-env`, on `puls-vnet` in `rg-puls-za`, to `louis-agent-env` in
-`rg-louis-agent-za`, with the sites up through it. The old apps serve every visitor until the new ones answer, and
-the switch is a change of DNS records. Run it once, from a PC signed in with `az login` as an owner of the
-subscription, in this order.
-
-1. **Make the new group and environment.** From the branch that carries this guide, before it merges:
-   `./src/site/deploy/azure/deploy.ps1 infra`. Azure shows its what-if first. Check that it adds the group's
-   environment, its share link, the registry's new pull right and the release's right on the new group, and that it
-   deletes nothing; then say yes.
-2. **Merge the pull request.** The merge's own *Deploy the apps* run creates both apps in the new group, beside the
-   old ones, which keep serving. Its summary lists their revisions; both should say *Healthy*.
-3. **Give louis-agent.dev its certificate on the new app.** `./src/site/deploy/azure/deploy.ps1 domain -App
-   louis-agent-app -Hostname louis-agent.dev`. It prints the records. Set the new `asuid` TXT and the `_dnsauth`
-   token in Cloudflare first, which validates the certificate while the A record still points at the old site, and
-   wait for the script to say the certificate is bound. If Azure refuses the name while the A record points
-   elsewhere, do step 4's switch first and run this again: the site gives an HTTPS error until the certificate is
-   bound, usually a few minutes.
-4. **Switch louis-agent.dev.** In Cloudflare, set the A record `@` to the new static IP the script printed. Then do
-   step 3 for `www.louis-agent.dev`, whose CNAME `www` points at the new app's own address; its certificate is issued
-   once that CNAME resolves, so it may give an HTTPS error for a few minutes.
-5. **Switch the framework's site.** The same for `framework.louis-agent.dev`, with `-App louis-agent-framework-app`:
-   its CNAME `framework` to the new app's address and `asuid.framework` to its id.
-6. **Check.** `https://louis-agent.dev`, `https://www.louis-agent.dev` and `https://framework.louis-agent.dev` each
-   open, and `az containerapp show -n <app> -g rg-louis-agent-za --query properties.environmentId -o tsv` ends in
-   `louis-agent-env` for both apps.
-7. **Delete the old pieces.** None of these can be undone, so run them only once step 6 holds:
-
-   ```powershell
-   az containerapp delete -n louis-agent-app -g rg-puls-za --yes
-   az containerapp delete -n louis-agent-framework-app -g rg-puls-za --yes
-   az containerapp env delete -n puls-env -g rg-puls-za --yes
-   az network vnet delete -n puls-vnet -g rg-puls-za
-   ```
-
-   Deleting `puls-env` takes its managed group `ME_puls-env_rg-puls-za_southafricanorth` with it, and in it the load
-   balancer and its public IP. The old environment's pull right on the registry goes with its identity.
-
 ## Rebuilding from nothing
 
 If the resource group were lost, the sites come back from code in four steps, each one a command this guide already

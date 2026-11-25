@@ -203,16 +203,16 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       </g>
       <text class="pic-name" x="93.8" y="517" text-anchor="start">the folders its entry names</text>
       <text class="pic-name" x="93.8" y="533" text-anchor="start">framework, framework/logs</text>
-      <rect class="pic-panel" x="34.2" y="614" width="286.4" height="68" rx="10" />
-      <rect class="pic-fill tone-violet" x="50.2" y="634" width="28" height="28" rx="9" />
-      <g class="pic-badge-icon" transform="translate(56.2 640) scale(0.6667)">
+      <rect class="pic-panel" x="11.4" y="614" width="332" height="68" rx="10" />
+      <rect class="pic-fill tone-violet" x="27.4" y="634" width="28" height="28" rx="9" />
+      <g class="pic-badge-icon" transform="translate(33.4 640) scale(0.6667)">
         <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
         <path d="M12 12l8 -4.5" />
         <path d="M12 12l0 9" />
         <path d="M12 12l-8 -4.5" />
       </g>
-      <text class="pic-name" x="86.2" y="645" text-anchor="start">build: az acr build</text>
-      <text class="pic-name" x="86.2" y="661" text-anchor="start">tagged with the date and time</text>
+      <text class="pic-name" x="63.4" y="645" text-anchor="start">build: Docker on the runner, pushed</text>
+      <text class="pic-name" x="63.4" y="661" text-anchor="start">tagged with the date and time</text>
       <rect class="pic-panel" x="19" y="742" width="316.8" height="68" rx="10" />
       <rect class="pic-fill tone-violet" x="35" y="762" width="28" height="28" rx="9" />
       <g class="pic-badge-icon" transform="translate(41 768) scale(0.6667)">

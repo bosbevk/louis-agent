@@ -77,8 +77,8 @@ app as its next revision. Each name points at its app by DNS-only records in Clo
 
 | Where | What runs | Reaches |
 |---|---|---|
-| `rg-puls-za`, `puls-env` | `louis-agent-app`: louis-agent.dev's host on the image `src/site/docker/Dockerfile` builds, the public Orbi on the docs, leads and site packs | the vault with `louis-agent-app-identity`; its logs in `logs/` and its saved CV in `data/` on `louis-agent-workspace`; the model; `puls-insights` through the environment's OpenTelemetry agent |
-| `rg-puls-za`, `puls-env` | `louis-agent-framework-app`: framework.louis-agent.dev's host on the image `Dockerfile.framework` builds, the framework Orbi on the docs and site packs | the vault with the same identity; its logs in `framework/logs/` on the same share; the model; `puls-insights` |
+| `rg-louis-agent-za`, `louis-agent-env` | `louis-agent-app`: louis-agent.dev's host on the image `src/site/docker/Dockerfile` builds, the public Orbi on the docs, leads and site packs | the vault with `louis-agent-app-identity`; its logs in `logs/` and its saved CV in `data/` on `louis-agent-workspace`; the model; `puls-insights` through the environment's OpenTelemetry agent |
+| `rg-louis-agent-za`, `louis-agent-env` | `louis-agent-framework-app`: framework.louis-agent.dev's host on the image `Dockerfile.framework` builds, the framework Orbi on the docs and site packs | the vault with the same identity; its logs in `framework/logs/` on the same share; the model; `puls-insights` |
 
 The how-to is [Deploy the sites](../guides/deploy-the-sites.md), and the pictures of what runs where, a release, a
 secret's path and a chat are in [the sites in Azure](deployment-in-azure.md), beside this page.

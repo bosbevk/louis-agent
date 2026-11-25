@@ -10,7 +10,7 @@
       { "id": "site", "icon": "play", "tone": "green", "label": "release -App louis-agent-app" },
       { "id": "framework", "icon": "play", "tone": "green", "label": "release -App louis-agent-framework-app" },
       { "id": "folders", "icon": "folder", "tone": "amber", "label": "the folders its entry names\nframework, framework/logs" },
-      { "id": "build", "icon": "box", "tone": "violet", "label": "build: az acr build\ntagged with the date and time" },
+      { "id": "build", "icon": "box", "tone": "violet", "label": "build: Docker on the runner, pushed\ntagged with the date and time" },
       { "id": "update", "icon": "settings", "tone": "violet", "label": "update: the yaml filled in\nthe next vNNN, created or updated" },
       { "id": "summary", "shape": "terminal", "icon": "checks", "tone": "blue", "label": "the run's summary\neach app's revisions" }
     ],
