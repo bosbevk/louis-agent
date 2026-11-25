@@ -86,7 +86,9 @@ the repo, without the films), and the site's own price and rate tables. So in Az
 the logs and the saved CV.
 
 `src/site/docker/docker-compose.yml` runs it as the service `site`, on 127.0.0.1:5080 by default (`SITE_PORT`). It
-keeps the logs in `src/site/logs` and the CV in `src/site/data` on the PC. `src/site/config/` holds its settings, and
+keeps the logs in `src/site/logs` and the CV in `src/site/data` on the PC. Its chats are kept in the MongoDB of the
+service `sessions-mongo` beside it, so restarting the site leaves a conversation where it was. `src/site/config/`
+holds its settings, and
 `src/site/deploy/azure/louis-agent-app.yaml` is the Container App louis-agent.dev runs. `SiteImageTests` holds the
 image.
 
@@ -475,7 +477,7 @@ The place to look a file up. The site is `src/site/LouisAgent.Site/`, and its ho
 | `LouisAgent.SiteApi/MovedPages.cs` | The two old addresses and where they're sent |
 | `LouisAgent.SiteApi/Resumes/` | The CV's store and its routes, and the source a page drawn on the host reads |
 | `src/site/recordings/` | `record-showroom.sh`, which records the three demos, and `pages/`, the places each was sent |
-| `docker/Dockerfile`, `docker/docker-compose.yml` | The image, and the `site` service |
+| `docker/Dockerfile`, `docker/docker-compose.yml` | The image, the `site` service, and the `sessions-mongo` service its chats are kept in |
 | `deploy/azure/louis-agent-app.yaml` | The Container App louis-agent.dev runs |
 | `deploy/azure/deploy.ps1` | The script that builds, releases and watches both sites' apps in Azure |
 
@@ -491,6 +493,7 @@ file the model comes from `.env.anthropic`. These are the site's own:
 | `OPEN_SESSIONS_PER_DAY` | How many sessions one address opens a day across them: 50 in the compose file and the run profile, 20 in Azure |
 | `AGENT_PEERS` | Where the guide asks a business: the host itself, `self=` its own address |
 | `SITE_DATA_DIRECTORY` | Where the saved CV is kept |
+| `SESSION_STORE`, `SESSION_STORE_URL` | Where the chats are kept: `mongo` on the compose's `sessions-mongo` in the compose file, memory in the run profile |
 | `LEADS_TO`, `LEADS_FROM` | Where the guide's lead mail goes and who it's from; with `RESEND_API_KEY` it's sent, without it the lead goes to the log |
 | `HOST_TIME_ZONE`, `HOST_CULTURE` | Africa/Johannesburg and en-ZA in the compose file, so costs show in rand |
 | `DOCS_ROOT` | Where the docs the guide reads are: the repo in the run profile, `/app/docs` in the image |

@@ -57,6 +57,11 @@ are there.
 host. The `framework` service is the framework's own site on `127.0.0.1:${FRAMEWORK_PORT:-5084}`, built by
 `Dockerfile.framework`. Both run on the smaller ASP.NET image, since neither runs `dotnet` tools.
 
+The `site` service keeps its chats in a MongoDB beside it, the `sessions-mongo` service, so restarting the site
+doesn't end a visitor's conversation. It runs `mongo:7.0`, the same image CI tests the store on. It has no port on
+the PC: only the site reaches it, over the compose network, which is why it needs no password. Its data lives in the
+`sessions-mongo` volume, so it survives the container being made again.
+
 ### The dashboard
 
 `demos/louis-agent/docker/docker-compose.observability.yml` starts the Aspire dashboard, once, beside the other
