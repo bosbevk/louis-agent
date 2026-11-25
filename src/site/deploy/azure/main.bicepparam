@@ -33,3 +33,9 @@ param appsRegistryPullAssignmentName = '9068bc57-06f2-4db8-a9f5-ea1aff00a9be'
 param storageName = 'pulsstorage'
 param shareName = 'louis-agent-workspace'
 param shareQuotaGiB = 5
+
+// The chats' database (F43.1): its password is CHATS_DATABASE_PASSWORD in src/site/config/.env.secrets, which
+// deploy.ps1 infra hands to Azure through the environment.
+param chatsClusterName = 'louis-agent-chats'
+param chatsAdminLogin = 'chats'
+param chatsAdminPassword = readEnvironmentVariable('CHATS_DATABASE_PASSWORD', '')

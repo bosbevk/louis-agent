@@ -205,6 +205,38 @@ public class BicepFileTests
         Assert.That(read.Except(declared), Is.Empty);
     }
 
+    /// <summary>
+    /// The chats' database (F43.1, Louis's pick: the free tier in South Africa North) is DocumentDB's free tier: one
+    /// node, 32 GB, no high availability, which the free tier doesn't have and a paid tier would bill for.
+    /// </summary>
+    [Test]
+    public void TheChatsDatabase_IsTheFreeTier()
+    {
+        var lines = Bicep.Select(line => line.Trim()).ToList();
+
+        Assert.That(Modules(), Does.Contain("br/public:avm/res/document-db/mongo-cluster:0.4.3"));
+        Assert.That(lines, Does.Contain("sku: 'Free'"));
+        Assert.That(lines, Does.Contain("nodeCount: 1"));
+        Assert.That(lines, Does.Contain("storage: 32"));
+        Assert.That(lines, Does.Contain("highAvailabilityMode: 'Disabled'"));
+    }
+
+    /// <summary>
+    /// The database's password is never in a file: the file takes it as a secure parameter, and our parameters file
+    /// reads it from the environment deploy.ps1 infra sets from the git-ignored secrets.
+    /// </summary>
+    [Test]
+    public void TheChatsDatabasesPassword_IsReadFromTheEnvironment()
+    {
+        int declared = Array.FindIndex(Bicep,
+            line => line.StartsWith("param chatsAdminPassword ", StringComparison.Ordinal));
+
+        Assert.That(declared, Is.GreaterThan(0), "the file takes the password");
+        Assert.That(Bicep[declared - 1].Trim(), Is.EqualTo("@secure()"));
+        Assert.That(Params.Select(line => line.Trim()),
+            Does.Contain("param chatsAdminPassword = readEnvironmentVariable('CHATS_DATABASE_PASSWORD', '')"));
+    }
+
     /// <summary>The names the script quotes after a marker, such as <c>Get-Output 'vaultUri'</c>.</summary>
     private static IEnumerable<string> ScriptReads(string marker)
     {
