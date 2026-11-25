@@ -12,7 +12,9 @@ using LouisAgent.Core.Hosting;
 
 namespace LouisAgent.Core.Tests.Pricing.Prices;
 
-// F2-S2: every ledger record carries its cost. F2-S1: prices come from one file (PRICES_FILE or config/prices.json).
+/// <summary>
+/// Every ledger record carries its cost, priced from one file of prices (PRICES_FILE, or config/prices.json).
+/// </summary>
 public class PricingUsageSinkTests
 {
     private const string Prices = """
@@ -28,6 +30,7 @@ public class PricingUsageSinkTests
     private string _dir = null!;
     private string _prices = null!;
 
+    /// <summary>Each test gets a folder of its own for the ledger and the prices.</summary>
     [SetUp]
     public void SetUp()
     {
@@ -36,9 +39,11 @@ public class PricingUsageSinkTests
         File.WriteAllText(_prices, Prices);
     }
 
+    /// <summary>The folder goes when the test is done.</summary>
     [TearDown]
     public void TearDown() => Directory.Delete(_dir, recursive: true);
 
+    /// <summary>A request's record on the model named, priced or not.</summary>
     private static UsageRecord Record(string? model, UsageCost? cost = null) => new(
         At: DateTimeOffset.UtcNow, Round: 1, Purpose: UsagePurpose.Turn, Host: "api", Session: "sess_1", Turn: 1,
         Task: null,
@@ -46,6 +51,7 @@ public class PricingUsageSinkTests
         Stop: "stop",
         Cost: cost);
 
+    /// <summary>A record is priced before it reaches the ledger behind.</summary>
     [Test]
     public void Record_PricesTheRecordBeforeTheInnerSink()
     {
@@ -56,6 +62,7 @@ public class PricingUsageSinkTests
         Assert.That(inner.Records.Single().Cost, Is.EqualTo(new UsageCost("USD", 0.004996m, "2026-10-10")));
     }
 
+    /// <summary>A model with no price goes through with its cost unknown.</summary>
     [Test]
     public void Record_UnknownModel_GoesThroughUnpriced()
     {
@@ -66,6 +73,7 @@ public class PricingUsageSinkTests
         Assert.That(inner.Records.Single().Cost, Is.Null);
     }
 
+    /// <summary>A record that already has a cost keeps it.</summary>
     [Test]
     public void Record_AlreadyPriced_KeepsItsCost()
     {
@@ -78,6 +86,7 @@ public class PricingUsageSinkTests
         Assert.That(inner.Records.Single().Cost, Is.SameAs(charged));
     }
 
+    /// <summary>Whoever listens for a new record sees it with its cost.</summary>
     [Test]
     public void Record_LedgersUsageRecordedEvent_SeesTheCost()
     {
@@ -91,6 +100,7 @@ public class PricingUsageSinkTests
         Assert.That(seen.Single().Cost!.Amount, Is.EqualTo(0.004996m));
     }
 
+    /// <summary>A host built the usual way writes ledger lines that carry their cost.</summary>
     [Test]
     public async Task AgentHostBuild_LedgerLinesCarryTheirCost()
     {
@@ -120,6 +130,7 @@ public class PricingUsageSinkTests
         Assert.That(cost.GetProperty("price_table").GetString(), Is.EqualTo("2026-10-10"));
     }
 
+    /// <summary>Without a prices file the host warns, and records with no cost.</summary>
     [Test]
     public void LoadPrices_NoFile_WarnsAndRecordsWithoutCost()
     {
@@ -140,6 +151,7 @@ public class PricingUsageSinkTests
         Assert.That(stderr.ToString(), Does.Contain("[WARN] No price table").And.Contain("missing.json"));
     }
 
+    /// <summary>A prices file that can't be read stops the host, rather than record wrong costs.</summary>
     [Test]
     public void CreateUsageSink_MalformedPrices_StopsTheHost()
     {
@@ -152,6 +164,7 @@ public class PricingUsageSinkTests
         }));
     }
 
+    /// <summary>PRICES_FILE is read from the environment.</summary>
     [Test]
     public void PricesFileSetting_IsReadFromTheEnvironment()
     {
@@ -160,9 +173,13 @@ public class PricingUsageSinkTests
         Assert.That(options.PricesFile, Is.EqualTo("/config/prices.json"));
     }
 
+    /// <summary>A client factory that hands back the fake model and Anthropic's usage mapper.</summary>
     private sealed class StubClientFactory(IChatClient client) : ILlmClientFactory
     {
+        /// <summary>The fake model, whatever is asked for.</summary>
         public IChatClient Create(LlmOptions options) => client;
+
+        /// <summary>Anthropic's mapper, so the records look like a real provider's.</summary>
         public IUsageMapper CreateUsageMapper(LlmOptions options) => new AnthropicUsageMapper();
     }
 }

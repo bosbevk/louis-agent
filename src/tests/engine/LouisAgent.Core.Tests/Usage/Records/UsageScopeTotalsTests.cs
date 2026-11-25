@@ -12,8 +12,10 @@ using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Core.Tests.Usage.Records;
 
-// F3-S1 (step 1): a turn's scope collects its requests' records, as the ledger stored them (with their cost), so a host
-// can show what the turn used.
+/// <summary>
+/// A turn's scope collects its requests' records, as the ledger stored them with their cost, so a host can show what
+/// the turn used.
+/// </summary>
 public class UsageScopeTotalsTests
 {
     private const string Prices = """
@@ -26,6 +28,7 @@ public class UsageScopeTotalsTests
                                   }
                                   """;
 
+    /// <summary>A request's record with the input tokens given, priced or not.</summary>
     private static UsageRecord Record(long input, decimal? cost = null) => new(
         At: DateTimeOffset.UtcNow, Round: 1, Purpose: UsagePurpose.Turn, Host: null, Session: null, Turn: null,
         Task: null,
@@ -33,13 +36,19 @@ public class UsageScopeTotalsTests
         DurationMs: 1,
         Stop: "stop", Cost: cost is null ? null : new UsageCost("USD", cost.Value, "2026-10-10"));
 
+    /// <summary>The model's answer in plain text, with its usage.</summary>
     private static ChatResponse Reply(string text) =>
         new(new ChatMessage(ChatRole.Assistant, text))
         {
-            Usage = new UsageDetails { InputTokenCount = 1_000, OutputTokenCount = 100 },
+            Usage = new UsageDetails
+            {
+                InputTokenCount = 1_000,
+                OutputTokenCount = 100
+            },
             ModelId = "claude-haiku-5-5",
         };
 
+    /// <summary>A record added in a scope inside another counts in the outer one too.</summary>
     [Test]
     public void Add_NestedScope_CountsInTheOuterScopeToo()
     {
@@ -54,6 +63,7 @@ public class UsageScopeTotalsTests
         Assert.That(turn.Records.Select(r => r.Tokens.Input), Is.EqualTo(new long?[] { 100, 20 }));
     }
 
+    /// <summary>The next turn starts with nothing of the last one's.</summary>
     [Test]
     public void Add_NextTurn_DoesNotSeeThePreviousTurnsRecords()
     {
@@ -63,6 +73,7 @@ public class UsageScopeTotalsTests
         Assert.That(second.Records, Is.Empty);
     }
 
+    /// <summary>The records read out are a copy, which later additions don't change.</summary>
     [Test]
     public void Records_IsASnapshot()
     {
@@ -76,6 +87,7 @@ public class UsageScopeTotalsTests
         Assert.That(before, Has.Count.EqualTo(1));
     }
 
+    /// <summary>Records added at once from many threads are all kept.</summary>
     [Test]
     public void Add_Concurrent_KeepsEveryRecord()
     {
@@ -86,6 +98,7 @@ public class UsageScopeTotalsTests
         Assert.That(turn.Records, Has.Count.EqualTo(1000));
     }
 
+    /// <summary>The total sums tokens and cost the way a ledger report does.</summary>
     [Test]
     public void Total_SumsTokensAndCostLikeALedgerReport()
     {
@@ -99,6 +112,7 @@ public class UsageScopeTotalsTests
             Is.EqualTo((3, 600L, (decimal?)0.003m, 1)));
     }
 
+    /// <summary>With no requests the total is empty, and its cost unknown rather than nothing.</summary>
     [Test]
     public void Total_NoRequests_IsEmptyWithUnknownCost()
     {
@@ -107,6 +121,7 @@ public class UsageScopeTotalsTests
         Assert.That((turn.Total().Requests, turn.Total().Cost), Is.EqualTo((0, (decimal?)null)));
     }
 
+    /// <summary>The recorder adds the record to the turn's scope as priced.</summary>
     [Test]
     public async Task Recorder_AddsThePricedRecordToTheScope()
     {
@@ -134,6 +149,7 @@ public class UsageScopeTotalsTests
         }
     }
 
+    /// <summary>A streamed request is added once its stream ends.</summary>
     [Test]
     public async Task Recorder_StreamingRequest_IsAddedWhenItEnds()
     {
@@ -145,6 +161,7 @@ public class UsageScopeTotalsTests
         Assert.That(turn.Records, Has.Count.EqualTo(1));
     }
 
+    /// <summary>A stream cancelled part way still counts, since it was charged.</summary>
     [Test]
     public void Recorder_CancelledStream_StillCounts()
     {
@@ -159,6 +176,7 @@ public class UsageScopeTotalsTests
         Assert.That(turn.Records.Single().Stop, Is.EqualTo(UsageRecordingChatClient.Cancelled));
     }
 
+    /// <summary>A request the provider refused adds nothing.</summary>
     [Test]
     public void Recorder_ProviderError_AddsNothing()
     {
@@ -173,6 +191,7 @@ public class UsageScopeTotalsTests
         Assert.That(turn.Records, Is.Empty);
     }
 
+    /// <summary>A turn's total has every round and the summary in it, and nothing from another turn.</summary>
     [Test]
     public async Task Engine_TurnTotals_IncludeEveryRoundAndTheSummary_NotOtherTurns()
     {

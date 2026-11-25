@@ -6,15 +6,17 @@ using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Core.Tests.Usage.Records;
 
-// F3 step 3: a host session sums its turns for the usage line's session total and for /usage (F3-S3).
+/// <summary>A host's session sums its turns, for the usage line's session total and for /usage.</summary>
 public class UsageSessionTests
 {
+    /// <summary>A request's record at the cost given.</summary>
     private static UsageRecord Record(decimal cost) => new(
         At: DateTimeOffset.UtcNow, Round: 1, Purpose: UsagePurpose.Turn, Host: "cli", Session: "s", Turn: 1, Task: null,
         Run: null, Service: null, Model: "claude-haiku-5-5", Tokens: new UsageTokens(1_000, 0, 0, 100, null),
         DurationMs: 1,
         Stop: "stop", Cost: new UsageCost("USD", cost, "2026-10-10"));
 
+    /// <summary>A turn's line shows the turn, and the session so far.</summary>
     [Test]
     public void EndTurn_LineHasTheTurnAndTheSessionSoFar()
     {
@@ -28,6 +30,7 @@ public class UsageSessionTests
         Assert.That(session.Records, Has.Count.EqualTo(3));
     }
 
+    /// <summary>A turn that asked another agent counts that agent's requests too.</summary>
     [Test]
     public void EndTurn_ATurnThatDelegated_CountsTheSubagentsRequests()
     {
@@ -49,6 +52,7 @@ public class UsageSessionTests
         Assert.That(line, Is.EqualTo("turn: 4 requests · 11k tokens (9k cached) · $0.022 · session $0.022"));
     }
 
+    /// <summary>A turn that asked the model nothing gets no line and adds nothing.</summary>
     [Test]
     public void EndTurn_NoRequests_NoLineAndNothingAdded()
     {
@@ -58,6 +62,7 @@ public class UsageSessionTests
         Assert.That(session.Records, Is.Empty);
     }
 
+    /// <summary>The records read out are a copy, which later turns don't change.</summary>
     [Test]
     public void Records_IsASnapshot()
     {
@@ -70,6 +75,7 @@ public class UsageSessionTests
         Assert.That(before, Has.Count.EqualTo(1));
     }
 
+    /// <summary>After two turns on the engine, the session's total covers both.</summary>
     [Test]
     public async Task TwoEngineTurns_SessionTotalCoversBoth()
     {
@@ -101,6 +107,7 @@ public class UsageSessionTests
             Does.StartWith("Session usage: 2 requests · 2.2k tokens"));
     }
 
+    /// <summary>USAGE_IN_CHAT is off unless it says true, in any case.</summary>
     [TestCase(null, false)]
     [TestCase("true", true)]
     [TestCase("True", true)]
@@ -115,6 +122,7 @@ public class UsageSessionTests
         Assert.That(options.UsageInChat, Is.EqualTo(expected));
     }
 
+    /// <summary>An engine records usage only when it was given a ledger.</summary>
     [Test]
     public void RecordsUsage_OnlyWithASink()
     {
