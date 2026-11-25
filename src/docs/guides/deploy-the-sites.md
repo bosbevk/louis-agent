@@ -22,15 +22,17 @@ secrets, rebuilding everything from nothing, and rolling back.
 
 ## What is in Azure
 
-Everything is in one resource group, `rg-puls-za`, in South Africa North. The names start with *puls* because Puls
-was deployed here first. Since FX122 Puls isn't deployed: `mypuls.co.za` is a "coming soon" page on a free Static
+Everything is in South Africa North, in two resource groups. The two apps and their environment have
+`rg-louis-agent-za` to themselves, on no network of ours, since an environment on a network of its own is billed a
+load balancer and a public IP. What the apps share, the registry, the vault, the storage, the identity and the logs,
+is in `rg-puls-za`. Those names start with *puls* because Puls was deployed here first. Since FX122 Puls isn't deployed: `mypuls.co.za` is a "coming soon" page on a free Static
 Web App, published by a workflow of Puls's own repository, [`puls`](https://github.com/bosbevk/puls), which holds the
 page. The VM, the Azure SQL server and Puls's app went
 then, and their story is in git, FX122 and ADRs 0095 and 0098.
 
 | Resource | Name | What it does today |
 |---|---|---|
-| Environment | `puls-env` | The Container Apps environment both apps run in, on the Consumption profile, with its static IP and its OpenTelemetry agent |
+| Environment | `louis-agent-env`, in `rg-louis-agent-za` | The Container Apps environment both apps run in, on the Consumption profile and no network of ours, with its static IP and its OpenTelemetry agent |
 | louis-agent.dev | `louis-agent-app` | The site's host on the image `louis-agent-site`, from `src/site/deploy/azure/louis-agent-app.yaml` |
 | framework.louis-agent.dev | `louis-agent-framework-app` | The framework site's host on the image `louis-agent-site-framework`, from `src/site/deploy/azure/louis-agent-framework-app.yaml` |
 | Identity | `louis-agent-app-identity` | What both apps read the vault with: Key Vault Secrets User on `puls-keys` |
@@ -42,11 +44,11 @@ then, and their story is in git, FX122 and ADRs 0095 and 0098.
 Everything in the table but the two apps is described in `main.bicep`. It takes every name as a parameter, and our
 own names, the ones above, are in `main.bicepparam` beside it, so another business deploys the same file with a
 parameters file of its own. Most parts come from Microsoft's Azure Verified Modules, each pinned to a version. The
-network and the environment are plain Bicep, since the environment's module has no setting for the telemetry agent
-and the network's would rename the subnet's delegation. Each part is told what stands wherever a module's default
+environment is plain Bicep, in `apps-environment.bicep`, which `main.bicep` deploys into the apps' group, since the
+environment's module has no setting for the telemetry agent. Each part is told what stands wherever a module's default
 differs, so a deploy over the running sites changes nothing. The file also gives the rights a release needs: the
-apps' identity reads the vault, the environment pulls from the registry, the release identity updates the apps and
-lists the vault, and the person who fills the vault manages its secrets. CI builds and lints the file on every pull
+apps' identity reads the vault, the environment pulls from the registry, the release identity makes and updates the
+apps in their group and lists the vault, and the person who fills the vault manages its secrets. CI builds and lints the file on every pull
 request, and deploys nothing.
 
 The two apps share one identity and one share on purpose. Microsoft lets one user-assigned
@@ -196,11 +198,50 @@ the films left out, and the price tables, at `/app/config`. A new revision carri
 | `framework/data/` | framework.louis-agent.dev's evals: their runs and what a live run records; its release makes the folder |
 | `config/` | The price tables `deploy.ps1 workspace` copies, which neither image needs now |
 
+## Moving the apps to their own group
+
+This is how the two apps move from `puls-env`, on `puls-vnet` in `rg-puls-za`, to `louis-agent-env` in
+`rg-louis-agent-za`, with the sites up through it. The old apps serve every visitor until the new ones answer, and
+the switch is a change of DNS records. Run it once, from a PC signed in with `az login` as an owner of the
+subscription, in this order.
+
+1. **Make the new group and environment.** From the branch that carries this guide, before it merges:
+   `./src/site/deploy/azure/deploy.ps1 infra`. Azure shows its what-if first. Check that it adds the group's
+   environment, its share link, the registry's new pull right and the release's right on the new group, and that it
+   deletes nothing; then say yes.
+2. **Merge the pull request.** The merge's own *Deploy the apps* run creates both apps in the new group, beside the
+   old ones, which keep serving. Its summary lists their revisions; both should say *Healthy*.
+3. **Give louis-agent.dev its certificate on the new app.** `./src/site/deploy/azure/deploy.ps1 domain -App
+   louis-agent-app -Hostname louis-agent.dev`. It prints the records. Set the new `asuid` TXT and the `_dnsauth`
+   token in Cloudflare first, which validates the certificate while the A record still points at the old site, and
+   wait for the script to say the certificate is bound. If Azure refuses the name while the A record points
+   elsewhere, do step 4's switch first and run this again: the site gives an HTTPS error until the certificate is
+   bound, usually a few minutes.
+4. **Switch louis-agent.dev.** In Cloudflare, set the A record `@` to the new static IP the script printed. Then do
+   step 3 for `www.louis-agent.dev`, whose CNAME `www` points at the new app's own address; its certificate is issued
+   once that CNAME resolves, so it may give an HTTPS error for a few minutes.
+5. **Switch the framework's site.** The same for `framework.louis-agent.dev`, with `-App louis-agent-framework-app`:
+   its CNAME `framework` to the new app's address and `asuid.framework` to its id.
+6. **Check.** `https://louis-agent.dev`, `https://www.louis-agent.dev` and `https://framework.louis-agent.dev` each
+   open, and `az containerapp show -n <app> -g rg-louis-agent-za --query properties.environmentId -o tsv` ends in
+   `louis-agent-env` for both apps.
+7. **Delete the old pieces.** None of these can be undone, so run them only once step 6 holds:
+
+   ```powershell
+   az containerapp delete -n louis-agent-app -g rg-puls-za --yes
+   az containerapp delete -n louis-agent-framework-app -g rg-puls-za --yes
+   az containerapp env delete -n puls-env -g rg-puls-za --yes
+   az network vnet delete -n puls-vnet -g rg-puls-za
+   ```
+
+   Deleting `puls-env` takes its managed group `ME_puls-env_rg-puls-za_southafricanorth` with it, and in it the load
+   balancer and its public IP. The old environment's pull right on the registry goes with its identity.
+
 ## Rebuilding from nothing
 
 If the resource group were lost, the sites come back from code in four steps, each one a command this guide already
-has. First `deploy.ps1 infra`, which makes the network, the environment, the registry, the vault, the identity, the
-storage and the rights. Then, for each app, `deploy.ps1 secrets -App <app>` puts its keys in the new vault from its
+has. First `deploy.ps1 infra`, which makes the apps' group, then the environment, the registry, the vault, the identity,
+the storage and the rights. Then, for each app, `deploy.ps1 secrets -App <app>` puts its keys in the new vault from its
 git-ignored file, `deploy.ps1 release -App <app>` builds its image and makes the app, and `deploy.ps1 domain -App <app>`
 prints the DNS records for Cloudflare and binds the certificate once they resolve, as *A domain and its certificate*
 says. The registry, the vault and the storage account have names the whole of Azure shares, and a deleted vault
@@ -212,14 +253,16 @@ Activate the revision before, by its name from the list, or re-run an older *Dep
 the commit it ran:
 
 ```powershell
-az containerapp revision list -n louis-agent-app -g rg-puls-za -o table
-az containerapp revision activate -n louis-agent-app -g rg-puls-za --revision louis-agent-app--v051
+az containerapp revision list -n louis-agent-app -g rg-louis-agent-za -o table
+az containerapp revision activate -n louis-agent-app -g rg-louis-agent-za --revision louis-agent-app--v051
 ```
 
 ## Cost
 
 The environment bills by the second while a replica runs, and each app scales to nothing when nobody is on it. The
-registry's Basic tier, the share's first 5 GB a month and the logs are the rest. A spend cap on the Anthropic key, in
+registry's Basic tier, the share's first 5 GB a month and the logs are the rest. Two things that used to cost are
+gone: the images build on the release's runner, not in the registry by the minute, and the environment sits on no
+network of ours, so no load balancer or public IP is billed for it. A spend cap on the Anthropic key, in
 its console, is the other half of the bill, and both sites' turns are priced in their own usage ledgers. Each
 month's figure is written here after the first.
 
