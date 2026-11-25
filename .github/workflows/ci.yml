@@ -58,6 +58,8 @@ jobs:
       GIT_COMMITTER_EMAIL: ci@localhost
       # The Mongo store's contract tests (F31); a throwaway server with a throwaway user, so no secret.
       BENCHMARKS_MONGO_URL: mongodb://ci:ci@localhost:27017/?authSource=admin
+      # The MongoDB session store's contract (F43.1), on the same throwaway server.
+      SESSIONS_MONGO_TEST_URL: mongodb://ci:ci@localhost:27017/?authSource=admin
       # The accounts database's contract (F61.1), on the service above.
       ACCOUNTS_SQL_TEST_URL: Server=127.0.0.1,1433;User Id=sa;Password=Ci-password-1;TrustServerCertificate=true
     steps:
