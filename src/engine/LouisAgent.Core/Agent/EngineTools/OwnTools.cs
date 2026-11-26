@@ -1,11 +1,9 @@
-
-using System.ComponentModel;
-using System.Reflection;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Agent.EngineTools.Clock;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Core.Agent.EngineTools;
+
 /// <summary>
 /// The tools an engine registers itself (S, CL15, from AgentEngine): <c>ExecuteSkill</c> and the clock in every
 /// session, the toolsets' objects it was given, and, as the <c>skills</c> toolset (F5), the four that let the agent
@@ -41,13 +39,10 @@ internal static class OwnTools
         registry.Add(Function(agentBuiltTools.ListAgentTools, nameof(AgentEngine.ListAgentTools)));
     }
 
-    /// <summary>One of the engine's own methods as a tool, its [Description] with LF line endings (see <see cref="AgentEngine.Normalise"/>).</summary>
+    /// <summary>
+    /// One of the engine's own methods as a tool, its descriptions with LF line endings (see
+    /// <see cref="ToolFunctionOptions"/>).
+    /// </summary>
     private static AIFunction Function(Delegate method, string name) =>
-        AIFunctionFactory.Create(method, new AIFunctionFactoryOptions
-        {
-            Name = name,
-            Description = method.Method.GetCustomAttribute<DescriptionAttribute>() is { } description
-                ? AgentEngine.Normalise(description.Description)
-                : null,
-        });
+        AIFunctionFactory.Create(method, ToolFunctionOptions.For(method.Method, name));
 }
