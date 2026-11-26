@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 168 | 74 |
-| Fixes (`FX`) | 244 | 3 |
+| Fixes (`FX`) | 245 | 3 |
 | Cleanups (`CL`) | 49 | 25 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -298,11 +298,12 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (244 done)
+## Fixes (245 done)
 
 | Id | When | What |
 |---|---|---|
 | FX255 | 2026-11-26 | A site visitor's chat sends `/tools`, `/approve`, `/reject` and `/usage` to the model as words; only the operator's chats run them |
+| FX256 | 2026-11-26 | A chat read back after a restart counts on from its newest kept turn's number, every store refuses a number it already keeps, and a turn that can't be kept is logged and never leaves the chat busy |
 | FX254 | 2026-11-26 | Every description the model is sent, a parameter's too, has LF line endings whatever the checkout, through one `ToolFunctionOptions`; the guide's and framework's replays re-recorded |
 | FX253 | 2026-11-26 | The guide and the framework Orbi show a page on its own, then write, then offer, and Offer and AskFor say they end the answer; a `has-words` eval fact on every turn holds it in the replay tests |
 | FX251 | 2026-11-26 | The eval test host stops before it disposes, so a run cut by its shutdown is left as it was and no late write races the folders' clean-up; a model that gives up when its call is cancelled |

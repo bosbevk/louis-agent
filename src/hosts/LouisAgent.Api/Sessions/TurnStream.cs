@@ -142,9 +142,22 @@ internal static class TurnStream
             }
 
             // What the turn added to the history goes to the store before the turn's lock is let go, so the chat's
-            // next message, even on another instance after a restart, finds it (F43.1).
-            if (save is not null) await save.AppendAsync(session);
-            session.EndTurn(turn);
+            // next message, even on another instance after a restart, finds it (F43.1). A save that fails is logged
+            // and the lock is let go all the same, so a store's refusal never leaves the chat busy (FX256).
+            try
+            {
+                if (save is not null) await save.AppendAsync(session);
+            }
+            catch (Exception ex)
+            {
+                var notKept = new KeptTurnHoles(session.Id, session.Turns);
+                AgentLogging.LoggerFactory.CreateLogger("LouisAgent.Api").Log(LogLevel.Error,
+                    ApiLogMessage.TurnNotKept, notKept, exception: ex, tag: "API");
+            }
+            finally
+            {
+                session.EndTurn(turn);
+            }
         }
     }
 }
