@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using LouisAgent.Composition.Messages;
+using LouisAgent.Core.Prompting.Messages.Holes.Fields;
 using LouisAgent.Core.Prompting.Messages.Holes.Folders;
 using LouisAgent.Core.Prompting.Messages.Holes.Parameters;
 using LouisAgent.Core.Prompting.Messages.Holes.Roles;
@@ -46,6 +47,11 @@ public enum SkillErrorMessage
     [Description("{Skill}'s SKILL.md won't read: {Reason}")]
     [Holes(typeof(SkillHeaderUnreadHoles))]
     SkillHeaderUnread,
+    [Description(
+        "{Name}'s description holds ': ', which YAML reads as a new field: write it without, saying 'for example' " +
+        "or a dash instead.")]
+    [Holes(typeof(DescriptionHasColonHoles))]
+    DescriptionHasColon,
     [Description(
         "{Skill}'s SKILL.md names no script: add metadata.script, its path from the skill's folder, such as " +
         "scripts/run.py.")]

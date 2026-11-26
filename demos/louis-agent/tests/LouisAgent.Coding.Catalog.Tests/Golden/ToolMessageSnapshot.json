@@ -262,6 +262,7 @@
   "SkillAlreadyApproved": "An approved skill is called <Name> already: give this one another name.",
   "SkillDrafted": "<Skill> is drafted, for this chat only until it is approved. Its example answered: <Answer>",
   "SkillListed": "- <Name>: <Description>",
+  "SkillNameBuiltIn": "<Name> is a built-in skill's name: give this one another name.",
   "SkillNameInvalid": "'<Name>' can't be a skill's name: use lowercase letters, digits and hyphens, at most <Longest> characters, such as word-count.",
   "SkillRanNoOutput": "<Skill> ran and printed nothing.",
   "SkillRead": "<Name>: <Description>\n\n<Instructions>\n\nIts parameters, a JSON Schema: <Parameters>\n\nThe call it was proved with, and its answer: <Example>",

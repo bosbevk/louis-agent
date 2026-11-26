@@ -78,6 +78,18 @@ public class SkillDraftingTests
         Assert.That((answer.Succeeded, answer.Text.Contains("approved")), Is.EqualTo((false, true)), answer.Text);
     }
 
+    /// <summary>
+    /// F97.1 step 16: a built-in skill's name is refused, so the door never has two skills of one name.
+    /// </summary>
+    [Test]
+    public void ABuiltInSkillsName_IsRefused()
+    {
+        var answer = Drafting(Answering("2")).Draft("write-a-skill", SkillFile.Replace("word-count", "write-a-skill"),
+            Parameters, "print(2)", Example);
+
+        Assert.That((answer.Succeeded, answer.Text.Contains("built-in")), Is.EqualTo((false, true)), answer.Text);
+    }
+
     /// <summary>Drafting into this test's skills folder, its scripts run by this.</summary>
     private SkillDrafting Drafting(ScriptRun run) => new(_skills, new SkillRunner(run));
 

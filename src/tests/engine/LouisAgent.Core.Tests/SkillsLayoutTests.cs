@@ -75,17 +75,21 @@ public class SkillsLayoutTests
     }
 
     /// <summary>
-    /// F97.1 step 15: every toolset names the built-in skill it always loads, by its name, and each is a folder in
-    /// <c>skills/</c> holding its <c>SKILL.md</c>; no built-in skill is left without its toolset.
+    /// F97.1 steps 15 and 16: every toolset names the built-in skill it always loads, by its name, and each is a
+    /// folder in <c>skills/</c> holding its <c>SKILL.md</c>; a built-in skill no toolset loads is one the model reads
+    /// on demand, its header saying so.
     /// </summary>
     [Test]
-    public void EveryToolset_NamesItsSkill_InSkills_AndEverySkillItsToolset()
+    public void EveryToolset_NamesItsSkill_InSkills_AndEverySkillItsToolsetOrReadOnDemand()
     {
         var names = TestTools.Catalog.Toolsets.Select(t => t.Skill).ToList();
+        var toolsets = names.Select(name => PackToolset.SkillFile(name!)).ToList();
+        var skills = SkillFileSource.EmbeddedFiles.Where(f => f.StartsWith(PromptFolder.Skills.Wire() + "/")).ToList();
 
         Assert.That(names, Has.None.Contain("/"), "a toolset names its skill, not a path");
-        Assert.That(SkillFileSource.EmbeddedFiles.Where(f => f.StartsWith(PromptFolder.Skills.Wire() + "/")),
-            Is.EquivalentTo(names.Select(name => PackToolset.SkillFile(name!))), "no skill without its toolset");
+        Assert.That(skills, Is.SupersetOf(toolsets), "every toolset's skill is there");
+        Assert.That(skills.Except(toolsets).Where(f => PromptCatalog.Get(f)?.Header?.Load != SkillLoad.OnDemand),
+            Is.Empty, "a skill no toolset loads is read on demand");
     }
 
     /// <summary>What the running agent writes belongs to its demo, and only that sits in the demo's folder.</summary>

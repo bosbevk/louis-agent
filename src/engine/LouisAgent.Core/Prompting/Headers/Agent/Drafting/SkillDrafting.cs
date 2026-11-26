@@ -3,6 +3,7 @@ using LouisAgent.Choices;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Composition.Prompts;
 using LouisAgent.Core.Prompting.Headers.Agent.Arguments;
+using LouisAgent.Core.Prompting.Headers.Agent.Library;
 using LouisAgent.Core.Prompting.Headers.Agent.Reading;
 using LouisAgent.Core.Prompting.Headers.Agent.Running;
 using LouisAgent.Core.Prompting.Messages;
@@ -41,6 +42,13 @@ public sealed class SkillDrafting(string skillsFolder, SkillRunner runner)
         {
             var approved = new SkillAlreadyApprovedHoles(name);
             return Refused(MessageText.Format(SkillToolMessage.SkillAlreadyApproved, approved));
+        }
+
+        // A built-in skill's name stays its own, so the door never finds two skills of one name.
+        if (BuiltInSkills.Has(name))
+        {
+            var builtIn = new SkillNameBuiltInHoles(name);
+            return Refused(MessageText.Format(SkillToolMessage.SkillNameBuiltIn, builtIn));
         }
 
         string folder = Path.Combine(skillsFolder, SkillFiles.DraftSkill(name));

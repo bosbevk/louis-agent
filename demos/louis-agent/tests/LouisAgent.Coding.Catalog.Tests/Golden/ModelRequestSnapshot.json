@@ -352,7 +352,7 @@
     },
     {
       "Name": "CreateSkill",
-      "Description": "Makes a skill you can use at once in this chat through UseSkill, and every chat once the person\napproves it. A skill is a folder: its SKILL.md, a JSON Schema of its parameters, and one script that\nreads its arguments as a JSON object from stdin and prints its answer. It is kept only if the example\ncall runs cleanly; otherwise nothing is kept and the answer says what to fix.",
+      "Description": "Makes a skill you can use at once in this chat through UseSkill, and every chat once the person\napproves it. Read the standard first, with UseSkill(\"write-a-skill\"). A skill is a folder: its\nSKILL.md, a JSON Schema of its parameters, and one script that reads its arguments as a JSON object\nfrom stdin and prints its answer. It is kept only if the example call runs cleanly; otherwise nothing\nis kept and the answer says what to fix.",
       "Schema": {
         "type": "object",
         "properties": {

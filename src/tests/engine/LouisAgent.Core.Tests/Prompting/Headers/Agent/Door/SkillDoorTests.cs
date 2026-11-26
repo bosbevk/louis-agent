@@ -68,6 +68,15 @@ public class SkillDoorTests
         Assert.That(answer, Does.Contain("letter-count").And.Contain("word-count").And.Contain("line-count"));
     }
 
+    /// <summary>
+    /// F97.1 step 16: a name alone reads core's built-in on-demand skill too, the standard a skill is written in,
+    /// which no skills folder holds.
+    /// </summary>
+    [Test]
+    public void TheBuiltInWriteASkill_IsReadByItsName() =>
+        Assert.That(Door().Use("write-a-skill", null, NoDrafts),
+            Does.Contain("reads its arguments as one JSON object from stdin"));
+
     /// <summary>The door over this test's skills, every script answering 2.</summary>
     private SkillDoor Door() => new(SkillLibrary.Read(_skills), new SkillRunner(
         (ScriptLanguage _, string _, string _, TimeSpan _, out string? notInstalled) =>

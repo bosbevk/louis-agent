@@ -20,9 +20,10 @@ internal sealed class SkillMakingTools(Func<SkillDrafting> drafting)
     /// <summary>Makes a skill, proved by its example, as this chat's draft.</summary>
     [Description("""
                  Makes a skill you can use at once in this chat through UseSkill, and every chat once the person
-                 approves it. A skill is a folder: its SKILL.md, a JSON Schema of its parameters, and one script that
-                 reads its arguments as a JSON object from stdin and prints its answer. It is kept only if the example
-                 call runs cleanly; otherwise nothing is kept and the answer says what to fix.
+                 approves it. Read the standard first, with UseSkill("write-a-skill"). A skill is a folder: its
+                 SKILL.md, a JSON Schema of its parameters, and one script that reads its arguments as a JSON object
+                 from stdin and prints its answer. It is kept only if the example call runs cleanly; otherwise nothing
+                 is kept and the answer says what to fix.
                  """)]
     public string CreateSkill(
         [Description("The skill's name: lowercase letters, digits and hyphens, such as word-count.")]

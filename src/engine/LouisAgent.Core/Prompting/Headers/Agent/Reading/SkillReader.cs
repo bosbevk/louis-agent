@@ -4,6 +4,7 @@ using LouisAgent.Composition.Messages;
 using LouisAgent.Composition.Prompts;
 using LouisAgent.Core.Prompting.Languages;
 using LouisAgent.Core.Prompting.Messages;
+using LouisAgent.Core.Prompting.Messages.Holes.Fields;
 using LouisAgent.Core.Prompting.Messages.Holes.Folders;
 using LouisAgent.Core.Prompting.Messages.Holes.Parameters;
 
@@ -44,15 +45,26 @@ public static class SkillReader
             throw Refused(SkillErrorMessage.SkillFileMissing, missing);
         }
 
+        PromptFile file;
         try
         {
-            return PromptHeaders.Split(path, File.ReadAllText(path));
+            file = PromptHeaders.Split(path, File.ReadAllText(path));
         }
         catch (PromptHeaderException unread)
         {
             var headerUnread = new SkillHeaderUnreadHoles(name, unread.Message);
             throw Refused(SkillErrorMessage.SkillHeaderUnread, headerUnread);
         }
+
+        // write-a-skill asks for a plain description: quoted, YAML takes ': ', but a hand edit that drops the quotes
+        // breaks the whole header.
+        if (file.Header?.Description.Contains(": ", StringComparison.Ordinal) == true)
+        {
+            var colon = new DescriptionHasColonHoles(name);
+            throw Refused(SkillErrorMessage.DescriptionHasColon, colon);
+        }
+
+        return file;
     }
 
     /// <summary>The script the header names, inside the folder, and its language.</summary>

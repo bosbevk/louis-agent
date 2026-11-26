@@ -45,6 +45,9 @@ public enum SkillToolMessage
     [Description("An approved skill is called {Name} already: give this one another name.")]
     [Holes(typeof(SkillAlreadyApprovedHoles))]
     SkillAlreadyApproved,
+    [Description("{Name} is a built-in skill's name: give this one another name.")]
+    [Holes(typeof(SkillNameBuiltInHoles))]
+    SkillNameBuiltIn,
     [Description("{Skill}'s example doesn't fit its parameters, so it was kept nowhere: {Problems}")]
     [Holes(typeof(ExampleDoesNotFitHoles))]
     ExampleDoesNotFit,

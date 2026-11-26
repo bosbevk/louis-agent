@@ -39,7 +39,8 @@ public sealed class SkillDoor(SkillLibrary library, SkillRunner runner)
             return refused.Message;
         }
 
-        if (skill is null) return Unknown(name, ownDrafts);
+        // Core's built-in skills the model reads on demand, such as write-a-skill, have no script: read, never run.
+        if (skill is null) return BuiltInSkills.TextOf(name) ?? Unknown(name, ownDrafts);
         if (arguments is not { ValueKind: not JsonValueKind.Undefined and not JsonValueKind.Null } given)
             return Read(skill);
 

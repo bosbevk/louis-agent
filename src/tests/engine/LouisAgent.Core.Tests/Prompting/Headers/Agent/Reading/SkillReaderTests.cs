@@ -84,6 +84,7 @@ public class SkillReaderTests
     [TestCase("schema-missing", "parameters.schema.json")]
     [TestCase("schema-not-object", "object")]
     [TestCase("parameter-untyped", "'text'")]
+    [TestCase("description-colon", "': '")]
     public void AFaultyFolder_IsRefused(string fault, string named)
     {
         string folder = Faulty(fault);
@@ -113,6 +114,9 @@ public class SkillReaderTests
             "schema-not-object" => Write("word-count", Header + Body, "[1, 2]", script),
             "parameter-untyped" => Write("word-count", Header + Body,
                 """{ "type": "object", "properties": { "text": { "description": "The text." } } }""", script),
+            // F97.1 step 16: quoted, YAML reads it, but write-a-skill asks for none, so a description is plain.
+            "description-colon" => Write("word-count",
+                Header.Replace("Counts words.", "\"Counts words: in a text.\"") + Body, Schema, script),
             _ => throw new ArgumentOutOfRangeException(nameof(fault), fault, null)
         };
     }
