@@ -12,6 +12,7 @@ built or comes next, and every plan as it was is at the tag
 
 | Plan | For | Approved | Notes |
 |---|---|---|---|
+| [FX257-triage-decides-by-the-runbook.md](FX257-triage-decides-by-the-runbook.md) | *FX257 The triage manager decides by its runbook's table* (Now) | 2026-11-27 | Louis's picks: "Rules in the runbooks", "Replace 'Escalate to'"; six steps, every eval trial clean first |
 | [F40-sales-playground.md](F40-sales-playground.md) | Draft: *F40 The sales playground* (Phase 4) | not yet | Moved whole out of the old platform plan on 2026-11-07 (CL56); rewritten into the plan Louis approves when it starts |
 | [F07-budgets.md](F07-budgets.md) | Draft: *F7 Cost you can see and stop* (Phase 5) | not yet | The same |
 | [F39-orchestration.md](F39-orchestration.md) | Draft: *F39 Orchestration* (Phase 6) | not yet | The same |
