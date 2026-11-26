@@ -1,4 +1,7 @@
 using System.Collections.Concurrent;
+using LouisAgent.Api.Messages;
+using LouisAgent.Api.Messages.Holes.Turns;
+using LouisAgent.Composition.Messages;
 
 namespace LouisAgent.Api.Sessions.Store;
 
@@ -8,7 +11,8 @@ namespace LouisAgent.Api.Sessions.Store;
 /// </summary>
 /// <remarks>
 /// One of the strategies behind <see cref="ISessionStore" />. A chat's turns are a list it locks while it appends or
-/// copies, so a load never sees a turn half added.
+/// copies, so a load never sees a turn half added. A turn is written once: one under a number the chat already keeps
+/// is refused, as MongoDB refuses it by its id, so a test sees what a host with a database would.
 /// </remarks>
 internal sealed class InMemorySessionStore : ISessionStore
 {
@@ -25,7 +29,14 @@ internal sealed class InMemorySessionStore : ISessionStore
     public Task AppendTurnAsync(string sessionId, StoredTurn turn, CancellationToken cancellationToken = default)
     {
         if (!_chats.TryGetValue(sessionId, out var chat)) return Task.CompletedTask;
-        lock (chat.Turns) chat.Turns.Add(turn);
+        lock (chat.Turns)
+        {
+            var kept = new KeptTurnHoles(sessionId, turn.Number);
+            if (chat.Turns.Any(already => already.Number == turn.Number))
+                throw new InvalidOperationException(MessageText.Format(ApiErrorMessage.TurnAlreadyKept, kept));
+            chat.Turns.Add(turn);
+        }
+
         return Task.CompletedTask;
     }
 
