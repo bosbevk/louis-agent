@@ -124,7 +124,6 @@ public static partial class RoleCatalog
         var files = SkillFileSource.EmbeddedFiles
             .Where(f => f.StartsWith(Agents + "/", StringComparison.Ordinal) &&
                         f.EndsWith(".md", StringComparison.Ordinal)
-                        && !f.StartsWith(SkillFiles.FunctionsFolder + "/", StringComparison.Ordinal)
                         && Path.GetFileName(f) != LookupBase)
             .Select(f => f[(Agents.Length + 1)..^".md".Length])
             .Where(n => n.Count(c => c == '/') == 1)

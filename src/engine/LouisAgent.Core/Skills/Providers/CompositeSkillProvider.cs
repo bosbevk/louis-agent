@@ -1,56 +1,37 @@
+using System.Text;
+
 namespace LouisAgent.Core.Skills.Providers;
 
-using LouisAgent.Core.Skills;
-
 /// <summary>
-/// Composite skill provider that combines skills from multiple sources (files, MCP, etc.)
+/// Several prompt sources read as one, in the order they were added, each with a blank line after it.
 /// </summary>
+/// <remarks>
+/// Composite: <c>SkillLoader</c> puts the principles, the mode, the guides and the identity's skills together, and
+/// the engine reads the whole as it reads one file.
+/// </remarks>
 public class CompositeSkillProvider : ISkillProvider
 {
-    private readonly List<ISkillProvider> _providers = new();
+    private readonly List<ISkillProvider> _providers = [];
     private string? _combinedDocumentation;
 
-    public CompositeSkillProvider(params ISkillProvider[] providers)
-    {
-        _providers.AddRange(providers.Where(p => p != null));
-    }
+    /// <summary>The sources given, any null one left out.</summary>
+    public CompositeSkillProvider(params ISkillProvider?[] providers) =>
+        _providers.AddRange(providers.OfType<ISkillProvider>());
 
-    public List<MarkdownSkillLoader.SkillDef> Skills
-    {
-        get
-        {
-            var combined = new Dictionary<string, MarkdownSkillLoader.SkillDef>(StringComparer.OrdinalIgnoreCase);
-            
-            foreach (var provider in _providers)
-            {
-                foreach (var skill in provider.Skills)
-                {
-                    // Later providers override earlier ones with same name
-                    combined[skill.Name] = skill;
-                }
-            }
-            
-            return combined.Values.ToList();
-        }
-    }
-
+    /// <summary>Every source's text, trimmed, a blank one left out; worked out once until a source is added.</summary>
     public string Documentation
     {
         get
         {
-            if (_combinedDocumentation != null)
-                return _combinedDocumentation;
+            if (_combinedDocumentation is not null) return _combinedDocumentation;
 
-            var docs = new System.Text.StringBuilder();
-            
-            foreach (var provider in _providers)
+            var docs = new StringBuilder();
+            foreach (string? text in _providers.Select(p => p.Documentation?.Trim()))
             {
-                var providerDocs = provider.Documentation?.Trim();
-                if (!string.IsNullOrWhiteSpace(providerDocs))
-                {
-                    docs.AppendLine(providerDocs);
-                    docs.AppendLine();
-                }
+                if (string.IsNullOrWhiteSpace(text)) continue;
+
+                docs.AppendLine(text);
+                docs.AppendLine();
             }
 
             _combinedDocumentation = docs.ToString();
@@ -58,13 +39,13 @@ public class CompositeSkillProvider : ISkillProvider
         }
     }
 
-    public void AddProvider(ISkillProvider provider)
+    /// <summary>Adds a source at the end; a null one is left out.</summary>
+    public void AddProvider(ISkillProvider? provider)
     {
-        if (provider != null)
-        {
-            _providers.Add(provider);
-            _combinedDocumentation = null; // Invalidate cache
-        }
+        if (provider is null) return;
+
+        _providers.Add(provider);
+        // The combined text is worked out again on the next read.
+        _combinedDocumentation = null;
     }
 }
-

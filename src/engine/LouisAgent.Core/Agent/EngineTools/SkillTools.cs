@@ -13,20 +13,12 @@ namespace LouisAgent.Core.Agent.EngineTools;
 /// </summary>
 internal sealed class SkillTools
 {
-    private Dictionary<string, MarkdownSkillLoader.SkillDef> _skills;
-
-    /// <summary>The prompt's skills as the provider gives them, read once when the engine is built.</summary>
-    public SkillTools(ISkillProvider skillProvider)
-    {
-        _skills = ToSkillMap(skillProvider);
+    /// <summary>The prompt as the provider gives it, read once when the engine is built.</summary>
+    public SkillTools(ISkillProvider skillProvider) =>
         Documentation = AgentEngine.Normalise(skillProvider.Documentation);
-    }
 
     /// <summary>Combined default instructions and skill documentation used as the system prompt.</summary>
     public string Documentation { get; private set; }
-
-    /// <summary>The skill sections the prompt's files hold, as the MCP host lists them.</summary>
-    public IReadOnlyCollection<MarkdownSkillLoader.SkillDef> Skills => _skills.Values;
 
     /// <summary>
     /// Rebuilds the prompt's skills from disk for <see cref="ReloadSkills"/>; null disables reloading.
@@ -47,12 +39,7 @@ internal sealed class SkillTools
         if (SkillReloader is null) return MessageText.Format(AgentToolMessage.SkillReloadUnavailable);
 
         var provider = new CompositeSkillProvider(SkillReloader());
-        _skills = ToSkillMap(provider);
         Documentation = AgentEngine.Normalise(provider.Documentation);
         return MessageText.Format(AgentToolMessage.SkillsReloaded);
     }
-
-    /// <summary>The provider's skills by name, whatever case the name is asked in.</summary>
-    private static Dictionary<string, MarkdownSkillLoader.SkillDef> ToSkillMap(ISkillProvider provider) =>
-        provider.Skills.ToDictionary(s => s.Name, StringComparer.OrdinalIgnoreCase);
 }

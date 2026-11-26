@@ -99,32 +99,32 @@ public class SkillFileSourceTests
         Directory.CreateDirectory(Path.Combine(_dir, "toolsets"));
         File.WriteAllText(Path.Combine(_dir, "toolsets", "git.md"), "# Git Skills\n\nOur own version.");
 
-        var file = SkillFolder.Read(new AgentOptions { SkillsDirectory = _dir }, "toolsets/git.md");
+        string? text = SkillFolder.Read(new AgentOptions { SkillsDirectory = _dir }, "toolsets/git.md");
 
-        Assert.That(file!.Value.FromDisk, Is.False);
-        Assert.That(file.Value.Text, Does.Not.Contain("Our own version."));
+        Assert.That(text, Is.Not.Null.And.Not.Contain("Our own version."));
     }
 
-    /// <summary>A function the agent wrote itself is read from the skills folder.</summary>
+    /// <summary>
+    /// F97.1 step 14d: a file in the old functions folder isn't read either. Nothing of the prompt comes from disk,
+    /// since the skills the agent keeps are folders the door reads.
+    /// </summary>
     [Test]
-    public void AFunctionTheAgentWrote_IsReadFromDisk()
+    public void AFileInTheOldFunctionsFolder_IsNotRead()
     {
-        // What the agent writes (CreateSkillFile) lives in the skills folder, not the assembly.
-        Directory.CreateDirectory(Path.Combine(_dir, PromptFolder.Agents.Wire(), PromptFolder.Functions.Wire()));
-        File.WriteAllText(Path.Combine(_dir, PromptFolder.Agents.Wire(), PromptFolder.Functions.Wire(), "greeting.md"),
-            "# Greeting Skills");
+        // The old place, written out: no type names it any more.
+        string folder = Path.Combine(_dir, PromptFolder.Agents.Wire(), "functions");
+        Directory.CreateDirectory(folder);
+        File.WriteAllText(Path.Combine(folder, "greeting.md"), "# Greeting Skills");
 
-        var file = SkillFolder.Read(new AgentOptions { SkillsDirectory = _dir }, "agents/functions/greeting.md");
-
-        Assert.That(file!.Value.FromDisk, Is.True);
-        Assert.That(file.Value.Text, Does.Contain("# Greeting Skills"));
+        Assert.That(SkillFolder.Read(new AgentOptions { SkillsDirectory = _dir }, "agents/functions/greeting.md"),
+            Is.Null);
     }
 
     /// <summary>A subagent's file on disk is never read: a role is built in, or it isn't one.</summary>
     [Test]
     public void ARoleOnDisk_IsNotRead()
     {
-        // Only the agent's own files come from disk: a subagent or a voice is built in, or it isn't one.
+        // A subagent or a voice is built in, or it isn't one.
         string baker = RoleCatalog.FileName("acme.baker", RoleLevel.Subagent);
         Directory.CreateDirectory(Path.Combine(_dir, Path.GetDirectoryName(baker)!));
         File.WriteAllText(Path.Combine(_dir, baker), "# Baker");

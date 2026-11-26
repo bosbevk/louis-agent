@@ -96,9 +96,6 @@ public class AgentEngine
     /// <summary>The tool-call guards in this engine's pipeline (tests call them directly).</summary>
     internal ToolCallGuards Guards => _guards;
 
-    /// <summary>The currently loaded skills (refreshed by <see cref="ReloadSkills"/>).</summary>
-    public IReadOnlyCollection<MarkdownSkillLoader.SkillDef> Skills => _skillTools.Skills;
-
     /// <summary>
     /// Raised when a tool's description changes, so hosts that publish <see cref="Tools"/> can resync: since F97.1, an
     /// approval or a reload changes the approved skills <c>UseSkill</c> lists.

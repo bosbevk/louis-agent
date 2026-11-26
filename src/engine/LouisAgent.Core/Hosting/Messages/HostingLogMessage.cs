@@ -31,9 +31,8 @@ public enum HostingLogMessage
 
     [Description("Usage ledger: {Path}")] LedgerAt,
 
-    [Description("Loaded {Provider}")] SkillProviderLoaded,
-
     [Description("Loaded {Provider} (built in)")]
+    [Holes(typeof(SkillFileEmbeddedHoles))]
     SkillFileEmbedded,
 
     [Description(
@@ -44,7 +43,4 @@ public enum HostingLogMessage
 
     [Description("Toolsets {Toolsets}: dropped from the cache, the least recently used of {Capacity} profiles")]
     ToolsetProfileDropped,
-
-    [Description("Discovered skills file: {File}")]
-    SkillsFileDiscovered,
 }

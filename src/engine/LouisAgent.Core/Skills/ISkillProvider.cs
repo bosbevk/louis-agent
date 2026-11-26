@@ -1,18 +1,11 @@
 namespace LouisAgent.Core.Skills;
 
 /// <summary>
-/// Interface for providing skills to the agent engine.
-/// Allows loading skills from different sources (files, APIs, databases, etc.)
+/// Where a piece of the system prompt comes from: a file, a text built in code, or several at once. The engine sends
+/// what they give as each conversation's system prompt.
 /// </summary>
 public interface ISkillProvider
 {
-    /// <summary>
-    /// Gets the list of skill definitions.
-    /// </summary>
-    List<MarkdownSkillLoader.SkillDef> Skills { get; }
-
-    /// <summary>
-    /// Gets the skill documentation as a string.
-    /// </summary>
+    /// <summary>The prompt text this source gives.</summary>
     string Documentation { get; }
 }

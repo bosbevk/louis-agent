@@ -56,6 +56,5 @@ public class CodingRouterTests
     public void CodeReview_IsPartOfTheCodingAgentsMode()
     {
         Assert.That(Routing(), Does.Contain("Reviewing a change").And.Contain("`git`"));
-        Assert.That(SkillFileSource.ReadEmbedded(SkillFiles.Function("code-review")), Is.Null);
     }
 }

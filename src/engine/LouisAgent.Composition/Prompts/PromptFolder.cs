@@ -25,9 +25,6 @@ public enum PromptFolder
     /// <summary>An agent's skills, inside its folder: <c>agents/{identity}/skills/{name}/SKILL.md</c>.</summary>
     [WireName("skills")] Skills,
 
-    /// <summary>The function skills the agent runs and writes: <c>agents/functions/</c>.</summary>
-    [WireName("functions")] Functions,
-
     /// <summary>
     /// An agent's lookup agents, inside its folder apart from its subagents (CL68.3, ADR 0021):
     /// <c>agents/{identity}/lookups/{name}/voice.md</c>.

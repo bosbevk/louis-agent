@@ -12,13 +12,13 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 168 | 74 |
+| Features (`F`) | 168 | 75 |
 | Fixes (`FX`) | 241 | 4 |
 | Cleanups (`CL`) | 49 | 25 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (103 in the TODO)
+## Open (104 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
@@ -102,6 +102,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F173 | Google Drive for a business's agent, was F157.5 | Later |
 | F174 | Gmail for a business's agent, a reply drafted for the owner, was F157.6 | Later |
 | F175 | Visitors connect their own Google, was F157.7 | Later |
+| F178 | Skills over MCP as SEP-2640 has it | Later |
 | CL34 | The work email out of git history | Cleanups |
 | CL35 | `Web/Browsing/RedirectBodies` goes when a PuppeteerSharp release awaits its own redirect body ta… | Cleanups |
 | CL36 | Design docs for the four projects that have none | Cleanups |

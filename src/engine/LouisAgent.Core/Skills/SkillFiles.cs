@@ -49,11 +49,6 @@ public static class SkillFiles
     internal static string Principles { get; } = $"{PromptFolder.Shared.Wire()}/principles.md";
 
     /// <summary>
-    /// The folder of the function skills, the procedures ExecuteSkill runs: level 0's, <c>agents/functions</c>.
-    /// </summary>
-    internal static string FunctionsFolder { get; } = $"{PromptFolder.Agents.Wire()}/{PromptFolder.Functions.Wire()}";
-
-    /// <summary>
     /// The folder of an identity's skills, beside its voice (F129, ADR 0114): <c>agents/{identity}/skills/</c>.
     /// </summary>
     public static string SkillsOf(string identity) =>
@@ -63,14 +58,4 @@ public static class SkillFiles
     /// A toolset guide's file: <c>toolsets/{name}.md</c>, the same whichever level loads it.
     /// </summary>
     public static string Guide(string name) => $"{PromptFolder.Toolsets.Wire()}/{name}.md";
-
-    /// <summary>A function skill's file: <c>agents/functions/{name}.md</c>.</summary>
-    internal static string Function(string name) => $"{FunctionsFolder}/{name}.md";
-
-    /// <summary>
-    /// Whether <paramref name="path"/> is a built-in prompt: what is embedded is built in (CL9, ADR 0019), so the names
-    /// a function skill may not take follow the files, with no list to keep: discovery skips one.
-    /// </summary>
-    internal static bool IsBuiltIn(string path) =>
-        SkillFileSource.EmbeddedFiles.Contains(path, StringComparer.OrdinalIgnoreCase);
 }

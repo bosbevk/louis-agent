@@ -123,35 +123,6 @@ public class SkillLoaderTests
     }
 
     /// <summary>
-    /// A function skill is a set of procedures run by ExecuteSkill: it belongs to the skills toolset, like a guide to
-    /// its tools, so a prompt without that toolset has no skill file (CL9: there's no setting to add one).
-    /// </summary>
-    [Test]
-    public void FunctionSkills_ComeWithTheSkillsToolset_AndNotWithout()
-    {
-        string skills = Directory.CreateTempSubdirectory("function-skills-").FullName;
-        try
-        {
-            Directory.CreateDirectory(Path.Combine(skills, PromptFolder.Agents.Wire(), PromptFolder.Functions.Wire()));
-            File.WriteAllText(
-                Path.Combine(skills, PromptFolder.Agents.Wire(), PromptFolder.Functions.Wire(), "greeting.md"),
-                "# Greeting Skills\n\nGreets people.");
-            var options = new AgentOptions { SkillsDirectory = skills };
-
-            Assert.That(
-                SkillLoader.Load(options, Toolsets(TestToolset.Files.Wire(), CoreToolset.Skills.Wire())).Documentation,
-                Does.Contain("# Greeting Skills"));
-            Assert.That(
-                SkillLoader.Load(options, Toolsets(CoreToolset.Agents.Wire(), TestToolset.Web.Wire()))
-                    .Documentation, Does.Not.Contain("# Greeting Skills"));
-        }
-        finally
-        {
-            Directory.Delete(skills, recursive: true);
-        }
-    }
-
-    /// <summary>
     /// The addresses an identity may ask (F127.3.1) come with the agents toolset, after its guide, so the model knows
     /// whom it may ask; without the toolset, or with no addresses, nothing is listed.
     /// </summary>

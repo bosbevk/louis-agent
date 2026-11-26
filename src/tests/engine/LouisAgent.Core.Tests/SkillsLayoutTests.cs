@@ -14,11 +14,11 @@ namespace LouisAgent.Core.Tests;
 public class SkillsLayoutTests
 {
     /// <summary>
-    /// The folders a built-in file may be in: a level's, its function skills', or the shared guides'.
+    /// The folders a built-in file may be in: a level's, or the shared guides'.
     /// </summary>
     private static readonly string[] PromptFolders =
     [
-        PromptFolder.Agents.Wire(), SkillFiles.FunctionsFolder,
+        PromptFolder.Agents.Wire(),
         PromptFolder.Toolsets.Wire(),
         PromptFolder.Shared.Wire()
     ];
@@ -100,11 +100,18 @@ public class SkillsLayoutTests
     {
         // README.md marks the folder (AgentHost.FindSkillsDirectory).
         string skills = Path.Combine(TestPaths.RepoRoot, folder);
+        // What the agent writes: a skill's folder, with its SKILL.md, or a draft in drafts/; tools/ is the old
+        // agent-built tools', which step 18 of F97.1 empties.
         var other = FilesUnder(skills).Where(f => f != SkillFiles.FolderMarker
-                                                  && !f.StartsWith(SkillFiles.FunctionsFolder + "/",
+                                                  && !f.StartsWith(SkillFiles.DraftsFolder + "/",
                                                       StringComparison.Ordinal)
+                                                  && !IsInASkillsFolder(skills, f)
                                                   && !f.StartsWith("tools/", StringComparison.Ordinal));
 
         Assert.That(other, Is.Empty, "a built-in prompt goes in src/engine/LouisAgent.Core/'s prompt folders");
     }
+
+    /// <summary>Whether a file sits in a skill's own folder, the one at the top that holds a SKILL.md.</summary>
+    private static bool IsInASkillsFolder(string skills, string file) =>
+        file.IndexOf('/') is > 0 and var slash && File.Exists(Path.Combine(skills, file[..slash], "SKILL.md"));
 }
