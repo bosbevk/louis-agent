@@ -13,7 +13,7 @@ namespace LouisAgent.Core.Skills.Headers;
 /// <summary>
 /// Reads a prompt's front matter (CL27): a YAML block between two <c>---</c> lines at the top of the file, with the
 /// Agent Skills spec's <c>name</c> and <c>description</c> and ours under <c>metadata</c> (<c>level</c>,
-/// <c>toolsets</c>), and gives it apart from the body the model reads:
+/// <c>toolsets</c>, <c>load</c>, and a skill's <c>script</c>), and gives it apart from the body the model reads:
 /// <code>
 /// ---
 /// name: acme-helper
@@ -40,7 +40,7 @@ public static class PromptHeaders
     private const string Fence = "---";
 
     private static readonly string[] Keys = ["name", "description", "metadata"],
-        MetadataKeys = ["level", "toolsets", "load"];
+        MetadataKeys = ["level", "toolsets", "load", "script"];
 
     /// <summary>The file's header, when it has one, and its body.</summary>
     public static PromptFile Split(string path, string text)
@@ -81,8 +81,9 @@ public static class PromptHeaders
 
         var metadata = Child(root, "metadata") as YamlMappingNode;
         if (metadata is not null) Known(path, metadata, MetadataKeys);
+        string? script = metadata is null ? null : Text(path, metadata, "script");
         return new PromptHeader(name, description, LevelOf(path, metadata), ToolsetsOf(path, metadata),
-            LoadOf(path, metadata));
+            LoadOf(path, metadata), script);
     }
 
     /// <summary>

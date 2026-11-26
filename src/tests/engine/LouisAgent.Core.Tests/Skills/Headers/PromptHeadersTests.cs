@@ -148,6 +148,20 @@ public class PromptHeadersTests
     public void APromptWithoutLoad_HasNone() =>
         Assert.That(PromptHeaders.Split(Path, Cook).Header!.Load, Is.Null);
 
+    /// <summary>
+    /// F97.1: a skill the agent made names the script it runs, by its path from the skill's folder, as a plain string
+    /// under <c>metadata</c>, the spec's place for a client's own properties; a prompt that names none has none.
+    /// </summary>
+    [Test]
+    public void ASkillsHeader_NamesItsScript_AndAPromptWithoutOneHasNone()
+    {
+        var skill = PromptHeaders.Split("skills/word-count/SKILL.md",
+            "---\nname: word-count\ndescription: Counts words.\nmetadata:\n  script: scripts/count.py\n---\n# Count\n");
+        var prompt = PromptHeaders.Split(Path, Cook);
+
+        Assert.That((skill.Header!.Script, prompt.Header!.Script), Is.EqualTo(("scripts/count.py", (string?)null)));
+    }
+
     /// <summary>Two headers are the same when every field is, the toolsets in order.</summary>
     private static bool SameHeader(PromptHeader a, PromptHeader b) =>
         (a.Name, a.Description, a.Level, a.Load) == (b.Name, b.Description, b.Level, b.Load) &&
