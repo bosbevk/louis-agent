@@ -8,5 +8,5 @@ namespace LouisAgent.Core.Agent.EngineTools.Skills;
 /// </summary>
 /// <param name="Door"><c>UseSkill</c>, listing the approved skills.</param>
 /// <param name="Create"><c>CreateSkill</c>.</param>
-/// <param name="ReloadLibrary">Reads the skills folder again, when the skills are reloaded.</param>
-internal sealed record AgentSkillTools(AIFunction Door, AIFunction Create, Action ReloadLibrary);
+/// <param name="Reload"><c>ReloadSkills</c>, which reads the skills folder again.</param>
+internal sealed record AgentSkillTools(AIFunction Door, AIFunction Create, AIFunction Reload);

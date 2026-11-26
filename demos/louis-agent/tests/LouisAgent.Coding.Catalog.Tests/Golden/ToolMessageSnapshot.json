@@ -265,7 +265,6 @@
   "SkillNameInvalid": "'<Name>' can't be a skill's name: use lowercase letters, digits and hyphens, at most <Longest> characters, such as word-count.",
   "SkillRanNoOutput": "<Skill> ran and printed nothing.",
   "SkillRead": "<Name>: <Description>\n\n<Instructions>\n\nIts parameters, a JSON Schema: <Parameters>\n\nThe call it was proved with, and its answer: <Example>",
-  "SkillReloadUnavailable": "Error: skill reloading is not available in this host.",
   "SkillTimedOut": "<Skill> ran past its <Seconds> seconds and was stopped. The end of what it printed: <Output>",
   "SkillUnknown": "There is no skill '<Name>' to read. The ones you can read: <Available>.",
   "SkillsReloaded": "Skills reloaded: UseSkill reaches a skill added since now, and the next chat's system prompt and UseSkill list it.",

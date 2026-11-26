@@ -1462,7 +1462,7 @@
     },
     {
       "Name": "ReloadSkills",
-      "Description": "Reads the skills folder and the skill files from disk again. Use it after a skill was added or\nedited outside the agent (by the user, or by another tool): UseSkill reaches it now, and the next\nchat lists it. Returns an error if the host wasn't configured with a skill reloader.",
+      "Description": "Reads the skills folder from disk again. Use it after a skill was added or edited outside the agent\n(by the user, or by another tool): UseSkill reaches it now, and the next chat lists it.",
       "Schema": {
         "type": "object",
         "properties": {}

@@ -32,7 +32,8 @@ public sealed class AgentCatalog
     private static readonly IReadOnlySet<string> EngineToolNames = new HashSet<string>(
         new[]
             {
-                nameof(AgentEngine.ReloadSkills), nameof(SkillDoorTools.UseSkill), nameof(SkillMakingTools.CreateSkill)
+                nameof(SkillReloadTools.ReloadSkills), nameof(SkillDoorTools.UseSkill),
+                nameof(SkillMakingTools.CreateSkill)
             }
             .Concat(ToolMethodsOfType(typeof(ClockTools)).Select(m => m.Name)),
         StringComparer.OrdinalIgnoreCase);

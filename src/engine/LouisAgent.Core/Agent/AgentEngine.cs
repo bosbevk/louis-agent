@@ -38,8 +38,8 @@ public class AgentEngine
     /// <summary>The engine's own lines: a model without tools.</summary>
     private static readonly ILogger Log = AgentLogging.For<AgentEngine>();
 
-    /// <summary>The skills: the system prompt, running one, writing and reloading them.</summary>
-    private readonly SkillTools _skillTools;
+    /// <summary>The reload of the skills folder, the model's <c>ReloadSkills</c> and the engine's.</summary>
+    private readonly SkillReloadTools _reload;
 
     /// <summary>The tools the model is offered.</summary>
     private readonly ToolRegistry _registry;
@@ -63,8 +63,11 @@ public class AgentEngine
     /// <summary>What a chat resumed on moved tools does with its saved thinking: the provider's way.</summary>
     private readonly IStaleThinking _staleThinking;
 
-    /// <summary>Combined default instructions and skill documentation used as the system prompt.</summary>
-    public string SkillDocumentation => _skillTools.Documentation;
+    /// <summary>
+    /// The system prompt: the principles, the role, the identity's skills and the guides, read once when the engine
+    /// is built, since all of it is built in.
+    /// </summary>
+    public string SkillDocumentation { get; }
 
     /// <summary>
     /// Which agent this is, as a trace names it (F52): the factory gives a role's engine its role and a session's
@@ -117,13 +120,6 @@ public class AgentEngine
     /// </summary>
     public ReasoningEffort? Thinking { get; init; }
 
-    /// <summary>Rebuilds the skill set from disk for <see cref="ReloadSkills"/>; null disables reloading.</summary>
-    public Func<ISkillProvider>? SkillReloader
-    {
-        get => _skillTools.SkillReloader;
-        init => _skillTools.SkillReloader = value;
-    }
-
     /// <summary>
     /// The skills in the skills folder, read when first needed, since the folder is set after the engine is built
     /// (F97.1).
@@ -165,7 +161,7 @@ public class AgentEngine
         _registry = new ToolRegistry(supportsTools, replay);
         var python = new PythonRunner(WorkspaceRoot);
         var powerShell = new PowerShellRunner(WorkspaceRoot);
-        _skillTools = new SkillTools(skillProvider);
+        SkillDocumentation = Normalise(skillProvider.Documentation);
         // The one door to every skill (F97.1): the library and the door are made when first used.
         _library = new Lazy<SkillLibrary>(() => SkillLibrary.Read(SkillsDirectory ?? ""));
         _commands = new UserCommands(() => _library.Value, () => Display);
@@ -173,6 +169,7 @@ public class AgentEngine
         var door = new Lazy<SkillDoor>(() => new SkillDoor(_library.Value, skillRunner));
         var doorTools = new SkillDoorTools(() => door.Value);
         var making = new SkillMakingTools(() => new SkillDrafting(SkillsDirectory ?? "", skillRunner));
+        _reload = new SkillReloadTools(() => _library.Value.Reload());
 
         RecordsUsage = usageSink is not null;
         _guards = new ToolCallGuards(_registry,
@@ -191,8 +188,8 @@ public class AgentEngine
         }
 
         var agentSkills = OwnTools.AgentSkills(doorTools, () => SkillListing.LinesFor(_library.Value.Approved),
-            making, () => _library.Value.Reload());
-        OwnTools.Register(_registry, _skillTools, agentSkills, options, toolsets, selfExtension, clock);
+            making, _reload);
+        OwnTools.Register(_registry, agentSkills, options, toolsets, selfExtension, clock);
     }
 
     /// <summary>
@@ -258,14 +255,10 @@ public class AgentEngine
     }
 
     /// <summary>
-    /// Re-reads the skills from disk (the <c>ReloadSkills</c> tool; see <see cref="SkillTools.ReloadSkills"/>), the
-    /// skills folder's too (F97.1), so a skill dropped in by hand is reachable now and listed in the next chat.
+    /// Reads the skills folder again (the <c>ReloadSkills</c> tool, F97.1), so a skill dropped in by hand is reachable
+    /// now and listed in the next chat.
     /// </summary>
-    public string ReloadSkills()
-    {
-        _library.Value.Reload();
-        return _skillTools.ReloadSkills();
-    }
+    public string ReloadSkills() => _reload.ReloadSkills();
 
     /// <summary>
     /// Handles commands typed by the user (never exposed to the model): /skills, /approve &lt;Name&gt;,

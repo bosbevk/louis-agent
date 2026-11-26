@@ -90,6 +90,25 @@ public class UseSkillTests
         Assert.That(model.ToolDescriptionsSent[3]["UseSkill"], Does.Contain("- line-count: Counts words."));
     }
 
+    /// <summary>
+    /// F97.1 step 14e: a reload is the skills folder's alone, so the model is told it worked on any engine, with no
+    /// prompt reloader to set up.
+    /// </summary>
+    [Test]
+    public async Task TheModelsReload_SaysItWorked_WithNoPromptReloader()
+    {
+        var reload = new FunctionCallContent("c1", "ReloadSkills", new Dictionary<string, object?>());
+        var model = new FakeChatClient(
+            _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, [reload])),
+            _ => Say("reloaded"));
+        var engine = Engine(model);
+
+        await engine.ProcessPromptAsync(engine.StartConversation(), "reload");
+
+        var answer = model.Requests[1].Messages.SelectMany(m => m.Contents).OfType<FunctionResultContent>().Single();
+        Assert.That(answer.Result?.ToString(), Does.StartWith("Skills reloaded"));
+    }
+
     /// <summary>The model reads a skill through the door by its name alone.</summary>
     [Test]
     public async Task TheDoor_ReadsASkill_ByItsName() =>

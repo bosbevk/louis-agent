@@ -44,7 +44,6 @@ public sealed class AgentEngineBuilder
     private ReasoningEffort? _thinking;
     private DisplayCurrency? _display;
     private string? _skillsDirectory;
-    private Func<ISkillProvider>? _skillReloader;
 
     /// <summary>Starts a builder; <see cref="AgentEngine.CreateBuilder"/> is the way to get one.</summary>
     internal AgentEngineBuilder(ISkillProvider skillProvider, IChatClient chatClient, AgentOptions options)
@@ -155,13 +154,6 @@ public sealed class AgentEngineBuilder
         return this;
     }
 
-    /// <summary>Rebuilds the skill set from disk for <c>ReloadSkills</c>; null disables reloading.</summary>
-    public AgentEngineBuilder WithSkillReloader(Func<ISkillProvider>? skillReloader)
-    {
-        _skillReloader = skillReloader;
-        return this;
-    }
-
     /// <summary>Builds the engine from the parts given so far.</summary>
     public AgentEngine Build() =>
         new(_skillProvider, _chatClient, _options, _supportsTools, _toolsets, _usageSink, _usageMapper,
@@ -171,6 +163,5 @@ public sealed class AgentEngineBuilder
             Thinking = _thinking,
             Display = _display,
             SkillsDirectory = _skillsDirectory,
-            SkillReloader = _skillReloader,
         };
 }

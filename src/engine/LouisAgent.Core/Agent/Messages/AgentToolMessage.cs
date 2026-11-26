@@ -75,9 +75,6 @@ public enum AgentToolMessage
     [Holes(typeof(SummarisedResultHoles))]
     SummarisedResult,
 
-    [Description("Error: skill reloading is not available in this host.")]
-    SkillReloadUnavailable,
-
     [Description(
         "Skills reloaded: UseSkill reaches a skill added since now, and the next chat's system prompt and UseSkill " +
         "list it.")]

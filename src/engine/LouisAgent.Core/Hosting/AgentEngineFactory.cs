@@ -227,8 +227,6 @@ public sealed class AgentEngineFactory
             .WithReplay(_replay)
             .WithStaleThinking(model is null ? _staleThinking : null)
             .WithSkillsDirectory(SkillFolder.Find(_agent))
-            // ReloadSkills reloads this profile's prompt (its guides, role and router), never another's.
-            .WithSkillReloader(() => SkillLoader.Load(_agent, guided, role, level, calls))
             .WithThinking(model is null ? _thinking : model.Thinking)
             .WithDisplay(_display)
             // A trace names the agent (F52): the role it plays, or the mode a session without one runs.
