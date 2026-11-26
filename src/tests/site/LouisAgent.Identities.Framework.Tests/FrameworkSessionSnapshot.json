@@ -11,7 +11,7 @@
             "type": "string"
           },
           "fields": {
-            "description": "One to four fields: a label of up to 30 characters, the words over its box such as Phone or email;\r\nand its kind: Name, Phone, Email, Text for one line, or LongText for a box that grows.",
+            "description": "One to four fields: a label of up to 30 characters, the words over its box such as Phone or email;\nand its kind: Name, Phone, Email, Text for one line, or LongText for a box that grows.",
             "type": "array",
             "items": {
               "type": "object",
@@ -113,7 +113,7 @@
             "type": "string"
           },
           "choices": {
-            "description": "Two to four choices: a label of up to 40 characters, a button's words as the visitor would say\r\nthem, such as Book it; an optional why of one line under it; suggested true on the one you\r\nrecommend, at most one; and writes, a kind (Name, Phone, Email, Text or LongText), on a choice that\r\nis their own words. That choice holds a box they write in and send from the card,\r\nso its label asks them, in your voice, such as Tell me about your business, and its why says what\r\nyou will do with what they write: never a choice that only says to type.",
+            "description": "Two to four choices: a label of up to 40 characters, a button's words as the visitor would say\nthem, such as Book it; an optional why of one line under it; suggested true on the one you\nrecommend, at most one; and writes, a kind (Name, Phone, Email, Text or LongText), on a choice that\nis their own words. That choice holds a box they write in and send from the card,\nso its label asks them, in your voice, such as Tell me about your business, and its why says what\nyou will do with what they write: never a choice that only says to type.",
             "type": "array",
             "items": {
               "type": "object",
@@ -228,7 +228,7 @@
             "type": "string"
           },
           "rows": {
-            "description": "One to six facts, each an icon by name (calendar, clock, users, user, paw, home, phone, mail, tag,\r\ninfo…), what the fact is (Dates) and what it says (Fri 14 to Sun 16 Nov).",
+            "description": "One to six facts, each an icon by name (calendar, clock, users, user, paw, home, phone, mail, tag,\ninfo…), what the fact is (Dates) and what it says (Fri 14 to Sun 16 Nov).",
             "type": "array",
             "items": {
               "type": "object",

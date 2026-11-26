@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 168 | 74 |
-| Fixes (`FX`) | 242 | 3 |
+| Fixes (`FX`) | 243 | 3 |
 | Cleanups (`CL`) | 49 | 25 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -298,10 +298,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (242 done)
+## Fixes (243 done)
 
 | Id | When | What |
 |---|---|---|
+| FX254 | 2026-11-26 | Every description the model is sent, a parameter's too, has LF line endings whatever the checkout, through one `ToolFunctionOptions`; the guide's and framework's replays re-recorded |
 | FX253 | 2026-11-26 | The guide and the framework Orbi show a page on its own, then write, then offer, and Offer and AskFor say they end the answer; a `has-words` eval fact on every turn holds it in the replay tests |
 | FX251 | 2026-11-26 | The eval test host stops before it disposes, so a run cut by its shutdown is left as it was and no late write races the folders' clean-up; a model that gives up when its call is cancelled |
 | FX4 | 2026-11-25 | A chat keeps the tools and the system prompt it started with: a Conversation freezes them, frozen tools keep what they were sent and a rejected one never runs, the round limit's final request reads them from TurnTools, a resume sends its saved prompt and handles stale thinking per provider (stripped, or Anthropic's drop_block, proved live); five tidies and CL61 on the way |
