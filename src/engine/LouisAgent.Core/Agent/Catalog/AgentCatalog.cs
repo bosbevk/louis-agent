@@ -5,7 +5,6 @@ using LouisAgent.Composition.Packs;
 using LouisAgent.Core.Agent.Messages;
 using LouisAgent.Core.Agent.Messages.Holes.Catalog;
 using LouisAgent.Core.Agent.Toolsets;
-using System.ComponentModel;
 using System.Reflection;
 using LouisAgent.Core.Agent.EngineTools.Clock;
 using LouisAgent.Core.Agent.EngineTools.Skills;
@@ -199,16 +198,11 @@ public sealed class AgentCatalog
         toolset.ToolTypes is null ? [] : toolset.ToolTypes.SelectMany(ToolMethodsOfType);
 
     /// <summary>
-    /// How a tool method becomes the function the model sees: its <c>[Description]</c> with LF line endings, whatever
-    /// the checkout.
+    /// How a tool method becomes the function the model sees: its <c>[Description]</c> and its parameters' with LF line
+    /// endings, whatever the checkout.
     /// </summary>
     public static AIFunction FunctionOf(MethodInfo method, Func<AIFunctionArguments, object> createInstance) =>
-        AIFunctionFactory.Create(method, createInstance, new AIFunctionFactoryOptions
-        {
-            Description = method.GetCustomAttribute<DescriptionAttribute>() is { } description
-                ? AgentEngine.Normalise(description.Description)
-                : null,
-        });
+        AIFunctionFactory.Create(method, createInstance, ToolFunctionOptions.For(method));
 
     /// <summary>A tool class's own public methods: each one is a tool.</summary>
     internal static IEnumerable<MethodInfo> ToolMethodsOfType(Type type) =>
@@ -261,6 +255,7 @@ public sealed class AgentCatalog
                 var ring = new CatalogRequiresCycleHoles(string.Join(" -> ", path.Skip(at).Append(pack.Name)));
                 throw new AgentCatalogException(MessageText.Format(AgentErrorMessage.CatalogRequiresCycle, ring));
             }
+
             path.Add(pack.Name);
             foreach (string required in pack.Requires) Visit(byName[required], path);
             path.RemoveAt(path.Count - 1);

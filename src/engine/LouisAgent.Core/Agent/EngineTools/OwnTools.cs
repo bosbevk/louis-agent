@@ -1,5 +1,3 @@
-using System.ComponentModel;
-using System.Reflection;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Agent.EngineTools.Clock;
 using LouisAgent.Core.Agent.EngineTools.Skills;
@@ -61,15 +59,9 @@ internal static class OwnTools
     }
 
     /// <summary>
-    /// One of the engine's own methods as a tool, its [Description] with LF line endings (see
-    /// <see cref="AgentEngine.Normalise"/>).
+    /// One of the engine's own methods as a tool, its descriptions with LF line endings (see
+    /// <see cref="ToolFunctionOptions"/>).
     /// </summary>
     private static AIFunction Function(Delegate method, string name) =>
-        AIFunctionFactory.Create(method, new AIFunctionFactoryOptions
-        {
-            Name = name,
-            Description = method.Method.GetCustomAttribute<DescriptionAttribute>() is { } description
-                ? AgentEngine.Normalise(description.Description)
-                : null,
-        });
+        AIFunctionFactory.Create(method, ToolFunctionOptions.For(method.Method, name));
 }

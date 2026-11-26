@@ -1,3 +1,4 @@
+using LouisAgent.Api.Endpoints.Sessions;
 using LouisAgent.Api.Sessions.Files;
 using LouisAgent.Api.Sessions.Store;
 using LouisAgent.Api.Sessions.Streaming;
@@ -58,6 +59,12 @@ internal sealed class AgentSession(
 
     /// <summary>Marks the session as the admin's own.</summary>
     public void MarkFromTheAdmin() => FromTheAdmin = true;
+
+    /// <summary>
+    /// Whether a site visitor opened it: the open door admitted it and tagged it as the door's (F109.3). An operator's
+    /// run through the door goes untagged, so it isn't one. A visitor never gets the operator's commands (FX255).
+    /// </summary>
+    public bool FromAVisitor => Tags.Service == SessionHandlers.OpenDoorService;
 
     /// <summary>
     /// The format this session's events are written in, chosen when it opened and kept for its lifetime (F18 step 1f).
@@ -134,8 +141,8 @@ internal sealed class AgentSession(
 
     /// <summary>
     /// Brings back a chat read from the store (F43.1): the system prompt it was saved with, today's tools and whether
-    /// they moved since its turns were sent, its turns' messages in order, their text attachments, and its turn count,
-    /// so its next turn runs as if nothing happened.
+    /// they moved since its turns were sent, its turns' messages in order, their text attachments, and its turn count
+    /// from its newest kept turn's number, so its next turn runs as if nothing happened and is kept under a new number.
     /// </summary>
     public void Restore(SavedSession saved)
     {
@@ -145,7 +152,7 @@ internal sealed class AgentSession(
         Conversation = Engine.ResumeConversation(saved.Session.SystemPrompt, savedTools, said);
         foreach (var (name, content) in turns.SelectMany(turn => turn.Attachments)) Remember(name, content);
 
-        Turns = turns.Count;
+        Turns = saved.LastTurnNumber;
     }
 
     /// <summary>Keeps an attachment for later turns; the same name again replaces it.</summary>

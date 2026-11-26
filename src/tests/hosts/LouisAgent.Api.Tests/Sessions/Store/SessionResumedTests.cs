@@ -103,6 +103,78 @@ public class SessionResumedTests
         });
     }
 
+    /// <summary>
+    /// A command such as /skills is a turn that keeps nothing, so a chat that had one and lived through a restart counts
+    /// on from its last kept turn, never under a number it already used: every message after the restart is answered
+    /// and kept (FX256: the restored chat counted its kept turns, wrote its next under a used number, and stayed busy).
+    /// </summary>
+    [Test]
+    public async Task AChatWithACommand_CountsOnAfterARestart()
+    {
+        var store = new InMemorySessionStore();
+        var (before, beforeClient) = await RunAsync(store, Answers("Monday, Tuesday and Wednesday."));
+        string id = await OpenAsync(beforeClient, keyed: true);
+        await SendAsync(beforeClient, id, "/skills", keyed: true);
+        await SendAsync(beforeClient, id, "Plan three dinners", keyed: true);
+        await before.DisposeAsync();
+
+        var (restarted, client) = await RunAsync(store, Answers("Fish on Monday."));
+        await using var _ = restarted;
+        var first = await SendAsync(client, id, "What is on Monday?", keyed: true);
+        var second = await SendAsync(client, id, "And on Tuesday?", keyed: true);
+
+        var kept = (await store.LoadAsync(id))!.Turns.Select(turn => turn.Number);
+        Assert.Multiple(() =>
+        {
+            Assert.That(first, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(second, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(kept, Is.EqualTo(new[] { 2, 3, 4 }));
+        });
+    }
+
+    /// <summary>
+    /// A store that refuses to keep a turn never leaves the chat busy: the next message is answered, not refused as
+    /// still answering (FX256: the refusal was thrown where the turn lets the chat go, so the chat stayed busy).
+    /// </summary>
+    [Test]
+    public async Task AStoreThatRefusesATurn_NeverLeavesTheChatBusy()
+    {
+        var (app, client) = await RunAsync(new RefusingStore(), Answers("Monday, Tuesday and Wednesday."));
+        await using var _ = app;
+        string id = await OpenAsync(client, keyed: true);
+
+        var first = await SendAsync(client, id, "Plan three dinners", keyed: true);
+        var second = await SendAsync(client, id, "What is on Monday?", keyed: true);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(first, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(second, Is.EqualTo(HttpStatusCode.OK));
+        });
+    }
+
+    /// <summary>A store that keeps a chat's opening but refuses every turn, as a database that is down would.</summary>
+    private sealed class RefusingStore : ISessionStore
+    {
+        private readonly InMemorySessionStore _kept = new();
+
+        /// <summary>Keeps the opening.</summary>
+        public Task SaveOpeningAsync(StoredSession session, CancellationToken cancellationToken = default) =>
+            _kept.SaveOpeningAsync(session, cancellationToken);
+
+        /// <summary>Refuses the turn.</summary>
+        public Task AppendTurnAsync(string sessionId, StoredTurn turn, CancellationToken cancellationToken = default) =>
+            throw new InvalidOperationException("The store is down.");
+
+        /// <summary>Gives back what it kept.</summary>
+        public Task<SavedSession?> LoadAsync(string sessionId, CancellationToken cancellationToken = default) =>
+            _kept.LoadAsync(sessionId, cancellationToken);
+
+        /// <summary>Forgets the chat.</summary>
+        public Task DeleteAsync(string sessionId, CancellationToken cancellationToken = default) =>
+            _kept.DeleteAsync(sessionId, cancellationToken);
+    }
+
     /// <summary>After a restart a chat opened with the key still needs the key: without it, it is refused.</summary>
     [Test]
     public async Task AKeyedChat_StillNeedsTheKey_AfterARestart()

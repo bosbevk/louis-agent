@@ -194,8 +194,11 @@ its old id, so it comes back with exactly the toolsets, identity and role it had
 system prompt it was saved with, not today's, because the model checks the thinking in its earlier turns against the
 prompt it was sent, and a release may have changed it since. It takes today's tools, and compares their fingerprint
 with the one its last turn was saved with, so it knows whether a release moved them. Then it puts the turns' messages
-back after the system prompt, with their attachments and the turn count, and the turn goes on as if nothing
-happened. Two messages at once resume it once. A session neither memory nor the store has is a `404`, as before. Deleting a
+back after the system prompt, with their attachments, and the turn goes on as if nothing happened. Its turn count
+goes on from the number of its newest kept turn, not from how many are kept: a command such as `/tools` takes a
+number and keeps nothing, and a turn is written once under its number, so counting the kept turns would reuse one.
+Saving a turn happens just before the turn lets the session go, and a save that fails is logged and lets it go all the
+same, so a store that refuses never leaves a chat busy. Two messages at once resume it once. A session neither memory nor the store has is a `404`, as before. Deleting a
 session deletes it from the store too.
 
 MongoDB keeps a session in two collections: `sessions`, one document per session, and `turns`, one document per turn,
@@ -311,7 +314,10 @@ A failure becomes an `error` event in Claude's shape, with the turn's `usage` if
 failure, and `replay_miss_error` when the engine's replay had no recorded answer (`ModelReplayMissException`, mapped
 by `Sessions/Streaming/StreamErrorKinds`). So a client can tell a replay miss from the agent's own failure.
 
-`/skills`, `/approve`, `/reject` and `/usage` are answered without the model.
+`/skills`, `/approve`, `/reject` and `/usage` are answered without the model, for whoever runs the agent. A site
+visitor's chat is the exception: the open door tags it as the door's for the ledger, and a session so tagged
+(`AgentSession.FromAVisitor`) sends those words to the model like any other message, so a visitor never sees the
+operator's commands or what they report. An operator's run through the door, an eval's, goes untagged and keeps them.
 
 When the host turns the engine's `STREAM_PACE` on, the engine hands out the turn's text at a steady pace in whole
 words, and the API says so: it answers the turn with the header `Stream-Paced: on` (`ApiHeaders.StreamPaced`), before

@@ -59,6 +59,10 @@ public class MongoSessionStoreTests
     [Test]
     public Task ADelete_ForgetsTheChatAndItsTurns() => SessionStoreContract.ADelete_ForgetsTheChatAndItsTurns(Store());
 
+    /// <summary>A turn number the chat already keeps is refused.</summary>
+    [Test]
+    public Task ATurnNumberAlreadyKept_IsRefused() => SessionStoreContract.ATurnNumberAlreadyKept_IsRefused(Store());
+
     /// <summary>
     /// Both collections carry a TTL index on the last activity, with the retention given, so MongoDB deletes a chat
     /// and its turns together once it has been idle that long.

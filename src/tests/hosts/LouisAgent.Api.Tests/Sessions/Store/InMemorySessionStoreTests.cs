@@ -24,6 +24,11 @@ public class InMemorySessionStoreTests
     public Task AnUnknownChat_LoadsAsNone() =>
         SessionStoreContract.AnUnknownChat_LoadsAsNone(new InMemorySessionStore());
 
+    /// <summary>A turn number the chat already keeps is refused, as MongoDB refuses it.</summary>
+    [Test]
+    public Task ATurnNumberAlreadyKept_IsRefused() =>
+        SessionStoreContract.ATurnNumberAlreadyKept_IsRefused(new InMemorySessionStore());
+
     /// <summary>A delete forgets the chat and its turns.</summary>
     [Test]
     public Task ADelete_ForgetsTheChatAndItsTurns() =>
