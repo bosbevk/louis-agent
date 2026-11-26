@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Skills.Messages.Holes.Arguments;
+using LouisAgent.Core.Skills.Messages.Holes.Drafting;
 using LouisAgent.Core.Skills.Messages.Holes.Library;
 using LouisAgent.Core.Skills.Messages.Holes.Running;
 
@@ -35,4 +36,21 @@ public enum SkillToolMessage
     SkillListed,
     [Description("No skills are approved yet.")]
     NoSkillsApproved,
+    [Description(
+        "'{Name}' can't be a skill's name: use lowercase letters, digits and hyphens, at most {Longest} characters, " +
+        "such as word-count.")]
+    [Holes(typeof(SkillNameInvalidHoles))]
+    SkillNameInvalid,
+    [Description("An approved skill is called {Name} already: give this one another name.")]
+    [Holes(typeof(SkillAlreadyApprovedHoles))]
+    SkillAlreadyApproved,
+    [Description("{Skill}'s example doesn't fit its parameters, so it was kept nowhere: {Problems}")]
+    [Holes(typeof(ExampleDoesNotFitHoles))]
+    ExampleDoesNotFit,
+    [Description("{Skill}'s example didn't run cleanly, so it was kept nowhere. Fix it and make it again: {Answer}")]
+    [Holes(typeof(ExampleFailedHoles))]
+    ExampleFailed,
+    [Description("{Skill} is drafted, for this chat only until it is approved. Its example answered: {Answer}")]
+    [Holes(typeof(SkillDraftedHoles))]
+    SkillDrafted,
 }
