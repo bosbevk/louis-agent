@@ -1,12 +1,14 @@
 using System.ComponentModel;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Skills.Messages.Holes.Arguments;
+using LouisAgent.Core.Skills.Messages.Holes.Running;
 
 namespace LouisAgent.Core.Skills.Messages;
 
 /// <summary>
 /// What a skill's tools answer the model (F97.1): a call that doesn't fit the skill's parameters, each problem named
-/// so the call can be fixed in one go. Pinned in the tool-message golden file.
+/// so the call can be fixed in one go, and a run that ran too long or printed nothing. Pinned in the tool-message
+/// golden file.
 /// </summary>
 public enum SkillToolMessage
 {
@@ -21,4 +23,10 @@ public enum SkillToolMessage
     [Description("'{Parameter}' must be {Expected}, and the call gave {Given}.")]
     [Holes(typeof(ArgumentWrongTypeHoles))]
     ArgumentWrongType,
+    [Description("{Skill} ran past its {Seconds} seconds and was stopped. The end of what it printed: {Output}")]
+    [Holes(typeof(SkillTimedOutHoles))]
+    SkillTimedOut,
+    [Description("{Skill} ran and printed nothing.")]
+    [Holes(typeof(SkillRanNoOutputHoles))]
+    SkillRanNoOutput,
 }
