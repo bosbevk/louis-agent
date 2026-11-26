@@ -153,9 +153,9 @@ The children's own plans list every type with its step. In outline:
 
 FX4's frozen tools and its `FrozenTool` refusal carry the door and a rejected skill. The script runners already in
 core (`PythonRunner` and the PowerShell and bash ones) run the scripts. The typed-parameter schema `ScriptTool` builds
-today becomes `SkillTool`'s. `SettingChoice` parses the language. `PromptHeaders` (ADR 0063) reads every `SKILL.md`'s YAML
-front matter, as it reads an identity's skills, and `ReadSkill` (ADR 0114) loads `write-a-skill` on demand. No new
-package.
+today becomes `SkillTool`'s. `SettingChoice` parses the language. `PromptHeaders` (ADR 0063) reads every
+`SKILL.md`'s YAML front matter, as it reads an identity's skills, and `ReadSkill` (ADR 0114) loads `write-a-skill` on
+demand. No new package.
 
 ### 11. The rules and tests that reach this work
 
@@ -196,3 +196,60 @@ approved one by its own name from the next chat; the chat is told of an approval
 The amendment also takes out the line FX4 made untrue. It is written in F97.2, when the rule is whole.
 
 ## Approved during the build
+
+**2026-11-26, a skill's parameters are a JSON Schema file beside its `SKILL.md`.** Louis asked which way is correct,
+"research this what is the correct way?". No standard puts typed parameters in a `SKILL.md`: Claude Code reaches a
+skill through one tool that takes its name ([a deep dive](https://leehanchung.github.io/blogs/2025/10/26/claude-skills-deep-dive/)),
+Agent Skills has a script describe itself through `--help` ([Using scripts](https://agentskills.io/skill-creation/using-scripts)),
+Microsoft's Agent Framework takes the types from the script's code ([Microsoft Learn](https://learn.microsoft.com/en-us/agent-framework/agents/skills)),
+and only one project's extension reads them from the front matter ([pi-typed-args](https://cdn.jsdelivr.net/npm/pi-typed-args@0.2.0/docs/skills.md)).
+Every tool standard takes a function's inputs as a JSON Schema. So `SKILL.md` stays exactly the Agent Skills spec,
+its `metadata` plain strings, and its inputs are `parameters.schema.json` in the same folder, handed to the model
+unchanged and used by `UseSkill` to check arguments. His pick, over a `parameters` key of our own in the YAML and
+over no typed parameters. Section 2's "its `metadata` adding the typed `parameters`" is replaced by this.
+
+**2026-11-26, the script a skill runs is named in `metadata.script`.** Louis: "research what is the standard?". The
+spec gives `scripts/` as the optional folder for code an agent can run ([agentskills.io](https://agentskills.io/specification)),
+names a script by its path from the skill's folder, as `scripts/extract.py`, and leaves which languages to the
+implementation; `metadata` is its place for a client's own properties. So `metadata.script: scripts/count.py` names
+what `UseSkill` runs, a plain string, and the language comes from the extension (`.py`, `.ps1`, `.sh`), parsed once;
+any other is refused with the list. Section 2's "the script's `language`" is replaced by this.
+
+**2026-11-26, F97.1 and F97.2 are built as one child, F97.1.** Cut as planned, F97.1 would have changed the shape while
+`CreateTool` and `CreateSkillFile` still wrote files nothing read, so `main` would ship a broken "make a tool" unless
+a second reader bridged it, which ADR 0049 rules out. Louis picked one child over cutting F97.1 as the whole new shape
+and over the bridge. So F97.1 delivers both rows of the children's table and both done-whens, in about twenty steps
+under one plan and one pull request; F97.2 is gone, and the Claude child keeps its number, F97.3.
+
+**2026-11-26, the arguments are checked by our own code, with no package.** .NET has no JSON Schema validator built in.
+Of JsonSchema.Net (MIT, but its NuGet release carries a maintenance fee for revenue-earning users over US$10,000 a
+year), Corvus.Text.Json.Validator (Apache-2.0) and Bebop.JsonSchema (MIT), Louis picked none: `UseSkill` checks that
+every required property is there and that each value has the type its property names, which is what a skill's flat
+parameters use. Section 10's "No new package" stands.
+
+**2026-11-26, after comparing the plan with the research, three more picks.** Louis asked to "compare this plan with
+research on how it is suppose to work". Claude Code reaches every skill through one `Skill` tool whose description
+lists the skills' names and descriptions ([Mikhail Shilkov](https://mikhail.io/2025/10/claude-code-skills/)); a model
+picks the wrong tool more often as tools grow, from 92.4% right at 15 tools to 78.2% at 640 ([arXiv 2607.15593](https://arxiv.org/pdf/2607.15593)),
+and the coding agent starts with 100; Voyager keeps a skill only after a check confirms it worked
+([Voyager](https://arxiv.org/abs/2305.16291)), and Anthropic's `skill-creator` tests a skill before it is done
+([skills.sh](https://www.skills.sh/anthropics/skills/skill-creator)). So:
+
+- **The door only.** An approved skill is not listed by its own name in any chat; `UseSkill` is the one way to call a
+  skill, and its description, frozen with the chat, lists every approved skill's name and one-line description. This
+  replaces pick 3's "from the next chat it is in the list under its own name", over keeping it and over a limit.
+- **An example run on creation.** `CreateSkill` takes one example call, runs it, and keeps the draft only if it
+  succeeds; the example is saved in the folder, and `/skills` and `/approve` show it with its answer.
+- **`UseSkill(name)` with no arguments reads the skill**: its instructions, its parameters and its example; with
+  arguments it runs it. A wrong call's answer gives the parameters too.
+
+**2026-11-26, F97.3 is re-aimed at tool search, and ADR 0033's words are settled.** With no skill called by its own
+name, F97.3 now brings Anthropic's tool search (`defer_loading`) to the agent's built-in tools, a hundred of them on the
+coding agent, since the research says selection improves when tools load on demand; a paid proof on Haiku 5.5 comes
+first, as before. Louis's pick, over dropping it and over parking it in the TODO. And he approved the amendment of
+ADR 0033 in these words, written in F97.1's step 18: "What the agent makes is a skill: a `skills/{name}/` folder with a
+`SKILL.md` in the Agent Skills shape, a `parameters.schema.json` and its script, which reads its arguments as JSON on
+stdin. `CreateSkill` keeps a draft only once its example call has run; a draft waits in `skills/drafts/` and only the
+chat that made it may use it; `/approve` moves it up for every chat, `/reject` deletes it. A chat reaches every skill
+through `UseSkill`, always in its tool list, whose description lists the approved skills; with a name alone it reads a
+skill. The chat is told of an approval or rejection on its next message."

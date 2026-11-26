@@ -1,0 +1,29 @@
+{
+  "kind": "sequence",
+  "title": "F97.1 one skill, used in the chat that made it: made, used, approved",
+  "caption": "The tool list the chat started with never changes: the new skill is reached through UseSkill, the approval reaches the model as a note, and the next chat's UseSkill lists the skill.",
+  "sequence": {
+    "participants": [
+      { "id": "P", "label": "A person", "actor": true, "tone": "blue" },
+      { "id": "M", "label": "The model", "icon": "chip", "tone": "violet" },
+      { "id": "E", "label": "AgentEngine", "icon": "settings", "tone": "violet" },
+      { "id": "L", "label": "SkillLibrary", "icon": "box", "tone": "violet" },
+      { "id": "D", "label": "The skills folder", "icon": "folder", "tone": "amber" }
+    ],
+    "steps": [
+      { "step": "message", "from": "P", "to": "M", "text": "count the words in this text" },
+      { "step": "message", "from": "M", "to": "E", "text": "CreateSkill(word-count, SKILL.md, script)" },
+      { "step": "message", "from": "E", "to": "L", "text": "check it, run its example, draft it" },
+      { "step": "message", "from": "L", "to": "D", "text": "skills/drafts/word-count/" },
+      { "step": "reply", "from": "E", "to": "M", "text": "drafted: call UseSkill(word-count, {text})" },
+      { "step": "message", "from": "M", "to": "E", "text": "UseSkill(word-count, {\"text\": \"...\"})" },
+      { "step": "message", "from": "E", "to": "L", "text": "this chat's draft, arguments checked" },
+      { "step": "reply", "from": "E", "to": "M", "text": "{\"words\": 9}" },
+      { "step": "note", "over": ["M", "E"], "text": "the tool list sent is the one the chat began with" },
+      { "step": "message", "from": "P", "to": "E", "text": "/approve word-count" },
+      { "step": "message", "from": "E", "to": "D", "text": "moves the folder up to skills/word-count/" },
+      { "step": "message", "from": "P", "to": "M", "text": "next message, with a note: word-count was approved" },
+      { "step": "note", "over": ["P", "D"], "text": "the next chat's UseSkill lists word-count" }
+    ]
+  }
+}

@@ -85,7 +85,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F95 | What's left of CL29 | Later |
 | CL17 | what's left of the coding identity | Later |
 | F96 | The browser's user agent names the user's town per visit | Later |
-| F97 | A skill usable in the chat that made it (F97.1 one skill shape, F97.2 draft, door, approve, F97.3 Claude calls it by name) | Now, F97.1 next |
+| F97 | A skill usable in the chat that made it (F97.1 one skill, used in the chat that made it, F97.3 tool search for the built-in tools) | Now, F97.1 next |
 | F38 | Tool search, when a measured need comes | Later |
 | F136 | How much of an asked agent's work the asker reads, as a framework choice: its tool calls, or those and its thinking, beside the answer; when a framework user needs it | Later |
 | F98 | Planning and a self-check before answering, tried on a simulation first | Later |
