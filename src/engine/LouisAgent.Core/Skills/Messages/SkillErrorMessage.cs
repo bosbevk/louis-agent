@@ -1,5 +1,7 @@
 using LouisAgent.Composition.Messages;
 using System.ComponentModel;
+using LouisAgent.Core.Skills.Messages.Holes.Folders;
+using LouisAgent.Core.Skills.Messages.Holes.Parameters;
 using LouisAgent.Core.Skills.Messages.Holes.Roles;
 
 namespace LouisAgent.Core.Skills.Messages;
@@ -36,4 +38,39 @@ public enum SkillErrorMessage
         "The default mode '{Mode}' has no file ({File}): a session that names no role would open with no mode.")]
     [Holes(typeof(DefaultModeMissingHoles))]
     DefaultModeMissing,
+    [Description(
+        "'{Folder}' has no SKILL.md: a skill is a folder holding its SKILL.md, its parameters.schema.json and its " +
+        "script.")]
+    [Holes(typeof(SkillFileMissingHoles))]
+    SkillFileMissing,
+    [Description("{Skill}'s SKILL.md won't read: {Reason}")]
+    [Holes(typeof(SkillHeaderUnreadHoles))]
+    SkillHeaderUnread,
+    [Description(
+        "{Skill}'s SKILL.md names no script: add metadata.script, its path from the skill's folder, such as " +
+        "scripts/run.py.")]
+    [Holes(typeof(ScriptNotNamedHoles))]
+    ScriptNotNamed,
+    [Description("{Skill}'s script '{Script}' is outside its folder: name a file inside it, such as scripts/run.py.")]
+    [Holes(typeof(ScriptOutsideFolderHoles))]
+    ScriptOutsideFolder,
+    [Description("{Skill}'s script '{Script}' isn't there: write it, or name the file that is.")]
+    [Holes(typeof(ScriptMissingHoles))]
+    ScriptMissing,
+    [Description("{Skill}'s script is a '{Extension}' file, which isn't run here: use {Known}.")]
+    [Holes(typeof(ScriptLanguageUnknownHoles))]
+    ScriptLanguageUnknown,
+    [Description(
+        "{Skill} has no parameters.schema.json: write a JSON Schema of type object, with each parameter it takes " +
+        "under properties, its type and description, and the ones a call must give under required.")]
+    [Holes(typeof(SchemaMissingHoles))]
+    SchemaMissing,
+    [Description(
+        "{Skill}'s parameters.schema.json isn't a JSON Schema object: give it type object, its parameters under " +
+        "properties, and the ones a call must give under required.")]
+    [Holes(typeof(SchemaNotAnObjectHoles))]
+    SchemaNotAnObject,
+    [Description("{Skill}'s parameter '{Parameter}' has no type that's taken here: give it one of {Known}.")]
+    [Holes(typeof(ParameterTypeUnknownHoles))]
+    ParameterTypeUnknown,
 }

@@ -23,6 +23,12 @@ public static class SkillFiles
     internal const string MarkedFolderPath = "skills/" + FolderMarker;
 
     /// <summary>
+    /// What a skill the agent made takes, beside its <c>SKILL.md</c> (F97.1): a JSON Schema, since no standard puts
+    /// typed parameters in a <c>SKILL.md</c> and every model's tool takes its inputs as one.
+    /// </summary>
+    internal const string ParametersFile = "parameters.schema.json";
+
+    /// <summary>
     /// The principles (ADR 0020): first in every agent's prompt, so nothing later can push them aside.
     /// </summary>
     internal static string Principles { get; } = $"{PromptFolder.Shared.Wire()}/principles.md";
