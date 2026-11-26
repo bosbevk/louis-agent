@@ -50,9 +50,12 @@ without one goes straight to a human.
 | **What it does** | What the method is for, where its code is | Background for deciding; "this moves money" marks a method as high-risk |
 | **Data note** *(optional)* | Facts about the data the code must cope with | Background, and context louis-agent gets indirectly through the expected behaviour |
 | **Expected** | Exceptions that are normal behaviour (a 404, a correctly rejected request) | `AcknowledgeError` — no action |
-| **Auto-fixable** | Exceptions that are bugs an agent may fix — or "nothing" | `CallLouisAgentFix`, then the orchestrator verifies the fix itself |
+| **Decisions** | A table: what the investigation finds, the decision (`auto-fix`, `hand-off` or `person`), and who | `auto-fix` is `CallLouisAgentFix`, then the orchestrator verifies the fix itself; `hand-off` and `person` are `EscalateToHuman` to the row's who |
 | **Expected behaviour for louis-agent** | What *correct* behaviour is, as a business rule with examples | Sent verbatim to louis-agent inside the fix request |
-| **Escalate to** | Which team gets everything else, and when a fix isn't confirmed | `EscalateToHuman` |
+
+The Decisions table is the one place a runbook sets its policy, and the triage team reads the same table: its manager
+applies the row that matches what the investigator found and quotes it in its decision. A hand-off only records that
+the case is another department's; nobody has to deliver it by hand. Whatever no row covers goes to a person.
 
 ## How a runbook is used
 
@@ -82,10 +85,11 @@ orchestrator escalates — a wrongly escalated error costs a person a minute; a 
   request was correctly rejected.
 - `OrderService.OrderNotFoundException` — unknown order id (a 404).
 
-**Auto-fixable:** nothing. Payments code is never changed by an agent.
+**Decisions:** Payments code is never changed by an agent, so nothing here is auto-fixed.
 
-**Escalate to:** payments — every other exception, with the exception type, message and order id, so they can
-check whether the customer was refunded.
+| The investigation finds | Decision | Who |
+|---|---|---|
+| any exception not listed as expected, whatever its cause: send the exception type, message and order id, so they can check whether the customer was refunded | person | payments |
 ```
 
 In the demo run:
@@ -93,7 +97,7 @@ In the demo run:
 | Error | Matches | Decision |
 |---|---|---|
 | `refund 1002` — `InvalidOperationException` "Order 1002 has already been refunded" | Expected | **ignored** |
-| `refund 1005` — `ArgumentOutOfRangeException` (the order has no card reference) | nothing, and nothing is auto-fixable | **escalated** to payments |
+| `refund 1005` — `ArgumentOutOfRangeException` (the order has no card reference) | the table's one row: a person | **escalated** to payments |
 
 The second one is a genuine bug that looks easy to fix. The runbook still says no, so a person checks whether the
 customer got their money before anyone touches payment code.
@@ -112,16 +116,19 @@ orders can carry a code that is no longer in the table.
 **Expected (acknowledge, no action):**
 - `OrderService.OrderNotFoundException` — unknown order id (a 404).
 
-**Auto-fixable:** any other exception — for example a `KeyNotFoundException` for a retired discount code.
+**Decisions:**
+
+| The investigation finds | Decision | Who |
+|---|---|---|
+| a crash in this method's code, its cause certain, e.g. a `KeyNotFoundException` for a retired discount code | auto-fix | the coder |
+| a fix that is not confirmed, or would change the total of an order with a valid code, or a cause that isn't certain | person | orders |
 
 **Expected behaviour for louis-agent:** an unknown or retired discount code gives no discount (the total is the
 subtotal) instead of failing. Totals for orders with `WELCOME10`, `VIP20` or no code must not change.
-
-**Escalate to:** orders — if the fix is not confirmed, or would change the total of an order with a valid code.
 ```
 
-`order-total 1003` threw a `KeyNotFoundException` for the retired code `SUMMER25`. The runbook calls that
-auto-fixable, so the orchestrator sent louis-agent the expected behaviour line word for word. louis-agent changed the
+`order-total 1003` threw a `KeyNotFoundException` for the retired code `SUMMER25`. The table's first row makes that
+an auto-fix, so the orchestrator sent louis-agent the expected behaviour line word for word. louis-agent changed the
 lookup to return the subtotal for unknown codes, added a regression test, and committed on its own branch; the
 orchestrator verified the commit, replayed the request (`200 … 35.00`) and ran the tests before deciding **fixed**.
 
@@ -143,8 +150,12 @@ one initial; louis-agent's fix then took the first letter of *every* word. Addin
 Name exceptions precisely under Expected: the type, and the message when the type alone is too broad
 (`InvalidOperationException` covers far more than duplicate refunds).
 
-Keep risky methods out of Auto-fixable. Anything that moves money, deletes data or talks to another company should
-escalate. Say so in plain words, as `refund.md` does.
+Keep risky methods out of `auto-fix`. Anything that moves money, deletes data or talks to another company should go
+to a person. Say so in plain words above the table, as `refund.md` does.
+
+Write each row as what an investigation finds, not as an exception type alone, since the triage manager matches a row
+against the investigator's report: where the cause is, whose area, and how sure. When a cause belongs to another
+department, give it its own `hand-off` row naming that department, as `get-order.md` does for a missing data file.
 
 Put shared facts in `service.md` (owning teams, deploy policy) and method-specific facts in the method's runbook.
 
@@ -162,11 +173,15 @@ Don't put secrets in a runbook. It is part of a model prompt and is logged in th
 **Expected (acknowledge, no action):**
 - `<Namespace.ExceptionType>` — <why this is normal, e.g. unknown id (a 404)>.
 
-**Auto-fixable:** <which exceptions an agent may fix> — or: nothing. <why>
+**Decisions:** <why nothing is auto-fixed, if nothing is> (optional)
+
+| The investigation finds | Decision | Who |
+|---|---|---|
+| <a crash in this method's code, its cause certain, e.g. …> | auto-fix | the coder |
+| <a cause that is another department's, e.g. a missing data file> | hand-off | <department> |
+| a fix that is not confirmed, or a cause that isn't certain | person | <team> |
 
 **Expected behaviour for louis-agent:** <the correct behaviour as a rule, with examples, and what must not change>
-
-**Escalate to:** <team> — <when: everything else, or a fix that isn't confirmed>.
 ```
 
 ## Adding and changing runbooks

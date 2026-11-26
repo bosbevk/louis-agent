@@ -174,8 +174,8 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="pic-pill-word pic-ink" x="519.7" y="252" text-anchor="middle">yes</text>
       <rect class="pic-pill pic-edge tone-teal" x="166.4" y="374" width="155" height="18" rx="9" />
       <text class="pic-pill-word pic-ink tone-teal" x="243.9" y="386" text-anchor="middle">listed under Expected</text>
-      <rect class="pic-pill pic-edge tone-teal" x="505.2" y="374" width="92" height="18" rx="9" />
-      <text class="pic-pill-word pic-ink tone-teal" x="551.2" y="386" text-anchor="middle">Auto-fixable</text>
+      <rect class="pic-pill pic-edge tone-teal" x="505.2" y="374" width="183" height="18" rx="9" />
+      <text class="pic-pill-word pic-ink tone-teal" x="596.7" y="386" text-anchor="middle">a Decisions row: auto-fix</text>
       <rect class="pic-pill pic-edge tone-teal" x="853" y="374" width="148" height="30" rx="9" />
       <text class="pic-pill-word pic-ink tone-teal" x="927" y="386" text-anchor="middle">anything else, or in</text>
       <text class="pic-pill-word pic-ink tone-teal" x="927" y="398" text-anchor="middle">doubt</text>

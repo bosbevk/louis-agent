@@ -9,9 +9,12 @@ orders can carry a code that is no longer in the table.
 **Expected (acknowledge, no action):**
 - `OrderService.OrderNotFoundException` — unknown order id (a 404).
 
-**Auto-fixable:** any other exception — for example a `KeyNotFoundException` for a retired discount code.
+**Decisions:**
+
+| The investigation finds | Decision | Who |
+|---|---|---|
+| a crash in this method's code, its cause certain, e.g. a `KeyNotFoundException` for a retired discount code | auto-fix | the coder |
+| a fix that is not confirmed, or would change the total of an order with a valid code, or a cause that isn't certain | person | orders |
 
 **Expected behaviour for louis-agent:** an unknown or retired discount code gives no discount (the total is the
 subtotal) instead of failing. Totals for orders with `WELCOME10`, `VIP20` or no code must not change.
-
-**Escalate to:** orders — if the fix is not confirmed, or would change the total of an order with a valid code.

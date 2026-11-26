@@ -8,9 +8,12 @@ percentage from its last two digits, e.g. `WELCOME10` → `WELCOME (10% off)` (`
 **Expected (acknowledge, no action):**
 - `OrderService.OrderNotFoundException` — unknown order id (a 404).
 
-**Auto-fixable:** any other exception, e.g. a `FormatException` for a code that doesn't end in a number.
+**Decisions:**
+
+| The investigation finds | Decision | Who |
+|---|---|---|
+| a crash in this method's code, its cause certain, e.g. a `FormatException` for a code that doesn't end in a number | auto-fix | the coder |
+| a fix that is not confirmed, or a cause that isn't certain | person | orders |
 
 **Expected behaviour for louis-agent:** a code that doesn't end in two digits is shown as-is (`FREESHIP`). Labels
 for percentage codes and "no discount" are unchanged.
-
-**Escalate to:** orders — if the fix is not confirmed.
