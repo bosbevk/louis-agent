@@ -316,8 +316,12 @@ public class AgentEngine
     /// <param name="sessionUsage">
     /// The session's usage records so far, for /usage (F3); null when the host doesn't track usage.
     /// </param>
-    public string? HandleUserCommand(string input, IReadOnlyList<UsageRecord>? sessionUsage = null) =>
-        _commands.Handle(input, sessionUsage);
+    /// <param name="chat">
+    /// The chat the command was typed in, which tells its model what /approve or /reject did.
+    /// </param>
+    public string? HandleUserCommand(string input, IReadOnlyList<UsageRecord>? sessionUsage = null,
+        Conversation? chat = null) =>
+        _commands.Handle(input, sessionUsage, chat);
 
     /// <summary>
     /// What the model is sent must be the same bytes on every machine. Text read from the skill files, and a

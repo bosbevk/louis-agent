@@ -81,7 +81,8 @@ internal sealed class PromptHandler(
         try
         {
             // /tools, /approve, /reject and /usage typed by the user are answered directly, never by the model.
-            if (agent.HandleUserCommand(prompt, agent.RecordsUsage ? session.Usage.Records : null) is { } commandReply)
+            if (agent.HandleUserCommand(prompt, agent.RecordsUsage ? session.Usage.Records : null,
+                    session.Conversation) is { } commandReply)
             {
                 await relay.MessageChunkAsync(sessionId, $"msg_{Guid.NewGuid():N}", commandReply,
                     serverCancellationToken);

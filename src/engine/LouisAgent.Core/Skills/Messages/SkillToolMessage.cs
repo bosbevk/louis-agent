@@ -64,6 +64,16 @@ public enum SkillToolMessage
     [Description("{Skill} didn't run, since the call doesn't fit it: {Problems} Its parameters: {Parameters}")]
     [Holes(typeof(ArgumentsDoNotFitHoles))]
     ArgumentsDoNotFit,
+    [Description(
+        "The person approved {Name}: it is approved for every chat, and this chat can keep using it through UseSkill.")]
+    [Holes(typeof(DraftDecidedHoles))]
+    DraftApprovedNote,
+    [Description("The person rejected {Name}: its draft is deleted, and no chat can use it.")]
+    [Holes(typeof(DraftDecidedHoles))]
+    DraftRejectedNote,
+    [Description("<system-reminder>\n{Notes}\n</system-reminder>\n\n")]
+    [Holes(typeof(SystemReminderHoles))]
+    SystemReminder,
     [Description("No skill this chat may use is called {Name}. The ones it may use: {Available}.")]
     [Holes(typeof(NoSuchSkillForThisChatHoles))]
     NoSuchSkillForThisChat,

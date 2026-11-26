@@ -1,3 +1,7 @@
+using LouisAgent.Composition.Messages;
+using LouisAgent.Core.Messages;
+using LouisAgent.Core.Skills.Messages;
+using LouisAgent.Core.Skills.Messages.Holes.Door;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Core.Agent;
@@ -57,6 +61,29 @@ public sealed class Conversation
 
     /// <summary>Notes a skill this chat drafted; drafting it again changes nothing here.</summary>
     internal void Drafted(string name) => _drafts.Add(name);
+
+    /// <summary>What changed outside the model's view since its last turn, to tell it on the next.</summary>
+    private readonly List<string> _notes = [];
+
+    /// <summary>
+    /// Keeps a note for the model's next turn (F97.1): what the person did outside the chat, such as /approve, which
+    /// the host answers itself.
+    /// </summary>
+    internal void Note(string note) => _notes.Add(note);
+
+    /// <summary>
+    /// The person's words, after a system-reminder of the notes kept since the last turn, as Claude Code tells its
+    /// model what changed outside its view; each note is told once. Appended as part of the new message, so nothing
+    /// already sent changes (ADR 0008).
+    /// </summary>
+    internal string WithNotes(string userInput)
+    {
+        if (_notes.Count == 0) return userInput;
+
+        var notes = new SystemReminderHoles(string.Join('\n', _notes));
+        _notes.Clear();
+        return MessageText.Format(SkillToolMessage.SystemReminder, notes) + userInput;
+    }
 
     /// <summary>The mark of the tools this chat sends; none before its first turn.</summary>
     public ToolsFingerprint? ToolsFingerprint => Tools is null ? null : ToolsFingerprint.Of(Tools);

@@ -7,6 +7,8 @@ using LouisAgent.Core.Pricing.Rates;
 using LouisAgent.Core.Skills.Headers.Agent;
 using LouisAgent.Core.Skills.Headers.Agent.Drafting;
 using LouisAgent.Core.Skills.Headers.Agent.Library;
+using LouisAgent.Core.Skills.Messages;
+using LouisAgent.Core.Skills.Messages.Holes.Door;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Reports;
 
@@ -33,7 +35,11 @@ internal sealed class UserCommands(
     /// The session's usage records so far, for /usage (F3). The host keeps them: the engine serves every session of a
     /// host and doesn't know which one is asking. Null when the host doesn't track usage.
     /// </param>
-    public string? Handle(string input, IReadOnlyList<UsageRecord>? sessionUsage)
+    /// <param name="chat">
+    /// The chat the command was typed in, whose model is told on its next turn what /approve or /reject did (F97.1);
+    /// none when the host doesn't say.
+    /// </param>
+    public string? Handle(string input, IReadOnlyList<UsageRecord>? sessionUsage, Conversation? chat = null)
     {
         string[] parts = (input ?? "").Trim()
             .Split(' ', 2, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
@@ -45,8 +51,10 @@ internal sealed class UserCommands(
         {
             "/skills" => Skills(),
             "/tools" => tools.ListAgentTools() + PendingSkillFileLines() + MessageText.Format(UserText.ToolsHint),
-            "/approve" => library().Approve(argument) ?? Pending(argument, tools.ApproveTool, skills.ApproveSkillFile),
-            "/reject" => library().Reject(argument) ?? Pending(argument, tools.RejectTool, skills.RejectSkillFile),
+            "/approve" => Decided(library().Approve(argument), argument, SkillToolMessage.DraftApprovedNote, chat)
+                          ?? Pending(argument, tools.ApproveTool, skills.ApproveSkillFile),
+            "/reject" => Decided(library().Reject(argument), argument, SkillToolMessage.DraftRejectedNote, chat)
+                         ?? Pending(argument, tools.RejectTool, skills.RejectSkillFile),
             "/usage" => sessionUsage is null
                 ? MessageText.Format(UserText.UsageNotTracked)
                 : UsageText.Summary(sessionUsage, display()),
@@ -66,6 +74,19 @@ internal sealed class UserCommands(
             : drafts.Select(Listed).Prepend(MessageText.Format(UserText.DraftsHeading));
         var approved = new ApprovedSkillsListedHoles(string.Join(", ", library().Approved.Select(s => s.Name)));
         return string.Join('\n', lines.Append(MessageText.Format(UserText.ApprovedSkillsListed, approved)));
+    }
+
+    /// <summary>
+    /// The person's reply to a draft approved or rejected, with a note kept for the chat's model, which never sees the
+    /// command; none when there was no draft by that name.
+    /// </summary>
+    private static string? Decided(string? reply, string name, SkillToolMessage note, Conversation? chat)
+    {
+        if (reply is null) return null;
+
+        var decided = new DraftDecidedHoles(name);
+        chat?.Note(MessageText.Format(note, decided));
+        return reply;
     }
 
     /// <summary>A draft's line: its name, what it does, and its example.</summary>

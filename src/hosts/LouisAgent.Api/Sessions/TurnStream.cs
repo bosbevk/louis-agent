@@ -46,8 +46,8 @@ internal static class TurnStream
             yield return stream.Start();
 
             // /tools, /approve, /reject and /usage are answered directly, never by the model (so they have no usage).
-            if (engine.HandleUserCommand(prompt, engine.RecordsUsage ? session.Usage.Records : null) is
-                { } commandReply)
+            if (engine.HandleUserCommand(prompt, engine.RecordsUsage ? session.Usage.Records : null,
+                    session.Conversation) is { } commandReply)
             {
                 foreach (var item in stream.Text(commandReply)) yield return item;
                 foreach (var item in stream.Stop("end_turn", null)) yield return item;

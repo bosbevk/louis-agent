@@ -245,7 +245,8 @@ internal sealed class TurnRunner(
     /// </summary>
     private ChatOptions Begin(Conversation conversation, string userInput)
     {
-        conversation.Add(new ChatMessage(ChatRole.User, userInput));
+        // The person's words, after anything they did outside the chat that the model hasn't heard of (F97.1).
+        conversation.Add(new ChatMessage(ChatRole.User, conversation.WithNotes(userInput)));
 
         var chatOptions = new ChatOptions { MaxOutputTokens = MaxOutputTokens };
         if (thinking() is { } effort)
