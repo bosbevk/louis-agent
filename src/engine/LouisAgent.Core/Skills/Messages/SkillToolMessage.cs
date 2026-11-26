@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Skills.Messages.Holes.Arguments;
+using LouisAgent.Core.Skills.Messages.Holes.Door;
 using LouisAgent.Core.Skills.Messages.Holes.Drafting;
 using LouisAgent.Core.Skills.Messages.Holes.Library;
 using LouisAgent.Core.Skills.Messages.Holes.Running;
@@ -53,4 +54,17 @@ public enum SkillToolMessage
     [Description("{Skill} is drafted, for this chat only until it is approved. Its example answered: {Answer}")]
     [Holes(typeof(SkillDraftedHoles))]
     SkillDrafted,
+    [Description(
+        "{Name}: {Description}\n\n{Instructions}\n\nIts parameters, a JSON Schema: {Parameters}\n\n" +
+        "The call it was proved with, and its answer: {Example}")]
+    [Holes(typeof(SkillReadHoles))]
+    SkillRead,
+    [Description("No example was kept.")]
+    NoExampleKept,
+    [Description("{Skill} didn't run, since the call doesn't fit it: {Problems} Its parameters: {Parameters}")]
+    [Holes(typeof(ArgumentsDoNotFitHoles))]
+    ArgumentsDoNotFit,
+    [Description("No skill this chat may use is called {Name}. The ones it may use: {Available}.")]
+    [Holes(typeof(NoSuchSkillForThisChatHoles))]
+    NoSuchSkillForThisChat,
 }
