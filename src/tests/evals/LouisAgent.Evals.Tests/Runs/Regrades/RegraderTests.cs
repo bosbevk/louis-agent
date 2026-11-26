@@ -115,6 +115,32 @@ public class RegraderTests
     }
 
     /// <summary>
+    /// An ask that writes {trial} was sent to each repeat with its own id, so the stored answers are kept against the
+    /// file's ask filled for each repeat, and nothing is asked of the judge (FX257).
+    /// </summary>
+    [Test]
+    public async Task AnAskThatWritesTheTrial_IsKept_ForEachRepeatsOwnId()
+    {
+        const string Ask = "Run id: eval-refund-{trial}.";
+        var asked = Enumerable.Range(1, 2).Select(number =>
+            new TurnRun(Said with { Ask = $"Run id: eval-refund-{LiveId}-{number}." },
+                [new Mark("no-error", true, "Told long ago.")], [new Mark(Plainly, true, "It says so.")], 0.001m,
+                "USD")).ToList();
+        var graded = Live(repeats: 2) with
+        {
+            Conversations =
+            [new ConversationRun("guide-what-is", 2, [new RepeatRun(1, [asked[0]]), new RepeatRun(2, [asked[1]])])]
+        };
+        var file = new EvalFile(new AgentAddress("louis-agent-guide", null),
+            [new Conversation("guide-what-is", [new Turn(Ask) { Criteria = [Plainly] }])]);
+
+        var run = await Regrade(graded, file);
+
+        Assert.That(run.Conversations.Select(conversation => conversation.Id), Is.EqualTo(new[] { "guide-what-is" }));
+        Assert.That(_judgeCalls, Is.Zero);
+    }
+
+    /// <summary>
     /// The judge's new answers are recorded under the live run's play, beside its old ones, and a judge replaying
     /// that play then marks both with no model called.
     /// </summary>

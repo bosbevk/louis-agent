@@ -18,4 +18,19 @@ public sealed record RunTrial(string Run, string Conversation, int Repeat, strin
 
     /// <summary>The recorded trial a replay plays back, or none for a live play.</summary>
     public string? Replayed => ReplayOf is null ? null : $"{ReplayOf}/{Task}";
+
+    /// <summary>The mark an ask writes where a case's id should be this trial's own.</summary>
+    public const string TrialMark = "{trial}";
+
+    /// <summary>
+    /// This play's own id, the same for a live play and every replay of it: <c>{run id}-{repeat}</c> of the live run,
+    /// letters, digits and dashes only, so an agent may name a file by it.
+    /// </summary>
+    public string Id => $"{ReplayOf ?? Run}-{Repeat}";
+
+    /// <summary>
+    /// An ask with this play's own id where it writes <see cref="TrialMark"/>, so an agent that keeps a case by its id
+    /// starts every trial from nothing, and a replay sends the words that were recorded (FX257).
+    /// </summary>
+    public string Fill(string ask) => ask.Replace(TrialMark, Id, StringComparison.Ordinal);
 }

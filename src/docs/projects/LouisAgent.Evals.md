@@ -54,6 +54,12 @@ The file names no tools, since an agent brings its own (ADR 0117). A turn may le
 because a follow-up such as "Next." often has only one of them. The whole guide's file, seven conversations, is the
 tests' fixture, `Files/Json/Fixtures/guide.eval.json`.
 
+An ask may write `{trial}` where a case's id goes, as the triage team's do: `Run id: eval-refund-1002-{trial}.` Each
+play fills it with its own id, `{run id}-{repeat}` of the live run (`RunTrial.Fill`), so an agent that keeps a case
+by its id, as the triage team keeps a run's history in a file, starts every repeat of every run from nothing instead
+of reading what an earlier one decided. A replay fills the id of the play it replays, so it sends the words that were
+recorded, and a re-grade compares each repeat against its own filled ask.
+
 The file becomes three records, one inside the other: `EvalFile`, `Conversation` and `Turn`. A fact is a `Fact`, its
 kind and its one argument. Two values are written as text and read straight into their types, each by a small
 converter: the agent into an `AgentAddress`, and a fact's words into a `Fact`. So code past the reader never reads
