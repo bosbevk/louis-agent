@@ -19,6 +19,7 @@ internal static class OwnTools
     /// <param name="skillTools">The skill tools.</param>
     /// <param name="agentBuiltTools">The agent-built tools.</param>
     /// <param name="door">The one door to every skill, <c>UseSkill</c>, listing the approved skills (F97.1).</param>
+    /// <param name="reloadLibrary">Reads the skills folder again, when the skills are reloaded (F97.1).</param>
     /// <param name="options">The engine's settings.</param>
     /// <param name="toolsets">
     /// A session's tool objects; null means an engine with every self-extension tool, whatever
@@ -27,8 +28,8 @@ internal static class OwnTools
     /// <param name="selfExtension">Whether the session has the skills toolset.</param>
     /// <param name="clock">The clock the clock tool reads.</param>
     public static void Register(ToolRegistry registry, SkillTools skillTools, AgentBuiltTools agentBuiltTools,
-        AIFunction door, AgentOptions options, IEnumerable<object>? toolsets, bool selfExtension,
-        TimeProvider? clock = null)
+        AIFunction door, Action reloadLibrary, AgentOptions options, IEnumerable<object>? toolsets,
+        bool selfExtension, TimeProvider? clock = null)
     {
         registry.Add(Function(skillTools.ExecuteSkill, nameof(AgentEngine.ExecuteSkill)));
         // Today's date and time (F22): every session, whatever its toolsets, since a model doesn't know what day it is.
@@ -36,11 +37,11 @@ internal static class OwnTools
         if (toolsets is not null)
         {
             foreach (object toolset in toolsets) registry.AddPublicMethods(toolset);
-            if (selfExtension) AddSelfExtensionTools(registry, skillTools, agentBuiltTools, door);
+            if (selfExtension) AddSelfExtensionTools(registry, skillTools, agentBuiltTools, door, reloadLibrary);
             return;
         }
 
-        AddSelfExtensionTools(registry, skillTools, agentBuiltTools, door);
+        AddSelfExtensionTools(registry, skillTools, agentBuiltTools, door, reloadLibrary);
     }
 
     /// <summary>
@@ -55,11 +56,12 @@ internal static class OwnTools
     /// (F97.1): only a chat whose agent can make and keep skills has them, so no other chat's tools grow.
     /// </summary>
     private static void AddSelfExtensionTools(ToolRegistry registry, SkillTools skillTools,
-        AgentBuiltTools agentBuiltTools, AIFunction door)
+        AgentBuiltTools agentBuiltTools, AIFunction door, Action reloadLibrary)
     {
         registry.Add(door);
         registry.Add(Function(skillTools.CreateSkillFile, nameof(AgentEngine.CreateSkillFile)));
-        registry.Add(Function(skillTools.ReloadSkills, nameof(AgentEngine.ReloadSkills)));
+        registry.Add(new ReloadingLibraryFunction(
+            Function(skillTools.ReloadSkills, nameof(AgentEngine.ReloadSkills)), reloadLibrary));
         registry.Add(Function(agentBuiltTools.CreateTool, nameof(AgentEngine.CreateTool)));
         registry.Add(Function(agentBuiltTools.ListAgentTools, nameof(AgentEngine.ListAgentTools)));
     }

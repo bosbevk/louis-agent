@@ -45,6 +45,51 @@ public class UseSkillTests
         });
     }
 
+    /// <summary>
+    /// F97.1 step 13: a skill dropped in by hand is found after a reload, listed in the next chat, and an open chat's
+    /// door stays as it was sent.
+    /// </summary>
+    [Test]
+    public async Task AReload_ListsADroppedInSkill_InTheNextChat_AndLeavesTheOpenOne()
+    {
+        var model = new FakeChatClient(_ => Say("ok"), _ => Say("ok"), _ => Say("ok"));
+        var engine = Engine(model);
+        var open = engine.StartConversation();
+        await engine.ProcessPromptAsync(open, "hi");
+
+        Skill("line-count");
+        engine.ReloadSkills();
+        await engine.ProcessPromptAsync(open, "again");
+        await engine.ProcessPromptAsync(engine.StartConversation(), "hi");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(model.ToolDescriptionsSent[1]["UseSkill"], Does.Not.Contain("line-count"));
+            Assert.That(model.ToolDescriptionsSent[2]["UseSkill"], Does.Contain("- line-count: Counts words."));
+        });
+    }
+
+    /// <summary>The model's own <c>ReloadSkills</c> reads the skills folder again too.</summary>
+    [Test]
+    public async Task TheModelsReload_ReadsTheSkillsFolderAgain()
+    {
+        var reload = new FunctionCallContent("c1", "ReloadSkills", new Dictionary<string, object?>());
+        var model = new FakeChatClient(
+            _ => Say("ok"),
+            _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, [reload])),
+            _ => Say("reloaded"),
+            _ => Say("ok"));
+        var engine = Engine(model);
+
+        // A first chat reads the skills folder; the skill is dropped in after, so only a reload finds it.
+        await engine.ProcessPromptAsync(engine.StartConversation(), "hi");
+        Skill("line-count");
+        await engine.ProcessPromptAsync(engine.StartConversation(), "reload");
+        await engine.ProcessPromptAsync(engine.StartConversation(), "hi");
+
+        Assert.That(model.ToolDescriptionsSent[3]["UseSkill"], Does.Contain("- line-count: Counts words."));
+    }
+
     /// <summary>The model reads a skill through the door by its name alone.</summary>
     [Test]
     public async Task TheDoor_ReadsASkill_ByItsName() =>

@@ -24,7 +24,8 @@ internal sealed class SkillDoorTools(Func<SkillDoor> door)
     [Description("""
                  Uses one of your skills. Give its name alone to read it: what it does, how to use it, its parameters
                  and the call it was proved with. Give its name and arguments, a JSON object of its parameters, to run
-                 it and get its answer. A skill you made in this chat is yours to use now, before it is approved.
+                 it and get its answer. A skill you made in this chat is yours to use now, before it is approved. A name
+                 you can't use gets the list of every skill you can.
                  The approved skills:
                  """)]
     public string UseSkill(

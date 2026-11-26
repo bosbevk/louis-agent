@@ -209,8 +209,8 @@ public class AgentEngine
         }
 
         var listing = () => SkillListing.LinesFor(_library.Value.Approved);
-        OwnTools.Register(_registry, _skillTools, _agentBuiltTools, OwnTools.Door(doorTools, listing), options,
-            toolsets, selfExtension, clock);
+        OwnTools.Register(_registry, _skillTools, _agentBuiltTools, OwnTools.Door(doorTools, listing),
+            () => _library.Value.Reload(), options, toolsets, selfExtension, clock);
     }
 
     /// <summary>
@@ -288,9 +288,14 @@ public class AgentEngine
         _skillTools.CreateSkillFile(name, markdown, overwrite);
 
     /// <summary>
-    /// Re-reads the skills from disk (the <c>ReloadSkills</c> tool; see <see cref="SkillTools.ReloadSkills"/>).
+    /// Re-reads the skills from disk (the <c>ReloadSkills</c> tool; see <see cref="SkillTools.ReloadSkills"/>), the
+    /// skills folder's too (F97.1), so a skill dropped in by hand is reachable now and listed in the next chat.
     /// </summary>
-    public string ReloadSkills() => _skillTools.ReloadSkills();
+    public string ReloadSkills()
+    {
+        _library.Value.Reload();
+        return _skillTools.ReloadSkills();
+    }
 
     /// <summary>
     /// Builds an agent tool (the <c>CreateTool</c> tool; see <see cref="AgentBuiltTools.CreateTool"/>).

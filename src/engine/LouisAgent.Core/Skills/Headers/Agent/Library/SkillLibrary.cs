@@ -82,6 +82,12 @@ public sealed class SkillLibrary
         return MessageText.Format(UserText.DraftRejected, done);
     }
 
+    /// <summary>
+    /// Reads the approved skills again, for a skill dropped in by hand or changed on disk (F97.1): reachable at once
+    /// through the door, and listed in the next chat.
+    /// </summary>
+    public void Reload() => Approved = SkillsIn(_skillsFolder, SkillState.Approved);
+
     /// <summary>The library of this skills folder; an empty one when the folder isn't there.</summary>
     public static SkillLibrary Read(string skillsFolder) => new(skillsFolder);
 
