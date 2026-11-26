@@ -2,6 +2,7 @@ using LouisAgent.Composition.Logging;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Agent.Commands;
 using LouisAgent.Core.Agent.EngineTools;
+using LouisAgent.Core.Agent.EngineTools.Skills;
 using LouisAgent.Core.Agent.Messages;
 using LouisAgent.Core.Agent.Turns;
 using LouisAgent.Core.Agent.Turns.Pacing;
@@ -12,6 +13,9 @@ using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Pricing.Rates;
 using LouisAgent.Core.Skills;
+using LouisAgent.Core.Skills.Headers.Agent.Door;
+using LouisAgent.Core.Skills.Headers.Agent.Library;
+using LouisAgent.Core.Skills.Headers.Agent.Running;
 using LouisAgent.Composition.Tools.Scripts;
 using LouisAgent.Core.Agent.Turns.Guards;
 using LouisAgent.Core.Usage.Records;
@@ -137,6 +141,12 @@ public class AgentEngine
     /// <summary>The tools the agent wrote itself, approved or waiting.</summary>
     private readonly AgentBuiltTools _agentBuiltTools;
 
+    /// <summary>
+    /// The skills in the skills folder, read when first needed, since the folder is set after the engine is built
+    /// (F97.1).
+    /// </summary>
+    private readonly Lazy<SkillLibrary> _library;
+
     /// <summary>Builds the agent's parts once and registers its tools; a model without tools gets none.</summary>
     /// <param name="toolsets">
     /// Objects whose public methods become the agent's tools (plus <see cref="ExecuteSkill"/>): a session's catalogue
@@ -176,6 +186,11 @@ public class AgentEngine
         _agentBuiltTools = new AgentBuiltTools(_registry, supportsTools, WorkspaceRoot, python, powerShell,
             () => SkillsDirectory, () => ReservedToolNames);
         _commands = new UserCommands(_agentBuiltTools, _skillTools, () => Display);
+        // The one door to every skill (F97.1): the library and the door are made when first used.
+        _library = new Lazy<SkillLibrary>(() => SkillLibrary.Read(SkillsDirectory ?? ""));
+        var skillRunner = SkillRunner.For(python, powerShell, new BashRunner(WorkspaceRoot));
+        var door = new Lazy<SkillDoor>(() => new SkillDoor(_library.Value, skillRunner));
+        var doorTools = new SkillDoorTools(() => door.Value);
 
         RecordsUsage = usageSink is not null;
         _guards = new ToolCallGuards(_registry,
@@ -193,7 +208,9 @@ public class AgentEngine
             return;
         }
 
-        OwnTools.Register(_registry, _skillTools, _agentBuiltTools, options, toolsets, selfExtension, clock);
+        var listing = () => SkillListing.LinesFor(_library.Value.Approved);
+        OwnTools.Register(_registry, _skillTools, _agentBuiltTools, OwnTools.Door(doorTools, listing), options,
+            toolsets, selfExtension, clock);
     }
 
     /// <summary>

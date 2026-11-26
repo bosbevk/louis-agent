@@ -21,10 +21,11 @@ internal sealed class TurnTools : IDisposable
     /// <summary>The scope that was current before this one opened, put back when it closes.</summary>
     private readonly TurnTools? _outer;
 
-    /// <summary>A scope over the conversation's tools, inside whatever scope was current.</summary>
-    private TurnTools(IReadOnlyList<AITool> tools, TurnTools? outer)
+    /// <summary>A scope over the conversation's tools and drafts, inside whatever scope was current.</summary>
+    private TurnTools(IReadOnlyList<AITool> tools, IReadOnlySet<string> drafts, TurnTools? outer)
     {
         Tools = tools;
+        Drafts = drafts;
         _outer = outer;
     }
 
@@ -34,10 +35,18 @@ internal sealed class TurnTools : IDisposable
     /// <summary>The tools the turn's conversation sends.</summary>
     public IReadOnlyList<AITool> Tools { get; }
 
-    /// <summary>Opens the turn's scope over its conversation's tools; dispose it when the turn ends.</summary>
-    public static TurnTools Begin(IReadOnlyList<AITool> tools)
+    /// <summary>
+    /// The names of the skills the turn's conversation drafted (F97.1), so the skill door, which has only a tool
+    /// call's arguments, finds this chat's drafts and no other's.
+    /// </summary>
+    public IReadOnlySet<string> Drafts { get; }
+
+    /// <summary>
+    /// Opens the turn's scope over its conversation's tools and drafts; dispose it when the turn ends.
+    /// </summary>
+    public static TurnTools Begin(IReadOnlyList<AITool> tools, IReadOnlySet<string> drafts)
     {
-        var scope = new TurnTools(tools, Current);
+        var scope = new TurnTools(tools, drafts, Current);
         CurrentScope.Value = scope;
         return scope;
     }

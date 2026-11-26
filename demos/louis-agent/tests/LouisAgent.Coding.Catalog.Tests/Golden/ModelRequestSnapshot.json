@@ -1959,6 +1959,26 @@
       }
     },
     {
+      "Name": "UseSkill",
+      "Description": "Uses one of your skills. Give its name alone to read it: what it does, how to use it, its parameters\nand the call it was proved with. Give its name and arguments, a JSON object of its parameters, to run\nit and get its answer. A skill you made in this chat is yours to use now, before it is approved.\nThe approved skills:\nNo skills are approved yet.",
+      "Schema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "The skill's name, as listed, or as you made it in this chat.",
+            "type": "string"
+          },
+          "arguments": {
+            "description": "A JSON object of the skill's parameters, to run it; leave it out to read the skill.",
+            "default": null
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    },
+    {
       "Name": "VerifyQuote",
       "Description": "Checks that the exact words a price (or any fact) came from are on the page itself: fetches the page\nwith FetchUrl's address rules and looks for the quote with spacing and case ignored. With product, the\nquote must stand right after the product's name, no other price between; a quote that is only a price\nneeds it. Answers 'Found', 'Not found' or 'Not found with the product' (treat the value as\nunconfirmed), 'Page empty' (a JavaScript page that couldn't be read) or an error with its reason. No\nmodel reads the page, so a check costs nothing but the fetch. Use it on every quote a lookup agent\nreturns before you use its value.",
       "Schema": {
