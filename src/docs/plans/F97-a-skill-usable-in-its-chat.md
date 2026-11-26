@@ -247,9 +247,20 @@ and the coding agent starts with 100; Voyager keeps a skill only after a check c
 name, F97.3 now brings Anthropic's tool search (`defer_loading`) to the agent's built-in tools, a hundred of them on the
 coding agent, since the research says selection improves when tools load on demand; a paid proof on Haiku 5.5 comes
 first, as before. Louis's pick, over dropping it and over parking it in the TODO. And he approved the amendment of
-ADR 0033 in these words, written in F97.1's step 18: "What the agent makes is a skill: a `skills/{name}/` folder with a
+ADR 0033 in these words, written in F97.1's step 19: "What the agent makes is a skill: a `skills/{name}/` folder with a
 `SKILL.md` in the Agent Skills shape, a `parameters.schema.json` and its script, which reads its arguments as JSON on
 stdin. `CreateSkill` keeps a draft only once its example call has run; a draft waits in `skills/drafts/` and only the
 chat that made it may use it; `/approve` moves it up for every chat, `/reject` deletes it. A chat reaches every skill
 through `UseSkill`, always in its tool list, whose description lists the approved skills; with a name alone it reads a
 skill. The chat is told of an approval or rejection on its next message."
+
+**2026-11-26, a toolset's guide is a built-in skill.** Louis, of core's flat `toolsets/agents.md` and
+`toolsets/self-extension.md`: "this should work the same, why is this hanging here?", then "these are just built in
+skills", and "research against the standards". In Agent Skills a skill is always a folder with a `SKILL.md`, and when it
+loads is decided by whoever uses it: a Claude Code subagent's `skills:` field preloads the skills it names at startup
+([Claude Code](https://code.claude.com/docs/en/skills.md), [issue #32910](https://github.com/anthropics/claude-code/issues/32910)),
+as an identity's skill says `metadata.load` here (ADR 0114). So core and every pack keep their built-in skills in
+`skills/{name}/SKILL.md`, the shape of every other skill, and a toolset names the skill it always loads. The `skills`
+toolset's guide, misnamed `self-extension`, is named for its toolset, and the agent's `write-a-skill` is one more of
+core's built-in skills. His pick, over `toolsets/{toolset}/SKILL.md` and over only fixing the name. The fourteen
+guides move in F97.1; the text the model reads doesn't change.

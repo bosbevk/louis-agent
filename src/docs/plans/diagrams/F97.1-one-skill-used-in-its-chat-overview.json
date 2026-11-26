@@ -6,15 +6,15 @@
       { "cards": [
         { "id": "goal", "icon": "info", "title": "Make a skill, use it at once", "code": "CreateSkill · UseSkill",
           "look": "highlight",
-          "text": "The agent's tools and skills become one kind of skill, a chat uses the one it made straight away, and the next chat lists it by name." }
+          "text": "The agent's tools and skills become one kind of skill, a chat uses the one it made straight away through UseSkill, and the next chat's UseSkill lists it." }
       ] },
       { "cards": [
         { "id": "shape", "icon": "folder", "title": "One shape", "code": "SKILL.md · parameters.schema.json",
-          "text": "Steps 1 to 7: the skill read from its folder, its arguments checked, run with JSON on stdin, approved ones listed by name." },
+          "text": "Steps 1 to 7: the skill read from its folder, its arguments checked, run with JSON on stdin, approved ones listed in the door." },
         { "id": "door", "icon": "exchange", "title": "Draft and door", "code": "skills/drafts/",
           "text": "Steps 8 to 13: CreateSkill drafts it, UseSkill runs it, /approve and /reject, and a note so the model knows." },
         { "id": "close", "icon": "checks", "title": "Old gone, docs, proof", "code": "write-a-skill",
-          "text": "Steps 14 to 20: the old types gone, the agent's write-a-skill, the prompts, ADR 0033, the walk-through." }
+          "text": "Steps 14 to 21: the old types gone, the guides as built-in skills, the agent's write-a-skill, ADR 0033, the walk-through." }
       ] }
     ],
     "links": [
