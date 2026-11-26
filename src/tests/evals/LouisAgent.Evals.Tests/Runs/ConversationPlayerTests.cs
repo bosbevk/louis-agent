@@ -215,6 +215,18 @@ public class ConversationPlayerTests
     /// F126.3.4, step 8's finding: the judge's calls are recorded under the play's run and task, as the agent's are,
     /// so the ledger ties what judging a run cost to that run.
     /// </summary>
+    /// <summary>An ask that writes {trial} is sent with the trial's own id in its place (FX257).</summary>
+    [Test]
+    public async Task AnAskThatWritesTheTrial_IsSentWithItsId()
+    {
+        var api = new FakeSessionsApi(Answered("Looked into it."));
+        var oneCase = new Conversation("triage-refund", [new Turn("Run id: eval-refund-{trial}.")]);
+
+        await Player(api, Met()).PlayAsync(Guide, oneCase, Trial);
+
+        Assert.That(api.Asked(), Is.EqualTo(new[] { "Run id: eval-refund-20261123-043012-guide-1." }));
+    }
+
     [Test]
     public async Task TheJudgesCalls_AreRecordedUnderThePlaysRunAndTask()
     {
@@ -319,4 +331,24 @@ public class ConversationPlayerTests
     private static ChatResponse Judged(bool met) =>
         new(new ChatMessage(ChatRole.Assistant,
             $$"""{"reason":"Read the answer.","met":{{(met ? "true" : "false")}}}"""));
+
+    /// <summary>A live play fills an ask's {trial} with its run's id and its repeat (FX257).</summary>
+    [Test]
+    public void ALivePlay_FillsItsOwnId() =>
+        Assert.That(new RunTrial("20261126-211755-triage", "triage-refund", 2).Fill("Run id: eval-refund-{trial}."),
+            Is.EqualTo("Run id: eval-refund-20261126-211755-triage-2."));
+
+    /// <summary>A replay fills the id of the live play it replays, so it sends the words that were recorded.</summary>
+    [Test]
+    public void AReplay_FillsTheIdOfThePlayItReplays() =>
+        Assert.That(
+            new RunTrial("20261127-080000-triage", "triage-refund", 2, "20261126-211755-triage")
+                .Fill("Run id: eval-refund-{trial}."),
+            Is.EqualTo("Run id: eval-refund-20261126-211755-triage-2."));
+
+    /// <summary>An ask that writes no mark is sent as it is written.</summary>
+    [Test]
+    public void AnAskWithNoMark_IsSentAsWritten() =>
+        Assert.That(new RunTrial("20261126-211755-guide", "guide-what-is", 1).Fill("What is louis-agent?"),
+            Is.EqualTo("What is louis-agent?"));
 }

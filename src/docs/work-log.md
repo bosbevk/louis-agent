@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 168 | 74 |
-| Fixes (`FX`) | 245 | 3 |
+| Fixes (`FX`) | 246 | 3 |
 | Cleanups (`CL`) | 49 | 25 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -298,10 +298,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (245 done)
+## Fixes (246 done)
 
 | Id | When | What |
 |---|---|---|
+| FX257 | 2026-11-27 | Every runbook sets its policy in one Decisions table the orchestrator and the triage manager both read; the manager applies the row, quotes it, and knows a hand-off needs no address; every eval trial starts with its own run (`{trial}`) |
 | FX255 | 2026-11-26 | A site visitor's chat sends `/tools`, `/approve`, `/reject` and `/usage` to the model as words; only the operator's chats run them |
 | FX256 | 2026-11-26 | A chat read back after a restart counts on from its newest kept turn's number, every store refuses a number it already keeps, and a turn that can't be kept is logged and never leaves the chat busy |
 | FX254 | 2026-11-26 | Every description the model is sent, a parameter's too, has LF line endings whatever the checkout, through one `ToolFunctionOptions`; the guide's and framework's replays re-recorded |

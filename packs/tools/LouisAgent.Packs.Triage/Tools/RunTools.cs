@@ -3,6 +3,8 @@ using System.Globalization;
 using LouisAgent.Choices;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Packs.Triage.Messages;
+using LouisAgent.Packs.Triage.Messages.Holes.Cases;
+using LouisAgent.Packs.Triage.Messages.Holes.Runs;
 using LouisAgent.Packs.Triage.Runs;
 using LouisAgent.Packs.Triage.Runs.Steps;
 
@@ -19,7 +21,11 @@ namespace LouisAgent.Packs.Triage.Tools;
 /// that works); a department's own endpoint is a later setting.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0080-a-tool-when-it-improves-the-prompt.md">ADR 0080: a tool when it improves the prompt</seealso>
-public sealed class RunTools(ITriageRecorder recorder, string peopleFolder, TimeProvider time)
+public sealed class RunTools(
+    ITriageRecorder recorder,
+    string peopleFolder,
+    TimeProvider time,
+    Func<bool>? inATrial = null)
 {
     /// <summary>A run's steps, one line each, so the reader can say what happened and why.</summary>
     [Description(
@@ -29,20 +35,16 @@ public sealed class RunTools(ITriageRecorder recorder, string peopleFolder, Time
         [Description("The run id.")] string runId,
         CancellationToken cancellationToken = default)
     {
-        if (!PlainId.Is(runId)) return MessageText.Format(TriageToolMessage.BadRunId, new { RunId = runId });
-        var run = await recorder.ReadAsync(runId, cancellationToken);
-        if (run is null) return MessageText.Format(TriageToolMessage.NoSuchRun, new { RunId = runId });
+        var badId = new BadRunIdHoles(runId);
+        if (!PlainId.Is(runId)) return MessageText.Format(TriageToolMessage.BadRunId, badId);
+        var noSuchRun = new NoSuchRunHoles(runId);
+        if (await RunOfAsync(runId, cancellationToken) is not { } run)
+            return MessageText.Format(TriageToolMessage.NoSuchRun, noSuchRun);
 
-        string ended = run.Outcome is { } outcome
-            ? MessageText.Format(TriageToolMessage.RunEnded, new { Outcome = outcome.Wire() })
-            : "";
-        return MessageText.Format(TriageToolMessage.RunRead, new
-        {
-            RunId = runId,
-            Count = run.Steps.Count,
-            Ended = ended,
-            Steps = string.Join('\n', run.Steps.Select(Line))
-        });
+        var endedAs = run.Outcome is { } outcome ? new RunEndedHoles(outcome.Wire()) : null;
+        string ended = endedAs is null ? "" : MessageText.Format(TriageToolMessage.RunEnded, endedAs);
+        var read = new RunReadHoles(runId, run.Steps.Count, ended, string.Join('\n', run.Steps.Select(Line)));
+        return MessageText.Format(TriageToolMessage.RunRead, read);
     }
 
     /// <summary>Gives a case to a person: the case as a file where people read, and a step that says so.</summary>
@@ -50,15 +52,21 @@ public sealed class RunTools(ITriageRecorder recorder, string peopleFolder, Time
         "Raises a case to a person instead of fixing it: when the investigator isn't sure, when the fix would touch " +
         "money or data, or when no rule allows an automatic fix. Say what the case is and why a person is needed.")]
     public async Task<string> RaiseToPerson(
-        [Description("The run id you were given.")] string runId,
-        [Description("What the case is, in a sentence or two.")] string summary,
-        [Description("Why a person is needed, in a sentence.")] string why,
+        [Description("The run id you were given.")]
+        string runId,
+        [Description("What the case is, in a sentence or two.")]
+        string summary,
+        [Description("Why a person is needed, in a sentence.")]
+        string why,
         CancellationToken cancellationToken = default)
     {
-        if (!PlainId.Is(runId)) return MessageText.Format(TriageToolMessage.BadRunId, new { RunId = runId });
-        if (string.IsNullOrWhiteSpace(why)) return MessageText.Format(TriageToolMessage.NoReason, new { What = "case" });
-        var run = await recorder.ReadAsync(runId, cancellationToken);
-        if (run is null) return MessageText.Format(TriageToolMessage.NoSuchRun, new { RunId = runId });
+        var badId = new BadRunIdHoles(runId);
+        if (!PlainId.Is(runId)) return MessageText.Format(TriageToolMessage.BadRunId, badId);
+        var noReason = new NoReasonHoles("case");
+        if (string.IsNullOrWhiteSpace(why)) return MessageText.Format(TriageToolMessage.NoReason, noReason);
+        var noSuchRun = new NoSuchRunHoles(runId);
+        if (await RunOfAsync(runId, cancellationToken) is not { } run)
+            return MessageText.Format(TriageToolMessage.NoSuchRun, noSuchRun);
 
         // The case where people read: the summary, the reason, and the run so far, so nobody has to find the run file.
         Directory.CreateDirectory(peopleFolder);
@@ -66,24 +74,33 @@ public sealed class RunTools(ITriageRecorder recorder, string peopleFolder, Time
         var now = time.GetUtcNow();
         string lines = string.Join('\n', run.Steps.Select(step => "- " + Line(step)));
         await File.WriteAllTextAsync(path,
-            $"# Case {runId}\n\nRaised {now:yyyy-MM-ddTHH:mm:ssZ}.\n\n{summary.Trim()}\n\n**Why a person:** {why.Trim()}\n\n## The run so far\n\n{lines}\n",
+            $"# Case {runId}\n\nRaised {now:yyyy-MM-ddTHH:mm:ssZ}.\n\n{summary.Trim()}\n\n" +
+            $"**Why a person:** {why.Trim()}\n\n## The run so far\n\n{lines}\n",
             cancellationToken);
 
         var step = new TriageStep(runId, run.Steps.Count + 1, TriageAgent.Manager, TriageStepKind.Raised,
             $"The manager raised the case to a person: {summary.Trim()}", why.Trim(), now);
         await recorder.SaveAsync(step, cancellationToken);
-        return MessageText.Format(TriageToolMessage.Raised, new { RunId = runId, Path = path, step.Number });
+        var raised = new RaisedHoles(runId, path, step.Number);
+        return MessageText.Format(TriageToolMessage.Raised, raised);
+    }
+
+    /// <summary>
+    /// The run by its id. In an eval's trial a run the recorder doesn't know yet is new and empty, as it is for a
+    /// role's tool (Louis's pick A, FX257); outside one it is none, so a mistyped id makes no stray run.
+    /// </summary>
+    private async Task<TriageRun?> RunOfAsync(string runId, CancellationToken cancellationToken)
+    {
+        var run = await recorder.ReadAsync(runId, cancellationToken);
+        if (run is null && inATrial?.Invoke() == true) return TriageRun.Of(runId, []);
+        return run;
     }
 
     /// <summary>One step as a line a person reads.</summary>
-    private static string Line(TriageStep step) =>
-        MessageText.Format(TriageToolMessage.StepLine, new
-        {
-            step.Number,
-            Agent = step.Agent.Wire(),
-            Kind = step.Kind.Wire(),
-            At = step.At.ToString("HH:mm:ss", CultureInfo.InvariantCulture),
-            step.Summary,
-            step.Why
-        }).TrimEnd();
+    private static string Line(TriageStep step)
+    {
+        var line = new StepLineHoles(step.Number, step.Agent.Wire(), step.Kind.Wire(),
+            step.At.ToString("HH:mm:ss", CultureInfo.InvariantCulture), step.Summary, step.Why);
+        return MessageText.Format(TriageToolMessage.StepLine, line).TrimEnd();
+    }
 }

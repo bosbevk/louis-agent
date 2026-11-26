@@ -6,9 +6,12 @@
 **Expected (acknowledge, no action):**
 - `OrderService.OrderNotFoundException` — unknown order id (a 404).
 
-**Auto-fixable:** any other exception, e.g. a `DivideByZeroException` for an order without items.
+**Decisions:**
+
+| The investigation finds | Decision | Who |
+|---|---|---|
+| a crash in this method's code, its cause certain, e.g. a `DivideByZeroException` for an order without items | auto-fix | the coder |
+| a fix that is not confirmed, or a cause that isn't certain | person | orders |
 
 **Expected behaviour for louis-agent:** an order without items has nothing to ship and costs 0.00. The rules above
 are unchanged for every other order.
-
-**Escalate to:** orders — if the fix is not confirmed.

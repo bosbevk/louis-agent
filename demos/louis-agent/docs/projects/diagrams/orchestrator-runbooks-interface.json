@@ -21,9 +21,9 @@
         "tone": "amber",
         "members": [
           "What it does, Data note?",
-          "Expected, Auto-fixable",
-          "Expected behaviour for louis-agent",
-          "Escalate to"
+          "Expected",
+          "Decisions: finding -> decision -> who",
+          "Expected behaviour for louis-agent"
         ]
       },
       {
@@ -52,8 +52,8 @@
         "kind": "what a runbook's sections lead to",
         "members": [
           "+AcknowledgeError: Expected",
-          "+CallLouisAgentFix: Auto-fixable",
-          "+EscalateToHuman: Escalate to"
+          "+CallLouisAgentFix: a Decisions row's auto-fix",
+          "+EscalateToHuman: a row's hand-off or person, to its who"
         ]
       }
     ],

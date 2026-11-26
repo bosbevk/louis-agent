@@ -9,9 +9,12 @@
 **Expected (acknowledge, no action):**
 - `OrderService.OrderNotFoundException` — unknown order id (a 404).
 
-**Auto-fixable:** any other exception, e.g. a `FormatException` on a `created` value with a time.
+**Decisions:**
+
+| The investigation finds | Decision | Who |
+|---|---|---|
+| a crash in this method's code, its cause certain, e.g. a `FormatException` on a `created` value with a time | auto-fix | the coder |
+| a fix that is not confirmed, or a cause that isn't certain | person | orders |
 
 **Expected behaviour for louis-agent:** both forms of `created` are accepted, and the month comes from the date part
 (`2026-10-02T14:05:00Z` gives `INV-202610-1007`). Numbers for date-only orders are unchanged.
-
-**Escalate to:** orders — if the fix is not confirmed.
