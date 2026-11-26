@@ -8,6 +8,7 @@ using LouisAgent.Core.Agent.Toolsets;
 using System.Reflection;
 using LouisAgent.Core.Agent.EngineTools.Clock;
 using LouisAgent.Core.Agent.EngineTools.Skills;
+using LouisAgent.Core.Agent.Tools;
 using LouisAgent.Core.Prompting;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.FileProviders;

@@ -2,7 +2,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.AI;
 
-namespace LouisAgent.Core.Agent;
+namespace LouisAgent.Core.Agent.Tools;
 
 /// <summary>
 /// A short mark of a tool list: each tool's name, description and schema, in order, hashed. Two lists with the same

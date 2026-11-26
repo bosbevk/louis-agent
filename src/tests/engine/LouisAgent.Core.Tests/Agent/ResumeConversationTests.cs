@@ -1,4 +1,5 @@
 using LouisAgent.Core.Agent;
+using LouisAgent.Core.Agent.Tools;
 using LouisAgent.Core.Llm.Thinking;
 using LouisAgent.Core.Prompting.Providers;
 using Microsoft.Extensions.AI;

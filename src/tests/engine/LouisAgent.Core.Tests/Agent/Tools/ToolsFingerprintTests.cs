@@ -1,7 +1,8 @@
 using LouisAgent.Core.Agent;
+using LouisAgent.Core.Agent.Tools;
 using Microsoft.Extensions.AI;
 
-namespace LouisAgent.Core.Tests.Agent;
+namespace LouisAgent.Core.Tests.Agent.Tools;
 
 /// <summary>
 /// A tool list's mark is the same for the same tools, and changes with anything the model reads of them: a name, a

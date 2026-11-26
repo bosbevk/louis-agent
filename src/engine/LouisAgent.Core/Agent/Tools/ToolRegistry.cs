@@ -12,7 +12,7 @@ using LouisAgent.Core.Agent.Messages.Holes.Toolsets;
 using LouisAgent.Core.Agent.Replay;
 using LouisAgent.Core.Sessions.Replay.Store;
 
-namespace LouisAgent.Core.Agent;
+namespace LouisAgent.Core.Agent.Tools;
 
 /// <summary>
 /// The agent's tools, kept in name order (ordinal), so the tool list, and with it the start of every request, is the

@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Text.Json.Nodes;
 using Microsoft.Extensions.AI;
 
-namespace LouisAgent.Core.Agent;
+namespace LouisAgent.Core.Agent.Tools;
 
 /// <summary>
 /// How a tool method is described to the model: its name, its <c>[Description]</c> and every parameter's, each with

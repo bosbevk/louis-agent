@@ -1,4 +1,5 @@
 using LouisAgent.Core.Agent;
+using LouisAgent.Core.Agent.Tools;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Testing;

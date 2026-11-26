@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using LouisAgent.Core.Agent.Messages;
 using LouisAgent.Core.Agent.Messages.Holes;
+using LouisAgent.Core.Agent.Tools;
 using LouisAgent.Core.Llm.Providers;
 using LouisAgent.Core.Llm.Thinking;
 using LouisAgent.Core.Logging;

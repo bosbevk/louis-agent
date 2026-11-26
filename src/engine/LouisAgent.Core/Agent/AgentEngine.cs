@@ -13,6 +13,7 @@ using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Pricing.Rates;
 using LouisAgent.Composition.Tools.Scripts;
+using LouisAgent.Core.Agent.Tools;
 using LouisAgent.Core.Agent.Turns.Guards;
 using LouisAgent.Core.Prompting;
 using LouisAgent.Core.Prompting.Headers.Agent.Door;

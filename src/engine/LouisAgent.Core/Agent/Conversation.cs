@@ -1,4 +1,5 @@
 using LouisAgent.Composition.Messages;
+using LouisAgent.Core.Agent.Tools;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Prompting.Messages;
 using LouisAgent.Core.Prompting.Messages.Holes.Door;

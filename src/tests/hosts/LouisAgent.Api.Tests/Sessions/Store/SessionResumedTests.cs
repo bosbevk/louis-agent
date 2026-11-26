@@ -7,6 +7,7 @@ using LouisAgent.Api.Sessions.Opening;
 using LouisAgent.Api.Sessions.Store;
 using LouisAgent.Core.Agent;
 using LouisAgent.Choices;
+using LouisAgent.Core.Agent.Tools;
 using LouisAgent.SessionStream.Wire.Replies;
 using LouisAgent.SessionStream.Wire.Requests;
 using Microsoft.AspNetCore.Builder;

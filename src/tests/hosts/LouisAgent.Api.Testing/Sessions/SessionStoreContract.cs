@@ -1,6 +1,7 @@
 using LouisAgent.Api.Sessions.Opening;
 using LouisAgent.Api.Sessions.Store;
 using LouisAgent.Core.Agent;
+using LouisAgent.Core.Agent.Tools;
 using LouisAgent.Core.Sessions;
 using Microsoft.Extensions.AI;
 

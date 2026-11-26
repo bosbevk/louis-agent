@@ -1,6 +1,7 @@
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Agent.EngineTools.Clock;
 using LouisAgent.Core.Agent.EngineTools.Skills;
+using LouisAgent.Core.Agent.Tools;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Core.Agent.EngineTools;

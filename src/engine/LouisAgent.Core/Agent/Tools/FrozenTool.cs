@@ -4,7 +4,7 @@ using LouisAgent.Core.Agent.Messages;
 using LouisAgent.Core.Agent.Messages.Holes.Frozen;
 using Microsoft.Extensions.AI;
 
-namespace LouisAgent.Core.Agent;
+namespace LouisAgent.Core.Agent.Tools;
 
 /// <summary>
 /// A tool as a conversation was first sent it: its name, description and schema stay as they were, whatever happens to

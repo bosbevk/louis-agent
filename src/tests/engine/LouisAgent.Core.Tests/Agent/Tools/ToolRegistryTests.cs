@@ -1,7 +1,8 @@
 using LouisAgent.Core.Agent;
+using LouisAgent.Core.Agent.Tools;
 using Microsoft.Extensions.AI;
 
-namespace LouisAgent.Core.Tests.Agent;
+namespace LouisAgent.Core.Tests.Agent.Tools;
 
 // The tool list on its own: name order, unique names, discovered tools. ToolOrderTests checks it through the engine.
 public class ToolRegistryTests

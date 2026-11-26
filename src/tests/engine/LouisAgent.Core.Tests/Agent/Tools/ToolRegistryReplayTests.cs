@@ -1,9 +1,10 @@
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Agent.Replay;
+using LouisAgent.Core.Agent.Tools;
 using LouisAgent.Testing.Replay;
 using Microsoft.Extensions.AI;
 
-namespace LouisAgent.Core.Tests.Agent;
+namespace LouisAgent.Core.Tests.Agent.Tools;
 
 /// <summary>
 /// A registry that keeps recordings (FX235) holds each tool recorded around, and still takes one out by the tool it

@@ -1,7 +1,8 @@
 using LouisAgent.Core.Agent;
+using LouisAgent.Core.Agent.Tools;
 using Microsoft.Extensions.AI;
 
-namespace LouisAgent.Core.Tests.Agent;
+namespace LouisAgent.Core.Tests.Agent.Tools;
 
 /// <summary>Trims a tool list down to the one tool a lookup agent may call (F30).</summary>
 public class ToolRegistryKeepOnlyTests

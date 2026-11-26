@@ -7,6 +7,7 @@ using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Agent.Messages;
 using LouisAgent.Core.Agent.Messages.Holes.Calls;
 using LouisAgent.Core.Agent.Messages.Holes.Summaries;
+using LouisAgent.Core.Agent.Tools;
 using LouisAgent.Core.Llm.Providers;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Usage.Records;
