@@ -36,6 +36,7 @@ public static class Facts
     public static Mark Tell(Fact fact, TurnTranscript turn, IReadOnlyList<TurnTranscript> earlier) => fact.Kind switch
     {
         FactKind.NoError => NoError(fact, turn),
+        FactKind.HasWords => HasWords(fact, turn),
         FactKind.Used => Used(fact, turn, called: true),
         FactKind.NotUsed => Used(fact, turn, called: false),
         FactKind.Under => Under(fact, turn),
@@ -52,6 +53,16 @@ public static class Facts
 
         var ended = new EndedWithErrorHoles(turn.Error);
         return new Mark(fact.ToString(), false, MessageText.Format(FactMessage.EndedWithError, ended));
+    }
+
+    /// <summary>
+    /// Met when the answer holds words the person reads; an answer of only tool calls, such as a card alone, doesn't.
+    /// </summary>
+    private static Mark HasWords(Fact fact, TurnTranscript turn)
+    {
+        bool said = !string.IsNullOrWhiteSpace(turn.Answer);
+        var seen = said ? FactMessage.AnswerHasWords : FactMessage.AnswerHasNoWords;
+        return new Mark(fact.ToString(), said, MessageText.Format(seen));
     }
 
     /// <summary>

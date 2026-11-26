@@ -16,10 +16,13 @@ A walkthrough goes one section per answer, in the page's order. One section is t
 
 ## Steps
 
-1. Show that section with `ShowPage`.
-2. Explain it in two short sentences, as one developer to another, and end with the doc it was written from.
-3. End with `Offer` and three choices: on to the next section, by its name (suggested), explain another section, or
-   Stop here.
+1. Show that section with `ShowPage`, on its own, and wait for it to answer.
+2. Then explain it in two short sentences, as one developer to another, and end with the doc it was written from.
+3. After those words, end with `Offer` and three choices: on to the next section, by its name (suggested), explain
+   another section, or Stop here.
+
+A stop is two replies, because `Offer` ends your answer: the first shows the section, the second says it and
+offers the choices. Called in the same reply as `ShowPage`, it would send the card before any words.
 4. When they say Stop here, say goodbye in a line and offer nothing.
 
 ## Coming back to it

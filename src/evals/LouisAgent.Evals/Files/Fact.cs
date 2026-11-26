@@ -13,7 +13,7 @@ namespace LouisAgent.Evals.Files;
 /// </summary>
 /// <remarks>
 /// Parsed once (ADR 0024), so code past the reader asks the kind and never reads the words again. The first word is
-/// one of the seven by its wire name only, so "notused" is refused rather than read as a member's C# name.
+/// a kind by its wire name only, so "notused" is refused rather than read as a member's C# name.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0134-an-eval-is-one-file-of-conversations.md">ADR 0134: an eval is one file of conversations</seealso>
@@ -37,7 +37,7 @@ public sealed record Fact(FactKind Kind, string Argument)
 
         return kind.Value switch
         {
-            FactKind.NoError => NoError(text, rest),
+            FactKind.NoError or FactKind.HasWords => TakesNothing(kind.Value, text, rest),
             FactKind.Used or FactKind.NotUsed => Tool(kind.Value, text, rest),
             FactKind.Under => Under(text, rest),
             FactKind.NeverSays => NeverSays(text, rest),
@@ -48,7 +48,7 @@ public sealed record Fact(FactKind Kind, string Argument)
     /// <summary>The fact as the file writes it.</summary>
     public override string ToString() => Kind switch
     {
-        FactKind.NoError => Kind.Wire(),
+        FactKind.NoError or FactKind.HasWords => Kind.Wire(),
         FactKind.Under => $"{Kind.Wire()} {Argument}{SecondsMark}",
         _ => $"{Kind.Wire()} {Argument}"
     };
@@ -58,15 +58,15 @@ public sealed record Fact(FactKind Kind, string Argument)
         Enum.GetValues<FactKind>().Cast<FactKind?>().FirstOrDefault(kind =>
             string.Equals(kind!.Value.Wire(), first, StringComparison.OrdinalIgnoreCase));
 
-    /// <summary>The seven first words, read from the enum, for a refusal.</summary>
+    /// <summary>Every kind's first word, read from the enum, for a refusal.</summary>
     private static string Kinds() => string.Join(", ", SettingChoice.Names<FactKind>());
 
-    /// <summary><c>no-error</c> takes nothing after it.</summary>
-    private static Fact NoError(string text, string rest)
+    /// <summary><c>no-error</c> and <c>has-words</c> take nothing after them.</summary>
+    private static Fact TakesNothing(FactKind kind, string text, string rest)
     {
-        var takesNothing = new FactTakesNothingHoles(text, FactKind.NoError.Wire());
+        var takesNothing = new FactTakesNothingHoles(text, kind.Wire());
         if (rest.Length > 0) throw Refused(EvalFileMessage.FactTakesNothing, takesNothing);
-        return new Fact(FactKind.NoError, "");
+        return new Fact(kind, "");
     }
 
     /// <summary><c>used</c> and <c>not-used</c> name one tool, one word.</summary>

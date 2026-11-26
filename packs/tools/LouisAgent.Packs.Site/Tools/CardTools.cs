@@ -24,19 +24,21 @@ namespace LouisAgent.Packs.Site.Tools;
 public sealed class CardTools
 {
     /// <summary>Shows the visitor a read-only card, a ticket, drawn from its parts.</summary>
-    [Description(
-        "Shows the visitor a read-only card in the chat, such as a booking request or an order, drawn from its " +
-        "parts: a small topic, a title, rows of facts with an icon each, and an optional subtitle, status and " +
-        "note. The visitor can't change it; to ask them something, offer choices after it. Then say one line, " +
-        "not the card again.")]
+    [Description("""
+                 Shows the visitor a read-only card in the chat, such as a booking request or an order, drawn from its
+                 parts: a small topic, a title, rows of facts with an icon each, and an optional subtitle, status and
+                 note. The visitor can't change it; to ask them something, offer choices after it. Then say one line,
+                 not the card again.
+                 """)]
     public string ShowCard(
         [Description("A few words in capitals over the title, such as BOOKING REQUEST.")]
         string topic,
         [Description("The card's headline, such as The garden room.")]
         string title,
-        [Description(
-            "One to six facts, each an icon by name (calendar, clock, users, user, paw, home, phone, mail, tag, " +
-            "info…), what the fact is (Dates) and what it says (Fri 14 to Sun 16 Nov).")]
+        [Description("""
+                     One to six facts, each an icon by name (calendar, clock, users, user, paw, home, phone, mail, tag,
+                     info…), what the fact is (Dates) and what it says (Fri 14 to Sun 16 Nov).
+                     """)]
         IReadOnlyList<CardRow> rows,
         [Description("A line under the title, such as the business and its town.")]
         string? subtitle = null,
@@ -56,20 +58,24 @@ public sealed class CardTools
     /// turn, so the agent waits for the pick instead of running on (FX138).
     /// </summary>
     [EndsTurn]
-    [Description(
-        "Offers the visitor two to four choices as cards under your words, when they must decide something: try " +
-        "a demo, book or not, which plan. Their click comes back as their next message, in the label's words, and " +
-        "they may type their own answer instead. Never act on a choice before it comes back.")]
+    [Description("""
+                 Offers the visitor two to four choices as cards under your words, when they must decide something:
+                 try a demo, book or not, which plan. Their click comes back as their next message, in the label's
+                 words, and they may type their own answer instead. Never act on a choice before it comes back.
+                 It ends your answer the moment it is called, so call it last, after your words in the same reply. A
+                 reply with no words before it sends the visitor a card and nothing else.
+                 """)]
     public string Offer(
         [Description("What the choices answer, as a short question, such as Shall I send it to the guesthouse?")]
         string question,
-        [Description(
-            "Two to four choices: a label of up to 40 characters, a button's words as the visitor would say " +
-            "them, such as Book it; an optional why of one line under it; suggested true on the one you " +
-            "recommend, at most one; and writes, a kind (Name, Phone, Email, Text or LongText), on a choice that " +
-            "is their own words. That choice holds a box they write in and send from the card, so its label asks " +
-            "them, in your voice, such as Tell me about your business, and its why says what you will do with " +
-            "what they write: never a choice that only says to type.")]
+        [Description("""
+                     Two to four choices: a label of up to 40 characters, a button's words as the visitor would say
+                     them, such as Book it; an optional why of one line under it; suggested true on the one you
+                     recommend, at most one; and writes, a kind (Name, Phone, Email, Text or LongText), on a choice that
+                     is their own words. That choice holds a box they write in and send from the card,
+                     so its label asks them, in your voice, such as Tell me about your business, and its why says what
+                     you will do with what they write: never a choice that only says to type.
+                     """)]
         IReadOnlyList<OfferChoice> choices)
     {
         if (OfferCheck.Problem(question, choices) is not { } problem)
@@ -86,10 +92,11 @@ public sealed class CardTools
     /// Shows the visitor a receipt once something went on their behalf: what happened, and what comes next. Each site
     /// draws it in its own look.
     /// </summary>
-    [Description(
-        "Shows the visitor a receipt in the chat once something went on their behalf, such as a request passed on: a " +
-        "short title saying what happened and one line on what comes next. Call it only after it really went; the " +
-        "card the visitor filled in already shows the details, so never repeat them here.")]
+    [Description("""
+                 Shows the visitor a receipt in the chat once something went on their behalf, such as a request passed
+                 on: a short title saying what happened and one line on what comes next. Call it only after it really
+                 went; the card the visitor filled in already shows the details, so never repeat them here.
+                 """)]
     public string ShowReceipt(
         [Description("What happened, up to 40 characters, such as Sent to the owner.")]
         string title,
@@ -107,16 +114,19 @@ public sealed class CardTools
     /// their message. Asking ends the turn, as offering does, so the agent waits for the answer.
     /// </summary>
     [EndsTurn]
-    [Description(
-        "Asks the visitor with a form under your words, whenever you need them to write something: their name and " +
-        "how to reach them, or a job told in their own words. They fill it in and send it, and it comes back as " +
-        "their next message, each field by its label. Never offer a choice that only says to type; ask with this.")]
+    [Description("""
+                 Asks the visitor with a form under your words, whenever you need them to write something: their name
+                 and how to reach them, or a job told in their own words. They fill it in and send it, and it comes back
+                 as their next message, each field by its label. Never offer a choice that only says to type; ask with
+                 this. It ends your answer the moment it is called, so call it last, after your words in the same reply.
+                 """)]
     public string AskFor(
         [Description("What the form asks for, as a short question, such as Who shall I put the request under?")]
         string question,
-        [Description(
-            "One to four fields: a label of up to 30 characters, the words over its box such as Phone or email; " +
-            "and its kind: Name, Phone, Email, Text for one line, or LongText for a box that grows.")]
+        [Description("""
+                     One to four fields: a label of up to 30 characters, the words over its box such as Phone or email;
+                     and its kind: Name, Phone, Email, Text for one line, or LongText for a box that grows.
+                     """)]
         IReadOnlyList<FormField> fields)
     {
         if (FormCheck.Problem(question, fields) is not { } problem)
