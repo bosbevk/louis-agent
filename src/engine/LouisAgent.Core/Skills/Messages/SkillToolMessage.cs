@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Skills.Messages.Holes.Arguments;
+using LouisAgent.Core.Skills.Messages.Holes.Library;
 using LouisAgent.Core.Skills.Messages.Holes.Running;
 
 namespace LouisAgent.Core.Skills.Messages;
@@ -29,4 +30,9 @@ public enum SkillToolMessage
     [Description("{Skill} ran and printed nothing.")]
     [Holes(typeof(SkillRanNoOutputHoles))]
     SkillRanNoOutput,
+    [Description("- {Name}: {Description}")]
+    [Holes(typeof(SkillListedHoles))]
+    SkillListed,
+    [Description("No skills are approved yet.")]
+    NoSkillsApproved,
 }
