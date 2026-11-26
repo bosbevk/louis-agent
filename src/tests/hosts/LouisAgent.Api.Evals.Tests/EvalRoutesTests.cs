@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
+using LouisAgent.Api.Evals.Tests.Fakes;
 using LouisAgent.Evals.Contracts.Api;
 using LouisAgent.Evals.Contracts.Runs;
 using LouisAgent.Evals.Contracts.Runs.Json;
@@ -144,24 +145,30 @@ public class EvalRoutesTests
 
     /// <summary>
     /// A run cut by the host's shutdown is left in its file as it was, still running, so it reads as cut off: only a
-    /// person's stop is kept as stopped.
+    /// person's stop is kept as stopped. Nothing writes it after the host has gone (FX251: once, a write after the
+    /// shutdown raced the folder's clean-up on Linux).
     /// </summary>
     [Test]
     public async Task ARunCutByTheHostsShutdown_IsLeftAsItWas()
     {
-        using var held = new ManualResetEventSlim();
+        // The run reaches a model that is still thinking when its host shuts down.
+        var thinking = new ThinkingModel();
         await using var keeper = await StartAsync(Answering("Hello."));
-        var shuttingDown = await StartAsync(Waiting(held), sameFoldersAs: keeper);
+        var shuttingDown = await StartAsync(thinking, sameFoldersAs: keeper);
         using var started = await shuttingDown.StartRunAsync();
-        await Task.Delay(200);
+        await thinking.Asked.WaitAsync(TimeSpan.FromSeconds(10));
 
+        // The host goes, and a moment later the run's file is read: a late write would have landed by then.
         await shuttingDown.DisposeAsync();
-        held.Set();
+        await Task.Delay(LateWriteWindow);
 
         string id = started.Headers.Location!.ToString()[EvalHandlers.RunAddress.Length..];
         string file = await File.ReadAllTextAsync(Path.Combine(keeper.RunsFolder, id + ".json"));
         Assert.That(file, Does.Contain("\"status\": \"running\"").Or.Contain("\"status\":\"running\""));
     }
+
+    /// <summary>How long a test waits after a host has gone for a write that shouldn't come.</summary>
+    private static readonly TimeSpan LateWriteWindow = TimeSpan.FromMilliseconds(500);
 
     /// <summary>A model that waits for the test before it answers, so a run stays going.</summary>
     private static FakeChatClient Waiting(ManualResetEventSlim held) => new(Enumerable.Repeat<Func<IList<ChatMessage>,

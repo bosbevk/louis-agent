@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 168 | 74 |
-| Fixes (`FX`) | 240 | 3 |
+| Fixes (`FX`) | 241 | 3 |
 | Cleanups (`CL`) | 49 | 25 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -298,10 +298,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (240 done)
+## Fixes (241 done)
 
 | Id | When | What |
 |---|---|---|
+| FX251 | 2026-11-26 | The eval test host stops before it disposes, so a run cut by its shutdown is left as it was and no late write races the folders' clean-up; a model that gives up when its call is cancelled |
 | FX4 | 2026-11-25 | A chat keeps the tools and the system prompt it started with: a Conversation freezes them, frozen tools keep what they were sent and a rejected one never runs, the round limit's final request reads them from TurnTools, a resume sends its saved prompt and handles stale thinking per provider (stripped, or Anthropic's drop_block, proved live); five tidies and CL61 on the way |
 | FX250 | 2026-11-25 | The framework's site keeps its chats too, in the same database as louis-agent.dev's, and its Comparison page no longer says that is planned |
 | FX249 | 2026-11-25 | The sites moved to an environment on no network, in a group of their own, so no load balancer or public IP is billed (about R370 a month) |
