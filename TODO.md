@@ -82,6 +82,7 @@ known limitations below are facts about today, not tasks.
 | FX59 | binary attachments sent as files, not text | Later | [feature doc](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F22-role-tools.md) |
 | FX60 | a continued specialist's ledger rows name the turn that continued it | Later | [feature doc](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F26-specialist-follow-up.md) |
 | FX61 | A site whose host has no `ACCOUNTS_SQL_URL` still calls `/account/me` and `/account/providers`, gets `index.html` back and dies on the JSON (the starter's login and chat pages show Blazor's error bar); the client should take a host without accounts as "nobody signed in" (found in CL58) | Fixes | — |
+| FX252 | The coding agent's chat page lost its Stop button during a ten-minute turn (587 s, two builds) and took messages the server refused as "still answering" (409); cause not proved | Next, after F97.1 | — |
 | F90 | WhatsApp as a host | Later | — |
 | F92 | Voice: the person talks, our API turns it into text behind the chat's seam, the text lands in the box to check (Louis's pick B, 2026-11-11) | Later | [draft](src/docs/plans/F92-voice-input.md) |
 | F45 | Knowledge and retrieval | Later | — |
