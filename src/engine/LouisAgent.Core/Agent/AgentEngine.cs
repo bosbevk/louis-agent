@@ -197,6 +197,14 @@ public class AgentEngine
     }
 
     /// <summary>
+    /// Starts a builder for an agent: its skills, its model and its settings are given here, and each other part is a
+    /// fluent call on <see cref="AgentEngineBuilder"/>. Prefer it to the constructor, which it calls with the defaults.
+    /// </summary>
+    public static AgentEngineBuilder CreateBuilder(ISkillProvider skillProvider, IChatClient chatClient,
+        AgentOptions options) =>
+        new(skillProvider, chatClient, options);
+
+    /// <summary>
     /// Keeps the one tool named and drops every other, for a lookup agent's one task (F30; see
     /// <see cref="ToolRegistry.KeepOnly"/>).
     /// </summary>
