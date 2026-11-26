@@ -1298,6 +1298,10 @@ first link, right after the topic. Letting the row break between its tiles, and 
 chain short enough to fit, so the heading stays on page one. It was found by measuring where each part landed in a
 real browser, not by reading the rules. Skill 18 (testing and shipping: what a visitor sees is checked by seeing it).
 
+## FX251 · A test host shuts down the way a real one does
+
+A test that cut a run by shutting its host down passed on this PC and failed on CI now and then with "Directory not empty". The host was only disposed, never stopped, and a dispose doesn't stop the hosted services. So the run went on, met the disposed server, saved itself as could-not-finish, and that late write sometimes landed while the other host was deleting the folder. The test had passed only because it read the file before the write came. The cure was to shut down as a real host does, stopping first, with a model that gives up when its call is cancelled, so the test now proves what the code claims: a cut run is left as it was, and nothing writes after the host has gone. The lesson is that a flaky test is a test proving the wrong thing, and the way to find out what is a throwaway look at what changed after the moment it should have stopped. Skill 18 (testing and shipping: a test that passes by timing proves nothing).
+
 ## FX250 · A feature that lands in one host is still missing in the other
 
 F43.1 gave sessions a store, and the plan named only louis-agent.dev to use it. The framework's site runs the same API, so it went on losing its chats on a restart, and its own Comparison page went on calling durable sessions planned, a claim about the framework the framework had just made untrue. Sharing one database was the cheap fix, since a session's id is a GUID neither site can repeat, and the free tier allows one cluster. The lesson is the search F43.1's close missed: when a feature changes what the framework can do, read every page that describes the framework, not only the site the plan was for. Skill 9 (sessions and state) and 18 (testing and shipping: a claim held to the code by a test).

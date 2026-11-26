@@ -111,9 +111,15 @@ internal sealed class EvalsTestHost : IAsyncDisposable
     public async Task<EvalRun> RunAtAsync(Uri location) =>
         (await Client.GetFromJsonAsync<EvalRun>(location, RunJson.Options))!;
 
-    /// <summary>The server goes, and the folders with it when this host made them.</summary>
+    /// <summary>
+    /// The server shuts down as a real host does, stopping first so a run going is cut off and has ended before
+    /// anything is let go; then the folders go with it when this host made them.
+    /// </summary>
     public async ValueTask DisposeAsync()
     {
+        // FX251: a dispose alone never stops the hosted services, so a cut run went on, met the disposed server and
+        // saved itself as failed, sometimes while the folders were being deleted.
+        await _app.StopAsync();
         await _app.DisposeAsync();
         if (!_ownsFolders) return;
 
