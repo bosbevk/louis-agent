@@ -46,7 +46,9 @@ internal static class TurnStream
             yield return stream.Start();
 
             // /tools, /approve, /reject and /usage are answered directly, never by the model (so they have no usage).
-            if (engine.HandleUserCommand(prompt, engine.RecordsUsage ? session.Usage.Records : null) is
+            // They are the operator's: a site visitor's chat sends them to the model as words (FX255).
+            if (!session.FromAVisitor &&
+                engine.HandleUserCommand(prompt, engine.RecordsUsage ? session.Usage.Records : null) is
                 { } commandReply)
             {
                 foreach (var item in stream.Text(commandReply)) yield return item;
