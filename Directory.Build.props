@@ -7,8 +7,8 @@
     <Authors>Louis Marais</Authors>
     <Company>Louis Marais</Company>
     <Copyright>Copyright (c) Louis Marais</Copyright>
-    <!-- The framework's licence by its SPDX name, so GitHub and NuGet show it (ADR 0127). -->
-    <PackageLicenseExpression>PolyForm-Noncommercial-1.0.0</PackageLicenseExpression>
+    <!-- The framework's licence by its SPDX name, so GitHub and NuGet show it (ADR 0135). -->
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://framework.louis-agent.dev</PackageProjectUrl>
     <RepositoryUrl>https://github.com/bosbevk/louis-agent</RepositoryUrl>
     <RepositoryType>git</RepositoryType>

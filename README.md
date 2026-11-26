@@ -189,10 +189,11 @@ All the docs, in reading order, are in **[src/docs/README.md](src/docs/README.md
 
 ## Licence
 
-**Free for noncommercial use**, under the [PolyForm Noncommercial License 1.0.0](LICENSE), since 2026-11-19. Anyone may
-use, change and share the framework for a noncommercial purpose: personal projects, study, research, and charities,
-schools and public bodies. Commercial use needs a licence from the copyright holder first; open an issue to ask. It is
-source-available, not open source, since open source allows commercial use. Versions released before keep the licence
-they were released with: MIT, the AGPL-3.0, or all rights reserved. Why:
-[ADR 0127](src/docs/adr/0127-licence-polyform-noncommercial.md). The parts others wrote keep their own licences:
+**Open source, under the [MIT License](LICENSE)**, since 2026-11-25. Anyone may use, change, share and sell the
+framework, for any purpose and commercial use included, as long as the copyright notice and the licence go with it.
+Versions released before keep the licence they were released with: MIT, the AGPL-3.0, all rights reserved, or, from
+2026-11-19, the PolyForm Noncommercial License 1.0.0, which the 0.1.0 packages carry. Why:
+[ADR 0135](src/docs/adr/0135-licence-mit.md). The parts others wrote keep their own licences:
 [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+
+<!-- Disclaimer: FUCK EVERYONE! -->

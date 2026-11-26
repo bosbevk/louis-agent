@@ -26,7 +26,7 @@ We publish the framework as NuGet packages, one tag each.
 
 - **The packages** are the projects a product built on the framework reaches: 31 today. A project is a package only
   when its project file says `IsPackable`; `Directory.Build.props` makes every other project none, and `PackagesTests`
-  holds the list. Every package carries the licence by its SPDX name (ADR 0127) and Source Link.
+  holds the list. Every package carries the licence by its SPDX name (ADR 0135) and Source Link.
 - **They live on GitHub Packages** while the framework is at `0.x`, and move to nuget.org at the first stable `1.0`,
   with the licence as a file in the package there.
 - **Each package has its own version**, read by MinVer from a tag of the package's own name: `LouisAgent.Core-0.2.0`.
@@ -59,9 +59,9 @@ We publish the framework as NuGet packages, one tag each.
 
 - F166.2, the framework as packages; [Publish the framework](../guides/publish-the-framework.md)
 - [ADR 0129](0129-a-project-is-named-for-its-namespace.md), a project is named for its namespace
-- [ADR 0127](0127-licence-polyform-noncommercial.md), the licence
+- [ADR 0135](0135-licence-mit.md), the licence
 - MinVer: <https://github.com/adamralph/minver> · OpenTelemetry .NET contrib's releasing:
   <https://github.com/open-telemetry/opentelemetry-dotnet-contrib/blob/main/build/RELEASING.md>
 
 ---
-[Docs index](../README.md) · [ADRs](README.md) · Related: [0129](0129-a-project-is-named-for-its-namespace.md) · [0127](0127-licence-polyform-noncommercial.md)
+[Docs index](../README.md) · [ADRs](README.md) · Related: [0129](0129-a-project-is-named-for-its-namespace.md) · [0135](0135-licence-mit.md)

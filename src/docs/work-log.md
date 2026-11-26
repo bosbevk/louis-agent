@@ -14,7 +14,7 @@
 |---|---|---|
 | Features (`F`) | 168 | 74 |
 | Fixes (`FX`) | 240 | 3 |
-| Cleanups (`CL`) | 48 | 25 |
+| Cleanups (`CL`) | 49 | 25 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
@@ -543,10 +543,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | FX2 | 2026-10-10 | The usage probe says which model to pull on an Ollama 404 |
 | FX1 | 2026-10-10 | Keep the tools on the request after the 10-round limit |
 
-## Cleanups (48 done)
+## Cleanups (49 done)
 
 | Id | When | What |
 |---|---|---|
+| CL73 | 2026-11-25 | Every licence of the framework's to MIT (ADR 0135 supersedes 0127): LICENSE, the packages' SPDX name, the README, the notices, the guide's voice; earlier versions keep theirs |
 | CL61 | 2026-11-25 | Agent/Turns split, inside FX4 (Louis's pick): the guards in Guards/, the oversized-result summary its own class (Extract Class), their holes named records, the turn ended through TurnEnding.Ends |
 | CL69 | 2026-11-22 | The old words left in code: specialist and minion leave everything outside the evals (Louis's pick A), held by OldWordsTests, a ratchet that ended empty; the web texts' 48 holes records, a long tool description as a raw string, C# on LF everywhere |
 | CL70 | 2026-11-22 | A session opens in steps: AgentSessions.Create takes one SessionRequest record (Introduce Parameter Object) and hands it to SessionOpening, a method object whose steps run in order, with LookupChecks beside it; the eleven refusals' holes records (Louis's pick A, over a builder and a chain of checks) |
