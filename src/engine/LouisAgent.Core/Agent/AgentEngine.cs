@@ -185,9 +185,9 @@ public class AgentEngine
         _skillTools = new SkillTools(skillProvider, options, WorkspaceRoot, python, powerShell);
         _agentBuiltTools = new AgentBuiltTools(_registry, supportsTools, WorkspaceRoot, python, powerShell,
             () => SkillsDirectory, () => ReservedToolNames);
-        _commands = new UserCommands(_agentBuiltTools, _skillTools, () => Display);
         // The one door to every skill (F97.1): the library and the door are made when first used.
         _library = new Lazy<SkillLibrary>(() => SkillLibrary.Read(SkillsDirectory ?? ""));
+        _commands = new UserCommands(_agentBuiltTools, _skillTools, () => _library.Value, () => Display);
         var skillRunner = SkillRunner.For(python, powerShell, new BashRunner(WorkspaceRoot));
         var door = new Lazy<SkillDoor>(() => new SkillDoor(_library.Value, skillRunner));
         var doorTools = new SkillDoorTools(() => door.Value);

@@ -2,6 +2,7 @@ using System.Text.Json;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Skills.Headers.Agent.Arguments;
+using LouisAgent.Core.Skills.Headers.Agent.Drafting;
 using LouisAgent.Core.Skills.Headers.Agent.Library;
 using LouisAgent.Core.Skills.Headers.Agent.Running;
 using LouisAgent.Core.Skills.Messages;
@@ -56,12 +57,9 @@ public sealed class SkillDoor(SkillLibrary library, SkillRunner runner)
     /// <summary>The skill as the model reads it.</summary>
     private static string Read(Skill skill)
     {
-        string example = Path.Combine(skill.Folder, SkillFiles.ExampleFile);
         var read = new SkillReadHoles(skill.Name, skill.Description, skill.Instructions.Trim(),
             skill.Parameters.Schema.GetRawText(),
-            File.Exists(example)
-                ? File.ReadAllText(example).Trim()
-                : MessageText.Format(SkillToolMessage.NoExampleKept));
+            SkillExample.TextOf(skill) ?? MessageText.Format(SkillToolMessage.NoExampleKept));
         return MessageText.Format(SkillToolMessage.SkillRead, read);
     }
 

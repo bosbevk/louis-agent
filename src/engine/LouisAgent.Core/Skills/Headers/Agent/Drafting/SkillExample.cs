@@ -13,4 +13,11 @@ public sealed record SkillExample(JsonElement Arguments, string Answer)
 {
     /// <summary>How the file is written: indented for a person, its keys as JSON's own camel case.</summary>
     public static readonly JsonSerializerOptions Options = new(JsonSerializerDefaults.Web) { WriteIndented = true };
+
+    /// <summary>The example kept beside a skill, as its file holds it; none when none was kept.</summary>
+    public static string? TextOf(Skill skill)
+    {
+        string path = Path.Combine(skill.Folder, SkillFiles.ExampleFile);
+        return File.Exists(path) ? File.ReadAllText(path).Trim() : null;
+    }
 }

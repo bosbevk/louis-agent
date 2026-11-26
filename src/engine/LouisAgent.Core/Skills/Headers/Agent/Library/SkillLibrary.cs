@@ -2,6 +2,9 @@ using LouisAgent.Composition.Logging;
 using LouisAgent.Composition.Prompts;
 using LouisAgent.Choices;
 using LouisAgent.Core.Logging;
+using LouisAgent.Core.Messages;
+using LouisAgent.Core.Messages.Holes.Drafts;
+using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Skills.Headers.Agent.Reading;
 using LouisAgent.Core.Skills.Messages;
 using LouisAgent.Core.Skills.Messages.Holes.Library;
@@ -22,14 +25,14 @@ public sealed class SkillLibrary
 
     private readonly string _skillsFolder;
 
-    private SkillLibrary(string skillsFolder, IReadOnlyList<Skill> approved)
+    private SkillLibrary(string skillsFolder)
     {
         _skillsFolder = skillsFolder;
-        Approved = approved;
+        Approved = SkillsIn(skillsFolder, SkillState.Approved);
     }
 
-    /// <summary>The approved skills, by name.</summary>
-    public IReadOnlyList<Skill> Approved { get; }
+    /// <summary>The approved skills, by name; read again when one is approved.</summary>
+    public IReadOnlyList<Skill> Approved { get; private set; }
 
     /// <summary>
     /// The skill a chat may use by this name (F97.1): an approved one, or a draft only when the chat made it, read
@@ -46,27 +49,65 @@ public sealed class SkillLibrary
         return Directory.Exists(draft) ? SkillReader.Read(draft, SkillState.Drafted) : null;
     }
 
-    /// <summary>The library of this skills folder; an empty one when the folder isn't there.</summary>
-    public static SkillLibrary Read(string skillsFolder)
-    {
-        if (!Directory.Exists(skillsFolder)) return new SkillLibrary(skillsFolder, []);
+    /// <summary>The drafts waiting in the skills folder, by name, for <c>/skills</c>.</summary>
+    public IReadOnlyList<Skill> Drafts =>
+        SkillsIn(Path.Combine(_skillsFolder, SkillFiles.DraftsFolder), SkillState.Drafted);
 
-        var approved = Directory.EnumerateDirectories(skillsFolder)
-            .Where(folder => Path.GetFileName(folder) != SkillFiles.DraftsFolder)
-            .Where(folder => File.Exists(Path.Combine(folder, PromptFileName.Skill.Wire())))
-            .Order(StringComparer.Ordinal)
-            .Select(ReadOrLeaveOut)
-            .OfType<Skill>()
-            .ToList();
-        return new SkillLibrary(skillsFolder, approved);
+    /// <summary>
+    /// Approves a draft (F97.1): its folder moves up a level, replacing an approved skill of its name, so it is
+    /// approved at once, for every chat; none when there is no draft by this name.
+    /// </summary>
+    public string? Approve(string name)
+    {
+        string draft = Path.Combine(_skillsFolder, SkillFiles.DraftSkill(name));
+        if (!Directory.Exists(draft)) return null;
+
+        string approved = Path.Combine(_skillsFolder, SkillFiles.ApprovedSkill(name));
+        if (Directory.Exists(approved)) Directory.Delete(approved, recursive: true);
+        Directory.Move(draft, approved);
+        Approved = SkillsIn(_skillsFolder, SkillState.Approved);
+
+        var done = new DraftApprovedHoles(name);
+        return MessageText.Format(UserText.DraftApproved, done);
     }
 
-    /// <summary>The approved skill in this folder, or none when it won't read, its reason logged.</summary>
-    private static Skill? ReadOrLeaveOut(string folder)
+    /// <summary>Rejects a draft: its folder is deleted; none when there is no draft by this name.</summary>
+    public string? Reject(string name)
+    {
+        string draft = Path.Combine(_skillsFolder, SkillFiles.DraftSkill(name));
+        if (!Directory.Exists(draft)) return null;
+
+        Directory.Delete(draft, recursive: true);
+        var done = new DraftRejectedHoles(name);
+        return MessageText.Format(UserText.DraftRejected, done);
+    }
+
+    /// <summary>The library of this skills folder; an empty one when the folder isn't there.</summary>
+    public static SkillLibrary Read(string skillsFolder) => new(skillsFolder);
+
+    /// <summary>
+    /// The skills in a folder, by name: every folder holding a <c>SKILL.md</c>, the drafts folder left out; a skill
+    /// that won't read is logged and left out.
+    /// </summary>
+    private static IReadOnlyList<Skill> SkillsIn(string folder, SkillState state)
+    {
+        if (!Directory.Exists(folder)) return [];
+
+        return Directory.EnumerateDirectories(folder)
+            .Where(skill => Path.GetFileName(skill) != SkillFiles.DraftsFolder)
+            .Where(skill => File.Exists(Path.Combine(skill, PromptFileName.Skill.Wire())))
+            .Order(StringComparer.Ordinal)
+            .Select(skill => ReadOrLeaveOut(skill, state))
+            .OfType<Skill>()
+            .ToList();
+    }
+
+    /// <summary>The skill in this folder, or none when it won't read, its reason logged.</summary>
+    private static Skill? ReadOrLeaveOut(string folder, SkillState state)
     {
         try
         {
-            return SkillReader.Read(folder, SkillState.Approved);
+            return SkillReader.Read(folder, state);
         }
         catch (SkillRefusedException refused)
         {

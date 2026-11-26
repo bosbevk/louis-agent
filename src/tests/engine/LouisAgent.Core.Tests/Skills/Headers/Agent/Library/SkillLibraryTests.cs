@@ -58,6 +58,40 @@ public class SkillLibraryTests
         });
     }
 
+    /// <summary>
+    /// F97.1 step 11: approving a draft moves its folder up, so it is approved at once, for every chat; rejecting one
+    /// deletes it; a name with no draft is left to the old commands.
+    /// </summary>
+    [Test]
+    public void Approving_MovesTheDraftUp_AndRejecting_DeletesIt()
+    {
+        Skill(Path.Combine("drafts", "line-count"));
+        Skill(Path.Combine("drafts", "char-count"));
+        var library = SkillLibrary.Read(_skills);
+
+        string? approved = library.Approve("line-count");
+        string? rejected = library.Reject("char-count");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(approved, Does.Contain("line-count"));
+            Assert.That(rejected, Does.Contain("char-count"));
+            Assert.That(library.Approved.Select(s => s.Name), Is.EqualTo(new[] { "line-count" }));
+            Assert.That(Directory.Exists(Path.Combine(_skills, "drafts", "line-count")), Is.False);
+            Assert.That(Directory.Exists(Path.Combine(_skills, "drafts", "char-count")), Is.False);
+            Assert.That((library.Approve("none"), library.Reject("none")), Is.EqualTo(((string?)null, (string?)null)));
+        });
+    }
+
+    /// <summary>The drafts waiting on disk, each with its example, for <c>/skills</c>.</summary>
+    [Test]
+    public void TheDrafts_AreTheOnesWaiting()
+    {
+        Skill(Path.Combine("drafts", "line-count"));
+
+        Assert.That(SkillLibrary.Read(_skills).Drafts.Select(s => s.Name), Is.EqualTo(new[] { "line-count" }));
+    }
+
     /// <summary>A skills folder that isn't there has no skills.</summary>
     [Test]
     public void NoSkillsFolder_HasNoSkills() =>

@@ -1,5 +1,6 @@
 using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Messages.Holes.Approvals;
+using LouisAgent.Core.Messages.Holes.Drafts;
 using LouisAgent.Core.Messages.Holes.SkillFiles;
 using LouisAgent.Core.Messages.Holes.UsageFigures;
 using LouisAgent.Core.Messages.Holes.UsageLines;
@@ -134,4 +135,27 @@ public enum UserText
 
     [Description("Usage isn't tracked in this session.")]
     UsageNotTracked,
+
+    [Description(
+        "Approved {Name}: this chat can use it now through UseSkill, and every chat from the next lists it.")]
+    [Holes(typeof(DraftApprovedHoles))]
+    DraftApproved,
+
+    [Description("Rejected {Name}: its draft is deleted, and no chat can use it.")]
+    [Holes(typeof(DraftRejectedHoles))]
+    DraftRejected,
+
+    [Description("Drafts waiting for /approve or /reject:")]
+    DraftsHeading,
+
+    [Description("- {Name}: {Description} Proved with: {Example}")]
+    [Holes(typeof(DraftListedHoles))]
+    DraftListed,
+
+    [Description("No drafts are waiting.")]
+    NoDraftsWaiting,
+
+    [Description("Approved skills: {Names}.")]
+    [Holes(typeof(ApprovedSkillsListedHoles))]
+    ApprovedSkillsListed,
 }
