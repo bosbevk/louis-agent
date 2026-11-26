@@ -351,6 +351,41 @@
       }
     },
     {
+      "Name": "CreateSkill",
+      "Description": "Makes a skill you can use at once in this chat through UseSkill, and every chat once the person\napproves it. A skill is a folder: its SKILL.md, a JSON Schema of its parameters, and one script that\nreads its arguments as a JSON object from stdin and prints its answer. It is kept only if the example\ncall runs cleanly; otherwise nothing is kept and the answer says what to fix.",
+      "Schema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "The skill's name: lowercase letters, digits and hyphens, such as word-count.",
+            "type": "string"
+          },
+          "skillFile": {
+            "description": "The SKILL.md: YAML front matter with name (the skill's name), description (what it does, then\nwhen to use it) and metadata.script (its script's path, such as scripts/count.py, a .py, .ps1\nor .sh file), then a body saying how to use it.",
+            "type": "string"
+          },
+          "parameters": {
+            "description": "The parameters, a JSON Schema object: type object, each parameter under properties with its type\nand description, and the ones a call must give under required.",
+            "type": "string"
+          },
+          "script": {
+            "description": "The script, written to the path metadata.script names.",
+            "type": "string"
+          },
+          "example": {
+            "description": "One example call's arguments, a JSON object of the parameters, run to prove the skill."
+          }
+        },
+        "required": [
+          "name",
+          "skillFile",
+          "parameters",
+          "script",
+          "example"
+        ]
+      }
+    },
+    {
       "Name": "CreateSkillFile",
       "Description": "Creates (or updates, with overwrite=true) a reusable skill file, saved as agents/functions/pending/<name>.md in the Skills\nfolder and loaded at once, so its skills are callable via ExecuteSkill in this same session. It is only kept for later\nsessions once the user approves it: ask them to type '/approve <name>' (or '/reject <name>' to discard it). With\noverwrite, the new version waits for approval while the approved one stays for other sessions. Use this when the user\nasks to save a repeatable procedure as a skill, not for a one-off action that only needs to happen once. A built-in\nprompt's name (a toolset's guide) can't be taken with this tool. Markdown format, one section per skill:\n# <Title>\n<guidance for when/how to use these skills>\n## Skill: <PascalCaseName>\n- Description: <one line>\n- Parameters:\n  - `argName` (required|optional): <meaning>\n- Execution:\n```bash\npython3 script.py \"${SKILL_ARG_argName}\"\n```\nThe code fence language picks the interpreter: ```bash (default), ```powershell or ```python. Code runs from the\nworkspace root (30s limit). Read arguments only from environment variables, never by pasting values into code:\nbash \"${SKILL_ARG_name}\" (quoted), PowerShell $env:SKILL_ARG_name, Python os.environ['SKILL_ARG_name'].\nGuidance-only files (no Skill sections) are allowed.",
       "Schema": {

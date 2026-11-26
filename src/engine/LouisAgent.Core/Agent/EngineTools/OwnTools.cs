@@ -18,8 +18,7 @@ internal static class OwnTools
     /// <param name="registry">Where the tools go.</param>
     /// <param name="skillTools">The skill tools.</param>
     /// <param name="agentBuiltTools">The agent-built tools.</param>
-    /// <param name="door">The one door to every skill, <c>UseSkill</c>, listing the approved skills (F97.1).</param>
-    /// <param name="reloadLibrary">Reads the skills folder again, when the skills are reloaded (F97.1).</param>
+    /// <param name="agentSkills">The tools for the skills the agent makes and keeps (F97.1).</param>
     /// <param name="options">The engine's settings.</param>
     /// <param name="toolsets">
     /// A session's tool objects; null means an engine with every self-extension tool, whatever
@@ -28,8 +27,8 @@ internal static class OwnTools
     /// <param name="selfExtension">Whether the session has the skills toolset.</param>
     /// <param name="clock">The clock the clock tool reads.</param>
     public static void Register(ToolRegistry registry, SkillTools skillTools, AgentBuiltTools agentBuiltTools,
-        AIFunction door, Action reloadLibrary, AgentOptions options, IEnumerable<object>? toolsets,
-        bool selfExtension, TimeProvider? clock = null)
+        AgentSkillTools agentSkills, AgentOptions options, IEnumerable<object>? toolsets, bool selfExtension,
+        TimeProvider? clock = null)
     {
         registry.Add(Function(skillTools.ExecuteSkill, nameof(AgentEngine.ExecuteSkill)));
         // Today's date and time (F22): every session, whatever its toolsets, since a model doesn't know what day it is.
@@ -37,31 +36,34 @@ internal static class OwnTools
         if (toolsets is not null)
         {
             foreach (object toolset in toolsets) registry.AddPublicMethods(toolset);
-            if (selfExtension) AddSelfExtensionTools(registry, skillTools, agentBuiltTools, door, reloadLibrary);
+            if (selfExtension) AddSelfExtensionTools(registry, skillTools, agentBuiltTools, agentSkills);
             return;
         }
 
-        AddSelfExtensionTools(registry, skillTools, agentBuiltTools, door, reloadLibrary);
+        AddSelfExtensionTools(registry, skillTools, agentBuiltTools, agentSkills);
     }
 
     /// <summary>
-    /// The one door to every skill, <c>UseSkill</c> (F97.1), its description followed by the approved skills, one line
-    /// each.
+    /// The tools for the skills an agent keeps (F97.1): the door, <c>UseSkill</c>, its description followed by the
+    /// approved skills; <c>CreateSkill</c>; and the reload of the skills folder.
     /// </summary>
-    public static AIFunction Door(SkillDoorTools door, Func<string> listing) =>
-        new ListedSkillsFunction(Function(door.UseSkill, nameof(SkillDoorTools.UseSkill)), listing);
+    public static AgentSkillTools AgentSkills(SkillDoorTools door, Func<string> listing, SkillMakingTools making,
+        Action reloadLibrary) =>
+        new(new ListedSkillsFunction(Function(door.UseSkill, nameof(SkillDoorTools.UseSkill)), listing),
+            Function(making.CreateSkill, nameof(SkillMakingTools.CreateSkill)), reloadLibrary);
 
     /// <summary>
-    /// The tools that let the agent extend itself (toolset "skills", F5), and the door to the skills it keeps
+    /// The tools that let the agent extend itself (toolset "skills", F5), and the tools for the skills it keeps
     /// (F97.1): only a chat whose agent can make and keep skills has them, so no other chat's tools grow.
     /// </summary>
     private static void AddSelfExtensionTools(ToolRegistry registry, SkillTools skillTools,
-        AgentBuiltTools agentBuiltTools, AIFunction door, Action reloadLibrary)
+        AgentBuiltTools agentBuiltTools, AgentSkillTools agentSkills)
     {
-        registry.Add(door);
+        registry.Add(agentSkills.Door);
+        registry.Add(agentSkills.Create);
         registry.Add(Function(skillTools.CreateSkillFile, nameof(AgentEngine.CreateSkillFile)));
         registry.Add(new ReloadingLibraryFunction(
-            Function(skillTools.ReloadSkills, nameof(AgentEngine.ReloadSkills)), reloadLibrary));
+            Function(skillTools.ReloadSkills, nameof(AgentEngine.ReloadSkills)), agentSkills.ReloadLibrary));
         registry.Add(Function(agentBuiltTools.CreateTool, nameof(AgentEngine.CreateTool)));
         registry.Add(Function(agentBuiltTools.ListAgentTools, nameof(AgentEngine.ListAgentTools)));
     }

@@ -14,6 +14,7 @@ using LouisAgent.Core.Messages;
 using LouisAgent.Core.Pricing.Rates;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Headers.Agent.Door;
+using LouisAgent.Core.Skills.Headers.Agent.Drafting;
 using LouisAgent.Core.Skills.Headers.Agent.Library;
 using LouisAgent.Core.Skills.Headers.Agent.Running;
 using LouisAgent.Composition.Tools.Scripts;
@@ -191,6 +192,7 @@ public class AgentEngine
         var skillRunner = SkillRunner.For(python, powerShell, new BashRunner(WorkspaceRoot));
         var door = new Lazy<SkillDoor>(() => new SkillDoor(_library.Value, skillRunner));
         var doorTools = new SkillDoorTools(() => door.Value);
+        var making = new SkillMakingTools(() => new SkillDrafting(SkillsDirectory ?? "", skillRunner));
 
         RecordsUsage = usageSink is not null;
         _guards = new ToolCallGuards(_registry,
@@ -208,9 +210,10 @@ public class AgentEngine
             return;
         }
 
-        var listing = () => SkillListing.LinesFor(_library.Value.Approved);
-        OwnTools.Register(_registry, _skillTools, _agentBuiltTools, OwnTools.Door(doorTools, listing),
-            () => _library.Value.Reload(), options, toolsets, selfExtension, clock);
+        var agentSkills = OwnTools.AgentSkills(doorTools, () => SkillListing.LinesFor(_library.Value.Approved),
+            making, () => _library.Value.Reload());
+        OwnTools.Register(_registry, _skillTools, _agentBuiltTools, agentSkills, options, toolsets, selfExtension,
+            clock);
     }
 
     /// <summary>

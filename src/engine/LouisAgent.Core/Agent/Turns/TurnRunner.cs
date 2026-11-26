@@ -95,7 +95,7 @@ internal sealed class TurnRunner(
         {
             ChatOptions chatOptions = Begin(conversation, userInput);
             // The loop's final request puts back these tools, the conversation's, never the engine's live list.
-            using var tools = TurnTools.Begin(conversation.Tools ?? [], conversation.Drafts);
+            using var tools = TurnTools.Begin(conversation.Tools ?? [], conversation);
             ChatResponse response =
                 await chatClient.GetResponseAsync(conversation.Messages, chatOptions, cancellationToken);
 
@@ -124,7 +124,7 @@ internal sealed class TurnRunner(
     {
         using var span = TurnSpans.Start(agentName());
         ChatOptions chatOptions = Begin(conversation, userInput);
-        using var tools = TurnTools.Begin(conversation.Tools ?? [], conversation.Drafts);
+        using var tools = TurnTools.Begin(conversation.Tools ?? [], conversation);
         bool owedAsked = false;
         for (int continuation = 0; ; continuation++)
         {

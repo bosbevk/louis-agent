@@ -21,11 +21,11 @@ internal sealed class TurnTools : IDisposable
     /// <summary>The scope that was current before this one opened, put back when it closes.</summary>
     private readonly TurnTools? _outer;
 
-    /// <summary>A scope over the conversation's tools and drafts, inside whatever scope was current.</summary>
-    private TurnTools(IReadOnlyList<AITool> tools, IReadOnlySet<string> drafts, TurnTools? outer)
+    /// <summary>A scope over the conversation's tools and the chat, inside whatever scope was current.</summary>
+    private TurnTools(IReadOnlyList<AITool> tools, Conversation chat, TurnTools? outer)
     {
         Tools = tools;
-        Drafts = drafts;
+        Chat = chat;
         _outer = outer;
     }
 
@@ -36,17 +36,20 @@ internal sealed class TurnTools : IDisposable
     public IReadOnlyList<AITool> Tools { get; }
 
     /// <summary>
-    /// The names of the skills the turn's conversation drafted (F97.1), so the skill door, which has only a tool
-    /// call's arguments, finds this chat's drafts and no other's.
+    /// The chat whose turn is running (F97.1), so a skill tool, which has only a tool call's arguments, finds this
+    /// chat's drafts and no other's, and notes a skill it makes as this chat's.
     /// </summary>
-    public IReadOnlySet<string> Drafts { get; }
+    public Conversation Chat { get; }
+
+    /// <summary>The names of the skills the turn's chat drafted.</summary>
+    public IReadOnlySet<string> Drafts => Chat.Drafts;
 
     /// <summary>
-    /// Opens the turn's scope over its conversation's tools and drafts; dispose it when the turn ends.
+    /// Opens the turn's scope over its conversation's tools and the chat; dispose it when the turn ends.
     /// </summary>
-    public static TurnTools Begin(IReadOnlyList<AITool> tools, IReadOnlySet<string> drafts)
+    public static TurnTools Begin(IReadOnlyList<AITool> tools, Conversation chat)
     {
-        var scope = new TurnTools(tools, drafts, Current);
+        var scope = new TurnTools(tools, chat, Current);
         CurrentScope.Value = scope;
         return scope;
     }
