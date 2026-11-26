@@ -1,0 +1,1 @@
+"demos/louis-agent/samples/order-service/src/OrderService/Api/OrderTotal.cs:5: private static readonly Dictionary\u003Cstring, decimal\u003E DiscountRates = new()\ndemos/louis-agent/samples/order-service/src/OrderService/Api/OrderTotal.cs:18: decimal rate = DiscountRates[order.DiscountCode];"

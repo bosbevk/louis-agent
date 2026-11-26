@@ -89,7 +89,7 @@ orchestrator escalates — a wrongly escalated error costs a person a minute; a 
 
 | The investigation finds | Decision | Who |
 |---|---|---|
-| any exception not listed as expected, whatever its cause: send the exception type, message and order id, so they can check whether the customer was refunded | person | payments |
+| any exception not listed as expected, whatever its cause: payments code is never changed by an agent, so there is no automatic fix; send the exception type, message and order id, so they can check whether the customer was refunded | person | payments |
 ```
 
 In the demo run:
@@ -151,7 +151,8 @@ Name exceptions precisely under Expected: the type, and the message when the typ
 (`InvalidOperationException` covers far more than duplicate refunds).
 
 Keep risky methods out of `auto-fix`. Anything that moves money, deletes data or talks to another company should go
-to a person. Say so in plain words above the table, as `refund.md` does.
+to a person. Say so in plain words in the row itself, as `refund.md` does, since a row is what the triage manager
+quotes when it decides.
 
 Write each row as what an investigation finds, not as an exception type alone, since the triage manager matches a row
 against the investigator's report: where the cause is, whose area, and how sure. When a cause belongs to another

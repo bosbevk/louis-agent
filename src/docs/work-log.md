@@ -13,16 +13,15 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 168 | 74 |
-| Fixes (`FX`) | 245 | 4 |
+| Fixes (`FX`) | 246 | 3 |
 | Cleanups (`CL`) | 49 | 25 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (103 in the TODO)
+## Open (102 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
-| FX257 | The triage manager decides by its runbook's table, and every eval trial starts clean | Now |
 | F171 | The bill checker (Louis, 2026-11-21; 2026-11-22: "this feature is next"): a phone app that reads a Western Cape municipal account from a photo or a PDF, checks every line against Cape Town's, Swartland's and Overstrand's own tariffs and drafts the dispute, free to download with one subscription; the product in its own private `bill-checker` repository on the framework's packages, the framework's parts here: F171.1 a photo or PDF reaches a tool (done 2026-11-24); F171.2 the bills pack reads and checks; F171.3 the dispute letter; F171.4 the identity and evals; F171.5 the account, consent and our own subscriptions part; F171.6 the phone app; F171.7 the stores; F171.8 the monthly report | Now, F171.2 on after F140 |
 | F43 | Accounts, tenants and durable sessions; its first child, durable sessions, after F171.1 and before F157 | Now, F43.1 done; accounts and tenants not yet planned |
 | F8 | Reliability | Now, after FX4 |
@@ -299,10 +298,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (245 done)
+## Fixes (246 done)
 
 | Id | When | What |
 |---|---|---|
+| FX257 | 2026-11-27 | Every runbook sets its policy in one Decisions table the orchestrator and the triage manager both read; the manager applies the row, quotes it, and knows a hand-off needs no address; every eval trial starts with its own run (`{trial}`) |
 | FX255 | 2026-11-26 | A site visitor's chat sends `/tools`, `/approve`, `/reject` and `/usage` to the model as words; only the operator's chats run them |
 | FX256 | 2026-11-26 | A chat read back after a restart counts on from its newest kept turn's number, every store refuses a number it already keeps, and a turn that can't be kept is logged and never leaves the chat busy |
 | FX254 | 2026-11-26 | Every description the model is sent, a parameter's too, has LF line endings whatever the checkout, through one `ToolFunctionOptions`; the guide's and framework's replays re-recorded |

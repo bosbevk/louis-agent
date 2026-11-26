@@ -12,4 +12,4 @@
 
 | The investigation finds | Decision | Who |
 |---|---|---|
-| any exception not listed as expected, whatever its cause: send the exception type, message and order id, so they can check whether the customer was refunded | person | payments |
+| any exception not listed as expected, whatever its cause: payments code is never changed by an agent, so there is no automatic fix; send the exception type, message and order id, so they can check whether the customer was refunded | person | payments |

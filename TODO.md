@@ -25,11 +25,10 @@ first step ([src/docs/CLAUDE.md](src/docs/CLAUDE.md), rule 3), never here; the n
 tag `pre-work-log` (2026-11-07). When an item is finished its row moves to the [work log](src/docs/work-log.md). The
 known limitations below are facts about today, not tasks.
 
-## Open (109)
+## Open (108)
 
 | Id | What | Phase | Detail |
 |---|---|---|---|
-| FX257 | The triage manager decides by its runbook's table (Louis's picks 2026-11-27: "Rules in the runbooks", "Replace 'Escalate to'"), and every eval trial starts clean | Now | [plan](src/docs/plans/FX257-triage-decides-by-the-runbook.md) |
 | F171 | The bill checker (Louis, 2026-11-21; 2026-11-22: "this feature is next"): a phone app that reads a Western Cape municipal account from a photo or a PDF, checks every line against Cape Town's, Swartland's and Overstrand's own tariffs and drafts the dispute, free to download with one subscription; the product in its own private `bill-checker` repository on the framework's packages, the framework's parts here: F171.1 a photo or PDF reaches a tool (done 2026-11-24); F171.2 the bills pack reads and checks; F171.3 the dispute letter; F171.4 the identity and evals; F171.5 the account, consent and our own subscriptions part; F171.6 the phone app; F171.7 the stores; F171.8 the monthly report | Now, F171.2 on after F140 | [plan](src/docs/plans/F171-the-bill-checker.md) |
 | F43 | Accounts, tenants and durable sessions; its first child is durable sessions (a session store behind one seam, with an in-memory and a MongoDB provider, and a session that resumes after a restart), built after F171.1 and before F157 (Louis's pick, 2026-11-22, after an outside comparison with Microsoft Agent Framework, LangGraph and OpenAI's Agents SDK found sessions lost on a restart the biggest gap) | Now, F43.1 done; its next children, accounts and tenants, not yet planned | [spec](src/docs/specs/SESSION_ARCHITECTURE.md) |
 | F8 | Reliability | Now, after FX4 | [feature doc](src/docs/features/F08-reliability.md) |
