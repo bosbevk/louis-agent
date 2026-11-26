@@ -47,7 +47,8 @@ public class MessageEnumTests
                 "LoggingErrorMessage", "LoggingLogMessage", "PricingErrorMessage", "PricingLogMessage",
                 "PromptHeaderMessage", "ScriptToolMessage", "AnthropicErrorMessage", "OpenAiErrorMessage",
                 "SequenceToolMessage", "SessionErrorMessage", "RunnerToolMessage", "SkillErrorMessage",
-                "SkillLogMessage", "SkillReadToolMessage", "SubSessionToolMessage", "TelemetryLogMessage", "TextErrorMessage",
+                "SkillLogMessage", "SkillReadToolMessage", "SkillToolMessage", "SubSessionToolMessage",
+                "TelemetryLogMessage", "TextErrorMessage",
                 "ToolMessage", "UserText", "UsageErrorMessage", "UsageLogMessage", "WebLogMessage",
                 "WebToolMessage", "WordsErrorMessage",
             }));
