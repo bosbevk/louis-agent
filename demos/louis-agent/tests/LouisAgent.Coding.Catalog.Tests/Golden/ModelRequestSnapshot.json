@@ -125,7 +125,7 @@
     },
     {
       "Name": "AskFor",
-      "Description": "Asks the visitor with a form under your words, whenever you need them to write something: their name and how to reach them, or a job told in their own words. They fill it in and send it, and it comes back as their next message, each field by its label. Never offer a choice that only says to type; ask with this.",
+      "Description": "Asks the visitor with a form under your words, whenever you need them to write something: their name\nand how to reach them, or a job told in their own words. They fill it in and send it, and it comes back\nas their next message, each field by its label. Never offer a choice that only says to type; ask with\nthis. It ends your answer the moment it is called, so call it last, after your words in the same reply.",
       "Schema": {
         "type": "object",
         "properties": {
@@ -134,7 +134,7 @@
             "type": "string"
           },
           "fields": {
-            "description": "One to four fields: a label of up to 30 characters, the words over its box such as Phone or email; and its kind: Name, Phone, Email, Text for one line, or LongText for a box that grows.",
+            "description": "One to four fields: a label of up to 30 characters, the words over its box such as Phone or email;\r\nand its kind: Name, Phone, Email, Text for one line, or LongText for a box that grows.",
             "type": "array",
             "items": {
               "type": "object",
@@ -1092,7 +1092,7 @@
     },
     {
       "Name": "Offer",
-      "Description": "Offers the visitor two to four choices as cards under your words, when they must decide something: try a demo, book or not, which plan. Their click comes back as their next message, in the label's words, and they may type their own answer instead. Never act on a choice before it comes back.",
+      "Description": "Offers the visitor two to four choices as cards under your words, when they must decide something:\ntry a demo, book or not, which plan. Their click comes back as their next message, in the label's\nwords, and they may type their own answer instead. Never act on a choice before it comes back.\nIt ends your answer the moment it is called, so call it last, after your words in the same reply. A\nreply with no words before it sends the visitor a card and nothing else.",
       "Schema": {
         "type": "object",
         "properties": {
@@ -1101,7 +1101,7 @@
             "type": "string"
           },
           "choices": {
-            "description": "Two to four choices: a label of up to 40 characters, a button's words as the visitor would say them, such as Book it; an optional why of one line under it; suggested true on the one you recommend, at most one; and writes, a kind (Name, Phone, Email, Text or LongText), on a choice that is their own words. That choice holds a box they write in and send from the card, so its label asks them, in your voice, such as Tell me about your business, and its why says what you will do with what they write: never a choice that only says to type.",
+            "description": "Two to four choices: a label of up to 40 characters, a button's words as the visitor would say\r\nthem, such as Book it; an optional why of one line under it; suggested true on the one you\r\nrecommend, at most one; and writes, a kind (Name, Phone, Email, Text or LongText), on a choice that\r\nis their own words. That choice holds a box they write in and send from the card,\r\nso its label asks them, in your voice, such as Tell me about your business, and its why says what\r\nyou will do with what they write: never a choice that only says to type.",
             "type": "array",
             "items": {
               "type": "object",
@@ -1736,7 +1736,7 @@
     },
     {
       "Name": "ShowCard",
-      "Description": "Shows the visitor a read-only card in the chat, such as a booking request or an order, drawn from its parts: a small topic, a title, rows of facts with an icon each, and an optional subtitle, status and note. The visitor can't change it; to ask them something, offer choices after it. Then say one line, not the card again.",
+      "Description": "Shows the visitor a read-only card in the chat, such as a booking request or an order, drawn from its\nparts: a small topic, a title, rows of facts with an icon each, and an optional subtitle, status and\nnote. The visitor can't change it; to ask them something, offer choices after it. Then say one line,\nnot the card again.",
       "Schema": {
         "type": "object",
         "properties": {
@@ -1749,7 +1749,7 @@
             "type": "string"
           },
           "rows": {
-            "description": "One to six facts, each an icon by name (calendar, clock, users, user, paw, home, phone, mail, tag, info…), what the fact is (Dates) and what it says (Fri 14 to Sun 16 Nov).",
+            "description": "One to six facts, each an icon by name (calendar, clock, users, user, paw, home, phone, mail, tag,\r\ninfo…), what the fact is (Dates) and what it says (Fri 14 to Sun 16 Nov).",
             "type": "array",
             "items": {
               "type": "object",
@@ -1855,7 +1855,7 @@
     },
     {
       "Name": "ShowReceipt",
-      "Description": "Shows the visitor a receipt in the chat once something went on their behalf, such as a request passed on: a short title saying what happened and one line on what comes next. Call it only after it really went; the card the visitor filled in already shows the details, so never repeat them here.",
+      "Description": "Shows the visitor a receipt in the chat once something went on their behalf, such as a request passed\non: a short title saying what happened and one line on what comes next. Call it only after it really\nwent; the card the visitor filled in already shows the details, so never repeat them here.",
       "Schema": {
         "type": "object",
         "properties": {

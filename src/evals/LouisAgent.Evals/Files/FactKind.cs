@@ -3,7 +3,7 @@ using LouisAgent.Choices;
 namespace LouisAgent.Evals.Files;
 
 /// <summary>
-/// The seven things code can tell for certain about a turn, each by the first word an eval file writes it with
+/// The things code can tell for certain about a turn, each by the first word an eval file writes it with
 /// (ADR 0024: a choice is an enum, read once).
 /// </summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0134-an-eval-is-one-file-of-conversations.md">ADR 0134: an eval is one file of conversations</seealso>
@@ -11,6 +11,9 @@ public enum FactKind
 {
     /// <summary>The turn ended without an error.</summary>
     [WireName("no-error")] NoError,
+
+    /// <summary>The answer holds words the person reads, not only tool calls such as a card.</summary>
+    [WireName("has-words")] HasWords,
 
     /// <summary>The agent called the tool in this turn.</summary>
     [WireName("used")] Used,

@@ -29,7 +29,7 @@
                   "type": "array",
                   "items": {
                     "type": "string",
-                    "pattern": "^(no-error|used|not-used|under|never-says|routed-to|continued)( .+)?$"
+                    "pattern": "^(no-error|has-words|used|not-used|under|never-says|routed-to|continued)( .+)?$"
                   },
                   "description": "What code checks about the turn: no-error, used {tool}, not-used {tool}, under {n}s, never-says {text}, routed-to {address} or continued {address}."
                 },
