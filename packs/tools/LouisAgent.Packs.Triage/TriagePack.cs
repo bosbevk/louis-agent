@@ -60,7 +60,7 @@ public sealed class TriagePack(TriageOptions options) : IAgentPack
         return
         [
             new TriageTools(recorder, departments, TimeProvider.System, inATrial),
-            new RunTools(recorder, options.People!, TimeProvider.System)
+            new RunTools(recorder, options.People!, TimeProvider.System, inATrial)
         ];
     }
 }

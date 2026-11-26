@@ -8,9 +8,12 @@ until dispatch (Monday–Thursday 1, Friday 3, Saturday 2) plus 2 days in transi
 **Expected (acknowledge, no action):**
 - `OrderService.OrderNotFoundException` — unknown order id (a 404).
 
-**Auto-fixable:** any other exception, e.g. an `IndexOutOfRangeException` for an order placed on a Sunday.
+**Decisions:**
+
+| The investigation finds | Decision | Who |
+|---|---|---|
+| a crash in this method's code, its cause certain, e.g. an `IndexOutOfRangeException` for an order placed on a Sunday | auto-fix | the coder |
+| a fix that is not confirmed, or a cause that isn't certain | person | orders |
 
 **Expected behaviour for louis-agent:** a Sunday order is dispatched on Monday (1 day), so it arrives 3 days after it
 was placed (Sunday 2026-10-04 gives 2026-10-07). Estimates for Monday–Saturday are unchanged.
-
-**Escalate to:** orders — if the fix is not confirmed.

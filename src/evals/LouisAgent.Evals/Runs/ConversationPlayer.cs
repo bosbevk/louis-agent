@@ -85,7 +85,7 @@ public sealed class ConversationPlayer(
             var asked = new List<AskedTurn>();
             foreach (var turn in conversation.Turns)
             {
-                asked.Add(await AskAsync(session, turn.Ask, page, cancellationToken));
+                asked.Add(await AskAsync(session, trial.Fill(turn.Ask), page, cancellationToken));
                 page = null;
             }
 

@@ -46,7 +46,8 @@ public class RunToolsTests
         {
             Assert.That(going, Does.StartWith("Run run-1: 2 steps so far.")
                 .And.Contain("1. code (collected, 12:00:00): Error abc123 read from the feed.")
-                .And.Contain("2. sorter (sorted, 12:00:30): The sorter sent it to the code department. The stack is in OrderApi."));
+                .And.Contain(
+                    "2. sorter (sorted, 12:00:30): The sorter sent it to the code department. The stack is in OrderApi."));
             Assert.That(ended, Does.StartWith("Run run-1: 3 steps so far, ended ignored."));
         });
     }
@@ -63,7 +64,8 @@ public class RunToolsTests
         Assert.Multiple(() =>
         {
             Assert.That(said, Does.StartWith("Raised run run-1 to a person").And.Contain("step 3"));
-            Assert.That(File.ReadAllText(path), Does.StartWith("# Case run-1").And.Contain("Raised 2026-11-08T12:01:00Z.")
+            Assert.That(File.ReadAllText(path), Does.StartWith("# Case run-1").And
+                .Contain("Raised 2026-11-08T12:01:00Z.")
                 .And.Contain("The refund path double-charges.").And.Contain("**Why a person:** It touches money.")
                 .And.Contain("- 2. sorter"));
             Assert.That(run!.Steps[2].Kind, Is.EqualTo(TriageStepKind.Raised));
@@ -84,5 +86,28 @@ public class RunToolsTests
             Assert.That(await _tools.RaiseToPerson("run-9", "a case", "why"), Does.Contain("no run 'run-9'"));
         });
         Assert.That(Directory.Exists(Path.Combine(_root, "people")), Is.False);
+    }
+
+    /// <summary>
+    /// In an eval's trial a run the recorder doesn't know yet is new, as for a role's tool (Louis's pick A): it reads
+    /// as empty, and raising it starts it with the raise; a bad id is still refused (FX257).
+    /// </summary>
+    [Test]
+    public async Task InATrial_ANewRunReadsEmpty_AndRaisingItStartsIt()
+    {
+        var inATrial = new RunTools(_recorder, Path.Combine(_root, "people"), new FakeTimeProvider(Now), () => true);
+
+        string read = await inATrial.ReadTriageRun("trial-7");
+        string raised = await inATrial.RaiseToPerson("trial-7", "A missing data file.", "Ops must look.");
+        string bad = await inATrial.ReadTriageRun("../x");
+
+        var run = await _recorder.ReadAsync("trial-7");
+        Assert.Multiple(() =>
+        {
+            Assert.That(read, Does.StartWith("Run trial-7: 0 steps so far"));
+            Assert.That(raised, Does.StartWith("Raised run trial-7 to a person").And.Contain("step 1"));
+            Assert.That(run?.Steps.Single().Kind, Is.EqualTo(TriageStepKind.Raised));
+            Assert.That(bad, Does.Contain("not a run id"));
+        });
     }
 }

@@ -47,7 +47,7 @@ public sealed class Regrader(TurnGrader grader, TimeProvider clock)
         var regraded = new List<ConversationRun>();
         foreach (var conversation in file.Conversations)
         {
-            if (Stored(graded, conversation) is not { } stored) continue;
+            if (Stored(graded, live, conversation) is not { } stored) continue;
             try
             {
                 regraded.Add(await RegradeAsync(started, live, conversation, stored, cancellationToken));
@@ -66,16 +66,22 @@ public sealed class Regrader(TurnGrader grader, TimeProvider clock)
     }
 
     /// <summary>
-    /// The graded run's conversation, when it holds it and every repeat asked what the file asks now; none otherwise,
-    /// since no answer to a changed ask is stored.
+    /// The graded run's conversation, when it holds it and every repeat asked what the file asks now, filled with that
+    /// repeat's own id where it writes one (FX257); none otherwise, since no answer to a changed ask is stored.
     /// </summary>
-    private static ConversationRun? Stored(EvalRun graded, Conversation conversation)
+    private static ConversationRun? Stored(EvalRun graded, string live, Conversation conversation)
     {
         var stored = graded.Conversations.FirstOrDefault(kept => kept.Id == conversation.Id);
-        var asks = conversation.Turns.Select(turn => turn.Ask).ToList();
         bool sameAsks = stored is not null && stored.Repeats.All(repeat =>
-            repeat.Turns.Select(turn => turn.Transcript.Ask).SequenceEqual(asks));
+            repeat.Turns.Select(turn => turn.Transcript.Ask).SequenceEqual(AsksOf(live, conversation, repeat.Number)));
         return sameAsks ? stored : null;
+    }
+
+    /// <summary>The conversation's asks as the live run's play of this repeat sent them.</summary>
+    private static IEnumerable<string> AsksOf(string live, Conversation conversation, int repeat)
+    {
+        var play = new RunTrial(live, conversation.Id, repeat);
+        return conversation.Turns.Select(turn => play.Fill(turn.Ask));
     }
 
     /// <summary>One conversation's repeats graded again, each under the live run's play of it.</summary>

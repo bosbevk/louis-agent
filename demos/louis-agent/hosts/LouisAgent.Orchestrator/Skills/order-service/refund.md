@@ -8,7 +8,8 @@
   request was correctly rejected.
 - `OrderService.OrderNotFoundException` — unknown order id (a 404).
 
-**Auto-fixable:** nothing. Payments code is never changed by an agent.
+**Decisions:** Payments code is never changed by an agent, so nothing here is auto-fixed.
 
-**Escalate to:** payments — every other exception, with the exception type, message and order id, so they can
-check whether the customer was refunded.
+| The investigation finds | Decision | Who |
+|---|---|---|
+| any exception not listed as expected, whatever its cause: payments code is never changed by an agent, so there is no automatic fix; send the exception type, message and order id, so they can check whether the customer was refunded | person | payments |

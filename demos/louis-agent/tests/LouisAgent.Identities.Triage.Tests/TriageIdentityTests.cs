@@ -80,6 +80,25 @@ public class TriageIdentityTests
     }
 
     /// <summary>
+    /// The manager decides by the runbook's Decisions table, quoting the row, and knows a hand-off needs no address
+    /// (FX257: it raised a missing data file to a person, saying it "had no route to an ops manager"); no row, or
+    /// unsure which, is a person, in place of the old "when in doubt at any step" that sent cases to a person early.
+    /// </summary>
+    [Test]
+    public void TheManager_DecidesByTheRunbooksTable_AndAHandOffNeedsNoAddress()
+    {
+        var (voice, _) = RoleCatalog.ModeParts(Mode());
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(voice, Does.Contain("**Decisions** table").And.Contain("quoting the row"));
+            Assert.That(voice, Does.Contain("you need no address"));
+            Assert.That(voice, Does.Contain("When no row\n   fits").Or.Contain("When no row fits"));
+            Assert.That(voice, Does.Not.Contain("When in doubt at any step"));
+        });
+    }
+
+    /// <summary>
     /// The manager asks its three subagents by their addresses (F127.3.1), the one name each has (ADR 0133); that each
     /// reaches its subagent is held where the catalogue is, in the coding catalogue's tests.
     /// </summary>

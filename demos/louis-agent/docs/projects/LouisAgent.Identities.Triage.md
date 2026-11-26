@@ -30,11 +30,19 @@ its `Calls`, from `TriageCall`: `triage.sorter`, `triage.investigator` and `tria
 
 ### 2. The manager
 
-The manager's voice is `agents/triage/voice.md`, and it makes the manager the hub. It says how the manager
-decides: the runbooks come with the case as its brief, the case is expected, for a person, for a fix or for a
-hand-off, and a report is only a claim until the code has checked it. It says how the manager ends a case, with
-`DecideCase` or `RaiseToPerson`. And it gives the routing, the toolsets `triage` and `agents`, so the manager asks
-each role by its address with `AskAgent`.
+The manager's voice is `agents/triage/voice.md`, and it makes the manager the hub. The method's runbook comes with
+the case, and the voice has the manager carry out its policy rather than judge each case afresh. An exception the
+runbook lists as expected is ignored, and a method with no runbook goes to a person. When every row of the runbook's
+Decisions table gives one decision whatever the cause, as `refund`'s does, the manager decides it at once. Otherwise
+it asks the investigator, finds the row that matches what came back (where the cause is, whose area, how sure) and
+decides what the row says, quoting it: `auto-fix`, `hand-off` to the row's department, or `person`. No row, or no
+telling which, is a person. A report is only a claim until the code has checked it.
+
+A hand-off needs nothing more from the manager: `DecideCase` records it, the run ends as handed off, and the other
+department has the case with the run's history, so the voice tells it plainly that it needs no address for them. A
+person's case ends with `RaiseToPerson` as well, which writes
+it where people read. The voice also gives the routing, the toolsets `triage` and `agents`, so the manager asks each
+role by its address with `AskAgent`. The runbook's shape is in [Runbooks](orchestrator-runbooks.md).
 
 ### 3. The roles
 
@@ -46,7 +54,10 @@ the department. The investigator has `triage`, `files`, `git` and `dotnet`, is r
 ### 4. A run id it doesn't know
 
 The triage pack's tools refuse a run id they don't know, so a mistyped id makes no stray run. In an eval's trial it's
-different: an unknown run starts with its first step instead, since a trial's fresh session has no run behind it.
+different: every one of them takes an unknown run as new, since a trial's fresh session has no run behind it. A
+role's tool starts it with its step, `ReadTriageRun` reads it as empty, and `RaiseToPerson` starts it with the raise.
+The eval writes each case's run id with `{trial}`, so every repeat of every run gets a run of its own and never reads
+what an earlier one decided.
 
 ![How it works: the manager asks each role by its address, every role ends with its typed tool, and the manager ends the case](diagrams/LouisAgent.Identities.Triage-flow.svg)
 

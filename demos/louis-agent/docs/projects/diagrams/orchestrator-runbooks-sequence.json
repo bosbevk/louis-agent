@@ -1,7 +1,7 @@
 {
   "kind": "sequence",
   "title": "Runbooks: one error decided",
-  "caption": "The runbook decides which of three: expected is acknowledged, auto-fixable goes to louis-agent with its expected behaviour, and a method with no runbook goes to a person.",
+  "caption": "The runbook decides which of three: expected is acknowledged, a Decisions row's auto-fix goes to louis-agent with its expected behaviour, and a hand-off, a person, or a method with no runbook goes to the row's team.",
   "sequence": {
     "participants": [
       { "id": "orchestrator", "label": "The orchestrator", "icon": "terminal", "tone": "blue" },
@@ -17,10 +17,10 @@
       { "step": "block", "block": "alt", "label": "Expected",
         "steps": [ { "step": "message", "from": "model", "to": "tools", "text": "AcknowledgeError" } ],
         "else": [
-          { "label": "Auto-fixable",
+          { "label": "a row's auto-fix",
             "steps": [ { "step": "message", "from": "model", "to": "tools", "text": "CallLouisAgentFix, the expected behaviour verbatim" } ] },
-          { "label": "anything else, or no runbook",
-            "steps": [ { "step": "message", "from": "model", "to": "tools", "text": "EscalateToHuman, the runbook's team" } ] }
+          { "label": "a row's hand-off or person, or no runbook",
+            "steps": [ { "step": "message", "from": "model", "to": "tools", "text": "EscalateToHuman, the row's team" } ] }
         ] }
     ]
   }

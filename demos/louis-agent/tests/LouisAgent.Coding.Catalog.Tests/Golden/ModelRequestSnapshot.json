@@ -408,7 +408,7 @@
     },
     {
       "Name": "DecideCase",
-      "Description": "Ends the manager's decision on a case. Call it once, as the last thing you do: ignore it, investigate it, give it to a person, let the coder fix it, or hand it to another department; and why, in a sentence.",
+      "Description": "Records the manager's decision on a case. Call it once, as the last thing you do: what the case gets,\nand why in a sentence that quotes the runbook's rule or Decisions row you applied. A hand-off ends\nthe run as handed off: the other department has the case with the run's history, so you need no\naddress for them and deliver nothing yourself. A person needs RaiseToPerson as well, which writes the\ncase where people read. Ignore, investigate and auto-fix record what you decided.",
       "Schema": {
         "type": "object",
         "properties": {
@@ -1491,7 +1491,7 @@
     },
     {
       "Name": "ReportInvestigation",
-      "Description": "Ends an investigation with what was found. Call it once, as the last thing you do: where the cause is (a file and method, or a component), what the cause is in one sentence, whose area it is and how sure you are.",
+      "Description": "Ends an investigation with what was found. Call it once, as the last thing you do: where the cause is\n(a file and method, or a component), what the cause is in one sentence, whose area it is and how sure\nyou are.",
       "Schema": {
         "type": "object",
         "properties": {
@@ -1527,7 +1527,7 @@
     },
     {
       "Name": "ReportReview",
-      "Description": "Ends a review. Call it once, as the last thing you do: whether the fix is good enough to keep, and your reasons, one per line. A review that isn't happy goes back to the coder through the manager.",
+      "Description": "Ends a review. Call it once, as the last thing you do: whether the fix is good enough to keep, and\nyour reasons, one per line. A review that isn't happy goes back to the coder through the manager.",
       "Schema": {
         "type": "object",
         "properties": {
@@ -1835,7 +1835,7 @@
     },
     {
       "Name": "SortCase",
-      "Description": "Ends the sorting of an error with the department it belongs to. Call it once, as the last thing you do: the department's name, one of those you were given, and why, in a sentence.",
+      "Description": "Ends the sorting of an error with the department it belongs to. Call it once, as the last thing you\ndo: the department's name, one of those you were given, and why, in a sentence.",
       "Schema": {
         "type": "object",
         "properties": {
