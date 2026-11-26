@@ -1,4 +1,5 @@
 using LouisAgent.Choices;
+using LouisAgent.Composition.Packs;
 using LouisAgent.Composition.Prompts;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Prompting;
@@ -13,15 +14,8 @@ namespace LouisAgent.Core.Tests;
 // loads it.
 public class SkillsLayoutTests
 {
-    /// <summary>
-    /// The folders a built-in file may be in: a level's, or the shared guides'.
-    /// </summary>
-    private static readonly string[] PromptFolders =
-    [
-        PromptFolder.Agents.Wire(),
-        PromptFolder.Toolsets.Wire(),
-        PromptFolder.Shared.Wire()
-    ];
+    /// <summary>The folder a built-in file may be in directly: what every agent shares.</summary>
+    private static readonly string[] PromptFolders = [PromptFolder.Shared.Wire()];
 
     private static readonly RoleLevel[] Levels = Enum.GetValues<RoleLevel>();
 
@@ -34,18 +28,15 @@ public class SkillsLayoutTests
     [Test]
     public void EveryPrompt_IsInAKnownFolder()
     {
-        // agents/ holds a folder per product (CL9) beside functions/, and no file of its own.
+        // agents/ holds a folder per product (CL9) and no file of its own; skills/ a folder per built-in skill.
         var misplaced = TestPaths.PromptFiles(TestPaths.Prompts)
             .Select(f => (File: f, Folder: Path.GetDirectoryName(f)!.Replace('\\', '/')))
-            .Where(f => (!PromptFolders.Contains(f.Folder) &&
-                         !System.Text.RegularExpressions.Regex.IsMatch(f.Folder,
-                             $"^{PromptFolder.Agents.Wire()}/[a-z0-9-]+$"))
-                        || f.Folder == PromptFolder.Agents.Wire())
+            .Where(f => !PromptFolders.Contains(f.Folder) &&
+                        !System.Text.RegularExpressions.Regex.IsMatch(f.Folder,
+                            $"^({PromptFolder.Agents.Wire()}|{PromptFolder.Skills.Wire()})/[a-z0-9-]+$"))
             .Select(f => f.File);
 
-        Assert.That(misplaced, Is.Empty,
-            "core's prompts are agents/{product}/, agents/functions/, toolsets/ and " +
-            "shared/ only");
+        Assert.That(misplaced, Is.Empty, "core's prompts are agents/{product}/, skills/{name}/ and shared/ only");
     }
 
     [Test]
@@ -83,15 +74,18 @@ public class SkillsLayoutTests
         Assert.That(twice, Is.Empty);
     }
 
+    /// <summary>
+    /// F97.1 step 15: every toolset names the built-in skill it always loads, by its name, and each is a folder in
+    /// <c>skills/</c> holding its <c>SKILL.md</c>; no built-in skill is left without its toolset.
+    /// </summary>
     [Test]
-    public void EveryToolset_HasItsGuideInToolsets_AndEveryGuideItsToolset()
+    public void EveryToolset_NamesItsSkill_InSkills_AndEverySkillItsToolset()
     {
-        var guides = TestTools.Catalog.Toolsets.Select(t => t.GuideFile).ToList();
+        var names = TestTools.Catalog.Toolsets.Select(t => t.Skill).ToList();
 
-        Assert.That(guides, Has.All.StartsWith(PromptFolder.Toolsets.Wire() + "/"));
-        Assert.That(
-            SkillFileSource.Files(PromptFolder.Toolsets.Wire()).Select(f => $"{PromptFolder.Toolsets.Wire()}/{f}"),
-            Is.EquivalentTo(guides), "no guide without its toolset");
+        Assert.That(names, Has.None.Contain("/"), "a toolset names its skill, not a path");
+        Assert.That(SkillFileSource.EmbeddedFiles.Where(f => f.StartsWith(PromptFolder.Skills.Wire() + "/")),
+            Is.EquivalentTo(names.Select(name => PackToolset.SkillFile(name!))), "no skill without its toolset");
     }
 
     /// <summary>What the running agent writes belongs to its demo, and only that sits in the demo's folder.</summary>

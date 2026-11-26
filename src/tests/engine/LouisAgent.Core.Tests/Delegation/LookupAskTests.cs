@@ -501,7 +501,7 @@ public class LookupAskTests
             Is.EqualTo(new[] { CoreToolset.Agents.Wire(), CoreToolset.Skills.Wire() }));
         Assert.That(agents.MissingSettings(without), Is.EqualTo(new[] { "AGENT_PEERS" }));
         Assert.That(agents.IsAvailable(with), Is.True);
-        Assert.That(agents.GuideFile, Is.EqualTo("toolsets/agents.md"));
+        Assert.That(agents.Skill, Is.EqualTo(CoreToolset.Agents.Wire()));
         Assert.That(TestTools.Catalog.ToolsetOf("FetchUrl"), Is.EqualTo(TestToolset.Web.Wire()));
         Assert.That(TestTools.Catalog.ToolsetOf("ReadWorkspaceFile"), Is.EqualTo(TestToolset.Files.Wire()));
         Assert.That(AgentCatalog.CoreOnly.ToolsetOf("CreateSkill"), Is.Null, "engine-provided: no toolset builds it");

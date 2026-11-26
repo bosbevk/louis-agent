@@ -20,7 +20,7 @@ public sealed class WebPack : IAgentPack
     public IReadOnlyList<PackToolset> Toolsets { get; } =
     [
         new(WebToolset.Web.Wire(), "Search the web and fetch web pages",
-            GuideFile: PackToolset.Guide(WebToolset.Web.Wire()),
+            Skill: WebToolset.Web.Wire(),
             MissingSettings: _ => [],
             // Three classes: finding and reading, a quote's provenance, currency. One fetcher for the two that fetch.
             ToolTypes: [typeof(WebTools), typeof(QuoteTools), typeof(CurrencyTools)],

@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using LouisAgent.Composition.Packs;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting.Prompts;
@@ -18,18 +19,16 @@ public class SkillFilesTests
     private static string SkillsDirectory => TestPaths.Prompts;
 
     /// <summary>
-    /// Every toolset has a guide, in <c>toolsets/</c>, that loads with it.
+    /// Every core toolset has a built-in skill, in <c>skills/{name}/SKILL.md</c>, that loads with it.
     /// </summary>
     [Test]
-    public void EveryToolset_HasAGuide_ThatLoadsWithIt()
+    public void EveryToolset_HasASkill_ThatLoadsWithIt()
     {
         var options = new AgentOptions { SkillsDirectory = SkillsDirectory };
         foreach (var toolset in ToolsetCatalog.All)
         {
-            Assert.That(toolset.GuideFile, Is.Not.Null, $"{toolset.Name} has a guide");
-            string guide = toolset.GuideFile!;
-            Assert.That(guide, Does.StartWith("toolsets/"),
-                "CL8: every level shares the guides, so they're in toolsets/");
+            Assert.That(toolset.Skill, Is.Not.Null, $"{toolset.Name} has a skill");
+            string guide = PackToolset.SkillFile(toolset.Skill!);
             Assert.That(File.Exists(Path.Combine(SkillsDirectory, guide)), Is.True, $"{guide} exists");
             string title = File.ReadLines(Path.Combine(SkillsDirectory, guide)).First(line => line.StartsWith("# "));
             Assert.That(SkillLoader.Load(options, [toolset]).Documentation, Does.Contain(title),

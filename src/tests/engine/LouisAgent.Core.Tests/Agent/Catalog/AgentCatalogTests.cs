@@ -203,9 +203,10 @@ public class AgentCatalogTests
     public void APromptPathInTwoPlaces_IsRefused()
     {
         // A pack that ships core's own web guide, and two identities with the same mode file.
-        var pack = new FakePack("mine", prompts: new Dictionary<string, string> { ["toolsets/web.md"] = "# web" });
+        string webSkill = PackToolset.SkillFile(TestToolset.Web.Wire());
+        var pack = new FakePack("mine", prompts: new Dictionary<string, string> { [webSkill] = "# web" });
         Assert.That(Assert.Throws<AgentCatalogException>(() => Catalog(packs: [TestTools.WebPack, pack]))!.Message,
-            Does.Contain("toolsets/web.md"));
+            Does.Contain(webSkill));
 
         var voice = new Dictionary<string, string> { ["agents/shared/voice.md"] = "# shared" };
         var error = Assert.Throws<AgentCatalogException>(() =>

@@ -79,7 +79,7 @@ public static class SkillLoader
 
         // The guides of this profile's toolsets only, so the prompt never describes tools the session doesn't have
         var profile = toolsets.ToList();
-        foreach (string fileName in ToolsetCatalog.GuideFiles(profile))
+        foreach (string fileName in ToolsetCatalog.SkillFilesOf(profile))
             AddBuiltIn(agent, composite, fileName);
         // Whom it may ask (F127.3.1): the identity's Calls, the same list AskAgent checks, so the two never differ;
         // its lookup agents are no agents to ask, and the roles that hand them work name them (F127.5).

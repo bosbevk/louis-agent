@@ -18,7 +18,7 @@ public sealed class FilesPack : IAgentPack
     public IReadOnlyList<PackToolset> Toolsets { get; } =
     [
         new(FilesToolset.Files.Wire(), "Read, write, search, copy, rename and delete files in the workspace",
-            GuideFile: PackToolset.Guide(FilesToolset.Files.Wire()),
+            Skill: FilesToolset.Files.Wire(),
             MissingSettings: _ => [],
             // Five classes, one concern each: a file's content, the tree's shape, browsing, searching, documents.
             ToolTypes:

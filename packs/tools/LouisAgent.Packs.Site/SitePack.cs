@@ -26,7 +26,7 @@ public sealed class SitePack : IAgentPack
     [
         new(SiteToolset.Site.Wire(),
             "Find a place on any page of this site and take the visitor there; show a card, and offer choices",
-            GuideFile: PackToolset.Guide(SiteToolset.Site.Wire()),
+            Skill: SiteToolset.Site.Wire(),
             MissingSettings: _ => [],
             ToolTypes: [typeof(SiteTools), typeof(CardTools)],
             // The site's places come from the host that serves it (F127.7): none when it serves no site.

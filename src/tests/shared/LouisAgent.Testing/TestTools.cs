@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using LouisAgent.Choices;
+using LouisAgent.Composition.Packs;
 using LouisAgent.Core.Agent.Catalog;
 
 namespace LouisAgent.Testing;
@@ -43,12 +44,12 @@ public static class TestTools
         ],
         new Dictionary<string, string>
         {
-            [$"toolsets/{TestToolset.DotNet.Wire()}.md"] = "# .NET Skills\n\nBuilds things.",
-            [$"toolsets/{TestToolset.Git.Wire()}.md"] = "# Git Skills\n\nKeeps history.",
-            [$"toolsets/{TestToolset.Files.Wire()}.md"] = "# Files Skills\n\nReads and writes.",
-            [$"toolsets/{TestToolset.Python.Wire()}.md"] = "# Python Skills\n\nRuns Python.",
-            [$"toolsets/{TestToolset.PowerShell.Wire()}.md"] = "# PowerShell Skills\n\nRuns PowerShell.",
-            [$"toolsets/{TestToolset.Bash.Wire()}.md"] = "# Bash Skills\n\nRuns bash.",
+            [PackToolset.SkillFile(TestToolset.DotNet.Wire())] = "# .NET Skills\n\nBuilds things.",
+            [PackToolset.SkillFile(TestToolset.Git.Wire())] = "# Git Skills\n\nKeeps history.",
+            [PackToolset.SkillFile(TestToolset.Files.Wire())] = "# Files Skills\n\nReads and writes.",
+            [PackToolset.SkillFile(TestToolset.Python.Wire())] = "# Python Skills\n\nRuns Python.",
+            [PackToolset.SkillFile(TestToolset.PowerShell.Wire())] = "# PowerShell Skills\n\nRuns PowerShell.",
+            [PackToolset.SkillFile(TestToolset.Bash.Wire())] = "# Bash Skills\n\nRuns bash.",
         }, comesBeforeTheEngine: true);
 
     /// <summary>A fake pack named as the real web pack is, for a test whose identity names it.</summary>
@@ -61,7 +62,7 @@ public static class TestTools
         ],
         new Dictionary<string, string>
         {
-            [$"toolsets/{TestToolset.Web.Wire()}.md"] = "# Web Skills\n\nSearches and reads.",
+            [PackToolset.SkillFile(TestToolset.Web.Wire())] = "# Web Skills\n\nSearches and reads.",
         }, comesBeforeTheEngine: true);
 
     /// <summary>
@@ -75,7 +76,7 @@ public static class TestTools
         ],
         new Dictionary<string, string>
         {
-            [$"toolsets/{TestToolset.Calculator.Wire()}.md"] = "# Calculator Skills\n\nWorks sums out.",
+            [PackToolset.SkillFile(TestToolset.Calculator.Wire())] = "# Calculator Skills\n\nWorks sums out.",
         }, comesBeforeTheEngine: true);
 
     /// <summary>A catalogue holding them, and what core has.</summary>

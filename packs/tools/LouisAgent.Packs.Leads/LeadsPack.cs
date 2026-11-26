@@ -31,7 +31,7 @@ public sealed class LeadsPack(LeadsOptions options, ILoggerFactory? loggers = nu
     [
         new(LeadsToolset.Leads.Wire(),
             "Tell the owner someone wants a website with an agent or a custom agent",
-            GuideFile: PackToolset.Guide(LeadsToolset.Leads.Wire()),
+            Skill: LeadsToolset.Leads.Wire(),
             MissingSettings: _ => options.To is null ? [LeadsOptions.ToSetting] : [],
             ToolTypes: [typeof(LeadTools)],
             CreateTools: _ => [new LeadTools(Sender(options, loggers, http), TimeProvider.System)]),

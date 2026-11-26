@@ -5,8 +5,8 @@ namespace LouisAgent.Core.Prompting;
 
 /// <summary>
 /// The skill files core knows by name, by their path in core's project, built from the shared folder names
-/// (<see cref="PromptFolder"/>, ADR 0043). Public since CL15, so a pack names its guide the way core does
-/// (<see cref="Guide"/>).
+/// (<see cref="PromptFolder"/>, ADR 0043). A toolset's built-in skill is <c>PackToolset.SkillFile</c>'s, the same
+/// path in core as in a pack.
 /// </summary>
 public static class SkillFiles
 {
@@ -53,9 +53,4 @@ public static class SkillFiles
     /// </summary>
     public static string SkillsOf(string identity) =>
         $"{PromptFolder.Agents.Wire()}/{identity}/{PromptFolder.Skills.Wire()}/";
-
-    /// <summary>
-    /// A toolset guide's file: <c>toolsets/{name}.md</c>, the same whichever level loads it.
-    /// </summary>
-    public static string Guide(string name) => $"{PromptFolder.Toolsets.Wire()}/{name}.md";
 }

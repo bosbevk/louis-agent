@@ -1,6 +1,6 @@
 ---
-name: self-extension
-description: The self-extension toolset's guide, loaded with it. How the agent extends itself when no tool fits, the lightest option first.
+name: skills
+description: The skills toolset's guide, loaded with it. How the agent extends itself when no tool fits, the lightest option first.
 ---
 # Self-Extension Skills
 

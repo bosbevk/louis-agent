@@ -15,20 +15,20 @@ public sealed class ShellPack : IAgentPack
     [
         new(ShellToolset.Python.Wire(),
             "Run Python code or scripts and manage packages in the agent's own virtual environment",
-            GuideFile: PackToolset.Guide(ShellToolset.Python.Wire()),
+            Skill: ShellToolset.Python.Wire(),
             MissingSettings: _ => [],
             ToolTypes: [typeof(PythonTools)],
             CreateTools: context => [new PythonTools(Path.GetFullPath(context.WorkspaceRoot))]),
 
         new(ShellToolset.PowerShell.Wire(),
             "Run PowerShell scripts (PowerShell 7, or Windows PowerShell 5.1 on Windows)",
-            GuideFile: PackToolset.Guide(ShellToolset.PowerShell.Wire()),
+            Skill: ShellToolset.PowerShell.Wire(),
             MissingSettings: _ => [],
             ToolTypes: [typeof(PowerShellTools)],
             CreateTools: context => [new PowerShellTools(Path.GetFullPath(context.WorkspaceRoot))]),
 
         new(ShellToolset.Bash.Wire(), "Run bash scripts (Git Bash on Windows, /bin/bash elsewhere)",
-            GuideFile: PackToolset.Guide(ShellToolset.Bash.Wire()),
+            Skill: ShellToolset.Bash.Wire(),
             MissingSettings: _ => [],
             ToolTypes: [typeof(BashTools)],
             CreateTools: context => [new BashTools(Path.GetFullPath(context.WorkspaceRoot))]),

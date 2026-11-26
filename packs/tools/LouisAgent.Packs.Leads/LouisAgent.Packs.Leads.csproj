@@ -8,7 +8,7 @@
     <RootNamespace>LouisAgent.Packs.Leads</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <!-- Keeps the embedded guide's folder path: without it, toolsets/leads.md is never found. -->
+    <!-- Keeps the embedded guide's folder path: without it, skills/leads/SKILL.md is never found. -->
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
   </PropertyGroup>
 
@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="toolsets\**\*.md" />
+    <EmbeddedResource Include="skills\**\*.md" />
   </ItemGroup>
 
   <ItemGroup>

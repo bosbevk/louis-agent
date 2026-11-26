@@ -27,7 +27,7 @@ public sealed class DocsPack(DocsOptions options) : IAgentPack
     [
         new(DocsToolset.Docs.Wire(),
             "List, read and search a project's own docs, read-only",
-            GuideFile: PackToolset.Guide(DocsToolset.Docs.Wire()),
+            Skill: DocsToolset.Docs.Wire(),
             MissingSettings: _ => options.Root is null ? [DocsOptions.RootSetting] : [],
             ToolTypes: [typeof(DocsTools)],
             CreateTools: _ => [new DocsTools(options.Root!)],

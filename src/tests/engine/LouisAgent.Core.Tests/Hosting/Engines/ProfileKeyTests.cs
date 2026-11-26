@@ -12,7 +12,7 @@ public class ProfileKeyTests
 {
     private static ToolsetDefinition[] Toolsets(params string[] names) =>
         names.Select(n =>
-                new ToolsetDefinition(n, "a toolset", GuideFile: null, MissingSettings: _ => [], CreateTools: _ => []))
+                new ToolsetDefinition(n, "a toolset", Skill: null, MissingSettings: _ => [], CreateTools: _ => []))
             .ToArray();
 
     [TestCase(new[] { SampleToolset.Delta, SampleToolset.Epsilon }, null, RoleLevel.Agent, null, null,

@@ -92,11 +92,13 @@ public class PackConvertibilityTests
             </Project>
             """;
 
-        Assert.That(ModelProblems("LouisAgent.Packs.Fake", projectFile), Is.EqualTo(new[]
-        {
-            "LouisAgent.Packs.Fake: references LouisAgent.Core; a tool that needs a model takes IChatClient",
-            "LouisAgent.Packs.Fake: references LouisAgent.Core.Anthropic; a tool that needs a model takes IChatClient"
-        }));
+        Assert.That(ModelProblems("LouisAgent.Packs.Fake", projectFile),
+            Is.EqualTo(new[]
+            {
+                "LouisAgent.Packs.Fake: references LouisAgent.Core; a tool that needs a model takes IChatClient",
+                "LouisAgent.Packs.Fake: references LouisAgent.Core.Anthropic; " +
+                "a tool that needs a model takes IChatClient"
+            }));
     }
 
     /// <summary>A pack that breaks every rule once is reported with exactly its problems.</summary>
@@ -114,9 +116,9 @@ public class PackConvertibilityTests
             "fakebad/Wait: waits but takes no CancellationToken",
             "fakebad/AToolNameOfSixtyFiveCharactersIsOneMoreThanAProviderAcceptsSafelyXYZ: its name isn't " +
             PackConvertibility.NameRule,
-            "fakebad: toolsets/fakebad.md holds a '## Skill:' procedure; " +
+            "fakebad: skills/fakebad/SKILL.md holds a '## Skill:' procedure; " +
             "a pack's guide is prose, a procedure becomes a tool",
-            "fakenoguide: toolsets/fakenoguide.md isn't in the pack's prompts",
+            "fakenoguide: skills/fakenoguide/SKILL.md isn't in the pack's prompts",
         }));
     }
 }
@@ -128,15 +130,15 @@ internal sealed class FakeUnconvertiblePack : IAgentPack
 
     public IReadOnlyList<PackToolset> Toolsets { get; } =
     [
-        new("fakebad", "Breaks the tool rules", GuideFile: "toolsets/fakebad.md", MissingSettings: _ => [],
+        new("fakebad", "Breaks the tool rules", Skill: "fakebad", MissingSettings: _ => [],
             CreateTools: _ => [new FakeUnconvertibleTools()], ToolTypes: [typeof(FakeUnconvertibleTools)]),
-        new("fakenoguide", "Its guide isn't in its prompts", GuideFile: "toolsets/fakenoguide.md",
+        new("fakenoguide", "Its guide isn't in its prompts", Skill: "fakenoguide",
             MissingSettings: _ => [], CreateTools: _ => [new FakeFineTools()], ToolTypes: [typeof(FakeFineTools)]),
     ];
 
     public IFileProvider Prompts { get; } = new FakePrompts(new Dictionary<string, string>
     {
-        ["toolsets/fakebad.md"] =
+        [PackToolset.SkillFile("fakebad")] =
             "# Fakebad\n\nA guide with a procedure.\n\n## Skill: Greet\n\n- Execution:\n\n```bash\necho hi\n```\n",
     });
 

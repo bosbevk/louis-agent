@@ -1,4 +1,5 @@
 using LouisAgent.Choices;
+using LouisAgent.Composition.Packs;
 using LouisAgent.Core.Prompting;
 using LouisAgent.Packs.Calculator.Tools;
 
@@ -15,9 +16,10 @@ public class CalculatorPackTests
 
         Assert.That(pack.Name, Is.EqualTo(CalculatorToolset.Calculator.Wire()));
         Assert.That(pack.Toolsets.Select(t => t.Name), Is.EqualTo(new[] { CalculatorToolset.Calculator.Wire() }));
-        Assert.That(pack.Toolsets[0].GuideFile, Is.EqualTo("toolsets/calculator.md"));
-        Assert.That(SkillFileSource.CoreFiles, Has.None.EqualTo("toolsets/calculator.md"), "core's don't hold it");
-        Assert.That(SkillFileSource.ReadEmbedded("toolsets/calculator.md"),
+        string skill = PackToolset.SkillFile(CalculatorToolset.Calculator.Wire());
+        Assert.That(pack.Toolsets[0].Skill, Is.EqualTo(CalculatorToolset.Calculator.Wire()));
+        Assert.That(SkillFileSource.CoreFiles, Has.None.EqualTo(skill), "core's don't hold it");
+        Assert.That(SkillFileSource.ReadEmbedded(skill),
             Does.Contain("Route here any sum").And.Not.Contain("## Skill:"));
     }
 

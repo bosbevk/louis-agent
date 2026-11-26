@@ -29,7 +29,7 @@ public sealed class TriagePack(TriageOptions options) : IAgentPack
     [
         new(TriageToolset.Triage.Wire(),
             "End a triage role's work typed, raise a case to a person, read a run back",
-            GuideFile: PackToolset.Guide(TriageToolset.Triage.Wire()),
+            Skill: TriageToolset.Triage.Wire(),
             MissingSettings: _ => Missing(options),
             ToolTypes: [typeof(TriageTools), typeof(RunTools)],
             CreateTools: ctx => Tools(options, () => ctx.InATrial)),

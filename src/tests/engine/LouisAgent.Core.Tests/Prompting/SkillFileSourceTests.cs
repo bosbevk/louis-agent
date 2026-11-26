@@ -66,7 +66,7 @@ public class SkillFileSourceTests
     [Test]
     public void EveryBuiltInFile_IsEmbedded_UnderItsOwnPath()
     {
-        var builtIn = ToolsetCatalog.All.Select(t => t.GuideFile).OfType<string>()
+        var builtIn = ToolsetCatalog.All.Select(t => t.Skill).OfType<string>().Select(PackToolset.SkillFile)
             .Concat(["shared/principles.md"]);
 
         Assert.That(SkillFileSource.EmbeddedFiles, Is.SupersetOf(builtIn));
@@ -87,8 +87,9 @@ public class SkillFileSourceTests
     [Test]
     public void TheEmbeddedText_IsTheFilesText()
     {
-        Assert.That(SkillFileSource.ReadEmbedded("toolsets/self-extension.md")!.ReplaceLineEndings("\n"),
-            Is.EqualTo(Repo("toolsets/self-extension.md").ReplaceLineEndings("\n")));
+        string skills = PackToolset.SkillFile(CoreToolset.Skills.Wire());
+        Assert.That(SkillFileSource.ReadEmbedded(skills)!.ReplaceLineEndings("\n"),
+            Is.EqualTo(Repo(skills).ReplaceLineEndings("\n")));
     }
 
     /// <summary>A copy of a built-in prompt on disk is never read in its place.</summary>
@@ -96,10 +97,11 @@ public class SkillFileSourceTests
     public void ACopyOnDisk_OfABuiltIn_IsIgnored()
     {
         // A wording change is a rebuild, so a stale copy in a mounted folder can't change what the model reads.
-        Directory.CreateDirectory(Path.Combine(_dir, "toolsets"));
-        File.WriteAllText(Path.Combine(_dir, "toolsets", "git.md"), "# Git Skills\n\nOur own version.");
+        string agents = PackToolset.SkillFile(CoreToolset.Agents.Wire());
+        Directory.CreateDirectory(Path.GetDirectoryName(Path.Combine(_dir, agents))!);
+        File.WriteAllText(Path.Combine(_dir, agents), "# Agents Skills\n\nOur own version.");
 
-        string? text = SkillFolder.Read(new AgentOptions { SkillsDirectory = _dir }, "toolsets/git.md");
+        string? text = SkillFolder.Read(new AgentOptions { SkillsDirectory = _dir }, agents);
 
         Assert.That(text, Is.Not.Null.And.Not.Contain("Our own version."));
     }

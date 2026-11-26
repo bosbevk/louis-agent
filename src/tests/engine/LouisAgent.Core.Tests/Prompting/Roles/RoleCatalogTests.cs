@@ -1,5 +1,7 @@
 using LouisAgent.Choices;
+using LouisAgent.Composition.Packs;
 using LouisAgent.Composition.Prompts;
+using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Prompting;
@@ -214,7 +216,7 @@ public class RoleCatalogTests
     [Test]
     public void TheAgentsGuide_IsTheMechanism_NotAProductsProtocol()
     {
-        string guide = SkillFileSource.ReadEmbedded("toolsets/agents.md")!;
+        string guide = SkillFileSource.ReadEmbedded(PackToolset.SkillFile(CoreToolset.Agents.Wire()))!;
 
         Assert.Multiple(() =>
         {
@@ -234,7 +236,7 @@ public class RoleCatalogTests
     [Test]
     public void TheAgentsGuide_SaysHowToAskALookupAgent_AndNamesNoProductsRole()
     {
-        string guide = SkillFileSource.ReadEmbedded("toolsets/agents.md")!;
+        string guide = SkillFileSource.ReadEmbedded(PackToolset.SkillFile(CoreToolset.Agents.Wire()))!;
 
         Assert.That(guide, Does.Contain("`AskAgent(address, message, tool, stronger)`"));
         Assert.That(guide, Does.Not.Contain("puls").IgnoreCase.And.Not.Contain("Malmesbury"));

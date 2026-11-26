@@ -27,7 +27,10 @@ public static partial class PackConvertibility
     /// <summary>What an MCP client accepts as a tool's name, and what every provider takes safely.</summary>
     public const string NameRule = @"^[A-Za-z0-9_-]{1,64}\z";
 
-    /// <summary>The problems of <paramref name="pack"/>; <paramref name="identityNames"/> are the identities a tool may not name.</summary>
+    /// <summary>
+    /// The problems of <paramref name="pack"/>; <paramref name="identityNames"/> are the identities a tool may not
+    /// name.
+    /// </summary>
     public static IReadOnlyList<string> Problems(IAgentPack pack, IEnumerable<string> identityNames)
     {
         var identities = identityNames.ToList();
@@ -56,23 +59,26 @@ public static partial class PackConvertibility
 
     private static IEnumerable<string> GuideProblems(IAgentPack pack, PackToolset toolset)
     {
-        if (toolset.GuideFile is null)
+        if (toolset.Skill is null)
         {
             yield return $"{toolset.Name}: no guide";
             yield break;
         }
 
-        IFileInfo guide = pack.Prompts.GetFileInfo(toolset.GuideFile);
+        string file = PackToolset.SkillFile(toolset.Skill);
+        IFileInfo guide = pack.Prompts.GetFileInfo(file);
         if (!guide.Exists)
         {
-            yield return $"{toolset.Name}: {toolset.GuideFile} isn't in the pack's prompts";
+            yield return $"{toolset.Name}: {file} isn't in the pack's prompts";
             yield break;
         }
 
         using var reader = new StreamReader(guide.CreateReadStream());
         string text = reader.ReadToEnd();
         if (text.Split('\n').Any(line => line.TrimEnd().StartsWith("## Skill:", StringComparison.Ordinal)))
-            yield return $"{toolset.Name}: {toolset.GuideFile} holds a '## Skill:' procedure; a pack's guide is prose, a procedure becomes a tool";
+            yield return
+                $"{toolset.Name}: {file} holds a '## Skill:' procedure; a pack's guide is prose, a procedure " +
+                "becomes a tool";
     }
 
     private static IEnumerable<string> ShapeProblems(string toolset, MethodInfo method)
@@ -82,7 +88,8 @@ public static partial class PackConvertibility
             yield return $"{tool}: its name isn't {NameRule}";
 
         Type returns = method.ReturnType;
-        bool waits = returns.IsGenericType && (returns.GetGenericTypeDefinition() == typeof(Task<>) || returns.GetGenericTypeDefinition() == typeof(ValueTask<>));
+        bool waits = returns.IsGenericType && (returns.GetGenericTypeDefinition() == typeof(Task<>) ||
+                                               returns.GetGenericTypeDefinition() == typeof(ValueTask<>));
         Type text = waits ? returns.GetGenericArguments()[0] : returns;
         if (text != typeof(string))
             yield return $"{tool}: returns {TypeName(returns)}, not string, Task<string> or ValueTask<string>";
@@ -92,13 +99,15 @@ public static partial class PackConvertibility
         {
             if (parameter.ParameterType == typeof(CancellationToken)) hasToken = true;
             else if (!IsPlainData(parameter.ParameterType, []))
-                yield return $"{tool}: parameter '{parameter.Name}' is {TypeName(parameter.ParameterType)}, not plain data";
+                yield return
+                    $"{tool}: parameter '{parameter.Name}' is {TypeName(parameter.ParameterType)}, not plain data";
         }
 
         if (waits && !hasToken) yield return $"{tool}: waits but takes no CancellationToken";
     }
 
-    private static IEnumerable<string> DescriptionProblems(string toolset, MethodInfo method, IReadOnlyList<string> identities)
+    private static IEnumerable<string> DescriptionProblems(string toolset, MethodInfo method,
+        IReadOnlyList<string> identities)
     {
         string tool = $"{toolset}/{method.Name}";
         foreach (string identity in identities)
@@ -118,13 +127,16 @@ public static partial class PackConvertibility
     {
         string tool = $"{toolset}/{method.Name}";
         // The instance is made only when the tool runs, which this check never does.
-        AIFunction function = AgentCatalog.FunctionOf(method, _ => throw new InvalidOperationException("the convertibility check never runs a tool"));
+        AIFunction function = AgentCatalog.FunctionOf(method,
+            _ => throw new InvalidOperationException("the convertibility check never runs a tool"));
         McpServerTool served = McpServerTool.Create(function);
         if (served.ProtocolTool.Name != function.Name)
             yield return $"{tool}: served over MCP its name is '{served.ProtocolTool.Name}'";
-        if (!JsonNode.DeepEquals(JsonNode.Parse(served.ProtocolTool.InputSchema.GetRawText()), JsonNode.Parse(function.JsonSchema.GetRawText())))
+        if (!JsonNode.DeepEquals(JsonNode.Parse(served.ProtocolTool.InputSchema.GetRawText()),
+                JsonNode.Parse(function.JsonSchema.GetRawText())))
             yield return $"{tool}: served over MCP its input schema changes";
-        // The SDK appends a "Returns:" line for a [return: Description]; the description must otherwise be the function's.
+        // The SDK appends a "Returns:" line for a [return: Description]; the description must otherwise be the
+        // function's.
         if (!(served.ProtocolTool.Description ?? "").StartsWith(function.Description, StringComparison.Ordinal))
             yield return $"{tool}: served over MCP its description changes";
     }
@@ -137,7 +149,8 @@ public static partial class PackConvertibility
     {
         type = Nullable.GetUnderlyingType(type) ?? type;
         if (type == typeof(string) || type.IsPrimitive || type.IsEnum || type == typeof(decimal)
-            || type == typeof(DateTime) || type == typeof(DateTimeOffset) || type == typeof(DateOnly) || type == typeof(TimeOnly)
+            || type == typeof(DateTime) || type == typeof(DateTimeOffset) || type == typeof(DateOnly) ||
+            type == typeof(TimeOnly)
             || type == typeof(TimeSpan) || type == typeof(Guid))
             return true;
         if (type.IsArray) return IsPlainData(type.GetElementType()!, seen);
@@ -146,11 +159,13 @@ public static partial class PackConvertibility
         Type? sequence = type.GetInterfaces().Prepend(type)
             .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>));
         if (sequence is not null) return IsPlainData(sequence.GetGenericArguments()[0], seen);
-        if (type.Namespace is null || type.Namespace == "System" || type.Namespace.StartsWith("System.", StringComparison.Ordinal)
+        if (type.Namespace is null || type.Namespace == "System" ||
+            type.Namespace.StartsWith("System.", StringComparison.Ordinal)
             || type.IsInterface || type.IsAbstract || typeof(Delegate).IsAssignableFrom(type))
             return false;
         if (!seen.Add(type)) return true;
-        return type.GetProperties(BindingFlags.Public | BindingFlags.Instance).All(p => IsPlainData(p.PropertyType, seen));
+        return type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+            .All(p => IsPlainData(p.PropertyType, seen));
     }
 
     private static string TypeName(Type type) =>

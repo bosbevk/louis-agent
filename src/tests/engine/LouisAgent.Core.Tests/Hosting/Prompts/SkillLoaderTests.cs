@@ -77,7 +77,7 @@ public class SkillLoaderTests
     {
         Assert.Multiple(() =>
         {
-            Assert.That(ToolsetCatalog.Find(CoreToolset.Agents.Wire())?.GuideFile, Is.EqualTo("toolsets/agents.md"));
+            Assert.That(ToolsetCatalog.Find(CoreToolset.Agents.Wire())?.Skill, Is.EqualTo(CoreToolset.Agents.Wire()));
             Assert.That(ToolsetCatalog.Find(PromptFolder.Subagents.Wire()), Is.Null);
         });
     }

@@ -1,4 +1,5 @@
 using LouisAgent.Choices;
+using LouisAgent.Composition.Packs;
 using LouisAgent.Packs.Site.Messages;
 using LouisAgent.Packs.Site.Tools;
 using LouisAgent.Testing.Messages;
@@ -17,14 +18,16 @@ public class SitePackTests
     {
         var pack = new SitePack();
 
-        using var reader = new StreamReader(pack.Prompts.GetFileInfo(pack.Toolsets[0].GuideFile!).CreateReadStream());
+        using var reader =
+            new StreamReader(
+                pack.Prompts.GetFileInfo(PackToolset.SkillFile(pack.Toolsets[0].Skill!)).CreateReadStream());
         string guide = reader.ReadToEnd();
 
         Assert.Multiple(() =>
         {
             Assert.That(pack.Name, Is.EqualTo(SiteToolset.Site.Wire()));
             Assert.That(pack.Toolsets.Select(t => t.Name), Is.EqualTo(new[] { SiteToolset.Site.Wire() }));
-            Assert.That(pack.Toolsets[0].GuideFile, Is.EqualTo("toolsets/site.md"));
+            Assert.That(pack.Toolsets[0].Skill, Is.EqualTo(SiteToolset.Site.Wire()));
             Assert.That(guide, Does.Contain("ShowPage").And.Contain("one line"));
         });
     }
@@ -38,7 +41,9 @@ public class SitePackTests
     public void TheGuide_KnowsAPieceAndTheSelectedOne()
     {
         var pack = new SitePack();
-        using var reader = new StreamReader(pack.Prompts.GetFileInfo(pack.Toolsets[0].GuideFile!).CreateReadStream());
+        using var reader =
+            new StreamReader(
+                pack.Prompts.GetFileInfo(PackToolset.SkillFile(pack.Toolsets[0].Skill!)).CreateReadStream());
         string guide = string.Join(' ', reader.ReadToEnd().Split((char[])[' ', '\r', '\n'],
             StringSplitOptions.RemoveEmptyEntries));
 

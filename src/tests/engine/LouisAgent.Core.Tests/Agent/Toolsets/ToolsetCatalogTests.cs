@@ -29,7 +29,7 @@ public class ToolsetCatalogTests
     [Test]
     public void OnlyTheWebAndTheShops_RunInParallel()
     {
-        var shops = new ToolsetDefinition(SampleToolset.Beta, "a pack's", GuideFile: null, MissingSettings: _ => [],
+        var shops = new ToolsetDefinition(SampleToolset.Beta, "a pack's", Skill: null, MissingSettings: _ => [],
             CreateTools: _ => [], ParallelSafe: true);
         Assert.That(ToolsetCatalog.All.Where(t => t.ParallelSafe), Is.Empty, "core's own hand work on");
         Assert.That(
