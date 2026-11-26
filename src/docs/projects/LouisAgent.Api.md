@@ -311,7 +311,10 @@ A failure becomes an `error` event in Claude's shape, with the turn's `usage` if
 failure, and `replay_miss_error` when the engine's replay had no recorded answer (`ModelReplayMissException`, mapped
 by `Sessions/Streaming/StreamErrorKinds`). So a client can tell a replay miss from the agent's own failure.
 
-`/tools`, `/approve`, `/reject` and `/usage` are answered without the model.
+`/tools`, `/approve`, `/reject` and `/usage` are answered without the model, for whoever runs the agent. A site
+visitor's chat is the exception: the open door tags it as the door's for the ledger, and a session so tagged
+(`AgentSession.FromAVisitor`) sends those words to the model like any other message, so a visitor never sees the
+operator's commands or what they report. An operator's run through the door, an eval's, goes untagged and keeps them.
 
 When the host turns the engine's `STREAM_PACE` on, the engine hands out the turn's text at a steady pace in whole
 words, and the API says so: it answers the turn with the header `Stream-Paced: on` (`ApiHeaders.StreamPaced`), before

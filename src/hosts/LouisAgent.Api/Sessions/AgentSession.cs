@@ -1,3 +1,4 @@
+using LouisAgent.Api.Endpoints.Sessions;
 using LouisAgent.Api.Sessions.Files;
 using LouisAgent.Api.Sessions.Store;
 using LouisAgent.Api.Sessions.Streaming;
@@ -58,6 +59,12 @@ internal sealed class AgentSession(
 
     /// <summary>Marks the session as the admin's own.</summary>
     public void MarkFromTheAdmin() => FromTheAdmin = true;
+
+    /// <summary>
+    /// Whether a site visitor opened it: the open door admitted it and tagged it as the door's (F109.3). An operator's
+    /// run through the door goes untagged, so it isn't one. A visitor never gets the operator's commands (FX255).
+    /// </summary>
+    public bool FromAVisitor => Tags.Service == SessionHandlers.OpenDoorService;
 
     /// <summary>
     /// The format this session's events are written in, chosen when it opened and kept for its lifetime (F18 step 1f).
