@@ -93,6 +93,20 @@ internal static class SessionStoreContract
     public static async Task AnUnknownChat_LoadsAsNone(ISessionStore store) =>
         Assert.That(await store.LoadAsync("sess_unknown"), Is.Null);
 
+    /// <summary>
+    /// A turn is written once: a second turn under a number the chat already keeps is refused, and the first stays
+    /// (FX256: MongoDB refuses it by its id, so every store does).
+    /// </summary>
+    public static async Task ATurnNumberAlreadyKept_IsRefused(ISessionStore store)
+    {
+        await store.SaveOpeningAsync(Opening("sess_d"));
+        await store.AppendTurnAsync("sess_d", Turn(1, "first"));
+
+        Assert.That(async () => await store.AppendTurnAsync("sess_d", Turn(1, "again")), Throws.Exception);
+        var saved = (await store.LoadAsync("sess_d"))!;
+        Assert.That(saved.Turns.Select(turn => turn.Messages[0].Text), Is.EqualTo(new[] { "first" }));
+    }
+
     /// <summary>A delete forgets the chat and its turns, and deleting one the store never had is no error.</summary>
     public static async Task ADelete_ForgetsTheChatAndItsTurns(ISessionStore store)
     {

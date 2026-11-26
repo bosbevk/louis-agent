@@ -2,6 +2,7 @@ using LouisAgent.Composition.Messages;
 using System.ComponentModel;
 using LouisAgent.Api.Messages.Holes.Lookups;
 using LouisAgent.Api.Messages.Holes.Opening;
+using LouisAgent.Api.Messages.Holes.Turns;
 
 namespace LouisAgent.Api.Messages;
 // The message enums (src/docs/CLAUDE.md, *Messages and logging*). Each member is named for what happened, and its
@@ -69,4 +70,8 @@ public enum ApiErrorMessage
         "SESSION_RETENTION is how long an idle chat is kept, a .NET duration above zero, such as 30.00:00:00 for " +
         "30 days.")]
     SessionRetentionInvalid,
+
+    [Description("Turn {Number} of {Session} is already kept; a turn is written once.")]
+    [Holes(typeof(KeptTurnHoles))]
+    TurnAlreadyKept,
 }

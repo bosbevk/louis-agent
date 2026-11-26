@@ -134,8 +134,8 @@ internal sealed class AgentSession(
 
     /// <summary>
     /// Brings back a chat read from the store (F43.1): the system prompt it was saved with, today's tools and whether
-    /// they moved since its turns were sent, its turns' messages in order, their text attachments, and its turn count,
-    /// so its next turn runs as if nothing happened.
+    /// they moved since its turns were sent, its turns' messages in order, their text attachments, and its turn count
+    /// from its newest kept turn's number, so its next turn runs as if nothing happened and is kept under a new number.
     /// </summary>
     public void Restore(SavedSession saved)
     {
@@ -145,7 +145,7 @@ internal sealed class AgentSession(
         Conversation = Engine.ResumeConversation(saved.Session.SystemPrompt, savedTools, said);
         foreach (var (name, content) in turns.SelectMany(turn => turn.Attachments)) Remember(name, content);
 
-        Turns = turns.Count;
+        Turns = saved.LastTurnNumber;
     }
 
     /// <summary>Keeps an attachment for later turns; the same name again replaces it.</summary>

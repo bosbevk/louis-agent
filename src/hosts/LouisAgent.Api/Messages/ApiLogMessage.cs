@@ -35,4 +35,8 @@ public enum ApiLogMessage
                  + "the next deploy")]
     [Holes(typeof(PagePrerenderFailedHoles))]
     PagePrerenderFailed,
+
+    [Description("Turn {Number} of {Session} couldn't be kept, so a restart won't bring it back; the chat goes on")]
+    [Holes(typeof(KeptTurnHoles))]
+    TurnNotKept,
 }
