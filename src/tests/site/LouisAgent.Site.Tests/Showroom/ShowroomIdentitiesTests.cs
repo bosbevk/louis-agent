@@ -1,7 +1,7 @@
 using LouisAgent.Choices;
 using LouisAgent.Composition.Prompts;
 using LouisAgent.Composition.Packs;
-using LouisAgent.Core.Skills.Roles;
+using LouisAgent.Core.Prompting.Roles;
 using LouisAgent.Identities.Showroom;
 using LouisAgent.SiteApi;
 

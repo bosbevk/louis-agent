@@ -7,9 +7,9 @@ using LouisAgent.Core.Agent.Messages.Holes.Catalog;
 using LouisAgent.Core.Agent.Toolsets;
 using System.ComponentModel;
 using System.Reflection;
-using LouisAgent.Core.Skills;
 using LouisAgent.Core.Agent.EngineTools.Clock;
 using LouisAgent.Core.Agent.EngineTools.Skills;
+using LouisAgent.Core.Prompting;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.FileProviders;
 

@@ -2,7 +2,7 @@ using LouisAgent.Api.Sessions;
 using LouisAgent.Api.Sessions.Log;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent;
-using LouisAgent.Core.Skills.Providers;
+using LouisAgent.Core.Prompting.Providers;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.SessionStream.Wire.Requests;
 using Microsoft.Extensions.AI;

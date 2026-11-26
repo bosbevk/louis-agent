@@ -4,8 +4,8 @@ using LouisAgent.Core.Agent.Toolsets;
 using System.Text.RegularExpressions;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting.Prompts;
-using LouisAgent.Core.Skills;
-using LouisAgent.Core.Skills.Roles;
+using LouisAgent.Core.Prompting;
+using LouisAgent.Core.Prompting.Roles;
 
 namespace LouisAgent.Core.Tests.Hosting.Prompts;
 

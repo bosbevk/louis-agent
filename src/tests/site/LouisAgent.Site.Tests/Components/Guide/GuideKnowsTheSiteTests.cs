@@ -1,7 +1,7 @@
 using LouisAgent.Choices;
 using LouisAgent.Composition.Prompts;
 using System.Reflection;
-using LouisAgent.Core.Skills;
+using LouisAgent.Core.Prompting;
 using LouisAgent.Identities.Guide;
 using Microsoft.AspNetCore.Components;
 using LouisAgent.Site.Pages;

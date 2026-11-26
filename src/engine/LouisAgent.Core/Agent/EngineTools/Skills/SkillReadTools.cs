@@ -3,8 +3,8 @@ using System.ComponentModel;
 using LouisAgent.Core.Agent.EngineTools.Skills.Messages;
 using LouisAgent.Core.Agent.EngineTools.Skills.Messages.Holes;
 using LouisAgent.Core.Messages;
-using LouisAgent.Core.Skills.Headers;
-using LouisAgent.Core.Skills.Headers.Identities;
+using LouisAgent.Core.Prompting.Headers;
+using LouisAgent.Core.Prompting.Headers.Identities;
 
 namespace LouisAgent.Core.Agent.EngineTools.Skills;
 

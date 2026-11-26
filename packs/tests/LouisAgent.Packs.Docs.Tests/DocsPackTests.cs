@@ -1,6 +1,6 @@
 using System.Reflection;
 using LouisAgent.Choices;
-using LouisAgent.Core.Skills;
+using LouisAgent.Core.Prompting;
 using LouisAgent.Packs.Docs;
 using LouisAgent.Packs.Docs.Tools;
 

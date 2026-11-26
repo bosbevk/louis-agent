@@ -1,5 +1,5 @@
 using LouisAgent.Core.Agent.Commands;
-using LouisAgent.Core.Skills.Headers.Agent.Library;
+using LouisAgent.Core.Prompting.Headers.Agent.Library;
 
 namespace LouisAgent.Core.Tests.Agent.Commands;
 

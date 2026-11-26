@@ -4,8 +4,8 @@ using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Agent.Messages;
 using LouisAgent.Core.Logging;
-using LouisAgent.Core.Skills;
 using LouisAgent.Core.Delegation.Agents;
+using LouisAgent.Core.Prompting;
 using Microsoft.Extensions.Logging;
 
 namespace LouisAgent.Core.Agent.Toolsets;

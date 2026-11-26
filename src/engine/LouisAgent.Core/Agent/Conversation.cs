@@ -1,7 +1,7 @@
 using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Messages;
-using LouisAgent.Core.Skills.Messages;
-using LouisAgent.Core.Skills.Messages.Holes.Door;
+using LouisAgent.Core.Prompting.Messages;
+using LouisAgent.Core.Prompting.Messages.Holes.Door;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Core.Agent;

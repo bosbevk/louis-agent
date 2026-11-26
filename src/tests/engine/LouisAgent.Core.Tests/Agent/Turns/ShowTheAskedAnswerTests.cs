@@ -2,7 +2,7 @@ using LouisAgent.Composition.Packs;
 using LouisAgent.Composition.Sessions;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Delegation.Agents;
-using LouisAgent.Core.Skills.Providers;
+using LouisAgent.Core.Prompting.Providers;
 using Microsoft.Extensions.AI;
 using static LouisAgent.Core.Tests.Delegation.FakePeer;
 

@@ -2,11 +2,11 @@ using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Messages.Holes.Drafts;
 using LouisAgent.Core.Pricing.Rates;
-using LouisAgent.Core.Skills.Headers.Agent;
-using LouisAgent.Core.Skills.Headers.Agent.Drafting;
-using LouisAgent.Core.Skills.Headers.Agent.Library;
-using LouisAgent.Core.Skills.Messages;
-using LouisAgent.Core.Skills.Messages.Holes.Door;
+using LouisAgent.Core.Prompting.Headers.Agent;
+using LouisAgent.Core.Prompting.Headers.Agent.Drafting;
+using LouisAgent.Core.Prompting.Headers.Agent.Library;
+using LouisAgent.Core.Prompting.Messages;
+using LouisAgent.Core.Prompting.Messages.Holes.Door;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Reports;
 

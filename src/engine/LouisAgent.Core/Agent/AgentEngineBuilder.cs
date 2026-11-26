@@ -4,8 +4,8 @@ using LouisAgent.Core.Llm.Thinking;
 using LouisAgent.Core.Llm.UsageMapping;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Pricing.Rates;
+using LouisAgent.Core.Prompting;
 using LouisAgent.Core.Sessions.Replay.Store;
-using LouisAgent.Core.Skills;
 using LouisAgent.Core.Usage.Sinks;
 using Microsoft.Extensions.AI;
 

@@ -12,9 +12,9 @@ using LouisAgent.Core.Llm;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Pricing.Prices;
 using LouisAgent.Core.Pricing.Rates;
+using LouisAgent.Core.Prompting;
+using LouisAgent.Core.Prompting.Roles;
 using LouisAgent.Core.Sessions.Replay.Store;
-using LouisAgent.Core.Skills;
-using LouisAgent.Core.Skills.Roles;
 using Microsoft.Extensions.Logging;
 
 namespace LouisAgent.Core.Hosting;

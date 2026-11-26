@@ -1,7 +1,7 @@
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Prompts;
 using LouisAgent.Choices;
-using LouisAgent.Core.Skills.Headers;
+using LouisAgent.Core.Prompting.Headers;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace LouisAgent.Api.Endpoints.Admin.Prompts;

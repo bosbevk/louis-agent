@@ -110,6 +110,7 @@ known limitations below are facts about today, not tasks.
 | F174 | Gmail for a business's agent: a `google-gmail` toolset, a reply drafted for the owner to send, never sent by the agent; restricted scopes, so Google's security assessment comes first; was F157.6, planned when a buyer asks | Later | — |
 | F175 | Visitors connect their own Google: a try-it on the Integrations section with a visitor's own sheet, once Google has verified the app, with a privacy notice (POPIA, F145); was F157.7, after F157.4 | Later | — |
 | F178 | Skills over MCP as SEP-2640 has it: the MCP host serves each approved skill's files as `skill://` resources and answers `skills/list` and `skills/get`, once the C# SDK's skills package (reported in 2.4.0, experimental MCPEXP005) is stable; a package upgrade and a new package, each on its own card | Later | — |
+| F179 | The coding agent sees an image or a PDF you attach: today the model gets only its name and no pack's tool reads it (F171.1); research what it costs to put it in the message it came with against a general tool that reads an attachment, then three options | Next, after F97.1 | — |
 | CL34 | The work email out of git history | Cleanups | — |
 | CL35 | `Web/Browsing/RedirectBodies` goes when a PuppeteerSharp release awaits its own redirect body ta… | Cleanups | — |
 | CL36 | Design docs for the four projects that have none | Cleanups | [doc](src/docs/projects/README.md) |

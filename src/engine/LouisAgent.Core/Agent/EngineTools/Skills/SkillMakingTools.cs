@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using System.Text.Json;
 using LouisAgent.Core.Agent.Turns;
-using LouisAgent.Core.Skills.Headers.Agent.Drafting;
+using LouisAgent.Core.Prompting.Headers.Agent.Drafting;
 
 namespace LouisAgent.Core.Agent.EngineTools.Skills;
 

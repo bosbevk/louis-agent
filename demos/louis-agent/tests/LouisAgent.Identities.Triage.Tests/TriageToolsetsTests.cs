@@ -1,4 +1,4 @@
-using LouisAgent.Core.Skills.Headers;
+using LouisAgent.Core.Prompting.Headers;
 
 namespace LouisAgent.Identities.Triage.Tests;
 

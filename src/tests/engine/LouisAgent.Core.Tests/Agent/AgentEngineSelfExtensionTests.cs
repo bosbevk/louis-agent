@@ -1,7 +1,7 @@
 using System.Reflection;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Config;
-using LouisAgent.Core.Skills.Providers;
+using LouisAgent.Core.Prompting.Providers;
 using LouisAgent.Testing;
 
 namespace LouisAgent.Core.Tests.Agent;

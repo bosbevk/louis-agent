@@ -7,8 +7,8 @@ using LouisAgent.Composition.Messages;
 using System.Reflection;
 using LouisAgent.Core.Config.Messages;
 using LouisAgent.Testing.Messages;
-using LouisAgent.Core.Skills.Messages;
 using LouisAgent.Composition.Web.Messages;
+using LouisAgent.Core.Prompting.Messages;
 using LouisAgent.Core.Web.Messages;
 
 namespace LouisAgent.Core.Tests.Messages;

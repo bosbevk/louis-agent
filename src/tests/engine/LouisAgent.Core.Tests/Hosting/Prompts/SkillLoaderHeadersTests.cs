@@ -2,13 +2,14 @@ using LouisAgent.Testing;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting.Prompts;
-using LouisAgent.Core.Skills;
-using LouisAgent.Core.Skills.Roles;
+using LouisAgent.Core.Prompting;
+using LouisAgent.Core.Prompting.Headers;
+using LouisAgent.Core.Prompting.Roles;
 
 namespace LouisAgent.Core.Tests.Hosting.Prompts;
 
 /// <summary>
-/// CL27: the loader reads a built-in prompt's header through <see cref="LouisAgent.Core.Skills.Headers.PromptCatalog"/>
+/// CL27: the loader reads a built-in prompt's header through <see cref="PromptCatalog"/>
 /// and hands the model only the body; a session asks it for the toolsets its role always loads (F33, now under the
 /// header's <c>metadata</c>).
 /// </summary>

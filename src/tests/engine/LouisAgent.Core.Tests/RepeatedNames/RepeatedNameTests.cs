@@ -26,7 +26,7 @@ public class RepeatedNameTests
     private static readonly string[] EnumFiles =
     [
         "src/engine/LouisAgent.Core/Agent/Toolsets/CoreToolset.cs",
-        "src/engine/LouisAgent.Core/Skills/Languages/ScriptLanguage.cs",
+        "src/engine/LouisAgent.Core/Prompting/Languages/ScriptLanguage.cs",
         "packs/tools/LouisAgent.Packs.Calculator/CalculatorToolset.cs",
         "src/web/LouisAgent.Web/Api/AskedToolset.cs",
         "src/web/LouisAgent.Web/Api/ScriptLanguage.cs",

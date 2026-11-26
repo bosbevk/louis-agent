@@ -4,12 +4,12 @@ using LouisAgent.Core.Agent.Turns;
 using LouisAgent.Core.Llm.UsageMapping;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Sinks;
-using LouisAgent.Core.Skills;
-using LouisAgent.Core.Skills.Providers;
+using LouisAgent.Core.Prompting;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Agent.Turns.Guards;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Anthropic;
+using LouisAgent.Core.Prompting.Providers;
 
 namespace LouisAgent.Core.Tests.Agent;
 

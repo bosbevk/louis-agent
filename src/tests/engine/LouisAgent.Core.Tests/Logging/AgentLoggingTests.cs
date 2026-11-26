@@ -5,8 +5,8 @@ using LouisAgent.Core.Logging.Messages;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Hosting.Messages;
 using LouisAgent.Core.Hosting.Messages.Holes;
-using LouisAgent.Core.Skills.Messages;
-using LouisAgent.Core.Skills.Messages.Holes.Library;
+using LouisAgent.Core.Prompting.Messages;
+using LouisAgent.Core.Prompting.Messages.Holes.Library;
 using Microsoft.Extensions.Logging;
 
 namespace LouisAgent.Core.Tests.Logging;

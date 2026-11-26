@@ -5,7 +5,7 @@ using LouisAgent.Choices;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Llm.Replay;
-using LouisAgent.Core.Skills.Providers;
+using LouisAgent.Core.Prompting.Providers;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.SessionStream;
 using Microsoft.Extensions.AI;

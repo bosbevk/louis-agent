@@ -1,4 +1,3 @@
-using LouisAgent.Core.Skills;
 using LouisAgent.Identities.Coding;
 using LouisAgent.Composition.Logging;
 using LouisAgent.Composition.Logging.Content;
@@ -16,6 +15,7 @@ using LouisAgent.Core.Telemetry;
 using LouisAgent.Core.Anthropic;
 using LouisAgent.Core.Ollama;
 using LouisAgent.Core.OpenAi;
+using LouisAgent.Core.Prompting;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Reports;
 using LouisAgent.Orchestrator;

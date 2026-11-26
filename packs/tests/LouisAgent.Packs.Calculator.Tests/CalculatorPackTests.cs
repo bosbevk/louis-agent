@@ -1,5 +1,5 @@
 using LouisAgent.Choices;
-using LouisAgent.Core.Skills;
+using LouisAgent.Core.Prompting;
 using LouisAgent.Packs.Calculator.Tools;
 
 namespace LouisAgent.Packs.Calculator.Tests;

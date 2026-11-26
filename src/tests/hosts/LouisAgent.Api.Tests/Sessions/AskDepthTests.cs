@@ -5,8 +5,8 @@ using LouisAgent.Api.Testing;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Config;
+using LouisAgent.Core.Prompting.Roles;
 using LouisAgent.Core.Sessions;
-using LouisAgent.Core.Skills.Roles;
 using LouisAgent.Core.Usage.Records;
 using static LouisAgent.Api.Tests.Sessions.AgentSessionsTests;
 

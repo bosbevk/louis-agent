@@ -1,7 +1,7 @@
 using LouisAgent.Testing;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Hosting.Engines;
-using LouisAgent.Core.Skills;
+using LouisAgent.Core.Prompting;
 
 namespace LouisAgent.Core.Tests.Hosting.Engines;
 

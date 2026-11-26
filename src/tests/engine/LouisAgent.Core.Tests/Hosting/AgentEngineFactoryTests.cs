@@ -4,9 +4,9 @@ using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
-using LouisAgent.Core.Skills;
+using LouisAgent.Core.Prompting;
+using LouisAgent.Core.Prompting.Roles;
 using LouisAgent.Core.Sessions.Replay;
-using LouisAgent.Core.Skills.Roles;
 
 namespace LouisAgent.Core.Tests.Hosting;
 

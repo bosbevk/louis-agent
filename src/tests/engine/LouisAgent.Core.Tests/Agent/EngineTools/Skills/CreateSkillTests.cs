@@ -3,9 +3,9 @@ using LouisAgent.Composition.Tools;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Agent.EngineTools.Skills;
 using LouisAgent.Core.Agent.Turns;
-using LouisAgent.Core.Skills.Headers.Agent.Drafting;
-using LouisAgent.Core.Skills.Headers.Agent.Running;
-using LouisAgent.Core.Skills.Languages;
+using LouisAgent.Core.Prompting.Headers.Agent.Drafting;
+using LouisAgent.Core.Prompting.Headers.Agent.Running;
+using LouisAgent.Core.Prompting.Languages;
 
 namespace LouisAgent.Core.Tests.Agent.EngineTools.Skills;
 

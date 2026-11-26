@@ -1,4 +1,4 @@
-using LouisAgent.Core.Skills;
+using LouisAgent.Core.Prompting;
 using LouisAgent.Packs.Docs;
 
 // A test assembly registers the prompts its pack brings before the first is read, as a host's Build does with the

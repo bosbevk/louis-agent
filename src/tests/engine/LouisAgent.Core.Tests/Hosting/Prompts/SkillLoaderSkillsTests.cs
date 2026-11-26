@@ -1,8 +1,8 @@
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting.Prompts;
-using LouisAgent.Core.Skills;
-using LouisAgent.Core.Skills.Headers;
-using LouisAgent.Core.Skills.Headers.Identities;
+using LouisAgent.Core.Prompting;
+using LouisAgent.Core.Prompting.Headers;
+using LouisAgent.Core.Prompting.Headers.Identities;
 
 namespace LouisAgent.Core.Tests.Hosting.Prompts;
 

@@ -10,11 +10,11 @@ using LouisAgent.Core.Delegation.Messages;
 using LouisAgent.Core.Hosting.Messages;
 using LouisAgent.Core.Hosting.Messages.Holes;
 using LouisAgent.Core.Logging;
-using LouisAgent.Core.Skills;
-using LouisAgent.Core.Skills.Headers;
-using LouisAgent.Core.Skills.Headers.Identities;
-using LouisAgent.Core.Skills.Providers;
-using LouisAgent.Core.Skills.Roles;
+using LouisAgent.Core.Prompting;
+using LouisAgent.Core.Prompting.Headers;
+using LouisAgent.Core.Prompting.Headers.Identities;
+using LouisAgent.Core.Prompting.Providers;
+using LouisAgent.Core.Prompting.Roles;
 using Microsoft.Extensions.Logging;
 
 namespace LouisAgent.Core.Hosting.Prompts;

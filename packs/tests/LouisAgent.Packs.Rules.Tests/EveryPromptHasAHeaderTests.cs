@@ -1,9 +1,9 @@
 using LouisAgent.Choices;
 using LouisAgent.Composition.Prompts;
 using LouisAgent.Composition.Packs;
-using LouisAgent.Core.Skills;
-using LouisAgent.Core.Skills.Headers;
-using LouisAgent.Core.Skills.Roles;
+using LouisAgent.Core.Prompting;
+using LouisAgent.Core.Prompting.Headers;
+using LouisAgent.Core.Prompting.Roles;
 
 namespace LouisAgent.Packs.Rules.Tests;
 

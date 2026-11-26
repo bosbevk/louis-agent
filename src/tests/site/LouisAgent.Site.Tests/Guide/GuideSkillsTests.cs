@@ -1,8 +1,8 @@
 using LouisAgent.Choices;
 using LouisAgent.Composition.Prompts;
 using System.Reflection;
-using LouisAgent.Core.Skills;
-using LouisAgent.Core.Skills.Headers;
+using LouisAgent.Core.Prompting.Headers;
+using LouisAgent.Core.Prompting;
 using LouisAgent.Identities.Guide;
 using LouisAgent.Packs.Site;
 using LouisAgent.Site.Pages;

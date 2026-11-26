@@ -31,7 +31,7 @@ public partial class ArchitectureTests
         ["Delegation"] = 2,
         ["Web"] = 2,
         ["Sessions"] = 2,
-        ["Skills"] = 2,
+        ["Prompting"] = 2,
         ["Usage"] = 2,
         ["Pricing"] = 2,
         ["Protocols"] = 2,
@@ -109,32 +109,32 @@ public partial class ArchitectureTests
     }
 
     /// <summary>
-    /// Inside Skills/, the top never uses its subfolders, and Providers/ and Roles/ use only the top, never each other,
-    /// so no cycle hides under the layers.
+    /// Inside Prompting/, the top never uses its subfolders, and Providers/ and Roles/ use only the top, never each
+    /// other, so no cycle hides under the layers.
     /// </summary>
     /// <remarks>
     /// SkillFiles once used RoleCatalog while RoleCatalog read SkillFileSource, a cycle the layer rule can't see
     /// (CL13). Two folders every part may use: Messages/, because its enums are texts, not code under test, and
-    /// Languages/, a leaf that uses nothing of core (the script languages a fence can name). This is for Skills only:
-    /// elsewhere a factory at a seam's top (Tools/Shops) may create its providers.
+    /// Languages/, a leaf that uses nothing of core (the script languages a skill may be in). This is for Prompting
+    /// only: elsewhere a factory at a seam's top (Tools/Shops) may create its providers.
     /// </remarks>
     [Test]
-    public void InsideSkills_TheTopUsesNothingBelow_AndItsFoldersOnlyTheTop()
+    public void InsidePrompting_TheTopUsesNothingBelow_AndItsFoldersOnlyTheTop()
     {
-        string skills = Path.Combine(TestPaths.RepoRoot, "src", "engine", "LouisAgent.Core", "Skills");
+        string prompting = Path.Combine(TestPaths.RepoRoot, "src", "engine", "LouisAgent.Core", "Prompting");
         var found = new List<string>();
-        foreach (string path in Directory.EnumerateFiles(skills, "*.cs", SearchOption.AllDirectories))
+        foreach (string path in Directory.EnumerateFiles(prompting, "*.cs", SearchOption.AllDirectories))
         {
-            string file = Path.GetRelativePath(skills, path).Replace('\\', '/');
+            string file = Path.GetRelativePath(prompting, path).Replace('\\', '/');
             string folder = Path.GetDirectoryName(file)!.Replace('\\', '/');
-            foreach (string used in SkillsUsing().Matches(File.ReadAllText(path)).Select(u => u.Groups[1].Value)
+            foreach (string used in PromptingUsing().Matches(File.ReadAllText(path)).Select(u => u.Groups[1].Value)
                          .Distinct())
                 if (used != folder && used is not ("Messages" or "Languages"))
-                    found.Add($"Skills/{file} uses Skills.{used}");
+                    found.Add($"Prompting/{file} uses Prompting.{used}");
         }
 
         Assert.That(found, Is.Empty,
-            "Skills/: the top uses nothing below it except Messages/ and Languages/; " +
+            "Prompting/: the top uses nothing below it except Messages/ and Languages/; " +
             "Providers/ and Roles/ use only the top, Messages/ and Languages/");
     }
 
@@ -513,9 +513,12 @@ public partial class ArchitectureTests
     [GeneratedRegex(@"\[Description\((.*?)\)\]", RegexOptions.Singleline)]
     private static partial Regex DescriptionText();
 
-    /// <summary>The Skills/ subfolder a using reaches into.</summary>
-    [GeneratedRegex(@"^using\s+LouisAgent\.Core\.Skills\.(\w+)\s*;", RegexOptions.Multiline)]
-    private static partial Regex SkillsUsing();
+    /// <summary>
+    /// The Prompting/ subfolder a using reaches into: <c>using LouisAgent.Core.Prompting.Roles;</c> gives Roles;
+    /// <c>using LouisAgent.Core.Prompting;</c> matches nothing.
+    /// </summary>
+    [GeneratedRegex(@"^using\s+LouisAgent\.Core\.Prompting\.(\w+)\s*;", RegexOptions.Multiline)]
+    private static partial Regex PromptingUsing();
 
     /// <summary>A file's file-scoped namespace.</summary>
     [GeneratedRegex(@"^namespace\s+([\w.]+)\s*;", RegexOptions.Multiline)]

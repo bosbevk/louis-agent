@@ -14,8 +14,8 @@ using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Sessions.Replay;
-using LouisAgent.Core.Skills.Roles;
 using LouisAgent.Core.Delegation;
+using LouisAgent.Core.Prompting.Roles;
 using LouisAgent.SessionStream.Wire.Requests;
 
 namespace LouisAgent.Api.Tests.Sessions;

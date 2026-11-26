@@ -336,7 +336,7 @@ the coding agent has in `demos/louis-agent/web/LouisAgent.CodeReview`) is a sepa
 
 A session names its role when it opens, with `"role": "{name}"` on `POST /v1/sessions`, and keeps it, just as it
 keeps its toolsets. A sub-session's role is the address `AskAgent` was given, `acme.estimator`, with no second name
-made from it. In the code a role is `Skills/Roles/RoleCatalog`, its level is `RoleLevel`, and the folders and files a
+made from it. In the code a role is `Prompting/Roles/RoleCatalog`, its level is `RoleLevel`, and the folders and files a
 prompt sits in are the shared enums `PromptFolder` and `PromptFileName` (`LouisAgent.Composition.Prompts`). A session that names
 none gets the first loaded identity's `DefaultVoice`. Prompts are embedded and read only from the assembly, so changing a
 word means rebuilding the images that use the identity.

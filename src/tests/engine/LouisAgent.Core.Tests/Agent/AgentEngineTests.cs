@@ -7,8 +7,8 @@ using System.Text.Json;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Agent.Turns.Guards;
 using LouisAgent.Core.Config;
-using LouisAgent.Core.Skills;
-using LouisAgent.Core.Skills.Providers;
+using LouisAgent.Core.Prompting;
+using LouisAgent.Core.Prompting.Providers;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Web.Search;
 

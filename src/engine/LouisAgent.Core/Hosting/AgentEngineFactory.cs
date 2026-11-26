@@ -15,14 +15,14 @@ using LouisAgent.Core.Agent;
 using LouisAgent.Core.Agent.EngineTools.Skills;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Logging;
-using LouisAgent.Core.Skills;
-using LouisAgent.Core.Skills.Roles;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Sessions.Replay.Store;
 using LouisAgent.Core.Hosting.Messages;
 using LouisAgent.Core.Hosting.Messages.Holes;
+using LouisAgent.Core.Prompting;
+using LouisAgent.Core.Prompting.Roles;
 
 namespace LouisAgent.Core.Hosting;
 

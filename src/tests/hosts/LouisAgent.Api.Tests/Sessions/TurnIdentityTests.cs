@@ -3,7 +3,7 @@ using System.Text.Json;
 using LouisAgent.Api.Sessions;
 using LouisAgent.Composition.Sessions;
 using LouisAgent.Core.Agent;
-using LouisAgent.Core.Skills.Providers;
+using LouisAgent.Core.Prompting.Providers;
 using LouisAgent.Core.Usage.Records;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.AI;

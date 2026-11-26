@@ -1,7 +1,7 @@
 using LouisAgent.Core.Usage.Records;
-using LouisAgent.Core.Skills;
-using LouisAgent.Core.Skills.Providers;
+using LouisAgent.Core.Prompting;
 using LouisAgent.Core.Agent;
+using LouisAgent.Core.Prompting.Providers;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Core.Tests.Usage.Records;

@@ -1,6 +1,6 @@
 using LouisAgent.Choices;
 using LouisAgent.Composition.Prompts;
-using LouisAgent.Core.Skills;
+using LouisAgent.Core.Prompting;
 using LouisAgent.Identities.Guide;
 
 namespace LouisAgent.Site.Tests.Guide;

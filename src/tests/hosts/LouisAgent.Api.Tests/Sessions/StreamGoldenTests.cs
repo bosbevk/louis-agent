@@ -6,11 +6,11 @@ using LouisAgent.Api.Sessions.Streaming;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Sessions.SubSessions;
-using LouisAgent.Core.Skills.Providers;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.SessionStream;
 using Microsoft.Extensions.AI;
 using System.Runtime.CompilerServices;
+using LouisAgent.Core.Prompting.Providers;
 
 namespace LouisAgent.Api.Tests.Sessions;
 
