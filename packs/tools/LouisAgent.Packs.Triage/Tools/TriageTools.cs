@@ -3,6 +3,8 @@ using System.Text.Json;
 using LouisAgent.Choices;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Packs.Triage.Messages;
+using LouisAgent.Packs.Triage.Messages.Holes.Cases;
+using LouisAgent.Packs.Triage.Messages.Holes.Runs;
 using LouisAgent.Packs.Triage.Runs;
 using LouisAgent.Packs.Triage.Runs.Steps;
 using LouisAgent.Packs.Triage.Tools.Choices;
@@ -31,9 +33,10 @@ public sealed class TriageTools(
     Func<bool>? inATrial = null)
 {
     /// <summary>The sorter's ending: which department the error belongs to (F106.3.2).</summary>
-    [Description(
-        "Ends the sorting of an error with the department it belongs to. Call it once, as the last thing you do: the " +
-        "department's name, one of those you were given, and why, in a sentence.")]
+    [Description("""
+                 Ends the sorting of an error with the department it belongs to. Call it once, as the last thing you
+                 do: the department's name, one of those you were given, and why, in a sentence.
+                 """)]
     public async Task<string> SortCase(
         [Description("The run id you were given.")]
         string runId,
@@ -45,8 +48,8 @@ public sealed class TriageTools(
     {
         string? name = departments.FirstOrDefault(d => string.Equals(d, department.Trim(), StringComparison.Ordinal));
         if (name is null) return NotAChoice(department, "department", departments);
-        if (string.IsNullOrWhiteSpace(why))
-            return MessageText.Format(TriageToolMessage.NoReason, new { What = "sorting" });
+        var noReason = new NoReasonHoles("sorting");
+        if (string.IsNullOrWhiteSpace(why)) return MessageText.Format(TriageToolMessage.NoReason, noReason);
 
         var sorting = new Sorting(name, why.Trim());
         return await RecordAsync(runId, TriageAgent.Sorter, TriageStepKind.Sorted,
@@ -54,9 +57,11 @@ public sealed class TriageTools(
     }
 
     /// <summary>The investigator's ending: where the cause is, what it is, whose area, how sure.</summary>
-    [Description(
-        "Ends an investigation with what was found. Call it once, as the last thing you do: where the cause is (a " +
-        "file and method, or a component), what the cause is in one sentence, whose area it is and how sure you are.")]
+    [Description("""
+                 Ends an investigation with what was found. Call it once, as the last thing you do: where the cause is
+                 (a file and method, or a component), what the cause is in one sentence, whose area it is and how sure
+                 you are.
+                 """)]
     public async Task<string> ReportInvestigation(
         [Description("The run id you were given.")]
         string runId,
@@ -74,8 +79,8 @@ public sealed class TriageTools(
             return NotAChoice(area, "department area", SettingChoice.Names<DepartmentArea>());
         if (!SettingChoice.TryParse(confidence, out Confidence? theConfidence) || theConfidence is not { } c)
             return NotAChoice(confidence, "confidence", SettingChoice.Names<Confidence>());
-        if (string.IsNullOrWhiteSpace(cause))
-            return MessageText.Format(TriageToolMessage.NoReason, new { What = "cause" });
+        var noCause = new NoReasonHoles("cause");
+        if (string.IsNullOrWhiteSpace(cause)) return MessageText.Format(TriageToolMessage.NoReason, noCause);
 
         var found = new Investigation(where.Trim(), cause.Trim(), a, c);
         return await RecordAsync(runId, TriageAgent.Investigator, TriageStepKind.Investigated,
@@ -84,9 +89,10 @@ public sealed class TriageTools(
     }
 
     /// <summary>The reviewer's ending: happy or not, with the reasons.</summary>
-    [Description(
-        "Ends a review. Call it once, as the last thing you do: whether the fix is good enough to keep, and your " +
-        "reasons, one per line. A review that isn't happy goes back to the coder through the manager.")]
+    [Description("""
+                 Ends a review. Call it once, as the last thing you do: whether the fix is good enough to keep, and
+                 your reasons, one per line. A review that isn't happy goes back to the coder through the manager.
+                 """)]
     public async Task<string> ReportReview(
         [Description("The run id you were given.")]
         string runId,
@@ -97,7 +103,8 @@ public sealed class TriageTools(
         CancellationToken cancellationToken = default)
     {
         var lines = reasons.Split('\n').Select(line => line.Trim()).Where(line => line.Length > 0).ToList();
-        if (lines.Count == 0) return MessageText.Format(TriageToolMessage.NoReason, new { What = "review" });
+        var noReasons = new NoReasonHoles("review");
+        if (lines.Count == 0) return MessageText.Format(TriageToolMessage.NoReason, noReasons);
 
         var review = new Review(happy, lines);
         string summary = happy ? "The reviewer is happy with the fix." : "The reviewer is not happy with the fix.";
@@ -106,9 +113,13 @@ public sealed class TriageTools(
     }
 
     /// <summary>The manager's ending: what the case gets, and why.</summary>
-    [Description(
-        "Ends the manager's decision on a case. Call it once, as the last thing you do: ignore it, investigate it, " +
-        "give it to a person, let the coder fix it, or hand it to another department; and why, in a sentence.")]
+    [Description("""
+                 Records the manager's decision on a case. Call it once, as the last thing you do: what the case gets,
+                 and why in a sentence that quotes the runbook's rule or Decisions row you applied. A hand-off ends
+                 the run as handed off: the other department has the case with the run's history, so you need no
+                 address for them and deliver nothing yourself. A person needs RaiseToPerson as well, which writes the
+                 case where people read. Ignore, investigate and auto-fix record what you decided.
+                 """)]
     public async Task<string> DecideCase(
         [Description("The run id you were given.")]
         string runId,
@@ -119,8 +130,8 @@ public sealed class TriageTools(
     {
         if (!SettingChoice.TryParse(kind, out CaseDecisionKind? theKind) || theKind is not { } k)
             return NotAChoice(kind, "decision", SettingChoice.Names<CaseDecisionKind>());
-        if (string.IsNullOrWhiteSpace(reason))
-            return MessageText.Format(TriageToolMessage.NoReason, new { What = "decision" });
+        var noReason = new NoReasonHoles("decision");
+        if (string.IsNullOrWhiteSpace(reason)) return MessageText.Format(TriageToolMessage.NoReason, noReason);
 
         var decision = new CaseDecision(k, reason.Trim());
         return await RecordAsync(runId, TriageAgent.Manager, TriageStepKind.Decided,
@@ -131,30 +142,26 @@ public sealed class TriageTools(
     private async Task<string> RecordAsync<T>(string runId, TriageAgent agent, TriageStepKind kind, string summary,
         string why, T result, CancellationToken cancellationToken)
     {
-        if (!PlainId.Is(runId)) return MessageText.Format(TriageToolMessage.BadRunId, new { RunId = runId });
+        var badId = new BadRunIdHoles(runId);
+        if (!PlainId.Is(runId)) return MessageText.Format(TriageToolMessage.BadRunId, badId);
         // An eval's trial has no run behind its fresh session, so there an unknown run starts with this step (Louis's
         // pick A); a real chat's unknown run is a mistyped id, refused so no stray run appears.
         var run = await recorder.ReadAsync(runId, cancellationToken);
         if (run is null && inATrial?.Invoke() == true) run = TriageRun.Of(runId, []);
-        if (run is null) return MessageText.Format(TriageToolMessage.NoSuchRun, new { RunId = runId });
+        var noSuchRun = new NoSuchRunHoles(runId);
+        if (run is null) return MessageText.Format(TriageToolMessage.NoSuchRun, noSuchRun);
 
         var step = new TriageStep(runId, run.Steps.Count + 1, agent, kind, summary, why, time.GetUtcNow(),
             Result: JsonSerializer.Serialize(result, FileTriageRecorder.Json));
         await recorder.SaveAsync(step, cancellationToken);
-        return MessageText.Format(TriageToolMessage.Recorded, new
-        {
-            step.Number,
-            RunId = runId,
-            Summary = summary
-        });
+        var recorded = new RecordedHoles(step.Number, runId, summary);
+        return MessageText.Format(TriageToolMessage.Recorded, recorded);
     }
 
     /// <summary>The refusal for a value that isn't one of the choices, naming them.</summary>
-    private static string NotAChoice(string value, string what, IReadOnlyList<string> options) =>
-        MessageText.Format(TriageToolMessage.NotAChoice, new
-        {
-            Value = value,
-            What = what,
-            Options = string.Join(", ", options)
-        });
+    private static string NotAChoice(string value, string what, IReadOnlyList<string> options)
+    {
+        var notAChoice = new NotAChoiceHoles(value, what, string.Join(", ", options));
+        return MessageText.Format(TriageToolMessage.NotAChoice, notAChoice);
+    }
 }

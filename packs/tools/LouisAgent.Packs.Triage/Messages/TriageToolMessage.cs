@@ -20,6 +20,7 @@ public enum TriageToolMessage
     NoSuchRun,
 
     [Description("'{Value}' is not a {What}: one of {Options}.")]
+    [Holes(typeof(NotAChoiceHoles))]
     NotAChoice,
 
     [Description("A {What} needs a reason, in a sentence.")]
@@ -27,6 +28,7 @@ public enum TriageToolMessage
     NoReason,
 
     [Description("Recorded step {Number} of run {RunId}: {Summary}")]
+    [Holes(typeof(RecordedHoles))]
     Recorded,
 
     [Description("Raised run {RunId} to a person: the case is written at {Path}, and step {Number} says so.")]
