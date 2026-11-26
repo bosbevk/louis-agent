@@ -40,7 +40,7 @@ Check with `PowerShellInfo` before relying on newer features. In 5.1 there is **
 
 ## Skills in PowerShell
 
-Skills can use PowerShell by fencing the execution block with ```powershell. Read skill arguments as `$env:SKILL_ARG_name` — never paste user values into the script.
+A skill's script may be a `.ps1` file. It reads its arguments as one JSON object from stdin (`[Console]::In.ReadToEnd() | ConvertFrom-Json`) and prints its answer — never paste a value into a command. Read the standard with `UseSkill("write-a-skill")` before `CreateSkill`.
 
 ## Rules
 

@@ -23,7 +23,7 @@ namespace LouisAgent.Core.Prompting.Headers.Agent.Running;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
 public sealed class SkillRunner(ScriptRun run)
 {
-    /// <summary>How long a skill's script may run, as long as an agent-built tool's could.</summary>
+    /// <summary>How long a skill's script may run.</summary>
     public static readonly TimeSpan TimeLimit = TimeSpan.FromSeconds(60);
 
     /// <summary>A runner over core's own script runners, each script run from the workspace.</summary>

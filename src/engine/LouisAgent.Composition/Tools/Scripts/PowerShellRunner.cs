@@ -5,7 +5,7 @@ using System.Text;
 namespace LouisAgent.Composition.Tools.Scripts;
 
 /// <summary>
-/// Runs PowerShell for whoever needs it: the powershell tools, and the engine's own skills and agent-built tools.
+/// Runs PowerShell for whoever needs it: the powershell tools, and the scripts of the skills the agent keeps.
 /// It starts PowerShell 7 or, on Windows, 5.1, without profiles or prompts and with UTF-8 output.
 /// </summary>
 /// <remarks>

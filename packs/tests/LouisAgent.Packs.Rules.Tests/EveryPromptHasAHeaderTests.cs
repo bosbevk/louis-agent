@@ -53,6 +53,19 @@ public class EveryPromptHasAHeaderTests
     }
 
     /// <summary>
+    /// F97.1 step 17: no prompt names a tool that's gone, or the way a skill was run before UseSkill, so the model is
+    /// never sent to a call that fails.
+    /// </summary>
+    [TestCase("ExecuteSkill")]
+    [TestCase("CreateSkillFile")]
+    [TestCase("CreateTool")]
+    [TestCase("ListAgentTools")]
+    [TestCase("SKILL_ARG_")]
+    public void NoPrompt_NamesAToolThatIsGone(string gone) =>
+        Assert.That(Prompts().Where(p => p.Text.Contains(gone, StringComparison.Ordinal)).Select(p => p.Path),
+            Is.Empty);
+
+    /// <summary>
     /// Each prompt has a header, which the reader takes: its name is its file's, with its description.
     /// </summary>
     [Test]

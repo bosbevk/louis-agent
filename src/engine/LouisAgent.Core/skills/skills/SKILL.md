@@ -1,28 +1,34 @@
 ---
 name: skills
-description: The skills toolset's guide, loaded with it. How the agent extends itself when no tool fits, the lightest option first.
+description: The skills toolset's guide, loaded with it. How the agent uses its skills and makes a new one when no tool fits, the lightest option first.
 ---
-# Self-Extension Skills
+# Skills
 
-When no existing tool fits the task, you can extend yourself. Pick the lightest option that solves the problem.
+A skill is a folder the person can read and approve: its `SKILL.md`, the JSON Schema of its parameters, and one
+script. `UseSkill` is the one way to every skill: its description lists the approved ones.
 
-## Decide
+## Use a skill
 
-1. **Existing tool?** Check your tool list (and `ListAgentTools`) first. Combining existing tools is better than building new ones.
-2. **One-off need** (answer this question, transform this file once) → just run code with `PythonRun`, `PowerShellRun` or `BashRun`. Don't build anything.
-3. **A repeatable procedure** the user wants to keep ("save this as a skill", a multi-step recipe) → `CreateSkillFile`, then run it with `ExecuteSkill`. The file waits for the user's `/approve <name>` before later sessions load it, as a tool does: ask them to.
-4. **A missing capability you'll call repeatedly**, needing typed inputs (you hit the same gap twice, or you're stuck without it) → `CreateTool`, then call the new tool directly.
+- **Read it first** with `UseSkill(name)` alone: you get how to use it, its parameters and an example.
+- **Run it** with `UseSkill(name, arguments)`, the arguments a JSON object that fits its parameters. A call that
+  doesn't fit is answered with what's wrong and the parameters, and nothing runs.
+- A name you may not use is answered with the ones you may.
 
-## Building a tool with CreateTool
+## Decide before you make one
 
-- Name it for what it does, PascalCase (`CsvSummary`, `ParseJunitXml`), and make the description say when to use it.
-- Declare every input as a typed parameter (`string`, `integer`, `number`, `boolean`); mark optional ones optional. Arguments are validated before your code runs.
-- Read arguments from stdin as JSON (Python: `json.load(sys.stdin)`; PowerShell: `[Console]::In.ReadToEnd() | ConvertFrom-Json`). Never paste argument values into code or shell commands.
-- Print the result, preferably as JSON. On failure write a clear message and exit non-zero.
-- Keep it focused and side-effect free unless modifying something is the tool's purpose; paths are relative to the workspace root.
-- **Test it right away**: call it with realistic arguments, including an edge case. If it fails, fix the definition with `CreateTool(..., overwrite=true)` and call it again.
-- Python packages a tool needs must be installed with `PythonInstallPackages` first; mention them in the description.
+1. **A tool or a skill already does it?** Check your tools and the skills `UseSkill` lists first.
+2. **A one-off need** (answer this question, transform this file once): run code with `PythonRun`,
+   `PowerShellRun` or `BashRun`. Don't make anything.
+3. **A procedure the person wants to keep**, or one you'll call again with other inputs: make a skill with
+   `CreateSkill`.
 
-## Approval
+## Make a skill
 
-New tools work immediately but are **pending**: they disappear after this session unless the user approves them. After building and testing a tool, tell the user its name, what it does, and that they can keep it by typing `/approve <Name>` (or discard it with `/reject <Name>`). You cannot approve tools yourself. Don't rebuild a tool that `ListAgentTools` shows as approved — call it.
+1. Read the standard first: `UseSkill("write-a-skill")`.
+2. Call `CreateSkill` with its name, its `SKILL.md`, its parameters, its script and one example call. It is kept
+   only if the example runs cleanly; otherwise nothing is kept and the answer says what to fix.
+3. Use it at once in this chat with `UseSkill`. It is a draft: no other chat can use it yet.
+4. Tell the person its name, what it does, and that they keep it for every chat by typing `/approve <name>`, or
+   discard it with `/reject <name>`. You cannot approve a skill yourself.
+
+`ReloadSkills` reads the skills folder again, after a skill was added or edited outside the agent.

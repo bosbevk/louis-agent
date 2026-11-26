@@ -5,7 +5,7 @@ using System.Text;
 namespace LouisAgent.Composition.Tools.Scripts;
 
 /// <summary>
-/// Runs Python for whoever needs it: the python tools, and the engine's own skills and agent-built tools. It keeps a
+/// Runs Python for whoever needs it: the python tools, and the scripts of the skills the agent keeps. It keeps a
 /// virtual environment of its own, so installs never touch the system Python or the repository.
 /// </summary>
 /// <remarks>

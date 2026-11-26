@@ -29,7 +29,7 @@ Code runs with the workspace root as the current directory, so relative paths li
 ### Write a reusable script
 1. Save it with `WriteWorkspaceFile` (e.g. `scripts/report.py`), reading inputs from `sys.argv` or stdin rather than hard-coding them.
 2. Run it with `PythonRun` (`scriptPath`, `arguments`) and fix any errors until it succeeds.
-3. If the user wants it as a repeatable skill, wrap it with `CreateSkillFile` (see below).
+3. If the user wants it as a repeatable skill, make one with `CreateSkill` (see below).
 
 ### Debug a failing script
 1. Read the traceback bottom-up: the last line is the exception, the frame just above it is where it happened (inline snippets show as `<snippet>`).
@@ -38,7 +38,7 @@ Code runs with the workspace root as the current directory, so relative paths li
 
 ## Turning a procedure into a skill
 
-`CreateSkillFile` saves an `agents/functions/pending/<name>.md` file in the skills folder and loads it immediately; use `ExecuteSkill` to run it. It stays pending until the user types `/approve <name>` (ask them to), and only then do later sessions load it. Each skill's execution block runs in bash from the workspace root, so call the interpreter there (`python3` in Docker; on Windows the interpreter shown by `PythonInfo`). Read skill arguments only as `"${SKILL_ARG_name}"` (quoted) — never paste user values into the command. Use `ReloadSkills` after editing a skills file by hand.
+Read the standard with `UseSkill("write-a-skill")`, then make it with `CreateSkill`: its script is a `.py` file that reads its arguments as one JSON object from stdin (`json.load(sys.stdin)`) and prints its answer, never pasting a value into a command. It is kept only once its example call runs, and you use it at once with `UseSkill`. It stays a draft until the user types `/approve <name>` (ask them to), and only then do other chats have it. Packages it needs must be installed with `PythonInstallPackages` first.
 
 ## Rules
 

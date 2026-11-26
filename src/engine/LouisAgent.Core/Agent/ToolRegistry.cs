@@ -84,7 +84,7 @@ internal sealed class ToolRegistry(bool supportsTools = true, ReplayStore? repla
     }
 
     /// <summary>
-    /// Whether a tool has this name; agent-built tools compare without case, as their files are named.
+    /// Whether a tool has this name, case ignored.
     /// </summary>
     public bool Contains(string name, StringComparison comparison = StringComparison.Ordinal) =>
         Live.Any(t => t.Name.Equals(name, comparison));

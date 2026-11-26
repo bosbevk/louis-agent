@@ -162,9 +162,8 @@ public sealed class AgentCatalog
     public IReadOnlyList<IFileProvider> Prompts { get; }
 
     /// <summary>
-    /// Every tool name a toolset of this catalogue can register, loaded in an engine or not, case ignored as
-    /// agent-built tools are named: an agent-built tool may not take one, or it would collide when a session loads
-    /// that toolset.
+    /// Every tool name a toolset of this catalogue can register, loaded in an engine or not, case ignored, so no two
+    /// tools a session might load differ only by case.
     /// </summary>
     public IReadOnlySet<string> ToolNames { get; }
 
