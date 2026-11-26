@@ -1,0 +1,27 @@
+{
+  "kind": "flow",
+  "type": "object",
+  "title": "F97 a skill usable in its chat: what one chat holds in memory",
+  "caption": "The engine holds one library; each chat holds its frozen tools, with UseSkill among them, and the names of its own drafts.",
+  "flow": {
+    "nodes": [
+      { "id": "engine", "label": "engine : AgentEngine", "icon": "settings", "tone": "violet" },
+      { "id": "library", "label": "library : SkillLibrary", "icon": "box", "tone": "violet" },
+      { "id": "approved", "label": "approved : Skill[]\nword-count, ...", "icon": "box", "tone": "amber", "shape": "data" },
+      { "id": "runner", "label": "runner : SkillRunner", "icon": "terminal", "tone": "violet" },
+      { "id": "chat", "label": "chat : Conversation", "icon": "message", "tone": "blue" },
+      { "id": "frozen", "label": "tools : FrozenTool[]\nUseSkill, CreateSkill, ...\nSkillTool(word-count) from the next chat", "icon": "code", "tone": "blue", "shape": "data" },
+      { "id": "drafts", "label": "drafts : chat's own\nchar-count", "icon": "box", "tone": "amber", "shape": "data" },
+      { "id": "note", "label": "pending note\n'word-count was approved'", "icon": "message", "tone": "green", "shape": "data" }
+    ],
+    "edges": [
+      { "from": "engine", "to": "library" },
+      { "from": "library", "to": "approved" },
+      { "from": "library", "to": "runner" },
+      { "from": "engine", "to": "chat" },
+      { "from": "chat", "to": "frozen" },
+      { "from": "chat", "to": "drafts" },
+      { "from": "chat", "to": "note" }
+    ]
+  }
+}

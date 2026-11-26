@@ -92,7 +92,7 @@ known limitations below are facts about today, not tasks.
 | F95 | What's left of CL29 | Later | [doc](src/docs/adr/0076-core-ships-no-agent.md) |
 | CL17 | what's left of the coding identity | Later | — |
 | F96 | The browser's user agent names the user's town per visit | Later | — |
-| F97 | A tool added mid-chat, after FX4 | Later | — |
+| F97 | A skill usable in the chat that made it: F97.1 one skill shape (done when an approved skill in the YAML standard is listed by name and runs with JSON on stdin), F97.2 draft, door, approve (done when a chat makes a skill and uses it at once on Haiku 5.5, no 400), F97.3 Claude calls it by name (done when the paid proof is recorded) | Now, F97.1 next | [plan](src/docs/plans/F97-a-skill-usable-in-its-chat.md) |
 | F38 | Tool search, when a measured need comes | Later | — |
 | F136 | How much of an asked agent's work the asker reads, as a framework choice (Louis, 2026-11-11, during F127.3.1: "AskAgentWithTools and AskAgentWithToolsAndThinking"; "we will not use it"): its tool calls, or those and its thinking as text, beside the answer; three options weighed then (one `ReadAgentWork` with a detail level, three tools, one `show` parameter); when a framework user needs it | Later | — |
 | F98 | Planning and a self-check before answering, tried on a simulation first | Later | — |
