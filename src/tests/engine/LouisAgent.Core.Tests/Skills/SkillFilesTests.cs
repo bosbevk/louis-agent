@@ -11,15 +11,19 @@ using LouisAgent.Core.Skills.Roles;
 
 namespace LouisAgent.Core.Tests.Skills;
 
-// src/docs/CLAUDE.md, *Adding a toolset*: our own skill files are plain markdown read by MarkdownSkillProvider, with no
-// provider class each. These check the pattern holds and that the files say what their tools are.
+/// <summary>
+/// Our own skill files are plain markdown read by <c>MarkdownSkillProvider</c>, with no provider class each (core's
+/// guide, *Adding a toolset*), and every path to one is named once, on <c>SkillFiles</c>. These check the pattern
+/// holds, that the files say what their tools are, and where a skill the agent made lives.
+/// </summary>
 public class SkillFilesTests
 {
+    /// <summary>Core's own prompt files, as the assembly embeds them.</summary>
     private static string SkillsDirectory => TestPaths.Prompts;
 
-    private static MarkdownSkillProvider Load(string fileName) =>
-        new(Path.Combine(SkillsDirectory, fileName));
-
+    /// <summary>
+    /// Every toolset has a guide, in <c>toolsets/</c>, that loads with it and the agent can't overwrite.
+    /// </summary>
     [Test]
     public void EveryToolset_HasAGuide_ThatLoadsWithIt_AndCantBeOverwritten()
     {
@@ -38,11 +42,24 @@ public class SkillFilesTests
         }
     }
 
+    /// <summary>The function skills sit in the agent level's folder.</summary>
     [Test]
     public void TheFunctionSkills_AreLevelZeros() =>
         // CL13: written out in SkillFiles, so the top of Skills/ doesn't use Roles/; still the agent level's folder.
         Assert.That(SkillFiles.FunctionsFolder, Does.StartWith(PromptFolder.Agents.Wire() + "/"));
 
+    /// <summary>
+    /// F97.1: a skill the agent made is a folder named for it in the skills folder, and a draft waits in
+    /// <c>drafts/</c>; beside its <c>SKILL.md</c> are its parameters and the example it was proved with.
+    /// </summary>
+    [Test]
+    public void AnAgentsSkill_HasItsFolder_AndADraftWaitsInDrafts() =>
+        Assert.That(
+            (SkillFiles.ApprovedSkill("word-count"), SkillFiles.DraftSkill("word-count"), SkillFiles.ParametersFile,
+                SkillFiles.ExampleFile),
+            Is.EqualTo(("word-count", "drafts/word-count", "parameters.schema.json", "examples/example.json")));
+
+    /// <summary>Only a skill format we don't control would need a provider class of its own.</summary>
     [Test]
     public void NoProviderClassPerSkillFile()
     {
@@ -58,6 +75,7 @@ public class SkillFilesTests
         Assert.That(providers.Select(t => t.Namespace), Has.All.EqualTo("LouisAgent.Core.Skills.Providers"));
     }
 
+    /// <summary>A guide's <c>ExecuteSkill("X")</c> names a procedure that is defined.</summary>
     [Test]
     public void EveryExecuteSkillExample_NamesASkillThatExists()
     {
@@ -76,6 +94,7 @@ public class SkillFilesTests
         Assert.That(dangling, Is.Empty);
     }
 
+    /// <summary>The host's prompt holds each toolset's guide once.</summary>
     [Test]
     public void AgentHostLoadSkills_IncludesEachToolsetGuideOnce()
     {
@@ -86,6 +105,7 @@ public class SkillFilesTests
         Assert.That(Regex.Matches(docs, "# .NET Skills").Count, Is.EqualTo(1));
     }
 
+    /// <summary>No skill pretends to log time.</summary>
     [Test]
     public void TimeLogging_IsGone()
     {

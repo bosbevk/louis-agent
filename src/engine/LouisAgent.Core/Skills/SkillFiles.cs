@@ -28,6 +28,21 @@ public static class SkillFiles
     /// </summary>
     internal const string ParametersFile = "parameters.schema.json";
 
+    /// <summary>The call a skill the agent made was proved with, and its answer (F97.1).</summary>
+    internal const string ExampleFile = "examples/example.json";
+
+    /// <summary>
+    /// Where a skill the agent made waits as a draft, until it is approved or rejected (F97.1): the folder says its
+    /// state, so a draft is never read as approved.
+    /// </summary>
+    internal const string DraftsFolder = "drafts";
+
+    /// <summary>An approved skill's folder in the skills folder: <c>{name}</c> (F97.1).</summary>
+    internal static string ApprovedSkill(string name) => name;
+
+    /// <summary>A draft's folder in the skills folder: <c>drafts/{name}</c> (F97.1).</summary>
+    internal static string DraftSkill(string name) => $"{DraftsFolder}/{name}";
+
     /// <summary>
     /// The principles (ADR 0020): first in every agent's prompt, so nothing later can push them aside.
     /// </summary>
