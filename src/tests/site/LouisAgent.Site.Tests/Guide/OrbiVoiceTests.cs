@@ -1,6 +1,5 @@
 using LouisAgent.Choices;
 using LouisAgent.Composition.Prompts;
-using LouisAgent.Core.Skills;
 using LouisAgent.Identities.Guide;
 
 namespace LouisAgent.Site.Tests.Guide;
@@ -40,9 +39,12 @@ public class OrbiVoiceTests
     /// <summary>
     /// A decision is cards, never a question in words (F127.4.1, Louis: "would have given me three options"): every
     /// walkthrough stop ends with three choices, other choices go as cards too, and a lead is shown as a card and sent
-    /// only on its click.
+    /// only on its click. A stop shows its area on its own and waits, so the card never goes out before the words
+    /// (FX253).
     /// </summary>
-    [TestCase("walk-a-page", "End with `Offer` and three choices: on to the next stop, by its name (suggested)")]
+    [TestCase("walk-a-page", "end with `Offer` and three choices: on to the next stop, by its name (suggested)")]
+    [TestCase("walk-a-page", "Show that area with `ShowPage`, on its own, and wait for it to answer.")]
+    [TestCase("writing", "so it goes last, after your words, in the same reply.")]
     [TestCase("walk-a-page", "Never ask it in words.")]
     [TestCase("take-a-lead", "Show the three back with `ShowCard`")]
     [TestCase("take-a-lead", "When Send it comes back, call the tool once")]

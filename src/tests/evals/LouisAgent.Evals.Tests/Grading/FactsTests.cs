@@ -41,6 +41,19 @@ public class FactsTests
         });
     }
 
+    /// <summary>An answer with words in it meets has-words.</summary>
+    [Test]
+    public void AnAnswerWithWords_MeetsHasWords() =>
+        Assert.That(Tell("has-words", Turn()), Is.EqualTo(new Mark("has-words", true, "The answer has words.")));
+
+    /// <summary>
+    /// An answer of only tool calls doesn't (FX253: a card with no words above it), however much white space it holds.
+    /// </summary>
+    [Test]
+    public void AnAnswerOfOnlyToolCalls_DoesNotMeetHasWords() =>
+        Assert.That(Tell("has-words", Turn(answer: " \n ", calls: [Call("ShowPage"), Call("Offer")])),
+            Is.EqualTo(new Mark("has-words", false, "The answer has no words, only its tool calls.")));
+
     /// <summary>
     /// used goes by the tool's name with the case ignored, and lists the tools in the order they were called.
     /// </summary>

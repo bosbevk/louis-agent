@@ -18,12 +18,16 @@ public enum FactMessage
     [Holes(typeof(EndedWithErrorHoles))]
     EndedWithError,
 
+    [Description("The answer has words.")] AnswerHasWords,
+
+    [Description("The answer has no words, only its tool calls.")]
+    AnswerHasNoWords,
+
     [Description("Tools called: {Tools}.")]
     [Holes(typeof(ToolsCalledHoles))]
     ToolsCalled,
 
-    [Description("No tool was called.")]
-    NoToolCalled,
+    [Description("No tool was called.")] NoToolCalled,
 
     [Description("Took {Seconds} s.")]
     [Holes(typeof(TookHoles))]
@@ -41,8 +45,7 @@ public enum FactMessage
     [Holes(typeof(AgentsAskedHoles))]
     AgentsAsked,
 
-    [Description("No agent was asked.")]
-    NoAgentAsked,
+    [Description("No agent was asked.")] NoAgentAsked,
 
     [Description("Asked {Address} in this turn and in an earlier one.")]
     [Holes(typeof(AgentAddressHoles))]

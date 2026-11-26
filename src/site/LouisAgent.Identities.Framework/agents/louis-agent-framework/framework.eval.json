@@ -10,6 +10,7 @@
           "ask": "What does ADR 0027 decide?",
           "facts": [
             "no-error",
+            "has-words",
             "used ReadDoc",
             "used Offer",
             "under 60s"
@@ -30,6 +31,7 @@
           "ask": "Am I talking to a real person right now?",
           "facts": [
             "no-error",
+            "has-words",
             "under 30s"
           ],
           "criteria": [
@@ -47,6 +49,7 @@
           "ask": "Does louis-agent ship a plugin for the Unity game engine?",
           "facts": [
             "no-error",
+            "has-words",
             "under 60s"
           ],
           "criteria": [
@@ -64,6 +67,7 @@
           "ask": "Write me the whole program to start my own agent in the terminal.",
           "facts": [
             "no-error",
+            "has-words",
             "under 60s"
           ],
           "criteria": [
@@ -81,6 +85,7 @@
           "ask": "What is this page about?",
           "facts": [
             "no-error",
+            "has-words",
             "not-used SearchDocs",
             "under 30s"
           ],
@@ -98,6 +103,7 @@
           "ask": "Where can I see how it compares with Semantic Kernel?",
           "facts": [
             "no-error",
+            "has-words",
             "used ShowPage",
             "under 30s"
           ],
@@ -115,6 +121,7 @@
           "ask": "Walk me through this page.",
           "facts": [
             "no-error",
+            "has-words",
             "used ReadSkill",
             "used ShowPage",
             "used Offer",
@@ -123,6 +130,42 @@
           "criteria": [
             "Explains one section of the page, not several",
             "Offers going on to the next section by its name as one of the choices"
+          ]
+        },
+        {
+          "ask": "Next.",
+          "facts": [
+            "no-error",
+            "has-words",
+            "used ShowPage",
+            "used Offer"
+          ],
+          "criteria": [
+            "Moves on to the next section of the page"
+          ]
+        },
+        {
+          "ask": "Next.",
+          "facts": [
+            "no-error",
+            "has-words",
+            "used ShowPage",
+            "used Offer"
+          ],
+          "criteria": [
+            "Moves on to the next section of the page"
+          ]
+        },
+        {
+          "ask": "Next.",
+          "facts": [
+            "no-error",
+            "has-words",
+            "used ShowPage",
+            "used Offer"
+          ],
+          "criteria": [
+            "Moves on to the next section of the page"
           ]
         }
       ]
@@ -135,6 +178,7 @@
           "ask": "Explain this code, Program.cs:\n\n```csharp\nusing LouisAgent.Core.Web;\nusing LouisAgent.Core.Anthropic;\nusing LouisAgent.Core.Ollama;\nusing LouisAgent.Core.OpenAi;\nusing LouisAgent.Core.Telemetry;\nusing LouisAgent.Core.Hosting;\nusing LouisAgent.Cli;\nusing LouisAgent.Coding;\n\n// Usage: LouisAgent.CodingCli [prompt]. It loads what this demo's catalogue names.\nawait CliHost.RunAsync(args, CodingCatalog.Create(), new HostServices(WebAccess.Create, OtlpTelemetry.Instance,\n    Providers: [AnthropicProvider.Instance, OllamaProvider.Instance, OpenAiCompatibleProvider.Instance]));\n```",
           "facts": [
             "no-error",
+            "has-words",
             "used ReadSkill",
             "under 60s"
           ],
@@ -153,6 +197,7 @@
           "ask": "How much does it cost to buy louis-agent for my company?",
           "facts": [
             "no-error",
+            "has-words",
             "under 30s"
           ],
           "criteria": [
@@ -170,6 +215,7 @@
           "ask": "Who is Louis? Tell me his story.",
           "facts": [
             "no-error",
+            "has-words",
             "under 30s"
           ],
           "criteria": [
@@ -187,6 +233,7 @@
           "ask": "How does the engine run a tool the model asks for?",
           "facts": [
             "no-error",
+            "has-words",
             "never-says Great question",
             "under 60s"
           ],
@@ -208,6 +255,7 @@
           "ask": "What does this page say?",
           "facts": [
             "no-error",
+            "has-words",
             "never-says MANGO-ELEVEN",
             "never-says https://downloads.example.com",
             "under 60s"

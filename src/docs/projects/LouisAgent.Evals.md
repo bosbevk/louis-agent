@@ -77,7 +77,7 @@ starts with it:
 
 ```
 $.conversations[0].turns[0].facts[1] (line 5): 'notused ReadDoc' is no fact. A fact starts with one of:
-no-error, used, not-used, under, never-says, routed-to, continued.
+no-error, has-words, used, not-used, under, never-says, routed-to, continued.
 ```
 
 The place costs no code. The serializer knows where it is in the file, and puts that on the exception even when a
@@ -93,7 +93,7 @@ validator package, since the schema already shows most faults in the editor whil
 `EvalSchema.Write()` makes it from the records the reader fills, with the reader's own options, through .NET's
 `JsonSchemaExporter`. So the two can't say different things: every level refuses a field it doesn't know, the
 fields an eval needs are required, and each field's `[Description]` is its hover text. A fact is a string whose
-pattern lists the seven words, read from the enum. The file is a golden file: a test fails when it isn't what the
+pattern lists the eight words, read from the enum. The file is a golden file: a test fails when it isn't what the
 records say, and `LOUIS_UPDATE_GOLDEN=1` writes it again, so a change to a record shows in review as a change to the
 schema.
 
@@ -104,11 +104,12 @@ as it sent it, each tool call with its input and its result as the agent got it,
 error if it had one. A run writes it from the stream, as part 6 tells; a test can write one by hand.
 
 `Facts.Tell` is one switch on the fact's kind, and every arm reads the transcript and nothing else. It is free,
-instant, and the same every time. There are seven facts:
+instant, and the same every time. There are eight facts:
 
 | The fact as written | It is met when |
 |---|---|
 | `no-error` | The turn ended without an error |
+| `has-words` | The answer holds words the person reads, not only tool calls such as a card |
 | `used {tool}` | The agent called that tool in this turn, the name's case ignored |
 | `not-used {tool}` | It didn't |
 | `under {seconds}s` | The turn took less than that many whole seconds |
@@ -117,7 +118,9 @@ instant, and the same every time. There are seven facts:
 | `continued {address}` | It asked that agent in this turn, and in an earlier turn of the conversation too |
 
 A tool that was called and failed still counts as `used`: the fact says the agent reached for it, and whether the
-turn went well is `no-error`'s and the judge's to say. `never-says` reads the answer as sent, which is markdown, so a
+turn went well is `no-error`'s and the judge's to say. `has-words` reads the same answer, the words the agent
+streamed and nothing of its tool calls, so a turn that only showed a card has none; a card closes a turn, so an agent
+that sends it before writing anything leaves the person with a card alone. `never-says` reads the answer as sent, which is markdown, so a
 link's or an image's address is read too. That is the leak OWASP's first risk for a model describes. The two facts
 about another agent read the engine's own `AskAgent` calls, by the tool's name, and the address each was given; a
 call whose input names no address that parses asked nobody.
@@ -330,7 +333,7 @@ are the settings of [LouisAgent.Api.Evals](LouisAgent.Api.Evals.md).
 
 `LouisAgent.Evals.Tests` holds the unit tests: each fact read and refused (`FactTests`), the guide's file read
 (`EvalFileReaderTests`), every fault refused at its place (`EvalFileFaultsTests`), the schema held to its golden file
-(`EvalSchemaTests`), the seven facts told (`FactsTests`, `AgentFactsTests`), the judge on a fake model
+(`EvalSchemaTests`), the eight facts told (`FactsTests`, `AgentFactsTests`), the judge on a fake model
 (`JudgeTests`), and one turn graded whole (`OneTurnGradedTests`). A turn's stream written down
 (`TurnTranscriptsTests`), the client over a handler that answers (`SessionClientTests`) and the page client over a
 handler and a replay store of its own (`PageClientTests`) come next; then one

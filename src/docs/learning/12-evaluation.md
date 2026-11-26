@@ -316,9 +316,10 @@ strict and stops at the first fault, with the fault's JSON path at the front of 
 when our own converter is what refused the words. The schema an editor reads is made from the same records by
 .NET's exporter, so the two can't drift apart, and it's a golden file, so a change to a record shows in review.
 
-Grading splits in two, the way Anthropic's evals guidance splits it. What code can tell for certain is a fact, seven
+Grading splits in two, the way Anthropic's evals guidance splits it. What code can tell for certain is a fact, eight
 of them, read from a turn's transcript: free, instant and the same every time. `never-says` reads the answer as
-sent, markdown addresses included, which is the check a prompt-injection eval needs. Everything else is a criterion,
+sent, markdown addresses included, which is the check a prompt-injection eval needs. `has-words` reads it too, and
+catches a turn that answered with a card and no words, which a judge would only be guessing at. Everything else is a criterion,
 which one judge marks with one model call, the reason first and then yes or no, as a typed record. A judge that
 can't mark says so and never answers "not met", since that would blame the agent for the judge's trouble.
 

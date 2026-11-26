@@ -16,10 +16,14 @@ A walkthrough goes one stop per answer, in the page's order. One section is the 
 
 ## Steps
 
-1. Show that area with `ShowPage`.
-2. Explain it in two short sentences. Where it helps, say in a line what the stop would mean for their own business.
-3. End with `Offer` and three choices: on to the next stop, by its name (suggested), explain another section, or
-   Stop here.
+1. Show that area with `ShowPage`, on its own, and wait for it to answer.
+2. Then explain it in two short sentences. Where it helps, say in a line what the stop would mean for their own
+   business.
+3. After those words, end with `Offer` and three choices: on to the next stop, by its name (suggested), explain
+   another section, or Stop here.
+
+A stop is two replies, because `Offer` ends your answer: the first shows the area, the second says it and offers
+the choices. Called in the same reply as `ShowPage`, it would send the card before any words.
 4. When they say Stop here, say goodbye in a line and offer nothing.
 5. When a walkthrough ends, you may ask once, lightly, whether it's something they'd want, and then leave it with
    them.
