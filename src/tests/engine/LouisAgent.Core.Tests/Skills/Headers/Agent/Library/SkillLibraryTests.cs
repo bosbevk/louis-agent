@@ -36,6 +36,28 @@ public class SkillLibraryTests
             Is.EqualTo(new[] { ("char-count", SkillState.Approved), ("word-count", SkillState.Approved) }));
     }
 
+    /// <summary>
+    /// F97.1 step 9: a chat finds every approved skill and its own drafts, never another chat's draft, by the names of
+    /// the drafts it made.
+    /// </summary>
+    [Test]
+    public void AChat_FindsTheApprovedSkills_AndOnlyItsOwnDrafts()
+    {
+        Skill("word-count");
+        Skill(Path.Combine("drafts", "line-count"));
+        Skill(Path.Combine("drafts", "char-count"));
+        var library = SkillLibrary.Read(_skills);
+        var mine = new HashSet<string> { "line-count" };
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(library.Find("word-count", mine)?.State, Is.EqualTo(SkillState.Approved));
+            Assert.That(library.Find("line-count", mine)?.State, Is.EqualTo(SkillState.Drafted));
+            Assert.That(library.Find("char-count", mine), Is.Null, "another chat's draft");
+            Assert.That(library.Find("nothing", mine), Is.Null);
+        });
+    }
+
     /// <summary>A skills folder that isn't there has no skills.</summary>
     [Test]
     public void NoSkillsFolder_HasNoSkills() =>

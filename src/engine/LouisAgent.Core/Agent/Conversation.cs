@@ -32,7 +32,8 @@ public sealed class Conversation
 
     /// <summary>
     /// The chat's tools, copied from the engine's live list at its first turn and kept from then on, each as it was
-    /// sent, so a tool made, approved or rejected mid-chat reaches the next chat instead, and a rejected one never runs.
+    /// sent, so a tool made, approved or rejected mid-chat reaches the next chat instead, and a rejected one never
+    /// runs.
     /// </summary>
     /// <param name="live">The engine's tools now.</param>
     /// <param name="stillOffered">Whether the engine still offers a tool, by name.</param>
@@ -44,6 +45,18 @@ public sealed class Conversation
     /// </summary>
     private static AITool Frozen(AITool tool, Func<string, bool> stillOffered) =>
         tool is AIFunction function ? new FrozenTool(function, stillOffered) : tool;
+
+    /// <summary>The skills this chat drafted, by name.</summary>
+    private readonly HashSet<string> _drafts = new(StringComparer.Ordinal);
+
+    /// <summary>
+    /// The names of the skills this chat drafted, which only it may use until one is approved (F97.1); the library
+    /// finds a draft for a chat only by these, so another chat's draft is never reached.
+    /// </summary>
+    public IReadOnlySet<string> Drafts => _drafts;
+
+    /// <summary>Notes a skill this chat drafted; drafting it again changes nothing here.</summary>
+    internal void Drafted(string name) => _drafts.Add(name);
 
     /// <summary>The mark of the tools this chat sends; none before its first turn.</summary>
     public ToolsFingerprint? ToolsFingerprint => Tools is null ? null : ToolsFingerprint.Of(Tools);

@@ -20,15 +20,36 @@ public sealed class SkillLibrary
 {
     private static readonly ILogger Log = AgentLogging.For<SkillLibrary>();
 
-    private SkillLibrary(IReadOnlyList<Skill> approved) => Approved = approved;
+    private readonly string _skillsFolder;
+
+    private SkillLibrary(string skillsFolder, IReadOnlyList<Skill> approved)
+    {
+        _skillsFolder = skillsFolder;
+        Approved = approved;
+    }
 
     /// <summary>The approved skills, by name.</summary>
     public IReadOnlyList<Skill> Approved { get; }
 
+    /// <summary>
+    /// The skill a chat may use by this name (F97.1): an approved one, or a draft only when the chat made it, read
+    /// fresh from its folder, so another chat's draft is never found.
+    /// </summary>
+    /// <param name="name">The skill's name.</param>
+    /// <param name="ownDrafts">The names of the drafts the asking chat made.</param>
+    public Skill? Find(string name, IReadOnlySet<string> ownDrafts)
+    {
+        if (Approved.FirstOrDefault(skill => skill.Name == name) is { } approved) return approved;
+        if (!ownDrafts.Contains(name)) return null;
+
+        string draft = Path.Combine(_skillsFolder, SkillFiles.DraftSkill(name));
+        return Directory.Exists(draft) ? SkillReader.Read(draft, SkillState.Drafted) : null;
+    }
+
     /// <summary>The library of this skills folder; an empty one when the folder isn't there.</summary>
     public static SkillLibrary Read(string skillsFolder)
     {
-        if (!Directory.Exists(skillsFolder)) return new SkillLibrary([]);
+        if (!Directory.Exists(skillsFolder)) return new SkillLibrary(skillsFolder, []);
 
         var approved = Directory.EnumerateDirectories(skillsFolder)
             .Where(folder => Path.GetFileName(folder) != SkillFiles.DraftsFolder)
@@ -37,7 +58,7 @@ public sealed class SkillLibrary
             .Select(ReadOrLeaveOut)
             .OfType<Skill>()
             .ToList();
-        return new SkillLibrary(approved);
+        return new SkillLibrary(skillsFolder, approved);
     }
 
     /// <summary>The approved skill in this folder, or none when it won't read, its reason logged.</summary>
