@@ -77,7 +77,7 @@ public class PackagesTests
         {
             Assert.That(props, Does.Contain("<IsPackable>false</IsPackable>"));
             Assert.That(props,
-                Does.Contain("<PackageLicenseExpression>PolyForm-Noncommercial-1.0.0</PackageLicenseExpression>"));
+                Does.Contain("<PackageLicenseExpression>MIT</PackageLicenseExpression>"));
             Assert.That(props, Does.Contain("<MinVerIgnoreHeight>true</MinVerIgnoreHeight>"));
             Assert.That(targets, Does.Contain("Condition=\"'$(IsPackable)' == 'true'\""));
             Assert.That(targets, Does.Contain("<PackageReference Include=\"MinVer\""));

@@ -1,0 +1,26 @@
+{
+  "kind": "cards",
+  "title": "0135 at a glance: the framework's licence",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "licence", "icon": "shield", "title": "MIT", "code": "LICENSE",
+          "look": "highlight",
+          "text": "The framework is free to use, change, share and sell, from 2026-11-25." }
+      ] },
+      { "cards": [
+        { "id": "free", "icon": "users", "title": "Free for",
+          "text": "Any use, commercial use included, with the copyright notice kept." },
+        { "id": "sold", "icon": "tag", "title": "What is sold",
+          "text": "The work around it: a site, a custom agent, the building fee." },
+        { "id": "earlier", "icon": "clock", "title": "Earlier versions",
+          "text": "Keep the licence they were released with, the 0.1.0 packages' PolyForm among them." }
+      ] }
+    ],
+    "links": [
+      { "from": "licence", "to": "free" },
+      { "from": "licence", "to": "sold" },
+      { "from": "licence", "to": "earlier" }
+    ]
+  }
+}

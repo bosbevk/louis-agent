@@ -1,6 +1,6 @@
 # 0127. Licence: free for noncommercial use, PolyForm Noncommercial 1.0.0
 
-**Status:** Accepted · **Date:** 2026-11-19 · **Recorded:** 2026-11-19 · **Supersedes:** [0016](0016-licence-all-rights-reserved.md)
+**Status:** Superseded by [0135](0135-licence-mit.md) · **Date:** 2026-11-19 · **Recorded:** 2026-11-19 · **Supersedes:** [0016](0016-licence-all-rights-reserved.md)
 
 ![The framework's licence: free for noncommercial use, commercial use by the copyright holder's licence, earlier versions under theirs](diagrams/0127-licence-polyform-noncommercial.svg)
 

@@ -409,6 +409,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "adr", "adr", "{7B2E4C10-9D3
 		src\docs\adr\0132-words-come-from-a-dictionary-factory.md = src\docs\adr\0132-words-come-from-a-dictionary-factory.md
 		src\docs\adr\0133-subagents-live-inside-their-agent.md = src\docs\adr\0133-subagents-live-inside-their-agent.md
 		src\docs\adr\0134-an-eval-is-one-file-of-conversations.md = src\docs\adr\0134-an-eval-is-one-file-of-conversations.md
+		src\docs\adr\0135-licence-mit.md = src\docs\adr\0135-licence-mit.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "architecture", "architecture", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0102}"

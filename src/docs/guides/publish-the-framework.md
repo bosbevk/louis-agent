@@ -5,7 +5,7 @@
 > projects are packages and their shared settings in `Directory.Build.props` and `Directory.Build.targets`, held by
 > `PackagesTests`; why one name for a project, its DLL and its package in
 > [ADR 0129](../adr/0129-a-project-is-named-for-its-namespace.md); the licence the packages carry in
-> [ADR 0127](../adr/0127-licence-polyform-noncommercial.md).
+> [ADR 0135](../adr/0135-licence-mit.md).
 
 ![Publish the framework: tag a release, push more than three tags, the guard, and checking a release from outside](diagrams/publish-the-framework.svg)
 
@@ -115,9 +115,9 @@ And what a pack calls has to be public. A pack reads a page's words with `HtmlTe
 ## Later: nuget.org at 1.0
 
 The packages stay on GitHub Packages while the framework is at `0.x`, where a version can be withdrawn. At the first
-stable `1.0` they move to nuget.org, where nothing is ever deleted. nuget.org accepts only licences approved by the
-Open Source Initiative or the Free Software Foundation as an SPDX expression, so the PolyForm licence will travel as a
-licence file in the package there.
+stable `1.0` they move to nuget.org, where nothing is ever deleted. nuget.org accepts a licence as an SPDX expression
+only when the Open Source Initiative or the Free Software Foundation approves it. MIT is one of those, so the packages
+can carry it there the same way they do now.
 
 ---
-[Docs index](../README.md) · Related: [ADR 0129](../adr/0129-a-project-is-named-for-its-namespace.md) · [ADR 0127](../adr/0127-licence-polyform-noncommercial.md) · [Write and run tests](write-tests.md)
+[Docs index](../README.md) · Related: [ADR 0129](../adr/0129-a-project-is-named-for-its-namespace.md) · [ADR 0135](../adr/0135-licence-mit.md) · [Write and run tests](write-tests.md)

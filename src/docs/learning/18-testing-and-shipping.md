@@ -1901,6 +1901,24 @@ visitor sees depends on what else stands on the screen. A layout no site uses ha
 Concept: *18 Testing and shipping* in the [goal](../GOAL.md): a layout is proved by running it at the screen sizes
 people really have, beside everything else that shares the screen, before anyone is told it works.
 
+## The framework under MIT (CL73, 2026-11-25)
+
+Louis asked for every licence of his to be MIT. The framework had been free for noncommercial use under PolyForm
+since 2026-11-19, so the change was a decision that later work has to follow: an ADR, 0135, which supersedes 0127.
+It was proposed on a card before it was written. Only the licence the copyright holder can grant changed. The parts
+others wrote, such as Tabler's icons and the fonts, keep theirs, and so does each version already released: the 0.1.0
+packages carry PolyForm for whoever has them, and the next release of each carries MIT.
+
+Changing a licence turned out to mean changing four kinds of thing. There's the `LICENSE` file, the MIT text exactly as
+published, so GitHub and NuGet recognise it. There's the SPDX name in `Directory.Build.props`, which `PackagesTests`
+pins. There are the words people read: the README, the third-party notices, the publish guide and the ADRs that link
+to 0127. And there's the guide's voice, which used to say a licence was quoted on request and now says the framework
+is free. The recorded eval answers that quote the old README were left as recorded, since a recording keeps what was
+said at the time. Puls, in its own repository, made the same change in its own pull request.
+
+Concept: *18 Testing and shipping* in the [goal](../GOAL.md): a licence is what lets anyone ship what you wrote, and
+it lives in the package as much as in the file.
+
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md) · [Plans](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL15-engine-identities-packs.md), [CL19](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL19-config-by-place.md) · [Deploying to Azure](../guides/deploy-the-sites.md) ·
 [Write and run tests](../guides/write-tests.md) · [ADR 0027](../adr/0027-engine-identities-and-packs.md) · [ADR 0066](../../../demos/louis-agent/docs/adr/0066-the-site-is-static-razor.md) · [The site, now the app's](../../../demos/louis-agent/docs/projects/LouisAgent.CodeReview.md)
