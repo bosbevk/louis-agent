@@ -50,7 +50,7 @@ single prompt that fails prints its error and exits with code 1, so a script can
 
 ### 4. Commands that never reach the model
 
-`/tools`, `/approve <Name>`, `/reject <Name>` and `/usage` are answered by the engine, and never sent to the model.
+`/skills`, `/approve <Name>`, `/reject <Name>` and `/usage` are answered by the engine, and never sent to the model.
 They're core's `UserCommands`, the same ones Rider and the API answer. `/usage` gives you the session's tokens and
 cost, split by purpose.
 

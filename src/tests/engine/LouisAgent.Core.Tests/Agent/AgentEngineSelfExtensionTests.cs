@@ -13,7 +13,7 @@ namespace LouisAgent.Core.Tests.Agent;
 public sealed class AgentEngineSelfExtensionTests
 {
     private static readonly string[] SelfExtensionTools =
-        ["UseSkill", "CreateSkill", "CreateSkillFile", "ReloadSkills", "CreateTool", "ListAgentTools"];
+        ["UseSkill", "CreateSkill", "CreateSkillFile", "ReloadSkills"];
 
     /// <summary>The tools every session has, whatever its toolsets.</summary>
     private static readonly string[] EverySessionsTools = ["ExecuteSkill", "GetToday"];

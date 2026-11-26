@@ -45,7 +45,7 @@ public class MessageEnumTests
                 "ConfigErrorMessage", "ConfigLogMessage", "ErrorMessage", "ScreenMessage", "GuardrailErrorMessage",
                 "GuardrailToolMessage", "HostingErrorMessage", "HostingLogMessage", "LlmErrorMessage",
                 "LoggingErrorMessage", "LoggingLogMessage", "PricingErrorMessage", "PricingLogMessage",
-                "PromptHeaderMessage", "ScriptToolMessage", "AnthropicErrorMessage", "OpenAiErrorMessage",
+                "PromptHeaderMessage", "AnthropicErrorMessage", "OpenAiErrorMessage",
                 "SequenceToolMessage", "SessionErrorMessage", "RunnerToolMessage", "SkillErrorMessage",
                 "SkillLogMessage", "SkillReadToolMessage", "SkillToolMessage", "SubSessionToolMessage",
                 "TelemetryLogMessage", "TextErrorMessage",

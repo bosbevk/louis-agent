@@ -311,7 +311,7 @@ A failure becomes an `error` event in Claude's shape, with the turn's `usage` if
 failure, and `replay_miss_error` when the engine's replay had no recorded answer (`ModelReplayMissException`, mapped
 by `Sessions/Streaming/StreamErrorKinds`). So a client can tell a replay miss from the agent's own failure.
 
-`/tools`, `/approve`, `/reject` and `/usage` are answered without the model.
+`/skills`, `/approve`, `/reject` and `/usage` are answered without the model.
 
 When the host turns the engine's `STREAM_PACE` on, the engine hands out the turn's text at a steady pace in whole
 words, and the API says so: it answers the turn with the header `Stream-Paced: on` (`ApiHeaders.StreamPaced`), before

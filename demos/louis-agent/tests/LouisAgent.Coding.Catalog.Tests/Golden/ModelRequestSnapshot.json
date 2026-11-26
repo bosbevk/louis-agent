@@ -433,27 +433,6 @@
       }
     },
     {
-      "Name": "CreateTool",
-      "Description": "Builds a new, typed tool from a markdown definition when no existing tool — built-in or already agent-built —\ncan do what's needed and the capability is worth keeping, not for a single one-off action a skill or an\ninline script could handle just as well. The tool becomes callable immediately in this session; it is only\nsaved for future sessions once the user explicitly approves it with '/approve <Name>' (reject with\n'/reject <Name>' to discard it). A name already used by a built-in tool, or an existing approved tool, is\nrejected. Definition format (markdown):\n# Tool: <PascalCaseName>\n- Description: <what it does and when to use it>\n- Timeout: <seconds, optional, default 60, max 600>\n- Parameters:\n  - `argName` (string|integer|number|boolean, required|optional): <meaning>\n- Implementation:\n```python\nimport json, sys\nargs = json.load(sys.stdin)   # validated arguments as a JSON object\nprint(json.dumps({\"result\": ...}))\n```\nLanguage: ```python, ```powershell (read input with [Console]::In.ReadToEnd() | ConvertFrom-Json) or ```bash.\nArguments arrive as JSON on stdin (also as TOOL_ARG_<name> env vars) — never interpolate them into code or commands.\nRuns from the workspace root. Print the result (JSON preferred); exit non-zero with a message on failure.",
-      "Schema": {
-        "type": "object",
-        "properties": {
-          "definition": {
-            "description": "The full tool definition markdown",
-            "type": "string"
-          },
-          "overwrite": {
-            "description": "Set true to replace a pending tool you created earlier with the same name",
-            "type": "boolean",
-            "default": false
-          }
-        },
-        "required": [
-          "definition"
-        ]
-      }
-    },
-    {
       "Name": "DecideCase",
       "Description": "Ends the manager's decision on a case. Call it once, as the last thing you do: ignore it, investigate it, give it to a person, let the coder fix it, or hand it to another department; and why, in a sentence.",
       "Schema": {
@@ -1006,14 +985,6 @@
     {
       "Name": "HasUncommittedChanges",
       "Description": "Check whether the working tree has any staged or unstaged changes (git status --porcelain), returning a plain yes/no-style message along with the changed files if any exist. Read-only. Use this instead of GetStatus when you only need to know whether there's anything uncommitted, not the full detailed status.",
-      "Schema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "Name": "ListAgentTools",
-      "Description": "Lists every agent-built tool known right now: approved ones that load in every session, ones pending approval that are only active for this session, and — separately — pending tool files left on disk from an earlier session that never got approved and aren't currently loaded. Each entry shows its approval state and its own description. Use this before CreateTool to check whether a similar tool already exists, or when the user asks what tools the agent has built for itself; it makes no changes.",
       "Schema": {
         "type": "object",
         "properties": {}

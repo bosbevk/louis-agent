@@ -2,7 +2,6 @@ using LouisAgent.Composition.Tools;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Agent.Messages.Holes;
 using System.ComponentModel;
-using LouisAgent.Core.Agent.Messages.Holes.AgentBuilt;
 using LouisAgent.Core.Agent.Messages.Holes.Calls;
 using LouisAgent.Core.Agent.Messages.Holes.Discovery;
 using LouisAgent.Core.Agent.Messages.Holes.Summaries;
@@ -59,17 +58,6 @@ public enum AgentLogMessage
     [Holes(typeof(McpToolDiscoveredHoles))]
     McpToolDiscovered,
 
-    [Description("Skipping invalid tool {File}: {Errors}")]
-    [Holes(typeof(AgentToolInvalidHoles))]
-    AgentToolInvalid,
-
-    [Description("Skipping tool {File}: name '{Name}' is already in use.")]
-    [Holes(typeof(AgentToolNameInUseHoles))]
-    AgentToolNameInUse,
-
-    [Description("Loaded {Count} agent-built tool(s) from {Directory}")]
-    [Holes(typeof(AgentToolsLoadedHoles))]
-    AgentToolsLoaded,
 
     [Description(
         "Sub-session prompt budget: the last request's prompt was {Last} tokens and the next is expected at {Next}, " +

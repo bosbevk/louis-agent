@@ -9,9 +9,9 @@ using LouisAgent.Composition.Tools.Scripts;
 namespace LouisAgent.Core.Tests.Agent.Commands;
 
 /// <summary>
-/// S (CL15): what the user types that the model never sees: /tools, /approve, /reject and /usage are answered here;
-/// anything else is a prompt. The approvals themselves are SkillAuthoringTests' and AgentBuiltToolsTests', and the
-/// skills the agent made are SkillCommandsTests'.
+/// S (CL15): what the user types that the model never sees: /skills, /approve, /reject and /usage are answered here;
+/// anything else is a prompt. The skill files' approvals are SkillAuthoringTests', and the skills the agent made
+/// SkillCommandsTests'.
 /// </summary>
 public class UserCommandsTests
 {
@@ -23,10 +23,8 @@ public class UserCommandsTests
         var powerShell = new PowerShellRunner(root);
         var options = new AgentOptions { WorkspaceRoot = root };
         var skills = new SkillTools(new CompositeSkillProvider(), options, root, python, powerShell);
-        var tools = new AgentBuiltTools(new ToolRegistry(), supportsTools: true, root, python, powerShell, () => null,
-            () => new HashSet<string>());
         var library = SkillLibrary.Read(Path.Combine(root, "no-skills-here"));
-        return new UserCommands(tools, skills, () => library, () => null);
+        return new UserCommands(skills, () => library, () => null);
     }
 
     /// <summary>Anything that isn't a command is a prompt, and gets no reply here.</summary>
@@ -43,14 +41,24 @@ public class UserCommandsTests
         Assert.That(Commands().Handle("/usage", sessionUsage: null),
             Is.EqualTo("Usage isn't tracked in this session."));
 
-    /// <summary>/tools lists the waiting tools and says how to approve one.</summary>
+    /// <summary>
+    /// F97.1: /skills with nothing made says there are no drafts and no approved skills, not an empty list.
+    /// </summary>
     [Test]
-    public void Tools_ListsThem_AndSaysHowToApprove() =>
-        Assert.That(Commands().Handle("  /TOOLS  ", sessionUsage: null),
-            Does.EndWith("Approve with /approve <Name>, discard with /reject <Name>."));
+    public void Skills_WithNone_SaysSo() =>
+        Assert.That(Commands().Handle("/skills", sessionUsage: null),
+            Is.EqualTo("No drafts are waiting.\nNo skills are approved yet."));
 
-    /// <summary>/approve with nothing to approve is the tools' own reply, here that tool building is off.</summary>
+    /// <summary>F97.1: /tools is gone with the agent-built tools, so it is a prompt like any other text.</summary>
     [Test]
-    public void Approve_IsTheToolsOwnReply_HereThatToolBuildingIsOff() =>
-        Assert.That(Commands().Handle("/approve", sessionUsage: null), Is.EqualTo("Tool building is not available."));
+    public void Tools_IsNoLongerACommand() =>
+        Assert.That(Commands().Handle("  /TOOLS  ", sessionUsage: null), Is.Null);
+
+    /// <summary>
+    /// /approve with no draft by that name is the skill files' own reply, here that authoring is off.
+    /// </summary>
+    [Test]
+    public void Approve_WithNoDraft_IsTheSkillFilesOwnReply() =>
+        Assert.That(Commands().Handle("/approve", sessionUsage: null),
+            Is.EqualTo("Error: skill authoring is not available (no skills folder was found)."));
 }

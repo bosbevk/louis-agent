@@ -227,8 +227,6 @@ public sealed class AgentEngineFactory
             .WithReplay(_replay)
             .WithStaleThinking(model is null ? _staleThinking : null)
             .WithSkillsDirectory(SkillFolder.Find(_agent))
-            // An agent-built tool may take no name of the catalogue's, a pack's included (CL15).
-            .WithReservedToolNames(Catalog.ToolNames)
             // ReloadSkills reloads this profile's prompt (its guides, role and router), never another's.
             .WithSkillReloader(() => SkillLoader.Load(_agent, guided, role, level, calls))
             .WithThinking(model is null ? _thinking : model.Thinking)
@@ -236,8 +234,6 @@ public sealed class AgentEngineFactory
             // A trace names the agent (F52): the role it plays, or the mode a session without one runs.
             .WithName(role ?? DefaultVoice ?? AgentLogging.ServiceName)
             .Build();
-        // Approved agent-built tools come with the skills toolset (CreateTool, /approve).
-        if (selfExtension) engine.LoadApprovedTools();
         if (tool is not null) engine.KeepOnlyTool(tool);
 
         string toolsJson = JsonSerializer.Serialize(engine.Tools.OfType<AIFunction>()

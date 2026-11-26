@@ -67,7 +67,7 @@ Anything else is other.
 
 ### 7. Commands, and usage
 
-`/tools`, `/approve`, `/reject` and `/usage` are answered by the engine without the model.
+`/skills`, `/approve`, `/reject` and `/usage` are answered by the engine without the model.
 
 Every turn's usage line goes to stderr, as `[ACP] Usage: …`, which lands in Rider's `idea.log`. With
 `USAGE_IN_CHAT=true`, it's also added to the chat after the answer, in italics, as its own message chunk. That's off

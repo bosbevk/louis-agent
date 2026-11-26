@@ -49,22 +49,15 @@ public class AgentEngineBuilderTests
     [Test]
     public void EachPartCalled_IsTheEngines()
     {
-        var reserved = new HashSet<string>(StringComparer.Ordinal) { "reserved_tool" };
-
         var engine = AgentEngine.CreateBuilder(new CompositeSkillProvider(), new FakeChatClient(), Options)
             .WithSupportsTools(false)
             .WithName("reviewer")
             .WithThinking(ReasoningEffort.Medium)
             .WithSkillsDirectory("skills-here")
-            .WithReservedToolNames(reserved)
             .Build();
 
-        Assert.Multiple(() =>
-        {
-            Assert.That((engine.SupportsTools, engine.Name, engine.Thinking, engine.SkillsDirectory),
-                Is.EqualTo((false, "reviewer", (ReasoningEffort?)ReasoningEffort.Medium, "skills-here")));
-            Assert.That(engine.ReservedToolNames, Is.EquivalentTo(reserved));
-        });
+        Assert.That((engine.SupportsTools, engine.Name, engine.Thinking, engine.SkillsDirectory),
+            Is.EqualTo((false, "reviewer", (ReasoningEffort?)ReasoningEffort.Medium, "skills-here")));
     }
 
     /// <summary>A builder keeps nothing of what it built: building twice makes two engines of the same parts.</summary>

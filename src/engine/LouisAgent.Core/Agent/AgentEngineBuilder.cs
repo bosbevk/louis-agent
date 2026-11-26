@@ -45,7 +45,6 @@ public sealed class AgentEngineBuilder
     private DisplayCurrency? _display;
     private string? _skillsDirectory;
     private Func<ISkillProvider>? _skillReloader;
-    private IReadOnlySet<string>? _reservedToolNames;
 
     /// <summary>Starts a builder; <see cref="AgentEngine.CreateBuilder"/> is the way to get one.</summary>
     internal AgentEngineBuilder(ISkillProvider skillProvider, IChatClient chatClient, AgentOptions options)
@@ -160,16 +159,6 @@ public sealed class AgentEngineBuilder
         return this;
     }
 
-    /// <summary>
-    /// The names an agent-built tool may not take. Null uses core's catalogue names; a host passes its own, so a
-    /// pack's names are reserved too.
-    /// </summary>
-    public AgentEngineBuilder WithReservedToolNames(IReadOnlySet<string>? reservedToolNames)
-    {
-        _reservedToolNames = reservedToolNames;
-        return this;
-    }
-
     /// <summary>Builds the engine from the parts given so far.</summary>
     public AgentEngine Build() =>
         new(_skillProvider, _chatClient, _options, _supportsTools, _toolsets, _usageSink, _usageMapper,
@@ -180,6 +169,5 @@ public sealed class AgentEngineBuilder
             Display = _display,
             SkillsDirectory = _skillsDirectory,
             SkillReloader = _skillReloader,
-            ReservedToolNames = _reservedToolNames ?? AgentCatalog.CoreOnly.ToolNames,
         };
 }

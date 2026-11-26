@@ -35,6 +35,12 @@ public sealed class SkillLibrary
     public IReadOnlyList<Skill> Approved { get; private set; }
 
     /// <summary>
+    /// The approved skills changed, by an approval or a reload: the door's listing is different, which a host that
+    /// publishes the engine's tools, as the MCP server does, republishes.
+    /// </summary>
+    public event Action? Changed;
+
+    /// <summary>
     /// The skill a chat may use by this name (F97.1): an approved one, or a draft only when the chat made it, read
     /// fresh from its folder, so another chat's draft is never found.
     /// </summary>
@@ -65,7 +71,7 @@ public sealed class SkillLibrary
         string approved = Path.Combine(_skillsFolder, SkillFiles.ApprovedSkill(name));
         if (Directory.Exists(approved)) Directory.Delete(approved, recursive: true);
         Directory.Move(draft, approved);
-        Approved = SkillsIn(_skillsFolder, SkillState.Approved);
+        Reload();
 
         var done = new DraftApprovedHoles(name);
         return MessageText.Format(UserText.DraftApproved, done);
@@ -86,7 +92,11 @@ public sealed class SkillLibrary
     /// Reads the approved skills again, for a skill dropped in by hand or changed on disk (F97.1): reachable at once
     /// through the door, and listed in the next chat.
     /// </summary>
-    public void Reload() => Approved = SkillsIn(_skillsFolder, SkillState.Approved);
+    public void Reload()
+    {
+        Approved = SkillsIn(_skillsFolder, SkillState.Approved);
+        Changed?.Invoke();
+    }
 
     /// <summary>The library of this skills folder; an empty one when the folder isn't there.</summary>
     public static SkillLibrary Read(string skillsFolder) => new(skillsFolder);

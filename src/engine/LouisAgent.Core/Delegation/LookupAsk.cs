@@ -61,8 +61,8 @@ public sealed class LookupAsk
         "ExecuteSkill",
         "CreateSkillFile",
         "ReloadSkills",
-        "CreateTool",
-        "ListAgentTools"
+        "UseSkill",
+        "CreateSkill"
     };
 
     private readonly PeerSession _session;

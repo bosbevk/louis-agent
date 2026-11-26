@@ -26,8 +26,7 @@ it, the tools it keeps in step, the feeds it serves as resources, the key over H
 
 ### 1. Starting up without a model
 
-It starts with `AgentHost.BuildToolHost()`. That gives it the same engine, skills and agent-built tools as every
-other host. The only difference is the chat client: it's a stand-in that refuses to be called, since the model is
+It starts with `AgentHost.BuildToolHost()`. That gives it the same engine and skills as every other host. The only difference is the chat client: it's a stand-in that refuses to be called, since the model is
 the client's.
 
 ### 2. Stdio or HTTP
@@ -43,8 +42,9 @@ the start-up.
 
 ### 3. The tools, kept in step
 
-`EngineToolSync` copies `AgentEngine.Tools` into the MCP tool collection, and keeps the two in step. So when the
-agent builds or approves a tool, clients get told with `notifications/tools/list_changed`.
+`EngineToolSync` copies `AgentEngine.Tools` into the MCP tool collection, and keeps the two in step. So when a
+skill is approved or the skills are reloaded, `UseSkill`'s list of skills changes, and clients get told with
+`notifications/tools/list_changed`.
 
 `SkillsToolProvider` adds three read-only skill tools, its methods `ListSkills`, `GetSkillInfo` and
 `GetSkillDocumentation`. The skills themselves still run through the engine's `ExecuteSkill`.

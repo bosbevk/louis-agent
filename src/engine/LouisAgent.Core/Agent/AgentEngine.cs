@@ -100,12 +100,13 @@ public class AgentEngine
     public IReadOnlyCollection<MarkdownSkillLoader.SkillDef> Skills => _skillTools.Skills;
 
     /// <summary>
-    /// Raised after agent-built tools are added or removed, so hosts that publish <see cref="Tools"/> can resync.
+    /// Raised when a tool's description changes, so hosts that publish <see cref="Tools"/> can resync: since F97.1, an
+    /// approval or a reload changes the approved skills <c>UseSkill</c> lists.
     /// </summary>
     public event Action? ToolsChanged
     {
-        add => _agentBuiltTools.ToolsChanged += value;
-        remove => _agentBuiltTools.ToolsChanged -= value;
+        add => _library.Value.Changed += value;
+        remove => _library.Value.Changed -= value;
     }
 
     /// <summary>
@@ -129,18 +130,6 @@ public class AgentEngine
         get => _skillTools.SkillReloader;
         init => _skillTools.SkillReloader = value;
     }
-
-    /// <summary>Approved agent-built tools live here (*.tool.md); new ones wait in its 'pending' subfolder.</summary>
-    public string? ToolsDirectory => _agentBuiltTools.ToolsDirectory;
-
-    /// <summary>
-    /// The names an agent-built tool may not take (CL15): every tool a toolset of the host's catalogue can register,
-    /// loaded here or not. Core's by default; <c>AgentEngineFactory</c> sets the catalogue's, so a pack's count too.
-    /// </summary>
-    public IReadOnlySet<string> ReservedToolNames { get; init; } = AgentCatalog.CoreOnly.ToolNames;
-
-    /// <summary>The tools the agent wrote itself, approved or waiting.</summary>
-    private readonly AgentBuiltTools _agentBuiltTools;
 
     /// <summary>
     /// The skills in the skills folder, read when first needed, since the folder is set after the engine is built
@@ -166,8 +155,8 @@ public class AgentEngine
     /// (<c>LlmClientFactory.CreateStaleThinking</c>); null strips it, which every provider takes.
     /// </param>
     /// <param name="selfExtension">
-    /// On a toolsets engine, also register the self-extension tools (CreateSkillFile, ReloadSkills, CreateTool,
-    /// ListAgentTools): the <c>skills</c> toolset. Ignored when <paramref name="toolsets"/> is null, which always
+    /// On a toolsets engine, also register the self-extension tools (UseSkill, CreateSkill, CreateSkillFile,
+    /// ReloadSkills): the <c>skills</c> toolset. Ignored when <paramref name="toolsets"/> is null, which always
     /// registers them.
     /// </param>
     public AgentEngine(ISkillProvider skillProvider, IChatClient chatClient, AgentOptions options,
@@ -184,11 +173,9 @@ public class AgentEngine
         var python = new PythonRunner(WorkspaceRoot);
         var powerShell = new PowerShellRunner(WorkspaceRoot);
         _skillTools = new SkillTools(skillProvider, options, WorkspaceRoot, python, powerShell);
-        _agentBuiltTools = new AgentBuiltTools(_registry, supportsTools, WorkspaceRoot, python, powerShell,
-            () => SkillsDirectory, () => ReservedToolNames);
         // The one door to every skill (F97.1): the library and the door are made when first used.
         _library = new Lazy<SkillLibrary>(() => SkillLibrary.Read(SkillsDirectory ?? ""));
-        _commands = new UserCommands(_agentBuiltTools, _skillTools, () => _library.Value, () => Display);
+        _commands = new UserCommands(_skillTools, () => _library.Value, () => Display);
         var skillRunner = SkillRunner.For(python, powerShell, new BashRunner(WorkspaceRoot));
         var door = new Lazy<SkillDoor>(() => new SkillDoor(_library.Value, skillRunner));
         var doorTools = new SkillDoorTools(() => door.Value);
@@ -212,8 +199,7 @@ public class AgentEngine
 
         var agentSkills = OwnTools.AgentSkills(doorTools, () => SkillListing.LinesFor(_library.Value.Approved),
             making, () => _library.Value.Reload());
-        OwnTools.Register(_registry, _skillTools, _agentBuiltTools, agentSkills, options, toolsets, selfExtension,
-            clock);
+        OwnTools.Register(_registry, _skillTools, agentSkills, options, toolsets, selfExtension, clock);
     }
 
     /// <summary>
@@ -301,23 +287,7 @@ public class AgentEngine
     }
 
     /// <summary>
-    /// Builds an agent tool (the <c>CreateTool</c> tool; see <see cref="AgentBuiltTools.CreateTool"/>).
-    /// </summary>
-    public string CreateTool(string definition, bool overwrite = false) =>
-        _agentBuiltTools.CreateTool(definition, overwrite);
-
-    /// <summary>
-    /// The agent-built tools (the <c>ListAgentTools</c> tool; see <see cref="AgentBuiltTools.ListAgentTools"/>).
-    /// </summary>
-    public string ListAgentTools() => _agentBuiltTools.ListAgentTools();
-
-    /// <summary>
-    /// Loads approved tools from <see cref="ToolsDirectory"/>. Called once by the host after construction.
-    /// </summary>
-    public int LoadApprovedTools() => _agentBuiltTools.LoadApprovedTools();
-
-    /// <summary>
-    /// Handles commands typed by the user (never exposed to the model): /tools, /approve &lt;Name&gt;,
+    /// Handles commands typed by the user (never exposed to the model): /skills, /approve &lt;Name&gt;,
     /// /reject &lt;Name&gt;, /usage (<see cref="UserCommands"/>). Returns the reply, or null when the input is not one
     /// of these commands.
     /// </summary>

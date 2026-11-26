@@ -15,16 +15,13 @@ using LouisAgent.Core.Usage.Reports;
 namespace LouisAgent.Core.Agent.Commands;
 
 /// <summary>
-/// What the user types that the model never sees (S, CL15, from AgentEngine): /skills, /tools, /approve &lt;Name&gt;,
-/// /reject &lt;Name&gt; and /usage, answered from the skills the agent made, the agent-built tools, the skill files
-/// and the session's usage.
+/// What the user types that the model never sees (S, CL15, from AgentEngine): /skills, /approve &lt;Name&gt;,
+/// /reject &lt;Name&gt; and /usage, answered from the skills the agent made, the skill files and the session's usage.
 /// </summary>
-/// <param name="tools">The agent-built tools.</param>
 /// <param name="skills">The skill files.</param>
 /// <param name="library">The skills the agent made, drafts and approved (F97.1), read when first needed.</param>
 /// <param name="display">The currency /usage shows costs in (F14), as the engine has it at the time.</param>
 internal sealed class UserCommands(
-    AgentBuiltTools tools,
     SkillTools skills,
     Func<SkillLibrary> library,
     Func<DisplayCurrency?> display)
@@ -50,11 +47,10 @@ internal sealed class UserCommands(
         return command switch
         {
             "/skills" => Skills(),
-            "/tools" => tools.ListAgentTools() + PendingSkillFileLines() + MessageText.Format(UserText.ToolsHint),
             "/approve" => Decided(library().Approve(argument), argument, SkillToolMessage.DraftApprovedNote, chat)
-                          ?? Pending(argument, tools.ApproveTool, skills.ApproveSkillFile),
+                          ?? skills.ApproveSkillFile(argument),
             "/reject" => Decided(library().Reject(argument), argument, SkillToolMessage.DraftRejectedNote, chat)
-                         ?? Pending(argument, tools.RejectTool, skills.RejectSkillFile),
+                         ?? skills.RejectSkillFile(argument),
             "/usage" => sessionUsage is null
                 ? MessageText.Format(UserText.UsageNotTracked)
                 : UsageText.Summary(sessionUsage, display()),
@@ -72,8 +68,16 @@ internal sealed class UserCommands(
         var lines = drafts.Count == 0
             ? [MessageText.Format(UserText.NoDraftsWaiting)]
             : drafts.Select(Listed).Prepend(MessageText.Format(UserText.DraftsHeading));
-        var approved = new ApprovedSkillsListedHoles(string.Join(", ", library().Approved.Select(s => s.Name)));
-        return string.Join('\n', lines.Append(MessageText.Format(UserText.ApprovedSkillsListed, approved)));
+        return string.Join('\n', lines.Append(ApprovedLine(library().Approved)));
+    }
+
+    /// <summary>The approved skills' names on one line, or a line saying there are none.</summary>
+    private static string ApprovedLine(IReadOnlyList<Skill> approved)
+    {
+        if (approved.Count == 0) return MessageText.Format(UserText.NoApprovedSkills);
+
+        var names = new ApprovedSkillsListedHoles(string.Join(", ", approved.Select(s => s.Name)));
+        return MessageText.Format(UserText.ApprovedSkillsListed, names);
     }
 
     /// <summary>
@@ -95,25 +99,4 @@ internal sealed class UserCommands(
         var listed = new DraftListedHoles(draft.Name, draft.Description, SkillExample.TextOf(draft) ?? "");
         return MessageText.Format(UserText.DraftListed, listed);
     }
-
-    /// <summary>
-    /// /approve and /reject reach an agent-built tool or a skill file the agent wrote (FX20), by name: a tool when one
-    /// is pending, else the skill file, else the tool's own "nothing pending" reply; a name that is both is refused.
-    /// </summary>
-    private string Pending(string name, Func<string, string> onTool, Func<string, string> onSkillFile)
-    {
-        bool tool = !string.IsNullOrWhiteSpace(name) && tools.HasPendingTool(name);
-        bool skillFile = !string.IsNullOrWhiteSpace(name) && skills.HasPendingSkillFile(name);
-        if (tool && skillFile)
-        {
-            var both = new PendingToolAndSkillFileHoles(name, $"{name}.tool.md", $"{name}.md");
-            return MessageText.Format(UserText.PendingToolAndSkillFile, both);
-        }
-
-        return skillFile ? onSkillFile(name) : onTool(name);
-    }
-
-    /// <summary>The skill files waiting, after the tools /tools lists; nothing when none wait.</summary>
-    private string PendingSkillFileLines() =>
-        skills.ListPendingSkillFiles() is { Length: > 0 } lines ? "\n" + lines : "";
 }

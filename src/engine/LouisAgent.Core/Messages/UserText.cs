@@ -68,43 +68,15 @@ public enum UserText
     [Holes(typeof(UsageRequestsHoles))]
     UsageRequests,
 
-    [Description(" and stopped it: it no longer runs, in an open chat or the next")]
-    ToolRejectedFromSession,
-
-    [Description("Tool building is not available.")]
-    ToolBuildingNotAvailable,
-
-    [Description("Usage: /approve <Name>")]
-    ApproveUsage,
-
     [Description("Usage: /reject <Name>")] RejectUsage,
 
     [Description("No pending tool or skill file named '{Name}'. Use /tools to see what is pending.")]
     [Holes(typeof(NoPendingToolSeeToolsHoles))]
     NoPendingToolSeeTools,
 
-    [Description("Cannot approve '{Name}': the definition is invalid ({Errors}).")]
-    [Holes(typeof(CannotApproveHoles))]
-    CannotApprove,
-
-    [Description("An approved tool '{Name}' already exists; remove {Path} first.")]
-    [Holes(typeof(ApprovedToolAlreadyThereHoles))]
-    ApprovedToolAlreadyThere,
-
-    [Description("Approved '{Name}'. Saved to {Path}; it loads in every future session, from your next chat on.")]
-    [Holes(typeof(ToolApprovedHoles))]
-    ToolApproved,
-
-    [Description("Rejected '{Name}': deleted the pending definition{Removed}.")]
-    [Holes(typeof(ToolRejectedHoles))]
-    ToolRejected,
-
     [Description("No pending tool or skill file named '{Name}'.")]
     [Holes(typeof(NoPendingToolHoles))]
     NoPendingTool,
-
-    [Description("\n\nApprove with /approve <Name>, discard with /reject <Name>.")]
-    ToolsHint,
 
     [Description(
         "Approved skill file '{Name}'. Moved to {Path}; every later session with the skills toolset loads it, from " +
@@ -126,12 +98,6 @@ public enum UserText
     [Description("- {Name} [skill file pending from an earlier session, not loaded]")]
     [Holes(typeof(PendingSkillFileNotLoadedHoles))]
     PendingSkillFileNotLoaded,
-
-    [Description(
-        "'{Name}' is both a pending tool ({Tool}) and a pending skill file ({File}); nothing was done. Reject one of " +
-        "them first, then approve the other.")]
-    [Holes(typeof(PendingToolAndSkillFileHoles))]
-    PendingToolAndSkillFile,
 
     [Description("Usage isn't tracked in this session.")]
     UsageNotTracked,
@@ -158,4 +124,7 @@ public enum UserText
     [Description("Approved skills: {Names}.")]
     [Holes(typeof(ApprovedSkillsListedHoles))]
     ApprovedSkillsListed,
+
+    [Description("No skills are approved yet.")]
+    NoApprovedSkills,
 }

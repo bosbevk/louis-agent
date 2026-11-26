@@ -504,7 +504,7 @@ public class LookupAskTests
         Assert.That(agents.GuideFile, Is.EqualTo("toolsets/agents.md"));
         Assert.That(TestTools.Catalog.ToolsetOf("FetchUrl"), Is.EqualTo(TestToolset.Web.Wire()));
         Assert.That(TestTools.Catalog.ToolsetOf("ReadWorkspaceFile"), Is.EqualTo(TestToolset.Files.Wire()));
-        Assert.That(AgentCatalog.CoreOnly.ToolsetOf("CreateTool"), Is.Null, "engine-provided: no toolset builds it");
+        Assert.That(AgentCatalog.CoreOnly.ToolsetOf("CreateSkill"), Is.Null, "engine-provided: no toolset builds it");
     }
 
     /// <summary>A search provider that finds nothing, so the toolsets can be checked without one.</summary>

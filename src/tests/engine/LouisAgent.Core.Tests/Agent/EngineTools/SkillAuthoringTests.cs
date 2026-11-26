@@ -159,7 +159,6 @@ public class SkillAuthoringTests
         var engine = Engine();
         engine.CreateSkillFile("Greeting", EchoSkill);
 
-        Assert.That(engine.HandleUserCommand("/tools"), Does.Contain("greeting"));
         Assert.That(engine.HandleUserCommand("/approve Greeting"), Does.Contain("Approved"));
         Assert.That(File.Exists(ApprovedFile("greeting")), Is.True);
 
@@ -193,23 +192,6 @@ public class SkillAuthoringTests
             Does.Contain("No pending tool or skill file named 'nothing'"));
     }
 
-    /// <summary>A name that's both a waiting tool and a waiting skill file is refused, and nothing moves.</summary>
-    [Test]
-    public void AName_ThatIsBothAPendingTool_AndAPendingSkillFile_IsRefused()
-    {
-        var engine = Engine();
-        engine.CreateSkillFile("greeting", EchoSkill);
-        Directory.CreateDirectory(Path.Combine(_skillsDir, "tools", "pending"));
-        File.WriteAllText(Path.Combine(_skillsDir, "tools", "pending", "greeting.tool.md"),
-            "# Tool: greeting\n- Description: x\n");
-
-        string reply = engine.HandleUserCommand("/approve greeting")!;
-
-        Assert.That(reply, Does.Contain("both").And.Contain("greeting.tool.md").And.Contain("greeting.md"));
-        Assert.That(File.Exists(PendingFile("greeting")), Is.True, "nothing moved");
-        Assert.That(File.Exists(ApprovedFile("greeting")), Is.False);
-    }
-
     /// <summary>
     /// Overwriting an approved skill keeps the approved one for later sessions until the new one is approved.
     /// </summary>
@@ -234,20 +216,6 @@ public class SkillAuthoringTests
 
         Assert.That(File.Exists(PendingFile("greeting")), Is.False);
         Assert.That(Engine().ExecuteSkill("Greet", """{"who":"Louis"}"""), Is.EqualTo("hi Louis"));
-    }
-
-    /// <summary>/tools lists the waiting skill files, and says which this session already runs.</summary>
-    [Test]
-    public void Tools_ListsPendingSkillFiles()
-    {
-        var engine = Engine();
-        engine.CreateSkillFile("greeting", EchoSkill);
-        File.WriteAllText(PendingFile("older"), EchoSkill.Replace("Greet", "Older"));
-
-        string reply = engine.HandleUserCommand("/tools")!;
-
-        Assert.That(reply, Does.Contain("greeting").And.Contain("skill file").And.Contain("active here"));
-        Assert.That(reply, Does.Contain("older").And.Contain("not loaded"));
     }
 
     /// <summary>How many times a part appears in a text.</summary>

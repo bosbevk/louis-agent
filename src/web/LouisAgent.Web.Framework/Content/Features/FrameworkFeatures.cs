@@ -64,9 +64,9 @@ public static class FrameworkFeatures
         new(Engine, "Small jobs on a cheap model", "LOOKUP_LLMS",
             "A lookup agent does one task with one of its asker's tools, on the model you set for it, " +
             "cheapest first, a local one if you like.", CoreDoc),
-        new(Engine, "An agent that grows its tools", "CreateTool",
-            "The agent can write a new skill or a script-backed tool, and it waits for your /approve before any " +
-            "later session loads it.", "src/docs/architecture/06-runtime-view.md"),
+        new(Engine, "An agent that grows its skills", "CreateSkill",
+            "The agent can write a new skill, proved by an example run, and use it at once in the chat that made " +
+            "it; every later chat has it once you /approve it.", "src/docs/architecture/06-runtime-view.md"),
         new(Engine, "Files passed by name", "SessionAttachments",
             "A file you attach is handed to another agent by name, so a large file isn't copied through the model.",
             CoreDoc),

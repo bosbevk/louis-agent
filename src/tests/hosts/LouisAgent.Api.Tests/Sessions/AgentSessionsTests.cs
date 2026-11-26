@@ -111,7 +111,7 @@ public class AgentSessionsTests
         var session = (await Sessions().CreateAsync(new SessionRequest()));
 
         Assert.That(session.Toolsets, Is.EqualTo(AgentSessions.DefaultToolsets));
-        Assert.That(Names(session), Does.Contain("CreateTool").And.Not.Contain("ReadWorkspaceFile"));
+        Assert.That(Names(session), Does.Contain("CreateSkill").And.Not.Contain("ReadWorkspaceFile"));
     }
 
     /// <summary>

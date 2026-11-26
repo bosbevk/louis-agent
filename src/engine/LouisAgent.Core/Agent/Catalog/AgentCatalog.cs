@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Reflection;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Agent.EngineTools.Clock;
+using LouisAgent.Core.Agent.EngineTools.Skills;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.FileProviders;
 
@@ -32,7 +33,7 @@ public sealed class AgentCatalog
         new[]
             {
                 nameof(AgentEngine.ExecuteSkill), nameof(AgentEngine.CreateSkillFile),
-                nameof(AgentEngine.ReloadSkills), nameof(AgentEngine.CreateTool), nameof(AgentEngine.ListAgentTools)
+                nameof(AgentEngine.ReloadSkills), nameof(SkillDoorTools.UseSkill), nameof(SkillMakingTools.CreateSkill)
             }
             .Concat(ToolMethodsOfType(typeof(ClockTools)).Select(m => m.Name)),
         StringComparer.OrdinalIgnoreCase);

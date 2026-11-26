@@ -35,9 +35,9 @@ public static class ToolsetCatalog
                 new AgentWorkTools(ctx.Options)
             ]),
 
-        // Engine-provided: CreateSkillFile, ReloadSkills, CreateTool and ListAgentTools are registered by AgentEngine
-        // when this name is in the resolved list (step 3), because they need the engine's own registry and skill set.
-        new(CoreToolset.Skills.Wire(), "Create and reload skills, and build and list agent-built tools",
+        // Engine-provided: UseSkill, CreateSkill, CreateSkillFile and ReloadSkills are registered by AgentEngine when
+        // this name is in the resolved list (step 3), because they need the engine's own registry and skill set.
+        new(CoreToolset.Skills.Wire(), "Make, use and reload skills",
             GuideFile: SkillFiles.Guide("self-extension"),
             MissingSettings: _ => [],
             CreateTools: null)

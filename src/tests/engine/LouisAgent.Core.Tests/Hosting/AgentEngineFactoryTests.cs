@@ -314,7 +314,7 @@ public class AgentEngineFactoryTests
 
         Assert.That(ListToolNames(files), Does.Contain("ReadWorkspaceFile").And.Not.Contain("GetStatus"));
         Assert.That(ListToolNames(git), Does.Contain("GetStatus").And.Not.Contain("ReadWorkspaceFile"));
-        Assert.That(ListToolNames(files), Does.Contain("ExecuteSkill").And.Not.Contain("CreateTool"),
+        Assert.That(ListToolNames(files), Does.Contain("ExecuteSkill").And.Not.Contain("CreateSkill"),
             "no skills toolset, no self-extension");
     }
 
@@ -323,7 +323,7 @@ public class AgentEngineFactoryTests
     public void TheSkillsToolset_AddsTheSelfExtensionTools()
     {
         Assert.That(ListToolNames(Factory().GetOrCreate([TestToolset.Files.Wire(), CoreToolset.Skills.Wire()])),
-            Does.Contain("CreateTool").And.Contain("CreateSkillFile"));
+            Does.Contain("CreateSkill").And.Contain("UseSkill"));
     }
 
     /// <summary>An engine's prompt holds only its toolsets' guides, and a reload keeps them so.</summary>
