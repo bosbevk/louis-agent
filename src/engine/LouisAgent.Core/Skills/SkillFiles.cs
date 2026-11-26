@@ -54,20 +54,10 @@ public static class SkillFiles
     internal static string FunctionsFolder { get; } = $"{PromptFolder.Agents.Wire()}/{PromptFolder.Functions.Wire()}";
 
     /// <summary>
-    /// Where a function skill the agent writes waits for the user's <c>/approve</c> (FX20), as agent-built tools wait
-    /// in <c>tools/pending/</c>: discovery reads only <see cref="FunctionsFolder"/>'s top, so a later session never
-    /// loads it.
-    /// </summary>
-    internal static string PendingFunctionsFolder { get; } = FunctionsFolder + "/pending";
-
-    /// <summary>
     /// The folder of an identity's skills, beside its voice (F129, ADR 0114): <c>agents/{identity}/skills/</c>.
     /// </summary>
     public static string SkillsOf(string identity) =>
         $"{PromptFolder.Agents.Wire()}/{identity}/{PromptFolder.Skills.Wire()}/";
-
-    /// <summary>A pending function skill's file: <c>agents/functions/pending/{name}.md</c>.</summary>
-    internal static string PendingFunction(string name) => $"{PendingFunctionsFolder}/{name}.md";
 
     /// <summary>
     /// A toolset guide's file: <c>toolsets/{name}.md</c>, the same whichever level loads it.
@@ -79,8 +69,7 @@ public static class SkillFiles
 
     /// <summary>
     /// Whether <paramref name="path"/> is a built-in prompt: what is embedded is built in (CL9, ADR 0019), so the names
-    /// the agent may not take follow the files, with no list to keep. Discovery skips one, and <c>CreateSkillFile</c>
-    /// refuses it.
+    /// a function skill may not take follow the files, with no list to keep: discovery skips one.
     /// </summary>
     internal static bool IsBuiltIn(string path) =>
         SkillFileSource.EmbeddedFiles.Contains(path, StringComparer.OrdinalIgnoreCase);

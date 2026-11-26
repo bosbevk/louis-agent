@@ -1,11 +1,8 @@
 using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Agent.Messages.Holes;
 using LouisAgent.Core.Agent.Messages.Holes.Calls;
-using LouisAgent.Core.Agent.Messages.Holes.Commands;
 using LouisAgent.Core.Agent.Messages.Holes.Frozen;
 using LouisAgent.Core.Agent.Messages.Holes.Oversized;
-using LouisAgent.Core.Agent.Messages.Holes.SkillFiles;
-using LouisAgent.Core.Agent.Messages.Holes.Skills;
 using System.ComponentModel;
 
 namespace LouisAgent.Core.Agent.Messages;
@@ -78,82 +75,13 @@ public enum AgentToolMessage
     [Holes(typeof(SummarisedResultHoles))]
     SummarisedResult,
 
-    [Description("Error: Skill name cannot be empty.")]
-    SkillNameEmpty,
-
-    [Description("Error: Skill '{Name}' was not found in the loaded skill definitions. Available skills: {Available}")]
-    [Holes(typeof(SkillNotFoundHoles))]
-    SkillNotFound,
-
-    [Description("Error: Invalid JSON arguments: expected an object.")]
-    SkillArgumentsNotObject,
-
-    [Description("Error: Invalid JSON arguments: {Reason}")]
-    [Holes(typeof(SkillArgumentsInvalidHoles))]
-    SkillArgumentsInvalid,
-
-    [Description("Error: Skill '{Name}' template is empty after substitution.")]
-    [Holes(typeof(SkillTemplateEmptyHoles))]
-    SkillTemplateEmpty,
-
-    [Description("Failed to execute skill '{Name}': {Reason}")]
-    [Holes(typeof(SkillFailedHoles))]
-    SkillFailed,
-
-    [Description("Error: skill authoring is not available (no skills folder was found).")]
-    SkillAuthoringUnavailable,
-
-    [Description("Error: name must be kebab-case letters/digits, e.g. 'csv-reports'.")]
-    SkillFileNameInvalid,
-
-    [Description("Error: markdown content is empty.")]
-    SkillMarkdownEmpty,
-
-    [Description("Error: '{File}' is a built-in skills file and cannot be replaced; choose another name.")]
-    [Holes(typeof(SkillFileBuiltInHoles))]
-    SkillFileBuiltIn,
-
-    [Description("Error: '{File}' already exists. Pass overwrite=true to replace it, or pick another name.")]
-    [Holes(typeof(SkillFileExistsHoles))]
-    SkillFileExists,
-
-    [Description(
-        "Error: {Declared} '## Skill:' section(s) found but only {Valid} are valid. Each needs a '- Description:' " +
-        "line and an '- Execution:' line followed by a ```bash code block.")]
-    [Holes(typeof(SkillSectionsInvalidHoles))]
-    SkillSectionsInvalid,
-
     [Description("Error: skill reloading is not available in this host.")]
     SkillReloadUnavailable,
 
-    [Description("[Timeout] Command execution exceeded {Milliseconds}ms limit.")]
-    [Holes(typeof(CommandTimeoutHoles))]
-    CommandTimeout,
-
-    [Description("[Exit Code {Code}] Error: {Output}")]
-    [Holes(typeof(ExitCodeErrorHoles))]
-    ExitCodeError,
-
-    [Description("no parameters")] NoParameters,
-
-    [Description("guidance only (no executable skills)")]
-    SkillGuidanceOnly,
-
     [Description(
-        "Saved {Path}, pending — {Skills}. ExecuteSkill runs it here now, and its documentation reaches the next " +
-        "chat's system prompt; ask the user to type /approve {Name} to keep it for every later session, or " +
-        "/reject {Name} to discard it.\n{Reload}")]
-    [Holes(typeof(SkillFileSavedHoles))]
-    SkillFileSaved,
-
-    [Description(
-        "Skills reloaded. Available skills: {Skills}. ExecuteSkill runs them here now; the next chat's system prompt " +
-        "lists them.")]
-    [Holes(typeof(SkillsReloadedHoles))]
+        "Skills reloaded: UseSkill reaches a skill added since now, and the next chat's system prompt and UseSkill " +
+        "list it.")]
     SkillsReloaded,
-
-    [Description("Command executed successfully (no output returned).")]
-    CommandRanNoOutput,
 
     [Description(
         "Error: '{Name}' was NOT run: the user rejected it, or it is no longer offered. Don't call it again in this " +

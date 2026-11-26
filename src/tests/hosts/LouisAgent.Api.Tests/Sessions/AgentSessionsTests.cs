@@ -115,13 +115,13 @@ public class AgentSessionsTests
     }
 
     /// <summary>
-    /// An empty list really means none: only the two tools every session has.
+    /// An empty list really means none: only the tool every session has, the clock.
     /// </summary>
     [Test]
     public async Task AnEmptyList_GivesNoToolsets()
     {
         Assert.That(Names((await Sessions().CreateAsync(new SessionRequest([])))),
-            Is.EquivalentTo(new[] { "ExecuteSkill", "GetToday" }));
+            Is.EquivalentTo(new[] { "GetToday" }));
     }
 
     /// <summary>
@@ -537,7 +537,7 @@ public class AgentSessionsTests
         Assert.That(
             async () => (await sessions.CreateAsync(new SessionRequest([CoreToolset.Skills.Wire()], ParentOf(withWeb),
                 Depth: 2,
-                Role: TestAgent.Lookup, Tool: "ExecuteSkill"))),
+                Role: TestAgent.Lookup, Tool: "ReloadSkills"))),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("never handed"));
     }
 

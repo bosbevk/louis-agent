@@ -34,15 +34,15 @@ public class AgentEngineTests
     }
 
     /// <summary>
-    /// The engine offers the workspace's tools and ExecuteSkill, and nothing for a service it has no key for.
+    /// The engine offers the workspace's tools and the clock, and nothing for a service it has no key for.
     /// </summary>
     [Test]
-    public void Constructor_ExposesWorkspaceAndSkillTools()
+    public void Constructor_ExposesWorkspaceToolsAndTheClock()
     {
         var engine = Engine(new FakeChatClient());
         var names = engine.Tools.Select(t => t.Name).ToList();
 
-        Assert.That(names, Does.Contain("ExecuteSkill"));
+        Assert.That(names, Does.Contain("GetToday"));
         Assert.That(names, Does.Contain("ReadWorkspaceFile"));
         Assert.That(names, Does.Not.Contain("LogTimeByTaskName"), "no Paymo key configured");
     }
@@ -68,15 +68,17 @@ public class AgentEngineTests
         Assert.That(engine.Tools.Select(t => t.Name), Does.Contain("DotNetBuild"));
     }
 
-    /// <summary>An engine given its own tool objects offers only those, ExecuteSkill and the clock.</summary>
+    /// <summary>An engine given its own tool objects offers only those and the clock.</summary>
     [Test]
-    public void Constructor_WithToolsets_RegistersOnlyThoseAndExecuteSkill()
+    public void Constructor_WithToolsets_RegistersOnlyThoseAndTheClock()
     {
-        var engine = new AgentEngine(HelloSkills(), new FakeChatClient(), TestPaths.Agent(),
-            toolsets: [new PingTools()]);
-
-        Assert.That(engine.Tools.Select(t => t.Name), Is.EquivalentTo(new[] { "ExecuteSkill", "GetToday", "Ping" }));
+        Assert.That(PingEngine(new FakeChatClient()).Tools.Select(t => t.Name),
+            Is.EquivalentTo(new[] { "GetToday", "Ping" }));
     }
+
+    /// <summary>An engine whose one tool of its own is <see cref="PingTools"/>.</summary>
+    private static AgentEngine PingEngine(IChatClient client) =>
+        new(HelloSkills(), client, TestPaths.Agent(), toolsets: [new PingTools()]);
 
     /// <summary>
     /// An engine whose toolsets are all safe to run together runs a round's calls at once; any other keeps them in
@@ -153,26 +155,21 @@ public class AgentEngineTests
         var client = new FakeChatClient(
             _ => new ChatResponse(new ChatMessage(ChatRole.Assistant,
             [
-                new FunctionCallContent("call_1", "ExecuteSkill",
-                    new Dictionary<string, object?>
-                    {
-                        ["skillName"] = "SayHello",
-                        ["jsonArgs"] = "{\"name\":\"Agent\"}"
-                    })
+                new FunctionCallContent("call_1", "Ping", new Dictionary<string, object?>())
             ])),
             messages =>
             {
                 var toolResult = messages.Last().Contents.OfType<FunctionResultContent>().Single();
-                return new ChatResponse(new ChatMessage(ChatRole.Assistant, $"Skill said: {toolResult.Result}"));
+                return new ChatResponse(new ChatMessage(ChatRole.Assistant, $"Ping said: {toolResult.Result}"));
             });
-        var engine = Engine(client);
+        var engine = PingEngine(client);
         var history = engine.StartConversation();
 
-        string answer = await engine.ProcessPromptAsync(history, "say hello");
+        string answer = await engine.ProcessPromptAsync(history, "ping it");
 
-        Assert.That(answer, Does.Contain("Hello, Agent!"));
+        Assert.That(answer, Does.Contain("Ping said: pong"));
         Assert.That(client.Requests, Has.Count.EqualTo(2));
-        Assert.That(client.Requests[0].Options!.Tools!.Select(t => t.Name), Does.Contain("ExecuteSkill"));
+        Assert.That(client.Requests[0].Options!.Tools!.Select(t => t.Name), Does.Contain("Ping"));
         Assert.That(history.Messages.Select(m => m.Role), Does.Contain(ChatRole.Tool),
             "tool result is kept in history");
     }
@@ -188,53 +185,6 @@ public class AgentEngineTests
 
         Assert.That(client.Requests[0].Options!.Tools, Is.Null.Or.Empty);
         Assert.That(client.Requests[0].Messages.Select(m => m.Text), Does.Contain(TurnRunner.NoToolsNotice));
-    }
-
-    /// <summary>Running a skill that doesn't exist says it wasn't found.</summary>
-    [Test]
-    public void ExecuteSkill_WithInvalidSkillName_ReturnsErrorMessage()
-    {
-        var result = Engine(new FakeChatClient()).ExecuteSkill("NonExistentSkill", "{}");
-
-        Assert.That(result, Does.Contain("Error").And.Contain("not found"));
-    }
-
-    /// <summary>Arguments that aren't JSON are refused as such.</summary>
-    [Test]
-    public void ExecuteSkill_WithInvalidJson_ReturnsErrorMessage()
-    {
-        var result = Engine(new FakeChatClient()).ExecuteSkill("SayHello", "invalid json {");
-
-        Assert.That(result, Does.Contain("Invalid JSON"));
-    }
-
-    /// <summary>A skill with no parameters runs on empty arguments.</summary>
-    [Test]
-    public void ExecuteSkill_WithEmptyJsonArgs_StillExecutes()
-    {
-        Assert.That(Engine(new FakeChatClient()).ExecuteSkill("GetCurrentTime", "{}"), Is.Not.Empty);
-    }
-
-    /// <summary>An argument full of shell syntax reaches the skill as text and is never run.</summary>
-    [Test]
-    public void ExecuteSkill_TreatsArgumentsAsDataNotShellSyntax()
-    {
-        string marker = Path.Combine(Path.GetTempPath(), $"injected-{Guid.NewGuid():N}").Replace('\\', '/');
-        try
-        {
-            string payload = $"x\"; touch '{marker}'; echo \"$(touch '{marker}')`touch '{marker}'`";
-            var arguments = new Dictionary<string, string> { ["name"] = payload };
-            string json = JsonSerializer.Serialize(arguments);
-
-            string result = Engine(new FakeChatClient()).ExecuteSkill("SayHello", json);
-
-            Assert.That(File.Exists(marker), Is.False, "payload must not be executed");
-            Assert.That(result, Does.Contain("touch"), "payload is echoed back literally");
-        }
-        finally
-        {
-            File.Delete(marker);
-        }
     }
 
     /// <summary>
@@ -346,26 +296,20 @@ public class AgentEngineTests
             _ => new ChatResponse(new ChatMessage(ChatRole.Assistant,
             [
                 new TextContent("Let me run it. "),
-                new FunctionCallContent("call_1", "ExecuteSkill",
-                    new Dictionary<string, object?>
-                    {
-                        ["skillName"] = "SayHello",
-                        ["jsonArgs"] = "{\"name\":\"Agent\"}"
-                    })
+                new FunctionCallContent("call_1", "Ping", new Dictionary<string, object?>())
             ])),
             _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "All done.")));
-        var engine = Engine(client);
+        var engine = PingEngine(client);
         var history = engine.StartConversation();
 
         var contents = new List<AIContent>();
-        await foreach (var update in engine.StreamPromptAsync(history, "say hello"))
+        await foreach (var update in engine.StreamPromptAsync(history, "ping it"))
             contents.AddRange(update.Contents);
 
         Assert.That(contents.OfType<TextContent>().Select(t => t.Text),
             Is.EqualTo(new[] { "Let me run it. ", "All done." }));
-        Assert.That(contents.OfType<FunctionCallContent>().Single().Name, Is.EqualTo("ExecuteSkill"));
-        Assert.That(contents.OfType<FunctionResultContent>().Single().Result?.ToString(),
-            Does.Contain("Hello, Agent!"));
+        Assert.That(contents.OfType<FunctionCallContent>().Single().Name, Is.EqualTo("Ping"));
+        Assert.That(contents.OfType<FunctionResultContent>().Single().Result?.ToString(), Does.Contain("pong"));
         Assert.That(history.Messages.Last().Text, Is.EqualTo("All done."));
         Assert.That(history.Messages.Select(m => m.Role), Does.Contain(ChatRole.Tool),
             "tool result is kept in history");

@@ -1,7 +1,5 @@
 using LouisAgent.Composition.Messages;
-using LouisAgent.Core.Messages.Holes.Approvals;
 using LouisAgent.Core.Messages.Holes.Drafts;
-using LouisAgent.Core.Messages.Holes.SkillFiles;
 using LouisAgent.Core.Messages.Holes.UsageFigures;
 using LouisAgent.Core.Messages.Holes.UsageLines;
 using System.ComponentModel;
@@ -68,36 +66,14 @@ public enum UserText
     [Holes(typeof(UsageRequestsHoles))]
     UsageRequests,
 
+    [Description("Usage: /approve <Name>")]
+    ApproveUsage,
+
     [Description("Usage: /reject <Name>")] RejectUsage,
 
-    [Description("No pending tool or skill file named '{Name}'. Use /tools to see what is pending.")]
-    [Holes(typeof(NoPendingToolSeeToolsHoles))]
-    NoPendingToolSeeTools,
-
-    [Description("No pending tool or skill file named '{Name}'.")]
-    [Holes(typeof(NoPendingToolHoles))]
-    NoPendingTool,
-
-    [Description(
-        "Approved skill file '{Name}'. Moved to {Path}; every later session with the skills toolset loads it, from " +
-        "your next chat on.")]
-    [Holes(typeof(SkillFileApprovedHoles))]
-    SkillFileApproved,
-
-    [Description("Rejected skill file '{Name}': deleted {Path}{Removed}.")]
-    [Holes(typeof(SkillFileRejectedHoles))]
-    SkillFileRejected,
-
-    [Description(" and unloaded it from this session")]
-    SkillFileRejectedFromSession,
-
-    [Description("- {Name} [skill file pending, active here]")]
-    [Holes(typeof(PendingSkillFileActiveHoles))]
-    PendingSkillFileActive,
-
-    [Description("- {Name} [skill file pending from an earlier session, not loaded]")]
-    [Holes(typeof(PendingSkillFileNotLoadedHoles))]
-    PendingSkillFileNotLoaded,
+    [Description("No draft named '{Name}' is waiting; /skills lists the drafts.")]
+    [Holes(typeof(NoDraftNamedHoles))]
+    NoDraftNamed,
 
     [Description("Usage isn't tracked in this session.")]
     UsageNotTracked,

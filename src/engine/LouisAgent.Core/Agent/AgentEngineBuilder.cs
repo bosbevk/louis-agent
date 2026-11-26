@@ -62,7 +62,7 @@ public sealed class AgentEngineBuilder
     }
 
     /// <summary>
-    /// Objects whose public methods become the agent's tools (plus <c>ExecuteSkill</c>). Null registers no tool object.
+    /// Objects whose public methods become the agent's tools (plus the clock). Null registers no tool object.
     /// </summary>
     public AgentEngineBuilder WithToolsets(IEnumerable<object>? toolsets)
     {
@@ -82,8 +82,8 @@ public sealed class AgentEngineBuilder
     }
 
     /// <summary>
-    /// Whether the self-extension tools (CreateSkillFile, ReloadSkills, CreateTool, ListAgentTools) are registered,
-    /// on a toolsets engine. Default: false.
+    /// Whether the self-extension tools (UseSkill, CreateSkill, ReloadSkills) are registered, on a toolsets engine.
+    /// Default: false.
     /// </summary>
     public AgentEngineBuilder WithSelfExtension(bool selfExtension)
     {
@@ -145,7 +145,10 @@ public sealed class AgentEngineBuilder
         return this;
     }
 
-    /// <summary>The skills folder <c>CreateSkillFile</c> writes into; null disables skill authoring.</summary>
+    /// <summary>
+    /// The skills folder <c>UseSkill</c> reads and <c>CreateSkill</c> writes drafts into; null leaves the agent no
+    /// skills of its own.
+    /// </summary>
     public AgentEngineBuilder WithSkillsDirectory(string? skillsDirectory)
     {
         _skillsDirectory = skillsDirectory;

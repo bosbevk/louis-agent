@@ -8,9 +8,9 @@ using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Core.Agent.EngineTools;
 /// <summary>
-/// The tools an engine registers itself (S, CL15, from AgentEngine): <c>ExecuteSkill</c> and the clock in every
-/// session, the toolsets' objects it was given, and, as the <c>skills</c> toolset (F5), the ones that let the agent
-/// extend itself, with the door to the skills it keeps (F97.1). The public names are the engine's, so the model sees
+/// The tools an engine registers itself (S, CL15, from AgentEngine): the clock in every session, the toolsets'
+/// objects it was given, and, as the <c>skills</c> toolset (F5), the ones that let the agent extend itself, with the
+/// door to the skills it keeps (F97.1). The public names are the engine's, so the model sees
 /// the same tool list as before the split.
 /// </summary>
 internal static class OwnTools
@@ -28,7 +28,6 @@ internal static class OwnTools
     public static void Register(ToolRegistry registry, SkillTools skillTools, AgentSkillTools agentSkills,
         AgentOptions options, IEnumerable<object>? toolsets, bool selfExtension, TimeProvider? clock = null)
     {
-        registry.Add(Function(skillTools.ExecuteSkill, nameof(AgentEngine.ExecuteSkill)));
         // Today's date and time (F22): every session, whatever its toolsets, since a model doesn't know what day it is.
         registry.AddPublicMethods(new ClockTools(clock, options.HostTimeZone));
         if (toolsets is not null)
@@ -59,7 +58,6 @@ internal static class OwnTools
     {
         registry.Add(agentSkills.Door);
         registry.Add(agentSkills.Create);
-        registry.Add(Function(skillTools.CreateSkillFile, nameof(AgentEngine.CreateSkillFile)));
         registry.Add(new ReloadingLibraryFunction(
             Function(skillTools.ReloadSkills, nameof(AgentEngine.ReloadSkills)), agentSkills.ReloadLibrary));
     }

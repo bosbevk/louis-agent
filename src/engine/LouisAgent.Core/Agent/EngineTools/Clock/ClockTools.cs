@@ -10,8 +10,8 @@ namespace LouisAgent.Core.Agent.EngineTools.Clock;
 
 /// <summary>
 /// Today's date and the time (F22): a model doesn't know what day it is, so "this week", "recent" or "how long ago"
-/// would be guesses. Registered for every session by the engine, like ExecuteSkill, since a chat's sessions may load no
-/// toolset that has it. In the user's time zone when they shared it (<see cref="UserPlace"/>), else the host's
+/// would be guesses. Registered for every session by the engine, since a chat's sessions may load no toolset that
+/// has it. In the user's time zone when they shared it (<see cref="UserPlace"/>), else the host's
 /// (<c>HOST_TIME_ZONE</c>, CL15; core names no country), else the machine's own. Since FX127 it names the part of
 /// the day too, so a greeting follows the clock.
 /// </summary>

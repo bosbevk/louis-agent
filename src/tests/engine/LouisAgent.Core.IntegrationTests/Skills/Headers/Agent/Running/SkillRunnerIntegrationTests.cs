@@ -51,6 +51,30 @@ public class SkillRunnerIntegrationTests
         Assert.That(answer, Is.EqualTo(new SkillAnswer(true, "3")), answer.Text);
     }
 
+    /// <summary>
+    /// An argument full of shell syntax reaches the script as data on stdin and is never run (ADR 0004): the script
+    /// prints it back, and the file it tries to make isn't there.
+    /// </summary>
+    [Test]
+    public void AnArgumentOfShellSyntax_IsReadAsData_NeverRun()
+    {
+        RequireThe(ScriptLanguage.Bash);
+        string marker = Path.Combine(_workspace, "injected").Replace('\\', '/');
+        string script = Path.Combine(_workspace, "echo.sh");
+        File.WriteAllText(script, "cat\n");
+        var skill = new Skill("echo", "Prints its input.", "", _workspace, script, ScriptLanguage.Bash,
+            new SkillParameters(Json("{}"), new Dictionary<string, SkillParameterType>(), []), SkillState.Drafted);
+        var payload = new Dictionary<string, string>
+        {
+            ["text"] = $"x\"; touch '{marker}'; echo \"$(touch '{marker}')`touch '{marker}'`"
+        };
+
+        var answer = _runner.Run(skill, JsonSerializer.SerializeToElement(payload));
+
+        Assert.That(File.Exists(marker), Is.False, "the payload must not run");
+        Assert.That(answer.Text, Does.Contain("touch"), "the payload comes back as text");
+    }
+
     /// <summary>Skips, saying why, where the language isn't installed; fails on CI, which has all three.</summary>
     private void RequireThe(ScriptLanguage language)
     {

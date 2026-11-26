@@ -24,7 +24,7 @@ public class FrameworkEvalFileTests
     /// <summary>The tools the framework Orbi has, by name, as a <c>used</c> or <c>not-used</c> fact says it.</summary>
     private static readonly string[] FrameworkTools =
     [
-        "AskFor", "ExecuteSkill", "FindPlace", "GetToday", "ListDocs", "Offer", "ReadDoc", "ReadSkill", "SearchDocs",
+        "AskFor", "FindPlace", "GetToday", "ListDocs", "Offer", "ReadDoc", "ReadSkill", "SearchDocs",
         "ShowCard", "ShowPage", "ShowReceipt"
     ];
 

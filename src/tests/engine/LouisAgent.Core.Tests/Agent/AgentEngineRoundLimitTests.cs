@@ -27,12 +27,7 @@ public class AgentEngineRoundLimitTests
             return new ChatResponse(new ChatMessage(
                 ChatRole.Assistant,
                 [
-                    new FunctionCallContent($"call_{i}", "ExecuteSkill",
-                        new Dictionary<string, object?>
-                        {
-                            ["skillName"] = "SayHello",
-                            ["jsonArgs"] = "{\"name\":\"x\"}"
-                        }),
+                    new FunctionCallContent($"call_{i}", "GetToday", new Dictionary<string, object?>()),
                 ]));
         })
         .ToArray());
@@ -47,13 +42,13 @@ public class AgentEngineRoundLimitTests
         AgentEngine engine = null!;
         var client = NeverStopsCallingTools(onRequest: i =>
         {
-            if (i == 2) engine.KeepOnlyTool("ExecuteSkill");
+            if (i == 2) engine.KeepOnlyTool("GetToday");
         });
         engine = Engine(client);
 
         await engine.ProcessPromptAsync(engine.StartConversation(), "go");
 
-        Assert.That(engine.Tools.Select(t => t.Name), Is.EqualTo(new[] { "ExecuteSkill" }), "the engine changed");
+        Assert.That(engine.Tools.Select(t => t.Name), Is.EqualTo(new[] { "GetToday" }), "the engine changed");
         Assert.That(client.ToolNamesSent[^1], Is.EqualTo(client.ToolNamesSent[0]), "the final request didn't");
         Assert.That(client.Requests[^1].Options!.ToolMode, Is.EqualTo(ChatToolMode.None));
     }
@@ -67,7 +62,7 @@ public class AgentEngineRoundLimitTests
         AgentEngine engine = null!;
         var client = NeverStopsCallingTools(onRequest: i =>
         {
-            if (i == 2) engine.KeepOnlyTool("ExecuteSkill");
+            if (i == 2) engine.KeepOnlyTool("GetToday");
         });
         engine = Engine(client);
 

@@ -47,7 +47,8 @@ skill is approved or the skills are reloaded, `UseSkill`'s list of skills change
 `notifications/tools/list_changed`.
 
 `SkillsToolProvider` adds three read-only skill tools, its methods `ListSkills`, `GetSkillInfo` and
-`GetSkillDocumentation`. The skills themselves still run through the engine's `ExecuteSkill`.
+`GetSkillDocumentation`. The first two read the `## Skill:` sections of the prompt's files, which no tool runs;
+the skills the agent keeps run through the engine's `UseSkill`.
 
 ### 4. The feeds as resources
 

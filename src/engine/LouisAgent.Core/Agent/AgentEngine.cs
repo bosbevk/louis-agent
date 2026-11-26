@@ -110,14 +110,10 @@ public class AgentEngine
     }
 
     /// <summary>
-    /// The skills folder; <see cref="CreateSkillFile"/> writes into its agents/functions/; null disables skill
-    /// authoring.
+    /// The skills folder: the approved skills <c>UseSkill</c> reaches, and the drafts <c>CreateSkill</c> writes into
+    /// its <c>drafts/</c>; null leaves the agent no skills of its own.
     /// </summary>
-    public string? SkillsDirectory
-    {
-        get => _skillTools.SkillsDirectory;
-        init => _skillTools.SkillsDirectory = value;
-    }
+    public string? SkillsDirectory { get; init; }
 
     /// <summary>
     /// Reasoning effort for each turn (the model's thinking is streamed to hosts); null disables thinking.
@@ -139,9 +135,9 @@ public class AgentEngine
 
     /// <summary>Builds the agent's parts once and registers its tools; a model without tools gets none.</summary>
     /// <param name="toolsets">
-    /// Objects whose public methods become the agent's tools (plus <see cref="ExecuteSkill"/>): a session's catalogue
-    /// toolsets (<c>AgentEngineFactory</c>), or another agent's own tools, such as the orchestrator's. Null registers
-    /// no tool object, only <see cref="ExecuteSkill"/> and the self-extension tools.
+    /// Objects whose public methods become the agent's tools (plus the clock): a session's catalogue toolsets
+    /// (<c>AgentEngineFactory</c>), or another agent's own tools, such as the orchestrator's. Null registers no tool
+    /// object, only the clock and the self-extension tools.
     /// </param>
     /// <param name="usageSink">Where one usage record per model request goes; null records nothing.</param>
     /// <param name="usageMapper">
@@ -155,8 +151,8 @@ public class AgentEngine
     /// (<c>LlmClientFactory.CreateStaleThinking</c>); null strips it, which every provider takes.
     /// </param>
     /// <param name="selfExtension">
-    /// On a toolsets engine, also register the self-extension tools (UseSkill, CreateSkill, CreateSkillFile,
-    /// ReloadSkills): the <c>skills</c> toolset. Ignored when <paramref name="toolsets"/> is null, which always
+    /// On a toolsets engine, also register the self-extension tools (UseSkill, CreateSkill, ReloadSkills): the
+    /// <c>skills</c> toolset. Ignored when <paramref name="toolsets"/> is null, which always
     /// registers them.
     /// </param>
     public AgentEngine(ISkillProvider skillProvider, IChatClient chatClient, AgentOptions options,
@@ -172,10 +168,10 @@ public class AgentEngine
         _registry = new ToolRegistry(supportsTools, replay);
         var python = new PythonRunner(WorkspaceRoot);
         var powerShell = new PowerShellRunner(WorkspaceRoot);
-        _skillTools = new SkillTools(skillProvider, options, WorkspaceRoot, python, powerShell);
+        _skillTools = new SkillTools(skillProvider);
         // The one door to every skill (F97.1): the library and the door are made when first used.
         _library = new Lazy<SkillLibrary>(() => SkillLibrary.Read(SkillsDirectory ?? ""));
-        _commands = new UserCommands(_skillTools, () => _library.Value, () => Display);
+        _commands = new UserCommands(() => _library.Value, () => Display);
         var skillRunner = SkillRunner.For(python, powerShell, new BashRunner(WorkspaceRoot));
         var door = new Lazy<SkillDoor>(() => new SkillDoor(_library.Value, skillRunner));
         var doorTools = new SkillDoorTools(() => door.Value);
@@ -263,18 +259,6 @@ public class AgentEngine
         var turn = _turns.StreamAsync(conversation, userInput, cancellationToken);
         return _paced ? turn.Paced(_clock, cancellationToken) : turn;
     }
-
-    /// <summary>
-    /// Runs a loaded skill (the <c>ExecuteSkill</c> tool; see <see cref="SkillTools.ExecuteSkill"/>).
-    /// </summary>
-    public string ExecuteSkill(string skillName, string jsonArgs = "{}") =>
-        _skillTools.ExecuteSkill(skillName, jsonArgs);
-
-    /// <summary>
-    /// Saves and loads a skills file (the <c>CreateSkillFile</c> tool; see <see cref="SkillTools.CreateSkillFile"/>).
-    /// </summary>
-    public string CreateSkillFile(string name, string markdown, bool overwrite = false) =>
-        _skillTools.CreateSkillFile(name, markdown, overwrite);
 
     /// <summary>
     /// Re-reads the skills from disk (the <c>ReloadSkills</c> tool; see <see cref="SkillTools.ReloadSkills"/>), the

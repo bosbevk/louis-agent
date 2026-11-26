@@ -42,7 +42,8 @@ public sealed class PowerShellRunner
 
     /// <summary>
     /// Runs inline script text (written to a temp .ps1) or an existing .ps1 file through the UTF-8 wrapper.
-    /// Shared with ExecuteSkill and agent-built tools. Returns null with <paramref name="notInstalled"/> set when no PowerShell is available.
+    /// Shared with the skills the agent keeps. Returns null with <paramref name="notInstalled"/> set when no
+    /// PowerShell is available.
     /// </summary>
     public ProcessRunner.Result? RunScript(
         string? inlineScript,

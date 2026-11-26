@@ -116,7 +116,7 @@ public class LookupAskTests
         var scope = UsageScope.Begin(host: "api", session: session, turn: turn,
             tags: new UsageTags(null, null, null, parent));
         var mine = AgentTools.Use(tools.Length == 0
-            ? ["FetchUrl", "ReadRenderedPage", "WebSearch", "ExecuteSkill"]
+            ? ["FetchUrl", "ReadRenderedPage", "WebSearch", "ReloadSkills"]
             : tools);
         return new All([scope, mine, TurnIdentity.Use(TurnIdentity.Of(Testprod)), TurnDepth.Use(1)]);
     }
@@ -238,7 +238,7 @@ public class LookupAskTests
             Assert.That(await tools.AskLookupAgent(Address, "ReadRenderedPage", "a page"),
                 Does.StartWith("Error:").And.Contain("ReadRenderedPage").And.Contain("FetchUrl"),
                 "only one of its own: the parent's toolbox is the ceiling");
-            Assert.That(await tools.AskLookupAgent(Address, "ExecuteSkill", "a page"),
+            Assert.That(await tools.AskLookupAgent(Address, "ReloadSkills", "a page"),
                 Does.StartWith("Error:").And.Contain("never"));
             Assert.That(await tools.AskLookupAgent("testprod.researcher", "FetchUrl", "a page"),
                 Does.StartWith("Error:").And.Contain("testprod.researcher"), "a subagent is no lookup agent");

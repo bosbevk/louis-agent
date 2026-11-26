@@ -1,8 +1,6 @@
 using LouisAgent.Composition.Messages;
-using LouisAgent.Core.Agent.EngineTools;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Messages.Holes.Drafts;
-using LouisAgent.Core.Messages.Holes.SkillFiles;
 using LouisAgent.Core.Pricing.Rates;
 using LouisAgent.Core.Skills.Headers.Agent;
 using LouisAgent.Core.Skills.Headers.Agent.Drafting;
@@ -16,13 +14,11 @@ namespace LouisAgent.Core.Agent.Commands;
 
 /// <summary>
 /// What the user types that the model never sees (S, CL15, from AgentEngine): /skills, /approve &lt;Name&gt;,
-/// /reject &lt;Name&gt; and /usage, answered from the skills the agent made, the skill files and the session's usage.
+/// /reject &lt;Name&gt; and /usage, answered from the skills the agent made and the session's usage.
 /// </summary>
-/// <param name="skills">The skill files.</param>
 /// <param name="library">The skills the agent made, drafts and approved (F97.1), read when first needed.</param>
 /// <param name="display">The currency /usage shows costs in (F14), as the engine has it at the time.</param>
 internal sealed class UserCommands(
-    SkillTools skills,
     Func<SkillLibrary> library,
     Func<DisplayCurrency?> display)
 {
@@ -47,10 +43,12 @@ internal sealed class UserCommands(
         return command switch
         {
             "/skills" => Skills(),
+            "/approve" when argument.Length == 0 => MessageText.Format(UserText.ApproveUsage),
+            "/reject" when argument.Length == 0 => MessageText.Format(UserText.RejectUsage),
             "/approve" => Decided(library().Approve(argument), argument, SkillToolMessage.DraftApprovedNote, chat)
-                          ?? skills.ApproveSkillFile(argument),
+                          ?? NoDraft(argument),
             "/reject" => Decided(library().Reject(argument), argument, SkillToolMessage.DraftRejectedNote, chat)
-                         ?? skills.RejectSkillFile(argument),
+                         ?? NoDraft(argument),
             "/usage" => sessionUsage is null
                 ? MessageText.Format(UserText.UsageNotTracked)
                 : UsageText.Summary(sessionUsage, display()),
@@ -91,6 +89,13 @@ internal sealed class UserCommands(
         var decided = new DraftDecidedHoles(name);
         chat?.Note(MessageText.Format(note, decided));
         return reply;
+    }
+
+    /// <summary>The reply to /approve or /reject of a name no draft has.</summary>
+    private static string NoDraft(string name)
+    {
+        var missing = new NoDraftNamedHoles(name);
+        return MessageText.Format(UserText.NoDraftNamed, missing);
     }
 
     /// <summary>A draft's line: its name, what it does, and its example.</summary>

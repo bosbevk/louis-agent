@@ -30,7 +30,9 @@ public sealed class PythonRunner
     private readonly string _venvDirectory;
     private Interpreter? _baseInterpreter;
 
-    /// <param name="venvDirectory">Virtual environment for installed packages; defaults to PYTHON_VENV or a per-user folder.</param>
+    /// <param name="venvDirectory">
+    /// Virtual environment for installed packages; defaults to PYTHON_VENV or a per-user folder.
+    /// </param>
     public PythonRunner(string workspaceRoot, string? venvDirectory = null)
     {
         _workspaceRoot = Path.GetFullPath(workspaceRoot);
@@ -44,7 +46,7 @@ public sealed class PythonRunner
                 "python-venv");
 
     /// <summary>
-    /// Runs inline code (written to a temp .py) or an existing script file. Shared with ExecuteSkill and agent-built tools.
+    /// Runs inline code (written to a temp .py) or an existing script file. Shared with the skills the agent keeps.
     /// Returns null with <paramref name="notInstalled"/> set when no Python 3 is available.
     /// </summary>
     public ProcessRunner.Result? RunScript(

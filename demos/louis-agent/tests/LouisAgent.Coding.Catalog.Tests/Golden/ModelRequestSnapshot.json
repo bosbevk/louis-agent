@@ -386,32 +386,6 @@
       }
     },
     {
-      "Name": "CreateSkillFile",
-      "Description": "Creates (or updates, with overwrite=true) a reusable skill file, saved as agents/functions/pending/<name>.md in the Skills\nfolder and loaded at once, so its skills are callable via ExecuteSkill in this same session. It is only kept for later\nsessions once the user approves it: ask them to type '/approve <name>' (or '/reject <name>' to discard it). With\noverwrite, the new version waits for approval while the approved one stays for other sessions. Use this when the user\nasks to save a repeatable procedure as a skill, not for a one-off action that only needs to happen once. A built-in\nprompt's name (a toolset's guide) can't be taken with this tool. Markdown format, one section per skill:\n# <Title>\n<guidance for when/how to use these skills>\n## Skill: <PascalCaseName>\n- Description: <one line>\n- Parameters:\n  - `argName` (required|optional): <meaning>\n- Execution:\n```bash\npython3 script.py \"${SKILL_ARG_argName}\"\n```\nThe code fence language picks the interpreter: ```bash (default), ```powershell or ```python. Code runs from the\nworkspace root (30s limit). Read arguments only from environment variables, never by pasting values into code:\nbash \"${SKILL_ARG_name}\" (quoted), PowerShell $env:SKILL_ARG_name, Python os.environ['SKILL_ARG_name'].\nGuidance-only files (no Skill sections) are allowed.",
-      "Schema": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "description": "Short kebab-case name; the file is saved as agents/functions/pending/<name>.md until approved (e.g. 'csv-reports')",
-            "type": "string"
-          },
-          "markdown": {
-            "description": "Full markdown content of the skills file",
-            "type": "string"
-          },
-          "overwrite": {
-            "description": "Set true to replace an existing file (approved or pending) with this name; the new version waits for approval",
-            "type": "boolean",
-            "default": false
-          }
-        },
-        "required": [
-          "name",
-          "markdown"
-        ]
-      }
-    },
-    {
       "Name": "CreateTag",
       "Description": "Create a tag pointing at the current commit (git tag). Without a message this creates a lightweight tag with just a name; with a message it creates an annotated tag with name, message, and tagger metadata (git tag -a). This only creates the tag locally — it is not pushed to the remote by this tool.",
       "Schema": {
@@ -771,27 +745,6 @@
             "default": false
           }
         }
-      }
-    },
-    {
-      "Name": "ExecuteSkill",
-      "Description": "Runs a named markdown skill — a reusable bash/PowerShell/Python procedure loaded from the Skills folder — passing jsonArgs as key-value pairs that the skill receives as SKILL_ARG_* environment variables, never spliced into the script text, so model-supplied values can't be interpreted as shell syntax. Skills are for repeatable, pre-authored procedures (e.g. Paymo lookups, code-review checklists); if a dedicated tool already exists for what you're trying to do, call that tool directly instead of going through a skill with the same effect. If the named skill isn't found, the error lists every skill name currently loaded so you can pick a valid one.",
-      "Schema": {
-        "type": "object",
-        "properties": {
-          "skillName": {
-            "description": "The exact name of the skill to execute (e.g., 'ListParentTasks').",
-            "type": "string"
-          },
-          "jsonArgs": {
-            "description": "JSON object of arguments for the skill (e.g., {\"project_id\":\"123\"}).",
-            "type": "string",
-            "default": "{}"
-          }
-        },
-        "required": [
-          "skillName"
-        ]
       }
     },
     {
@@ -1509,7 +1462,7 @@
     },
     {
       "Name": "ReloadSkills",
-      "Description": "Re-reads every skill file from disk — including any created earlier this session with CreateSkillFile — rebuilding the full skill set and the system prompt's skill documentation from scratch, then returns the names of every skill now available. Use this after a skills file has been edited outside the agent (e.g. by the user, or by another tool) so the change takes effect without restarting the session; CreateSkillFile already reloads automatically, so there's no need to call this right after it. Returns an error if the host wasn't configured with a skill reloader.",
+      "Description": "Reads the skills folder and the skill files from disk again. Use it after a skill was added or\nedited outside the agent (by the user, or by another tool): UseSkill reaches it now, and the next\nchat lists it. Returns an error if the host wasn't configured with a skill reloader.",
       "Schema": {
         "type": "object",
         "properties": {}

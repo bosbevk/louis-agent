@@ -1,30 +1,19 @@
-using LouisAgent.Core.Agent;
 using LouisAgent.Core.Agent.Commands;
-using LouisAgent.Core.Agent.EngineTools;
-using LouisAgent.Core.Config;
 using LouisAgent.Core.Skills.Headers.Agent.Library;
-using LouisAgent.Core.Skills.Providers;
-using LouisAgent.Composition.Tools.Scripts;
 
 namespace LouisAgent.Core.Tests.Agent.Commands;
 
 /// <summary>
 /// S (CL15): what the user types that the model never sees: /skills, /approve, /reject and /usage are answered here;
-/// anything else is a prompt. The skill files' approvals are SkillAuthoringTests', and the skills the agent made
-/// SkillCommandsTests'.
+/// anything else is a prompt. The drafts approved and rejected are SkillCommandsTests'.
 /// </summary>
 public class UserCommandsTests
 {
-    /// <summary>The commands over an empty temporary folder, with no skills folder.</summary>
+    /// <summary>The commands over a skills folder that isn't there.</summary>
     private static UserCommands Commands()
     {
-        string root = Path.GetTempPath();
-        var python = new PythonRunner(root);
-        var powerShell = new PowerShellRunner(root);
-        var options = new AgentOptions { WorkspaceRoot = root };
-        var skills = new SkillTools(new CompositeSkillProvider(), options, root, python, powerShell);
-        var library = SkillLibrary.Read(Path.Combine(root, "no-skills-here"));
-        return new UserCommands(skills, () => library, () => null);
+        var library = SkillLibrary.Read(Path.Combine(Path.GetTempPath(), "no-skills-here"));
+        return new UserCommands(() => library, () => null);
     }
 
     /// <summary>Anything that isn't a command is a prompt, and gets no reply here.</summary>
@@ -54,11 +43,16 @@ public class UserCommandsTests
     public void Tools_IsNoLongerACommand() =>
         Assert.That(Commands().Handle("  /TOOLS  ", sessionUsage: null), Is.Null);
 
-    /// <summary>
-    /// /approve with no draft by that name is the skill files' own reply, here that authoring is off.
-    /// </summary>
-    [Test]
-    public void Approve_WithNoDraft_IsTheSkillFilesOwnReply() =>
-        Assert.That(Commands().Handle("/approve", sessionUsage: null),
-            Is.EqualTo("Error: skill authoring is not available (no skills folder was found)."));
+    /// <summary>F97.1: /approve or /reject of a name no draft has says so, and where the drafts are listed.</summary>
+    [TestCase("/approve line-count")]
+    [TestCase("/reject line-count")]
+    public void ANameWithNoDraft_SaysSo(string input) =>
+        Assert.That(Commands().Handle(input, sessionUsage: null),
+            Is.EqualTo("No draft named 'line-count' is waiting; /skills lists the drafts."));
+
+    /// <summary>/approve or /reject with no name says how it is typed.</summary>
+    [TestCase("/approve", "Usage: /approve <Name>")]
+    [TestCase("/reject", "Usage: /reject <Name>")]
+    public void NoName_SaysHowItIsTyped(string input, string usage) =>
+        Assert.That(Commands().Handle(input, sessionUsage: null), Is.EqualTo(usage));
 }

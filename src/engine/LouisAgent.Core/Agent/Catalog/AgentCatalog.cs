@@ -26,13 +26,12 @@ namespace LouisAgent.Core.Agent.Catalog;
 public sealed class AgentCatalog
 {
     /// <summary>
-    /// The tools the engine registers itself, whatever the toolsets (<c>AgentEngine</c>): <c>ExecuteSkill</c>, the
-    /// clock, and the self-extension tools. A pack's tool may not take one of their names.
+    /// The tools the engine registers itself (<c>AgentEngine</c>): the clock, whatever the toolsets, and the
+    /// self-extension tools. A pack's tool may not take one of their names.
     /// </summary>
     private static readonly IReadOnlySet<string> EngineToolNames = new HashSet<string>(
         new[]
             {
-                nameof(AgentEngine.ExecuteSkill), nameof(AgentEngine.CreateSkillFile),
                 nameof(AgentEngine.ReloadSkills), nameof(SkillDoorTools.UseSkill), nameof(SkillMakingTools.CreateSkill)
             }
             .Concat(ToolMethodsOfType(typeof(ClockTools)).Select(m => m.Name)),

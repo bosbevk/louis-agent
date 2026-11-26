@@ -36,12 +36,7 @@ public class SubSessionPromptBudgetTests
         .Select<int, Func<IList<ChatMessage>, ChatResponse>>(i => _ => new ChatResponse(new ChatMessage(
             ChatRole.Assistant,
             [
-                new FunctionCallContent($"call_{i}", "ExecuteSkill",
-                    new Dictionary<string, object?>
-                    {
-                        ["skillName"] = "SayHello",
-                        ["jsonArgs"] = "{\"name\":\"x\"}"
-                    }),
+                new FunctionCallContent($"call_{i}", "GetToday", new Dictionary<string, object?>()),
                 new UsageContent(new UsageDetails
                 {
                     InputTokenCount = 300 * i,

@@ -12,18 +12,17 @@ namespace LouisAgent.Core.Tests.Agent;
 /// </summary>
 public sealed class AgentEngineSelfExtensionTests
 {
-    private static readonly string[] SelfExtensionTools =
-        ["UseSkill", "CreateSkill", "CreateSkillFile", "ReloadSkills"];
+    private static readonly string[] SelfExtensionTools = ["UseSkill", "CreateSkill", "ReloadSkills"];
 
-    /// <summary>The tools every session has, whatever its toolsets.</summary>
-    private static readonly string[] EverySessionsTools = ["ExecuteSkill", "GetToday"];
+    /// <summary>The tools every session has, whatever its toolsets: since F97.1 only the clock.</summary>
+    private static readonly string[] EverySessionsTools = ["GetToday"];
 
     /// <summary>The files toolset's objects.</summary>
     private static object[] FilesTools() => [new FakeFileTools(Path.GetTempPath())];
 
     /// <summary>No toolsets and no self-extension is only the tools every session has.</summary>
     [Test]
-    public void EmptyToolsetsGivesOnlyExecuteSkill()
+    public void EmptyToolsetsGivesOnlyTheClock()
     {
         var engine = Build(toolsets: [], selfExtension: false);
 
@@ -58,7 +57,7 @@ public sealed class AgentEngineSelfExtensionTests
         var engine = Build(toolsets: FilesTools(), selfExtension: false);
 
         Assert.That(Names(engine).Intersect(SelfExtensionTools), Is.Empty);
-        Assert.That(Names(engine), Does.Contain("ExecuteSkill"));
+        Assert.That(Names(engine), Does.Not.Contain("ExecuteSkill"), "F97.1: no second door to skills");
     }
 
     /// <summary>The default path, no toolsets named, gives the self-extension tools and every session's.</summary>

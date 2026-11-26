@@ -26,17 +26,10 @@ public class AgentEngineUsageTests
             toolsets: TestPaths.Toolsets(TestPaths.Agent(), [TestToolset.Files.Wire()]), usageSink: sink,
             usageMapper: mapper);
 
-    /// <summary>The model's answer that runs the SayHello skill, under the call id given.</summary>
-    private static ChatResponse CallSayHello(string callId) =>
+    /// <summary>The model's answer that asks the clock, a tool every engine has, under the call id given.</summary>
+    private static ChatResponse CallTheClock(string callId) =>
         new(new ChatMessage(ChatRole.Assistant,
-        [
-            new FunctionCallContent(callId, "ExecuteSkill",
-                new Dictionary<string, object?>
-                {
-                    ["skillName"] = "SayHello",
-                    ["jsonArgs"] = "{\"name\":\"Agent\"}"
-                })
-        ]));
+            [new FunctionCallContent(callId, "GetToday", new Dictionary<string, object?>())]));
 
     /// <summary>A streamed turn of three rounds records three requests, numbered 1 to 3.</summary>
     [Test]
@@ -44,8 +37,8 @@ public class AgentEngineUsageTests
     {
         var sink = new ListUsageSink();
         var client = new FakeChatClient(
-            _ => CallSayHello("call_1"),
-            _ => CallSayHello("call_2"),
+            _ => CallTheClock("call_1"),
+            _ => CallTheClock("call_2"),
             _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "Said hello twice.")));
         var engine = Engine(client, sink);
 
@@ -64,7 +57,7 @@ public class AgentEngineUsageTests
     {
         var sink = new ListUsageSink();
         var client = new FakeChatClient(
-            _ => CallSayHello("call_1"),
+            _ => CallTheClock("call_1"),
             _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "Done.")));
         var engine = Engine(client, sink);
 

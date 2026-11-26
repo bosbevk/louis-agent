@@ -74,7 +74,7 @@ internal sealed class ToolRegistry(bool supportsTools = true, ReplayStore? repla
                                live is RecordedTool recorded && recorded.Wraps(tool)) > 0;
 
     /// <summary>
-    /// Keeps the one tool named and drops every other, the clock and <c>ExecuteSkill</c> included (F30: a lookup agent
+    /// Keeps the one tool named and drops every other, the clock included (F30: a lookup agent
     /// gets one task and one tool, so its prompt lists exactly what it may call). Before the engine's first turn.
     /// </summary>
     public void KeepOnly(string name)

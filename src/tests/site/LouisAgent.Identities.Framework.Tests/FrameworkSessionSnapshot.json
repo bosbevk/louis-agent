@@ -44,27 +44,6 @@
       }
     },
     {
-      "Name": "ExecuteSkill",
-      "Description": "Runs a named markdown skill — a reusable bash/PowerShell/Python procedure loaded from the Skills folder — passing jsonArgs as key-value pairs that the skill receives as SKILL_ARG_* environment variables, never spliced into the script text, so model-supplied values can't be interpreted as shell syntax. Skills are for repeatable, pre-authored procedures (e.g. Paymo lookups, code-review checklists); if a dedicated tool already exists for what you're trying to do, call that tool directly instead of going through a skill with the same effect. If the named skill isn't found, the error lists every skill name currently loaded so you can pick a valid one.",
-      "Schema": {
-        "type": "object",
-        "properties": {
-          "skillName": {
-            "description": "The exact name of the skill to execute (e.g., 'ListParentTasks').",
-            "type": "string"
-          },
-          "jsonArgs": {
-            "description": "JSON object of arguments for the skill (e.g., {\"project_id\":\"123\"}).",
-            "type": "string",
-            "default": "{}"
-          }
-        },
-        "required": [
-          "skillName"
-        ]
-      }
-    },
-    {
       "Name": "FindPlace",
       "Description": "Finds places on any page of this site by a few words: its sections, cards and pieces, each with its own address, the best first. Use it when what they ask about may be on another page, then show the right one with ShowPage.",
       "Schema": {
