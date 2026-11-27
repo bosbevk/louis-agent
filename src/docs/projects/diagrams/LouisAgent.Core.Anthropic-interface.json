@@ -1,7 +1,7 @@
 {
   "kind": "classes",
   "title": "LouisAgent.Core.Anthropic: the interface design",
-  "caption": "Core's four seams made real for Claude: the client, its usage read whole, the cache marks on the prompt, and a resumed chat's thinking.",
+  "caption": "Core's five seams made real for Claude: the client, its usage read whole, the cache marks on the prompt, a resumed chat's thinking, and tool search.",
   "classes": {
     "types": [
       {
@@ -82,17 +82,77 @@
         "name": "IPromptCachingStrategy",
         "kind": "interface, LouisAgent.Core",
         "tone": "violet"
+      },
+      {
+        "id": "search",
+        "name": "AnthropicToolSearch",
+        "kind": "tool search (F97.3)",
+        "members": [
+          "+Around(inner, deferred) IChatClient",
+          "waiting tools as DeferredFunction",
+          "FindTool's names as tool_reference blocks"
+        ]
+      },
+      {
+        "id": "isearch",
+        "name": "IToolSearch",
+        "kind": "interface, LouisAgent.Core",
+        "tone": "violet"
       }
     ],
     "relations": [
-      { "from": "provider", "to": "seam", "kind": "implements" },
-      { "from": "provider", "to": "budget", "kind": "uses", "word": "wraps the client" },
-      { "from": "provider", "to": "mapper", "kind": "creates" },
-      { "from": "provider", "to": "caching", "kind": "creates" },
-      { "from": "mapper", "to": "imapper", "kind": "implements" },
-      { "from": "caching", "to": "icaching", "kind": "implements" },
-      { "from": "provider", "to": "dropblock", "kind": "creates", "word": "on the models that take it" },
-      { "from": "dropblock", "to": "istale", "kind": "implements" }
+      {
+        "from": "provider",
+        "to": "seam",
+        "kind": "implements"
+      },
+      {
+        "from": "provider",
+        "to": "budget",
+        "kind": "uses",
+        "word": "wraps the client"
+      },
+      {
+        "from": "provider",
+        "to": "mapper",
+        "kind": "creates"
+      },
+      {
+        "from": "provider",
+        "to": "caching",
+        "kind": "creates"
+      },
+      {
+        "from": "mapper",
+        "to": "imapper",
+        "kind": "implements"
+      },
+      {
+        "from": "caching",
+        "to": "icaching",
+        "kind": "implements"
+      },
+      {
+        "from": "provider",
+        "to": "dropblock",
+        "kind": "creates",
+        "word": "on the models that take it"
+      },
+      {
+        "from": "dropblock",
+        "to": "istale",
+        "kind": "implements"
+      },
+      {
+        "from": "provider",
+        "to": "search",
+        "kind": "creates"
+      },
+      {
+        "from": "search",
+        "to": "isearch",
+        "kind": "implements"
+      }
     ]
   }
 }

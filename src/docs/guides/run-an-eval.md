@@ -147,6 +147,11 @@ in `demos/louis-agent/data/evals/runs/` and its recordings in `demos/louis-agent
 `TriageEvalReplayTests` reads the first repeats kept in `demos/louis-agent/recordings/evals/triage/`; copy a new live
 run's there the way the guide's are copied.
 
+The coding agent has an eval of its own there too, `coding`: eight read-only jobs in this repository, each needing one
+tool, so a run shows whether the agent picks the right one. Its chats open with the toolsets the coding agent's voice
+names, the ones a person's chat gets. To measure it without tool search, start the host with `TOOL_SEARCH=off` in its
+settings and run it again.
+
 ## Give a conversation a page that isn't on the site
 
 To hand the agent a page of your own, such as one with instructions hidden in it, give the page in the eval file
