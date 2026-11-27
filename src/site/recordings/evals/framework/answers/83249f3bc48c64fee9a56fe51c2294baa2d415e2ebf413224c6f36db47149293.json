@@ -1,0 +1,1 @@
+"src/docs/guides/change-the-cli.md:10: \u0060CliHost.RunAsync\u0060, which builds the agent. \u0060ConsoleChat\u0060 then writes the engine\u0027s stream to the terminal. That makes\nsrc/docs/projects/LouisAgent.Cli.md:21: Your program makes one call, \u0060CliHost.RunAsync\u0060. It builds the engine with \u0060AgentHost.Build\u0060, then hands it to a"
