@@ -21,6 +21,23 @@ the control layer around the agent.
 
 Learning first, selling second (Louis, 2026-10-19). When a sale and the learning pull apart, the learning wins.
 
+## Where it ends
+
+The framework's end goal is to become a tool over MCP, so that you can ask an AI "build me a system" and the
+framework builds it: a site, an agent, or an app such as a maintenance system. Louis named it on 2026-11-27: "a safe
+way for AI to generate APPS with my framework". MCP is the open protocol an AI client such as Claude uses to call a
+server's tools.
+
+An app can be built two ways, both over MCP. The AI writes a description, data the framework checks and builds from
+parts tested by hand, and that is the way we call safe. Or it writes code on the framework's packages, for what no
+description can say yet, and a person reviews that code. Either way a person confirms what goes live
+([ADR 0136](src/docs/adr/0136-an-app-is-built-from-a-description-or-code.md)).
+
+It comes one kind of description at a time. The first is a diagram, drawn from its JSON by a tool on the MCP host, as
+the docs already draw theirs. The second is a website with an agent, from one record per business (F133). The third
+is records with an agent, with a maintenance system as its test. None of these is built yet. Each product we make,
+such as the bill checker, is also proof that the framework can carry it.
+
 ## What we sell
 
 Four offers on one engine. Nobody pays for the loop (Microsoft's `FunctionInvokingChatClient` is free); they pay for
