@@ -17,8 +17,14 @@ code in general.
 
 ## Steps
 
-1. Say what the whole listing does in one sentence, never two.
-2. Go through the lines that matter, in order, each in a sentence: what it calls and why it is there.
+1. Say what the whole listing does in one sentence, never two. That sentence is the first paragraph on its own, with
+   a blank line after it, so a skimming developer gets the gist before the detail: "This program starts the coding
+   agent in the terminal." The walk through the lines starts in the next paragraph.
+2. Go through the lines that matter, in order, each in a sentence: what it calls and why it is there. Stay on the
+   line: what a call loads or does inside, such as which identities or packs a catalogue holds or which settings a
+   host reads, is not on the page, so it stays out unless the developer asks. The reader is looking at these lines,
+   and anything else is a claim they can't check against them. Say "`CodingCatalog.Create()` builds the catalogue of
+   identities and packs this program can run", never how many of each it holds or what they are called.
 3. Name where in the framework each type lives, from the doc that says so, and end with that doc's path.
 
 ## An example
