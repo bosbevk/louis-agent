@@ -503,7 +503,7 @@ These are the types a host meets most:
 |---|---|
 | `AgentHost` | Static bootstrap, the flow: `Build`, `BuildToolHost`; the pieces are `HostEnvironment.Load`, `SkillLoader.Load`, `RoleFiles.Check`, `PriceTableLoader.Load`, `ExchangeRatesLoader.Load`, `UsageLedger.Open` |
 | `UsageScope` | Open one per turn in a host (`Begin(host:, session:, turn:, tags:)`); every request inside it is attributed to it |
-| `AgentEngine` | `StreamPromptAsync` (its text paced when `STREAM_PACE` is on, F155), `ProcessPromptAsync`, `StartConversation`, `ResumeConversation` (a saved chat's prompt, today's tools), `HandleUserCommand` (`/tools`, `/approve`, `/reject`, `/usage` from the session records the host passes), `RecordsUsage`, `Tools` and `ToolsChanged`. Its `toolsets:` are the tool objects it registers: a session's toolsets from `AgentEngineFactory`, or another agent's own tools, such as the orchestrator's |
+| `AgentEngine` | `StreamPromptAsync` (its text paced when `STREAM_PACE` is on, F155), `ProcessPromptAsync`, `StartConversation`, `ResumeConversation` (a saved chat's prompt, today's tools), `HandleUserCommand` (`/skills`, `/approve`, `/reject`, `/usage` from the session records the host passes, with the chat an approval or rejection is noted for), `RecordsUsage`, `Tools` and `ToolsChanged`. Its `toolsets:` are the tool objects it registers: a session's toolsets from `AgentEngineFactory`, or another agent's own tools, such as the orchestrator's |
 | `ISkillProvider` | `Documentation`, the system prompt's text |
 | `ILlmClientFactory` | Builds the `IChatClient`; tests inject a fake |
 | `WorkspaceBoundary` / `SensitiveFiles` | In `LouisAgent.Composition`, used by the file tools and the API's file and git endpoints, so the same rules apply |

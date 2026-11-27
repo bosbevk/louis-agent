@@ -1,7 +1,7 @@
 ---
 paths:
   - "**/agents/**/*.md"
-  - "**/toolsets/**/*.md"
+  - "**/skills/**/SKILL.md"
   - "**/shared/**/*.md"
   - "**/*ToolMessage.cs"
 ---
@@ -9,7 +9,7 @@ paths:
 # Prompts and tool texts: the how of every rule
 
 Loaded when a prompt file or a tool's message enum is read or edited. These are the texts our own agents read: an
-identity's voice, a subagent's voice, a lookup agent's, a toolset's guide, the principles, and what a tool answers. The
+identity's voice, a subagent's voice, a lookup agent's, a toolset's built-in skill, the principles, and what a tool answers. The
 why: [ADR 0011](../../src/docs/adr/0011-prompts-are-content.md) (prompts are content),
 [ADR 0018](../../src/docs/adr/0018-built-in-prompts-embedded.md) (built-in prompts are embedded) and
 [ADR 0063](../../src/docs/adr/0063-a-prompt-says-what-it-is.md) (a prompt says what it is).

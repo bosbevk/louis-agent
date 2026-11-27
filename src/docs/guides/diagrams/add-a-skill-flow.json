@@ -1,20 +1,20 @@
 {
   "kind": "flow",
   "type": "activity",
-  "title": "Add a skill: from what the agent wrote to every session",
-  "caption": "What the agent writes waits in pending/ until you approve it, then start a new chat.",
+  "title": "Add a skill: from the chat that made it to every chat",
+  "caption": "CreateSkill keeps a draft its own chat can use; /approve gives it to every chat, /reject deletes it.",
   "flow": {
     "nodes": [
-      { "id": "agent", "label": "The agent writes it\nCreateSkillFile", "icon": "chip", "tone": "blue", "shape": "terminal" },
-      { "id": "pending", "label": "functions/pending/\nthis engine only", "icon": "folder", "tone": "amber", "shape": "data" },
+      { "id": "agent", "label": "The agent makes it\nCreateSkill, its example run", "icon": "chip", "tone": "blue", "shape": "terminal" },
+      { "id": "draft", "label": "drafts/{name}/\nits own chat only", "icon": "folder", "tone": "amber", "shape": "data" },
       { "id": "pick", "label": "/approve or /reject?", "tone": "green", "shape": "decision" },
-      { "id": "live", "label": "functions/\nevery session", "icon": "folder", "tone": "amber", "shape": "data" },
+      { "id": "live", "label": "{name}/\nevery chat, through UseSkill", "icon": "folder", "tone": "amber", "shape": "data" },
       { "id": "gone", "label": "Deleted", "icon": "file", "tone": "green", "shape": "terminal" },
-      { "id": "chat", "label": "Start a new chat", "icon": "message", "tone": "blue", "shape": "terminal" }
+      { "id": "chat", "label": "Told on its next message;\nlisted from the next chat", "icon": "message", "tone": "blue", "shape": "terminal" }
     ],
     "edges": [
-      { "from": "agent", "to": "pending" },
-      { "from": "pending", "to": "pick", "word": "/tools lists it" },
+      { "from": "agent", "to": "draft" },
+      { "from": "draft", "to": "pick", "word": "/skills lists it" },
       { "from": "pick", "to": "live", "word": "approve" },
       { "from": "pick", "to": "gone", "word": "reject" },
       { "from": "live", "to": "chat" }

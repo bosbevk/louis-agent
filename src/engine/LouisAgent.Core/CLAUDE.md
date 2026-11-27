@@ -23,8 +23,8 @@ The steps are [Build a pack](../../docs/guides/build-a-pack.md). What holds for 
 
 - **Every toolset follows that one pattern.** A mode's routing sends a task to a toolset. The toolset's guide names
   its tools and when to use them. Each tool's `[Description]` stays short.
-- **A guide is plain markdown, embedded**, and loads only when a session has the toolset
-  (`SkillLoader.Load(agent, toolsets)`). No provider class per toolset.
+- **A guide is the toolset's built-in skill**, `skills/{name}/SKILL.md`, embedded, loaded only when a session has
+  the toolset (`SkillLoader.Load(agent, toolsets)`). No provider class per toolset.
 - **Core's own toolsets are `agents` and `skills`.** `agents` is in `Delegation/`, named in
   `Agent/Toolsets/ToolsetCatalog.cs`, and it asks lookup agents too. `skills` is in `Agent/EngineTools/`, registered by
   `AgentEngine` because it needs the registry. Only something that needs the engine's own insides belongs here.
@@ -33,8 +33,9 @@ The steps are [Build a pack](../../docs/guides/build-a-pack.md). What holds for 
 ### Skill files we control are plain markdown, always
 
 - **That covers every file in a project's prompt folders** (`agents/`, with its subagents' `subagents/` and its
-  lookup agents' `lookups/` inside it, `toolsets/`, `shared/`, at the project's root; their names are
-  `PromptFolder`), and the function skills the agent writes into a demo's `skills/agents/functions/`. `SkillFilesTests` fails if a provider class for one of them appears.
+  lookup agents' `lookups/` inside it, `skills/`, `shared/`, at the project's root; their names are
+  `PromptFolder`), and the skills the agent makes in a demo's skills folder (`{name}/SKILL.md`, a draft in
+  `drafts/{name}/`). `SkillFilesTests` fails if a provider class for one of them appears.
 - **Every prompt opens with its front matter**: `name`, `description`, `metadata.level` and `toolsets`
   (ADR 0063). `PromptCatalog` reads it once and strips it before the model sees the file.
   `EveryPromptHasAHeaderTests` holds it.
@@ -171,7 +172,7 @@ Only a demo's own project under `demos/` knows its identities and packs.
 ## Building another agent on core
 
 - **Its tools.** Pass `toolsets:` to the `AgentEngine` constructor to give an agent only your tool objects (plus
-  `ExecuteSkill`), instead of the toolsets a catalogue names.
+  `GetToday`), instead of the toolsets a catalogue names.
 - **Its prompt.** Build its system prompt from your own skill files, with `CompositeSkillProvider` and
   `MarkdownSkillProvider`.
 - **Its usage.** To record it, pass `usageSink: UsageLedger.Open(options)` and

@@ -37,6 +37,23 @@ person widens).
 - **Approval checks intent, not behaviour:** an executable skill runs sandboxed whatever its scope (the skill sandbox,
   from [0030](0030-build-or-adopt.md)'s Existo lessons).
 
+## Amended 2026-11-26 (F97.1): what the agent makes is a skill
+
+Louis approved this rule on 2026-11-26, in these words: "What the agent makes is a skill: a `skills/{name}/` folder
+with a `SKILL.md` in the Agent Skills shape, a `parameters.schema.json` and its script, which reads its arguments as
+JSON on stdin. `CreateSkill` keeps a draft only once its example call has run; a draft waits in `skills/drafts/` and
+only the chat that made it may use it; `/approve` moves it up for every chat, `/reject` deletes it. A chat reaches
+every skill through `UseSkill`, always in its tool list, whose description lists the approved skills; with a name
+alone it reads a skill. The chat is told of an approval or rejection on its next message."
+
+It replaces three parts of the decision above. The three scopes and `/approve {name} session|agent|shared` give way to
+a draft, its chat's alone, and an approved skill, every chat's: the narrowest scope by default and a person widening it
+still hold, in two steps instead of three. Agent-built tools and function skills (`CreateTool`, `CreateSkillFile`,
+`ExecuteSkill`) are gone; everything the agent makes is a skill. And "what the agent writes reaches the model as a tool
+result" no longer holds since FX4 froze a chat's tools: an approval reaches the chat that typed it as a note on its next
+message, and an approved skill reaches every later chat in `UseSkill`'s description, so a chat's history and its tools
+are still never rewritten ([0008](0008-history-is-append-only.md)).
+
 ## Consequences
 
 - FX20 (Phase 1) builds the first level only: pending in the session, and `/approve` to today's one folder.

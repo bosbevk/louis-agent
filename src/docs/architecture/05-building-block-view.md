@@ -41,7 +41,7 @@ Each project also has its own design doc in [projects/](../projects/README.md).
 ### CLI
 
 The CLI streams the answer as it's written. Thinking shows in grey, and each tool call gets one status line. Ctrl+C
-stops the current reply. You manage the tools the agent built for itself with `/tools`, `/approve <Name>` and
+stops the current reply. You manage the skills the agent made for itself with `/skills`, `/approve <Name>` and
 `/reject <Name>`, and those commands are never sent to the model.
 
 ### ACP server (Rider)
@@ -119,10 +119,10 @@ offers them.
 ### MCP server
 
 The MCP server publishes every toolset this instance can load: the packs' tools (files, git, .NET, the shells, the
-web, and agents when their settings are set), the skills and the agent-built tools, plus three read-only ones,
-`list_skills`, `get_skill_info` and `get_skill_documentation`. It stays in step with the engine: when
-`AgentEngine.ToolsChanged` fires, it sends `notifications/tools/list_changed`. Approving an agent-built tool is for
-the user only, so it isn't offered over MCP. The packs' read-only feeds are published too, as resources at
+web, and agents when their settings are set), the skills toolset's `UseSkill`, `CreateSkill` and `ReloadSkills`,
+plus one read-only tool, `GetSkillDocumentation`. It stays in step with the engine: when `AgentEngine.ToolsChanged`
+fires, on an approval or a reload, it sends `notifications/tools/list_changed`, so a client sees `UseSkill`'s list of
+skills change. Approving a skill is for the user only, so it isn't offered over MCP. The packs' read-only feeds are published too, as resources at
 `feed://{name}`.
 
 By default it talks over stdio, for a local client that starts it as a subprocess, such as Rider or Claude Desktop.
@@ -209,9 +209,10 @@ The same pattern shows up away from the providers too: `IRatesMapper` for where 
 
 `AgentEngine` (`Agent/AgentEngine.cs`) doesn't care which provider it talks to. It owns the turn loop, the rules of
 the history and the chain of chat clients, and it's the one face the hosts talk to. The rest has its own classes:
-`ToolRegistry` keeps the tools in name order, `ToolCallGuards` (in `Agent/Turns/Guards/`) guards each call, `SkillTools`
-holds `ExecuteSkill`, `CreateSkillFile`, `ReloadSkills` and the skills the system prompt is built from, and
-`AgentBuiltTools` holds `CreateTool`, `/approve` and `/reject`. Core's pure safety checks are in `Guardrails/`: the
+`ToolRegistry` (in `Agent/Tools/`) keeps the tools in name order, `ToolCallGuards` (in `Agent/Turns/Guards/`) guards
+each call, the skills toolset's tools are in `Agent/EngineTools/Skills/` (`SkillDoorTools` holds `UseSkill`,
+`SkillMakingTools` `CreateSkill`, `SkillReloadTools` `ReloadSkills`), and `UserCommands` (in `Agent/Commands/`)
+answers `/skills`, `/approve` and `/reject`. Core's pure safety checks are in `Guardrails/`: the
 hosts' key rule (`Auth/`) and the address rule (`Network/SsrfGuard`). The console chat belongs to the CLI
 (`ConsoleChat`). Everything the engine sends uses LF line endings, whatever the checkout.
 
@@ -223,10 +224,10 @@ calls and their results) and adds the finished turn to the conversation.
 per request, and gives the model the full error when a tool fails. A reply may be up to 16,000 tokens, and
 `LLM_THINKING` sets `ChatOptions.Reasoning`.
 
-The engine gets its tools through `toolsets:`. Each tool object's public methods become tools, plus `ExecuteSkill`.
-Those come from a session's toolsets in the catalogue (`AgentEngineFactory`), or from another program's own tools, as
-the orchestrator's `ServiceTools` are. `selfExtension:` adds `CreateSkillFile`, `ReloadSkills`, `CreateTool` and
-`ListAgentTools`, which is what the `skills` toolset is.
+The engine gets its tools through `toolsets:`. Each tool object's public methods become tools, plus `GetToday` in
+every session. Those come from a session's toolsets in the catalogue (`AgentEngineFactory`), or from another program's
+own tools, as the orchestrator's `ServiceTools` are. `selfExtension:` adds `UseSkill`, `CreateSkill` and
+`ReloadSkills`, which is what the `skills` toolset is.
 
 ### Toolsets
 
@@ -236,8 +237,8 @@ asking another agent (it needs `AGENT_PEERS`), and `skills`, which the engine pr
 `git`, `dotnet`, the shells, `web` and the rest) comes with its pack.
 
 `AgentCatalog` (`Agent/Catalog/`) is built once, by the program that composes the host. It lists core's toolsets
-first and then each pack's, and it owns every tool name. An agent-built tool can't take one of those names, and a
-name that two toolsets, or a toolset and the engine, share stops the start-up. It also resolves the list a session
+first and then each pack's, and it owns every tool name. A name that two toolsets, or a toolset and the engine,
+share stops the start-up. It also resolves the list a session
 asks for.
 
 *Decided in:* CL15, [ADR 0076](../adr/0076-core-ships-no-agent.md).
@@ -276,19 +277,22 @@ no routing. At level 0 the identity's own skills follow its voice: the ones it a
 the ones it reads when it needs them.
 
 After that comes the guide of each of the profile's toolsets, and no other, so the prompt never describes a tool the
-session doesn't have. With the `agents` toolset, the addresses the identity may ask are listed after its guide. And
-only with the `skills` toolset, every function skill the agent wrote itself is added
-(`agents/functions/*.md` in the skills folder).
+session doesn't have. With the `agents` toolset, the addresses the identity may ask are listed after its guide. The
+skills the agent made are not in the system prompt: `UseSkill`'s description lists the approved ones, so a skill
+approved later never rewrites a chat's prompt.
 
-Core's own files are in `src/engine/LouisAgent.Core/`'s prompt folders (the principles in `shared/`, the `agents`
-and self-extension guides in `toolsets/`). Each identity and pack brings its own, registered with `SkillFileSource.Use`
-at start-up. All of these are read only from their assemblies, so what the model reads is fixed by the build. Only
-what the agent writes (its function skills and its tools) lives on disk, in the skills folder: `SKILLS_DIRECTORY`, or
-else a `skills/` above the working directory, found by its README.
+Core's own files are in `src/engine/LouisAgent.Core/`'s prompt folders: the principles in `shared/`, and the
+toolsets' built-in skills in `skills/` (`agents`, `skills`, and `write-a-skill`, the standard a skill is written in,
+which `UseSkill` reads on demand). Each identity and pack brings its own, registered with `SkillFileSource.Use` at
+start-up. All of these are read only from their assemblies, so what the model reads is fixed by the build. Only what
+the agent makes lives on disk, in the skills folder: `SKILLS_DIRECTORY`, or else a `skills/` above the working
+directory, found by its README.
 
-A markdown skill is a named procedure with a fenced script, in bash, PowerShell or Python, chosen by the fence's
-language. The model runs it with `ExecuteSkill(name, jsonArgs)`. The arguments become `SKILL_ARG_*` environment
-variables and are never spliced into the script's text.
+A skill the agent makes is a folder in the Agent Skills shape: a `SKILL.md`, a JSON Schema of its parameters and one
+script in Python, PowerShell or bash, chosen by its file's extension. `UseSkill(name)` reads it and
+`UseSkill(name, arguments)` runs it: the arguments are checked against the schema and handed to the script as one JSON
+object on stdin, never spliced into a command. A draft, in `drafts/`, is its own chat's until `/approve` gives it to
+every chat ([Add a skill](../guides/add-a-skill.md)).
 
 *Decided in:* [ADR 0017](../adr/0017-skills-by-level.md), [ADR 0018](../adr/0018-built-in-prompts-embedded.md),
 [ADR 0019](../adr/0019-modes-one-file-per-product.md), [ADR 0020](../adr/0020-principles-for-every-agent.md),
@@ -316,12 +320,11 @@ exactly as written. These are the tool classes, and the pack each lives in:
 | `DotNetTools` | The dotnet pack: `DotNetBuild`, `DotNetTest`, `DotNetRun`, restore, clean, packages, project and SDK info |
 | `PythonTools`, `PowerShellTools`, `BashTools` | The shell pack: run code or scripts (bash is Git Bash on Windows, never WSL) |
 | `WebTools`, `QuoteTools`, `CurrencyTools` | The web pack: `WebSearch` (via `IWebSearchProvider`), `FetchUrl` and `ReadRenderedPage` (through the SSRF-guarded `PageFetcher`); `VerifyQuote`; `ConvertCurrency` |
-| `AgentEngine` | `ExecuteSkill`, `CreateSkillFile`, `ReloadSkills`, `CreateTool`, `ListAgentTools` |
+| `SkillDoorTools`, `SkillMakingTools`, `SkillReloadTools` | Core's `skills` toolset: `UseSkill`, `CreateSkill`, `ReloadSkills` |
 
-The agent can also build a tool for itself (`ScriptTool`). With `CreateTool` it writes
-`demos/louis-agent/skills/tools/pending/{Name}.tool.md`: typed parameters and a script. It works at once, but only as
-pending. It's saved for every session only when you type `/approve <Name>`, and `/reject <Name>` throws it away.
-Approved tools load at start-up, and their scripts get their arguments as JSON on stdin, never in the code.
+What the agent can't do with these, it can make: `CreateSkill` writes a skill as a draft, kept only once its example
+call runs, which its own chat uses at once through `UseSkill`. It is every chat's only when you type
+`/approve <Name>`, and `/reject <Name>` throws it away.
 
 ## Bootstrap: `AgentHost`
 
@@ -338,8 +341,7 @@ and checks that every name in `ROLES_ENABLED`, and the default mode, can be foun
 the host here, not at its first chat.
 
 Then it creates the `IChatClient`, the usage ledger and an `AgentEngineFactory`, with `LLM_THINKING` and the display
-currency. The host's own engine has every toolset this instance can load, with the approved agent-built tools when it
-has `skills`. Last, it starts whatever tool discovery the program handed it, which under the ACP server is Rider's.
+currency. The host's own engine has every toolset this instance can load, the `skills` toolset's tools among them. Last, it starts whatever tool discovery the program handed it, which under the ACP server is Rider's.
 
 `AgentHost.BuildToolHost()`, for the MCP server, does the same without a model, because the client brings its own.
 

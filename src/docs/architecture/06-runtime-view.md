@@ -23,14 +23,14 @@ site's CSS, so it can't drift from what the site plays ([ADR 0077](../../../demo
 
 | | **Tools** | **Skills** |
 |---|---|---|
-| What | Public C# methods on a pack's tool classes in `packs/tools/LouisAgent.Packs.{Name}/` | Markdown in the prompt folders of core, an identity or a pack, and the function skills the agent wrote |
-| The model sees | A function with typed parameters and a description | Text in the system prompt; named procedures it can run |
-| How it's used | The model calls it; the result comes back | The model follows the guidance, or runs a procedure with `ExecuteSkill` |
-| Examples | `ReadWorkspaceFile`, `GetStatus`, `DotNetTest`, `WebSearch`, `LogTimeByTaskName` | `agent/louis-agent/voice.md` (the coding agent's mode: voice, routing), `toolsets/dotnet.md` (the dotnet pack's guide), a function skill in the skills folder's `agents/functions/` |
+| What | Public C# methods on a pack's tool classes in `packs/tools/LouisAgent.Packs.{Name}/` | Markdown in the prompt folders of core, an identity or a pack; and the skills the agent made, each a folder with a script |
+| The model sees | A function with typed parameters and a description | Built-in skills as text in the system prompt; the agent's own listed in `UseSkill`'s description |
+| How it's used | The model calls it; the result comes back | The model follows the guidance, or reads and runs one of its own with `UseSkill` |
+| Examples | `ReadWorkspaceFile`, `GetStatus`, `DotNetTest`, `WebSearch`, `LogTimeByTaskName` | `agents/louis-agent/voice.md` (the coding agent's mode: voice, routing), `skills/dotnet/SKILL.md` (the dotnet toolset's built-in skill), `count-words/` in the skills folder |
 
-Tools give the agent abilities; skills tell it how and when to use them. The agent can add both: `CreateSkillFile` writes
-a new skill file and `CreateTool` a script-backed tool, and each waits in a `pending/` folder for your `/approve <Name>`
-before any later session loads it (FX20 for skill files).
+Tools give the agent abilities; skills tell it how and when to use them, or carry a small ability of their own. The
+agent can make a skill: `CreateSkill` writes one as a draft its own chat can use at once, and `/approve <Name>` gives it
+to every chat ([Add a skill](../guides/add-a-skill.md), ADR 0033 as amended by F97.1).
 
 ### How tools are registered
 
@@ -46,10 +46,9 @@ var tools = ToolsetCatalog.BuildTools(resolved, Context);
 var engine = new AgentEngine(SkillLoader.Load(...), chatClient, options, supportsTools, toolsets: tools, ...);
 
 // OwnTools.Register, which the engine's constructor calls (simplified)
-registry.Add(Function(skillTools.ExecuteSkill, nameof(AgentEngine.ExecuteSkill)));  // every session
 registry.AddPublicMethods(new ClockTools(clock, options.HostTimeZone));            // every session: today's date (F22)
 foreach (object toolset in toolsets) registry.AddPublicMethods(toolset);          // only the session's toolsets
-if (selfExtension) AddSelfExtensionTools(...);    // the skills toolset: CreateSkillFile, ReloadSkills, CreateTool, ListAgentTools
+if (selfExtension) AddSkillTools(registry, agentSkills);  // the skills toolset: UseSkill, CreateSkill, ReloadSkills
 ```
 
 Every **public** instance method becomes a tool, named after the method, with its `[Description]` attributes as the
@@ -72,12 +71,12 @@ its agent's `lookups/`, after the agent's `lookup.md`, the file that says what e
 At level 0 the identity's own skills follow the voice. The ones it always needs are there whole, and the ones it reads
 on demand are listed by name, each with the line that says when to read it.
 
-Next comes the guide of each toolset the session loaded (`toolsets/{toolset}.md`), and no other. A lookup agent gets no
-guide, because its role says what to do with its one tool. A session with the `agents` toolset then gets the list of
-the agents it may ask, its identity's `Calls`, the same list `AskAgent` checks. Last, and only with the `skills`
-toolset, comes every function skill the agent wrote.
+Next comes the built-in skill of each toolset the session loaded (`skills/{toolset}/SKILL.md`), and no other. A lookup
+agent gets none, because its role says what to do with its one tool. A session with the `agents` toolset then gets
+the list of the agents it may ask, its identity's `Calls`, the same list `AskAgent` checks. The skills the agent made
+are not in the prompt: `UseSkill`'s description lists the approved ones.
 
-The combined text is the system prompt. Core's own files are in `src/engine/LouisAgent.Core/`'s `shared/` and `toolsets/`, and each
+The combined text is the system prompt. Core's own files are in `src/engine/LouisAgent.Core/`'s `shared/` and `skills/`, and each
 identity and pack embeds its own. All of them are read only from their assemblies, so changing a word means a rebuild.
 
 *Decided in:* F5, [ADR 0018](../adr/0018-built-in-prompts-embedded.md), [ADR 0019](../adr/0019-modes-one-file-per-product.md),
@@ -167,7 +166,7 @@ next step (read a file → edit it → build → run the tests).
 ## Writing large files
 
 A reply has a 16,000-token output limit, and a whole web page or long source file can exceed it in one tool call. The
-files guide (`toolsets/files.md`) tells it to write large files in chunks: `WriteWorkspaceFile` for the first ~300
+files toolset's built-in skill (`skills/files/SKILL.md`) tells it to write large files in chunks: `WriteWorkspaceFile` for the first ~300
 lines, then `AppendToFile` for each next chunk. If a call is still cut off, it is skipped and the model is asked to
 continue in smaller pieces (up to 3 times when streaming).
 

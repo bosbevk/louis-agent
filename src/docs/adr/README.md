@@ -41,7 +41,7 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | [0029](0029-simulations-in-csharp.md) | Simulations in C#, called evals: one harness for checks, regressions and demos (amended 2026-10-24: the word is *eval*) | Superseded by 0134 |
 | [0030](0030-build-or-adopt.md) | Build or adopt: the loop stays ours on Microsoft.Extensions.AI | Accepted |
 | [0031](0031-orchestration-is-an-engine-function.md) | Orchestration is an engine function, and the orchestrator stays on core | Accepted |
-| [0033](0033-what-the-agent-writes-has-a-scope.md) | What the agent writes has a scope: session, agent or shared (0032 is kept for *Sources as data*) | Accepted |
+| [0033](0033-what-the-agent-writes-has-a-scope.md) | What the agent writes has a scope: session, agent or shared (0032 is kept for *Sources as data*); amended by F97.1: what the agent makes is a skill, a draft its chat's until approved | Accepted |
 | [0034](0034-code-a-person-can-maintain.md) | Code a person can maintain: one concern per file, at most 200 lines, no code in razor | Amended by 0044 |
 | [0037](0037-one-agent-api-products-get-a-front-door.md) | One agent API; products get a front door: the API, its project files and its contract name no product, and what is only a product's (its web app, compose file, cloud app, database name) lives at its own door; renames keep what is stored and linked, and `ApiNamesNoProductTests` holds it (0035 and 0036 are kept for the engine package and CL17) | Accepted |
 | [0038](0038-the-browser-says-what-it-is.md) | The browser says what it is: it never disguises itself to a site; an identity names itself with `BROWSER_USER_AGENT`, never a person | Accepted |
