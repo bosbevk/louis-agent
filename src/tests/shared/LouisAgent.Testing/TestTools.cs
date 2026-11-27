@@ -45,7 +45,9 @@ public static class TestTools
         new Dictionary<string, string>
         {
             [PackToolset.SkillFile(TestToolset.DotNet.Wire())] = "# .NET Skills\n\nBuilds things.",
-            [PackToolset.SkillFile(TestToolset.Git.Wire())] = "# Git Skills\n\nKeeps history.",
+            [PackToolset.SkillFile(TestToolset.Git.Wire())] =
+                "---\nname: git\ndescription: The fake git toolset.\nmetadata:\n  loaded: GetStatus\n---\n" +
+                "# Git Skills\n\nKeeps history.",
             [PackToolset.SkillFile(TestToolset.Files.Wire())] = "# Files Skills\n\nReads and writes.",
             [PackToolset.SkillFile(TestToolset.Python.Wire())] = "# Python Skills\n\nRuns Python.",
             [PackToolset.SkillFile(TestToolset.PowerShell.Wire())] = "# PowerShell Skills\n\nRuns PowerShell.",
