@@ -1,6 +1,7 @@
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Llm.Caching;
 using LouisAgent.Core.Llm.Thinking;
+using LouisAgent.Core.Llm.Failures;
 using LouisAgent.Core.Llm.ToolSearch;
 using LouisAgent.Core.Llm.UsageMapping;
 using Microsoft.Extensions.AI;
@@ -47,4 +48,10 @@ public interface ILlmProvider
     /// How a chat's tools wait to be found on this provider (F97.3); none unless it can load a tool on demand.
     /// </summary>
     IToolSearch CreateToolSearch(LlmOptions options) => NoToolSearch.Instance;
+
+    /// <summary>
+    /// How this provider names its failures (F8): which are worth asking again and which are an account limit; none
+    /// unless it says.
+    /// </summary>
+    IModelFailures CreateFailures(LlmOptions options) => NoModelFailures.Instance;
 }

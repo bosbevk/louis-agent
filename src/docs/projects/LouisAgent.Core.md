@@ -437,6 +437,28 @@ chat's history and its recordings hold only the engine's own shapes. Claude's st
 
 *Decided in:* F97.3, [ADR 0003](../adr/0003-provider-strategies.md), [ADR 0008](../adr/0008-history-is-append-only.md).
 
+### 17. A busy moment, and an account at its limit
+
+A model provider is sometimes too busy to answer, and sometimes the account behind it has run out. The two need
+opposite handling: a busy moment passes, so asking again after a short wait usually works; an account limit doesn't,
+so asking again only wastes time and hides what is wrong.
+
+What a failure means is the provider's to say, through `ILlmProvider.CreateFailures`. Its `IModelFailures` names each
+failure `Transient`, `AccountLimit` or `Other`, and for an account limit keeps the provider's reason and, when it says,
+when access comes back. The default, `NoModelFailures`, calls everything "other", so a provider that says nothing
+behaves exactly as before.
+
+Every model the factory makes is wrapped in `RetryingChatClient`. When a request fails in a way the provider calls
+transient, and nothing has been said yet, it waits (half a second, doubling, at most eight) and asks again, up to
+`LLM_MAX_RETRIES` more times, two by default, logging each try. Once any content has gone out it never asks again, so
+an answer is never said twice. A stream's opening carries no content, so updates without any are held back until the
+first one with content: a stream that opens and then fails still counts as "before any words", and a retry never shows
+the opening twice. An account limit is never asked again: it becomes an `AccountLimitException`, the provider's own
+failure kept inside it, so every caller can tell it from any other. The API streams it as `account_limit_error`, and an
+eval run stops on it.
+
+*Decided in:* F8, [ADR 0003](../adr/0003-provider-strategies.md).
+
 ## Structure
 
 This part is for looking things up: every folder and file of core, and what's in it.
@@ -488,6 +510,7 @@ This part is for looking things up: every folder and file of core, and what's in
 | `Llm/LlmClientFactory.cs`, `ILlmClientFactory.cs`, `Llm/Providers/ILlmProvider.cs`, `Llm/Providers/LlmLimits.cs` | Options → `IChatClient` through the provider `LLM_PROVIDER` names among the ones the host gave (CL57, ADR 0003): `ILlmProvider` is a provider's name, client, usage mapper and prompt caching; the factory is the registry, wraps the client for caching and reads both cache settings for every provider; `LlmLimits.MaxOutputTokens` (16,000) is the one number the turn and a provider share. The providers are [core.anthropic](LouisAgent.Core.Anthropic.md), [core.ollama](LouisAgent.Core.Ollama.md) and [core.openai](LouisAgent.Core.OpenAi.md); core ships no SDK |
 | `Llm/Caching/IPromptCachingStrategy.cs`, `NoPromptCaching.cs`, `PromptCachingChatClient.cs` | F4: how a provider marks a request for its prompt cache, the no-op default, and the client that applies it (skips summary requests and a tool's, F171.1) |
 | `Llm/Thinking/IStaleThinking.cs`, `StripStaleThinking.cs` | What a chat resumed on moved tools does with its saved thinking: a provider's strategy (`ILlmProvider.CreateStaleThinking`), the default stripping it and keeping the words, calls and results |
+| `Llm/Failures/` | F8: what a model's failure means and what is done about it. `ModelFailure` and `ModelFailureKind` (transient, an account limit with its reason and when it lifts, or other), `IModelFailures` and its Null Object `NoModelFailures` (a provider strategy, ADR 0003), `AccountLimitException`, and `RetryingChatClient`, which asks again after a transient failure before any content, up to `LLM_MAX_RETRIES`, and turns an account limit into its exception |
 | `Llm/ToolSearch/IToolSearch.cs`, `NoToolSearch.cs` | F97.3: how a provider lets a chat's tools wait to be found, a strategy beside the cache's (ADR 0003): it wraps the engine's client below the replay; the Null Object default can't search, so every tool is sent |
 | `Llm/UsageMapping/IUsageMapper.cs`, `StandardUsageMapper.cs` | Provider usage → input / cache write / cache read / output / reasoning, by the Microsoft.Extensions.AI contract |
 | `Llm/UsageMapping/UsageRecordingChatClient.cs`, `PromptHash.cs` | Middleware that records one `UsageRecord` per model request, streaming or not, with the prompt's hash (`PromptHash.Of`: SHA-256 of the leading system messages, the instructions and the tools as sent, F18 step 4c); a cancelled request (a stopped stream, or a timed-out non-streaming call, FX9) is recorded as `cancelled`, a provider error isn't |
@@ -551,7 +574,7 @@ themselves. [Setup](../SETUP.md) and [Models](../MODELS.md) have the details.
 
 | Area | Settings |
 |---|---|
-| The model | `LLM_PROVIDER`, `LLM_MODEL`, `LLM_ENDPOINT`, `LLM_API_KEY` / `ANTHROPIC_API_KEY`, `ANTHROPIC_WORKSPACE_ID`, `LLM_SUPPORTS_TOOLS`, `LLM_THINKING`, `LLM_PROFILE`, `LLM_CACHE`, `LLM_CACHE_TTL`, `LLM_SESSION_PROFILES`, `LOOKUP_LLMS` |
+| The model | `LLM_PROVIDER`, `LLM_MODEL`, `LLM_ENDPOINT`, `LLM_API_KEY` / `ANTHROPIC_API_KEY`, `ANTHROPIC_WORKSPACE_ID`, `LLM_SUPPORTS_TOOLS`, `LLM_THINKING`, `LLM_PROFILE`, `LLM_CACHE`, `LLM_CACHE_TTL`, `LLM_MAX_RETRIES`, `LLM_SESSION_PROFILES`, `LOOKUP_LLMS` |
 | The agent | `WORKSPACE_ROOT`, `SKILLS_DIRECTORY`, `ROLES_ENABLED`, `STREAM_PACE`, `HOST_TIME_ZONE`, `TOOL_SEARCH` |
 | Asking other agents | `AGENT_PEERS`, `AGENT_PEER_KEYS`, `AGENT_MAX_DEPTH`, `SUB_SESSION_PROMPT_BUDGET` |
 | Logs and usage | `LOG_DIRECTORY`, `LOG_CONTENT`, `USAGE_LEDGER`, `USAGE_IN_CHAT` |

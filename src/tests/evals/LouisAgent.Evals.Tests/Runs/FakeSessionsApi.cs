@@ -88,6 +88,12 @@ internal sealed class FakeSessionsApi
         Sse("error",
             JsonSerializer.Serialize(new ErrorEvent(new ErrorDetail(StreamErrorKind.Api.Wire(), message)), SnakeCase));
 
+    /// <summary>A turn the API ended at the model's account limit (F8), with the words the chat shows.</summary>
+    public static string AccountLimited(string message) =>
+        Sse("error",
+            JsonSerializer.Serialize(new ErrorEvent(new ErrorDetail(StreamErrorKind.AccountLimit.Wire(), message)),
+                SnakeCase));
+
     /// <summary>The answer to one request, by its route.</summary>
     private HttpResponseMessage Answer(HttpRequestMessage request)
     {

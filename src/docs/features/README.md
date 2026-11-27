@@ -23,7 +23,6 @@ Each is open work, or the design of work that another feature took in. *In the T
 |---|---|---|---|---|
 | [F6](F06-estimates.md) | Cost estimates before a run | merged into F7 | U §5 | F7 |
 | [F7](F07-budgets.md) | Budgets: warn, ask, stop | planned | U §6 | F7 *Cost you can see and stop* |
-| [F8](F08-reliability.md) | Reliability: retries, account limits, fallback, structured results | planned (F8-S4 moved into F39) | R §F · U §6.2 | F8 *Reliability* |
 | [F9](F09-context-management.md) | Bounded history: clear stale tool results, compact old turns | planned | R §D | F9 *Long chats* |
 | [F10](F10-route-settings.md) | Settings per route: thinking and tool rounds | planned | R §E | F10 *Settings per role and per session* |
 | [F11](F11-usage-tab-and-reconciliation.md) | Usage tab, usage API, reconciliation with the bill | merged into F7 | U §7.1–7.2, §4.4 | F7 |

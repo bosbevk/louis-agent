@@ -1,11 +1,13 @@
 using Anthropic;
 using Anthropic.Core;
 using LouisAgent.Composition.Messages;
+using LouisAgent.Core.Anthropic.Failures;
 using LouisAgent.Core.Anthropic.Messages;
 using LouisAgent.Core.Anthropic.Thinking;
 using LouisAgent.Core.Anthropic.ToolSearch;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Llm.Caching;
+using LouisAgent.Core.Llm.Failures;
 using LouisAgent.Core.Llm.Providers;
 using LouisAgent.Core.Llm.Thinking;
 using LouisAgent.Core.Llm.ToolSearch;
@@ -45,7 +47,12 @@ public sealed class AnthropicProvider : ILlmProvider
         if (string.IsNullOrWhiteSpace(options.ApiKey))
             throw new InvalidOperationException(MessageText.Format(AnthropicErrorMessage.KeyRequired));
 
-        var clientOptions = new ClientOptions { ApiKey = options.ApiKey };
+        // The SDK retries what fails before a stream as often as LLM_MAX_RETRIES says; the engine does the rest (F8).
+        var clientOptions = new ClientOptions
+        {
+            ApiKey = options.ApiKey,
+            MaxRetries = options.MaxRetries
+        };
         if (!string.IsNullOrWhiteSpace(options.Endpoint)) clientOptions.BaseUrl = options.Endpoint;
         // Keys not scoped to a workspace are rejected unless the request names one.
         if (!string.IsNullOrWhiteSpace(options.WorkspaceId))
@@ -68,6 +75,9 @@ public sealed class AnthropicProvider : ILlmProvider
     /// <summary>
     /// On the models that take it, the API drops the thinking that no longer matches; on any other, it is stripped.
     /// </summary>
+    /// <summary>Claude's failures named: what is worth asking again, and the three account limits (F8).</summary>
+    public IModelFailures CreateFailures(LlmOptions options) => new AnthropicFailures();
+
     /// <summary>Anthropic's tool search, with the engine's own FindTool (F97.3).</summary>
     public IToolSearch CreateToolSearch(LlmOptions options) => new AnthropicToolSearch();
 

@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Evals.Messages.Holes.Runs;
+using LouisAgent.Evals.Messages.Holes.Stops;
 
 namespace LouisAgent.Evals.Messages;
 
@@ -22,6 +23,10 @@ public enum RunMessage
     [Description("The recording no longer answers, so it is out of date and a live run is needed: {Changed}")]
     [Holes(typeof(RecordingOutOfDateHoles))]
     RecordingOutOfDate,
+
+    [Description("The {Whose} model's account reached its limit, so nothing more can be run until it lifts: {Reason}")]
+    [Holes(typeof(AccountLimitReachedHoles))]
+    AccountLimitReached,
 
     [Description("The page {Address} that a conversation names is not a page of this site, so the agent couldn't " +
                  "be asked with it.")]

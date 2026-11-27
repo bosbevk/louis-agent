@@ -6,6 +6,7 @@ using LouisAgent.Core.Sessions.Replay.Store;
 using LouisAgent.Evals.Messages;
 using LouisAgent.Evals.Messages.Holes.Sessions;
 using LouisAgent.Evals.Runs;
+using LouisAgent.Evals.Runs.Stops;
 using LouisAgent.SessionStream.Wire.Requests;
 
 namespace LouisAgent.Evals.Sessions;

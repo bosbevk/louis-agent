@@ -41,7 +41,7 @@ public class RepeatedNameTests
     /// project that owns them.
     /// </summary>
     private static readonly (string File, string Class)[] IdsFiles =
-    [];
+        [];
 
     /// <summary>
     /// A literal that is a name of something else, with the file (or the folder, ending in /) it is in, a text on its
@@ -49,6 +49,9 @@ public class RepeatedNameTests
     /// </summary>
     private static readonly (string File, string Line, string Reason)[] Exemptions =
     [
+        ("src/tests/engine/LouisAgent.Core.Anthropic.Tests/Failures/", "_error\"",
+            "Anthropic's own error types (api_error, invalid_request_error, rate_limit_error) in the answers a test " +
+            "of Anthropic's failures plays, not our stream's or API's wire names that share the spelling (F8)")
     ];
 
     /// <summary>Every source file the scan looks at.</summary>

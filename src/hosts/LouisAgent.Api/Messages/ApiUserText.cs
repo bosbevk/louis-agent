@@ -3,6 +3,7 @@ using LouisAgent.Api.Messages.Holes.Admin;
 using LouisAgent.Api.Messages.Holes.Door;
 using LouisAgent.Api.Messages.Holes.Files;
 using LouisAgent.Api.Messages.Holes.Sessions;
+using LouisAgent.Api.Messages.Holes.Turns;
 using LouisAgent.Composition.Messages;
 
 namespace LouisAgent.Api.Messages;
@@ -213,4 +214,11 @@ public enum ApiUserText
         "Sorry, something went wrong on our side and this answer didn't come through. Please try again in a " +
         "minute.")]
     TurnFailed,
+
+    [Description("This agent has reached its usage limit and can't answer until {Resumes}. Please come back then.")]
+    [Holes(typeof(AccountLimitUntilHoles))]
+    AccountLimitUntil,
+
+    [Description("This agent has reached its usage limit and can't answer until its owner raises it.")]
+    AccountLimitUntilRaised,
 }

@@ -441,7 +441,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "features", "features", "{7B
 		src\docs\features\README.md = src\docs\features\README.md
 		src\docs\features\F06-estimates.md = src\docs\features\F06-estimates.md
 		src\docs\features\F07-budgets.md = src\docs\features\F07-budgets.md
-		src\docs\features\F08-reliability.md = src\docs\features\F08-reliability.md
 		src\docs\features\F09-context-management.md = src\docs\features\F09-context-management.md
 		src\docs\features\F10-route-settings.md = src\docs\features\F10-route-settings.md
 		src\docs\features\F11-usage-tab-and-reconciliation.md = src\docs\features\F11-usage-tab-and-reconciliation.md
