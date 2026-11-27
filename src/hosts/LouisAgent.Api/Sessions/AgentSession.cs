@@ -32,8 +32,24 @@ internal sealed class AgentSession(
     StreamFormat format = StreamFormat.Claude,
     SessionReplay? replay = null,
     SessionOpener? opener = null,
-    TurnIdentity? who = null)
+    TurnIdentity? who = null,
+    TimeProvider? clock = null)
 {
+    /// <summary>The clock a turn's start is read from (FX252); the system's unless a test gives its own.</summary>
+    private readonly TimeProvider _clock = clock ?? TimeProvider.System;
+
+    /// <summary>
+    /// When the running turn began (FX252), for the line logged when a message is refused while it runs; none between
+    /// turns.
+    /// </summary>
+    public DateTimeOffset? TurnStartedAt { get; private set; }
+
+    /// <summary>Whether the running turn was asked to stop (FX252); a refusal logs it.</summary>
+    public bool TurnCancelled => Volatile.Read(ref _activeTurn) is { IsCancellationRequested: true };
+
+    /// <summary>How long the running turn has run, in whole seconds; none between turns.</summary>
+    public int? TurnSeconds => TurnStartedAt is { } began ? (int)(_clock.GetUtcNow() - began).TotalSeconds : null;
+
     /// <summary>
     /// Who this session is (F109.3): the identity it named, or the one its role belongs to, and whether it's a
     /// demonstration (F127.2); each turn runs as it.
@@ -191,6 +207,7 @@ internal sealed class AgentSession(
 
         turn = CancellationTokenSource.CreateLinkedTokenSource(requestAborted);
         _activeTurn = turn;
+        TurnStartedAt = _clock.GetUtcNow();
         Turns++;
         LastActivity = DateTimeOffset.UtcNow;
         return true;
@@ -200,6 +217,7 @@ internal sealed class AgentSession(
     public void EndTurn(CancellationTokenSource turn)
     {
         Interlocked.CompareExchange(ref _activeTurn, null, turn);
+        TurnStartedAt = null;
         turn.Dispose();
         LastActivity = DateTimeOffset.UtcNow;
         _turnLock.Release();

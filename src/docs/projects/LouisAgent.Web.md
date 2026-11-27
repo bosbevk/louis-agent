@@ -121,6 +121,9 @@ draft and its attachments, and the page the visitor is reading when one is set, 
 forgotten. It opens the session on the first message, streams the answer, can stop it, saves the chat, and puts
 errors in the app's own words.
 
+Every turn the API ends says why it stopped, a cancelled one too. So a stream that closes without that has been cut
+short, and the runner says so on the turn, with how long it ran, instead of passing it off as a whole answer.
+
 While the answer streams, it raises a redraw at most every 50 ms and always draws the last update. The last
 update matters. Without it, an update that comes just after a redraw would wait for the next event, which can
 be half a minute away while a tool runs. The page would sit behind and then seem to print everything at once.

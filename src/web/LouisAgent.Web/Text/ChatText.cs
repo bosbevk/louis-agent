@@ -316,6 +316,14 @@ public sealed record ChatText
         "The API said no: sign in, or enter AGENT_API_KEY under API key in the sidebar.";
 
     public string StillAnswering { get; init; } = "This chat is still answering; wait for it or press Stop.";
+
+    /// <summary>
+    /// A turn whose stream closed before its end (FX252). {0} is how many seconds it ran.
+    /// </summary>
+    public string AnswerCutShort { get; init; } =
+        "The answer stopped after {0} seconds, before it finished, because the connection to the agent closed. " +
+        "The agent may still be working, so if your next message is refused, wait a moment and send it again.";
+
     public string ApiUnreachable { get; init; } = "Can't reach the agent API. Is the api container running?";
 
     public string Currency { get; init; } = "Currency";

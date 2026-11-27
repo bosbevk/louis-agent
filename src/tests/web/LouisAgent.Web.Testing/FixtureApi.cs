@@ -26,11 +26,17 @@ public static class FixtureApi
     /// the server paced it when the test asks (F156).
     /// </summary>
     public static AgentApi Client(ChatSettings settings, out StubHandler handler, bool sessionGone = false,
-        bool paced = false)
+        bool paced = false, bool cutShort = false)
     {
         handler = new StubHandler(request =>
         {
-            var answer = sessionGone ? AnswerSessionGone(request) : Answer(request);
+            var answer = (sessionGone, cutShort) switch
+            {
+                (true, _) => AnswerSessionGone(request),
+                (_, true) when request.RequestUri!.AbsolutePath == $"/v1/sessions/{SessionId}/messages" =>
+                    StreamCutShort(),
+                _ => Answer(request)
+            };
             if (paced && request.RequestUri!.AbsolutePath == $"/v1/sessions/{SessionId}/messages")
                 answer.Headers.Add(ApiHeaders.StreamPaced, ApiHeaders.StreamPacedOn);
             return answer;
@@ -95,6 +101,18 @@ public static class FixtureApi
     {
         var content = new StreamContent(File.OpenRead(SessionStreamFixture.StreamFile));
         content.Headers.ContentType = new MediaTypeHeaderValue("text/event-stream");
+        return new HttpResponseMessage(HttpStatusCode.OK) { Content = content };
+    }
+
+    /// <summary>
+    /// The recorded turn's stream closing before its end (FX252): everything up to the event that carries the stop
+    /// reason, as a connection dropped mid-turn would leave it.
+    /// </summary>
+    private static HttpResponseMessage StreamCutShort()
+    {
+        string recorded = File.ReadAllText(SessionStreamFixture.StreamFile);
+        string cut = recorded[..recorded.IndexOf("event: message_delta", StringComparison.Ordinal)];
+        var content = new StringContent(cut, Encoding.UTF8, "text/event-stream");
         return new HttpResponseMessage(HttpStatusCode.OK) { Content = content };
     }
 }
