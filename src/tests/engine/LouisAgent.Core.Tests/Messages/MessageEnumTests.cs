@@ -44,13 +44,12 @@ public class MessageEnumTests
                 "AgentErrorMessage", "AgentLogMessage", "AgentToolMessage", "ClockToolMessage",
                 "ConfigErrorMessage", "ConfigLogMessage", "ErrorMessage", "ScreenMessage", "GuardrailErrorMessage",
                 "GuardrailToolMessage", "HostingErrorMessage", "HostingLogMessage", "LlmErrorMessage",
-                "LoggingErrorMessage", "LoggingLogMessage", "PricingErrorMessage", "PricingLogMessage",
-                "PromptHeaderMessage", "AnthropicErrorMessage", "OpenAiErrorMessage",
+                "LlmLogMessage", "LoggingErrorMessage", "LoggingLogMessage", "PricingErrorMessage",
+                "PricingLogMessage", "PromptHeaderMessage", "AnthropicErrorMessage", "OpenAiErrorMessage",
                 "SequenceToolMessage", "SessionErrorMessage", "RunnerToolMessage", "SkillErrorMessage",
                 "SkillLogMessage", "SkillReadToolMessage", "SkillToolMessage", "SubSessionToolMessage",
-                "TelemetryLogMessage", "TextErrorMessage",
-                "ToolMessage", "UserText", "UsageErrorMessage", "UsageLogMessage", "WebLogMessage",
-                "WebToolMessage", "WordsErrorMessage",
+                "TelemetryLogMessage", "TextErrorMessage", "ToolMessage", "UserText", "UsageErrorMessage",
+                "UsageLogMessage", "WebLogMessage", "WebToolMessage", "WordsErrorMessage",
             }));
     }
 

@@ -41,8 +41,10 @@ public sealed class LlmClientFactory : ILlmClientFactory
         if (string.IsNullOrWhiteSpace(options.Model))
             throw new ArgumentException(MessageText.Format(LlmErrorMessage.LlmModelRequired), nameof(options));
 
-        // Innermost in the engine's pipeline, under the tool loop, so every round is marked.
-        return new PromptCachingChatClient(Provider(options).Create(options), CreatePromptCaching(options));
+        // Innermost in the engine's pipeline, under the tool loop, so every round is marked; and asked again around
+        // the marking after a busy moment before any words (F8).
+        var marked = new PromptCachingChatClient(Provider(options).Create(options), CreatePromptCaching(options));
+        return new RetryingChatClient(marked, CreateFailures(options), RetryingChatClient.DefaultRetries);
     }
 
     /// <summary>The provider's own way of counting tokens.</summary>

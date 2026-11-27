@@ -5,7 +5,9 @@ namespace LouisAgent.Core.Llm.Failures;
 /// stops. It carries the provider's own reason and, when the provider says, when access comes back.
 /// </summary>
 /// <param name="limit">The account limit, as the provider named it.</param>
-public sealed class AccountLimitException(ModelFailure limit) : Exception(limit.Reason)
+/// <param name="provider">The provider's own failure, kept inside for the log; none when there wasn't one.</param>
+public sealed class AccountLimitException(ModelFailure limit, Exception? provider = null)
+    : Exception(limit.Reason, provider)
 {
     /// <summary>When access comes back, when the provider says; none otherwise.</summary>
     public DateTimeOffset? ResumesAt { get; } = limit.ResumesAt;

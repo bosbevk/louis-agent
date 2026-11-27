@@ -43,6 +43,21 @@ public class ModelFailuresTests
         });
     }
 
+    /// <summary>Every model the factory makes is asked again after a busy moment, whatever its provider.</summary>
+    [Test]
+    public void EveryModelTheFactoryMakes_IsAskedAgainAfterABusyMoment()
+    {
+        var options = new LlmOptions
+        {
+            Provider = "plain",
+            Model = "m"
+        };
+
+        var model = new LlmClientFactory([new PlainProvider()]).Create(options);
+
+        Assert.That(model.GetService<RetryingChatClient>(), Is.Not.Null);
+    }
+
     /// <summary>An account limit says its reason, and keeps when access comes back for whoever stops on it.</summary>
     [Test]
     public void AnAccountLimit_SaysItsReason_AndKeepsWhenItLifts()
