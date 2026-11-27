@@ -2,6 +2,7 @@ using LouisAgent.Composition.Logging;
 using LouisAgent.Composition.Messages;
 using System.Globalization;
 using LouisAgent.Core.Config.Messages;
+using LouisAgent.Core.Config.ToolSearch;
 using LouisAgent.Core.Logging;
 using Microsoft.Extensions.Logging;
 
@@ -244,6 +245,9 @@ public sealed class AgentOptions
     /// </summary>
     public string? HostTimeZone { get; set; }
 
+    /// <summary>TOOL_SEARCH (F97.3): whether a chat finds its tools by a search, auto unless the host says.</summary>
+    public ToolSearchMode ToolSearch { get; set; } = ToolSearchMode.Auto;
+
     /// <summary>A comma-separated list of names, lower-cased, each once.</summary>
     internal static IReadOnlyList<string> ParseNames(string? value) =>
         (value ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
@@ -335,6 +339,7 @@ public sealed class AgentOptions
             AgentApiKey = Get("AGENT_API_KEY"),
             AgentPeerKeys = ParsePeerKeys(Get("AGENT_PEER_KEYS")),
             HostTimeZone = CheckTimeZone(Get("HOST_TIME_ZONE")),
+            ToolSearch = ToolSearchSetting.Parse(Get(ToolSearchSetting.Name)),
             SubSessionPromptBudget = int.TryParse(Get("SUB_SESSION_PROMPT_BUDGET"), NumberStyles.None,
                 CultureInfo.InvariantCulture, out int budget)
                 ? budget
