@@ -1,6 +1,7 @@
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Llm.Caching;
 using LouisAgent.Core.Llm.Thinking;
+using LouisAgent.Core.Llm.Failures;
 using LouisAgent.Core.Llm.ToolSearch;
 using LouisAgent.Core.Llm.UsageMapping;
 using Microsoft.Extensions.AI;
@@ -35,4 +36,7 @@ public interface ILlmClientFactory
 
     /// <summary>How a chat's tools wait to be found on this provider (F97.3).</summary>
     IToolSearch CreateToolSearch(LlmOptions options) => NoToolSearch.Instance;
+
+    /// <summary>How this provider names its failures (F8).</summary>
+    IModelFailures CreateFailures(LlmOptions options) => NoModelFailures.Instance;
 }
