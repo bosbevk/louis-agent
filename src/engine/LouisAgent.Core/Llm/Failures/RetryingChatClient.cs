@@ -1,6 +1,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using LouisAgent.Composition.Logging;
+using LouisAgent.Core.Config;
 using LouisAgent.Core.Llm.Messages;
 using LouisAgent.Core.Llm.Messages.Holes.Failures;
 using LouisAgent.Core.Logging;
@@ -33,7 +34,10 @@ public sealed class RetryingChatClient(
     Func<int, CancellationToken, Task>? wait = null) : DelegatingChatClient(inner)
 {
     /// <summary>How many more times a busy moment is asked again by default: two, as the SDK's own retries.</summary>
-    public const int DefaultRetries = 2;
+    public const int DefaultRetries = LlmOptions.DefaultMaxRetries;
+
+    /// <summary>How many more times this client asks again after a busy moment.</summary>
+    public int MaxRetries => maxRetries;
 
     /// <summary>The first wait, doubled for each try after, as the SDK's own backoff starts.</summary>
     private static readonly TimeSpan FirstWait = TimeSpan.FromMilliseconds(500);

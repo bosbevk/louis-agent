@@ -55,7 +55,23 @@ public class ModelFailuresTests
 
         var model = new LlmClientFactory([new PlainProvider()]).Create(options);
 
-        Assert.That(model.GetService<RetryingChatClient>(), Is.Not.Null);
+        Assert.That(model.GetService<RetryingChatClient>()?.MaxRetries, Is.EqualTo(RetryingChatClient.DefaultRetries));
+    }
+
+    /// <summary>The factory's retrying client asks again as often as LLM_MAX_RETRIES says.</summary>
+    [Test]
+    public void TheFactory_AsksAgainAsOftenAsTheSettingSays()
+    {
+        var options = new LlmOptions
+        {
+            Provider = "plain",
+            Model = "m",
+            MaxRetries = 5
+        };
+
+        var model = new LlmClientFactory([new PlainProvider()]).Create(options);
+
+        Assert.That(model.GetService<RetryingChatClient>()?.MaxRetries, Is.EqualTo(5));
     }
 
     /// <summary>An account limit says its reason, and keeps when access comes back for whoever stops on it.</summary>

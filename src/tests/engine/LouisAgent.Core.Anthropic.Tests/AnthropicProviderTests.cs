@@ -79,6 +79,18 @@ public class AnthropicProviderTests
     public void Failures_AreAnthropics() =>
         Assert.That(Factory().CreateFailures(Options()), Is.TypeOf<AnthropicFailures>());
 
+    /// <summary>The SDK's own retries, before a stream, are as many as LLM_MAX_RETRIES says (F8).</summary>
+    [Test]
+    public void TheSdk_RetriesAsOftenAsTheSettingSays()
+    {
+        var options = Options();
+        options.MaxRetries = 5;
+
+        IChatClient client = AnthropicProvider.Instance.Create(options);
+
+        Assert.That(client.GetService<global::Anthropic.AnthropicClient>()?.MaxRetries, Is.EqualTo(5));
+    }
+
     [Test]
     public void TheKeyMessage_NamesTheSetting() =>
         Assert.That(MessageEnumText.Of(AnthropicErrorMessage.KeyRequired), Does.Contain("LLM_API_KEY"));

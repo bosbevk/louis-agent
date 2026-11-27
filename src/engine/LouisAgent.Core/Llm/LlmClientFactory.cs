@@ -44,7 +44,7 @@ public sealed class LlmClientFactory : ILlmClientFactory
         // Innermost in the engine's pipeline, under the tool loop, so every round is marked; and asked again around
         // the marking after a busy moment before any words (F8).
         var marked = new PromptCachingChatClient(Provider(options).Create(options), CreatePromptCaching(options));
-        return new RetryingChatClient(marked, CreateFailures(options), RetryingChatClient.DefaultRetries);
+        return new RetryingChatClient(marked, CreateFailures(options), options.MaxRetries);
     }
 
     /// <summary>The provider's own way of counting tokens.</summary>

@@ -127,4 +127,21 @@ public class ThinkingTests
 
         Assert.That((o.ResolveCache(), o.ResolveCacheTtl()), Is.EqualTo((false, CacheLifetime.OneHour)));
     }
+
+    /// <summary>
+    /// LLM_MAX_RETRIES (F8): how many more times a busy moment is asked again, unset the SDK's own two; zero asks once.
+    /// </summary>
+    [TestCase(null, 2)]
+    [TestCase("0", 0)]
+    [TestCase(" 5 ", 5)]
+    public void MaxRetries_IsReadFromTheEnvironment(string? setting, int retries) =>
+        Assert.That(LlmOptions.FromEnvironment(name => name == "LLM_MAX_RETRIES" ? setting : null).MaxRetries,
+            Is.EqualTo(retries));
+
+    /// <summary>A count that isn't one stops start-up, naming the setting.</summary>
+    [TestCase("many")]
+    [TestCase("-1")]
+    public void MaxRetries_ThatIsntACount_IsRefused(string setting) =>
+        Assert.That(() => LlmOptions.FromEnvironment(name => name == "LLM_MAX_RETRIES" ? setting : null),
+            Throws.ArgumentException.With.Message.Contain("LLM_MAX_RETRIES").And.Message.Contain(setting));
 }

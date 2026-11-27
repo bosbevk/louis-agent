@@ -47,7 +47,12 @@ public sealed class AnthropicProvider : ILlmProvider
         if (string.IsNullOrWhiteSpace(options.ApiKey))
             throw new InvalidOperationException(MessageText.Format(AnthropicErrorMessage.KeyRequired));
 
-        var clientOptions = new ClientOptions { ApiKey = options.ApiKey };
+        // The SDK retries what fails before a stream as often as LLM_MAX_RETRIES says; the engine does the rest (F8).
+        var clientOptions = new ClientOptions
+        {
+            ApiKey = options.ApiKey,
+            MaxRetries = options.MaxRetries
+        };
         if (!string.IsNullOrWhiteSpace(options.Endpoint)) clientOptions.BaseUrl = options.Endpoint;
         // Keys not scoped to a workspace are rejected unless the request names one.
         if (!string.IsNullOrWhiteSpace(options.WorkspaceId))
