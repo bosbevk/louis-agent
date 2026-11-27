@@ -30,7 +30,7 @@
     { "id": "coding-list-projects",
       "turns": [
         { "ask": "List the .NET projects in demos/louis-agent/samples/order-service.",
-          "facts": ["no-error", "has-words", "used DotNetListProjects"],
+          "facts": ["no-error", "has-words", "used FindFiles"],
           "criteria": ["Names OrderService and OrderService.Tests"] } ] },
     { "id": "coding-find-a-doc",
       "turns": [
