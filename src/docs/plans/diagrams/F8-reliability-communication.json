@@ -1,0 +1,27 @@
+{
+  "kind": "sequence",
+  "title": "F8 reliability: an overload asked again, a limit said plainly",
+  "caption": "An overload inside a stream before any words is asked again after a wait; an account limit is never asked again and reaches the chat in words.",
+  "sequence": {
+    "participants": [
+      { "id": "P", "label": "A person", "actor": true, "tone": "blue" },
+      { "id": "E", "label": "AgentEngine", "icon": "settings", "tone": "violet" },
+      { "id": "R", "label": "RetryingChatClient", "icon": "code", "tone": "violet" },
+      { "id": "F", "label": "AnthropicFailures", "icon": "settings", "tone": "violet" },
+      { "id": "A", "label": "Messages API", "icon": "cloud", "tone": "green" }
+    ],
+    "steps": [
+      { "step": "message", "from": "P", "to": "E", "text": "a message" },
+      { "step": "message", "from": "E", "to": "R", "text": "stream the turn" },
+      { "step": "message", "from": "R", "to": "A", "text": "the request" },
+      { "step": "reply", "from": "A", "to": "R", "text": "event: error, overloaded, no words yet" },
+      { "step": "message", "from": "R", "to": "F", "text": "what kind?" },
+      { "step": "reply", "from": "F", "to": "R", "text": "worth asking again" },
+      { "step": "message", "from": "R", "to": "A", "text": "the request, after a wait" },
+      { "step": "reply", "from": "A", "to": "P", "text": "the answer, as if nothing happened" },
+      { "step": "message", "from": "R", "to": "A", "text": "a later request" },
+      { "step": "reply", "from": "A", "to": "R", "text": "400: you have reached your usage limits" },
+      { "step": "reply", "from": "R", "to": "P", "text": "account_limit_error: the reason, when it lifts" }
+    ]
+  }
+}

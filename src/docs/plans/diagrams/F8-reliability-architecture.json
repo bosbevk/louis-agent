@@ -1,0 +1,32 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F8 reliability: the architecture",
+  "caption": "The retrying client sits where the factory wraps the provider's client; an account limit travels up as its own kind to the chat and the eval runner.",
+  "flow": {
+    "nodes": [
+      { "id": "chat", "label": "A chat page\nthe limit in words (step 5)", "icon": "message", "tone": "blue", "shape": "terminal" },
+      { "id": "evals", "label": "An eval run\nstops at a limit (step 6)", "icon": "chart", "tone": "blue", "shape": "terminal" },
+      { "id": "api", "label": "The API\naccount_limit_error (step 5)", "icon": "server", "tone": "blue" },
+      { "id": "engine", "label": "AgentEngine\nthe turn", "icon": "settings", "tone": "violet", "group": "core" },
+      { "id": "retrying", "label": "RetryingChatClient\n(steps 3, 4)", "icon": "code", "tone": "violet", "group": "core" },
+      { "id": "failures", "label": "AnthropicFailures\n(step 2)", "icon": "settings", "tone": "violet", "group": "anthropic" },
+      { "id": "sdk", "label": "The SDK's client\nits own retries", "icon": "box", "tone": "amber", "group": "anthropic" },
+      { "id": "messages", "label": "Anthropic Messages API", "icon": "cloud", "tone": "green", "shape": "terminal" }
+    ],
+    "groups": [
+      { "id": "core", "label": "LouisAgent.Core" },
+      { "id": "anthropic", "label": "LouisAgent.Core.Anthropic" }
+    ],
+    "edges": [
+      { "from": "chat", "to": "api" },
+      { "from": "evals", "to": "api" },
+      { "from": "api", "to": "engine" },
+      { "from": "engine", "to": "retrying" },
+      { "from": "retrying", "to": "failures", "word": "what kind?" },
+      { "from": "retrying", "to": "sdk" },
+      { "from": "sdk", "to": "messages" }
+    ],
+    "direction": "right"
+  }
+}

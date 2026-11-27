@@ -1,0 +1,327 @@
+<svg viewBox="-24 -24 842.8 936" width="842.8" height="936" role="img" aria-label="F8 reliability: an overload asked again, a limit said plainly" xmlns="http://www.w3.org/2000/svg">
+  <title>F8 reliability: an overload asked again, a limit said plainly</title>
+  <style>svg {
+  --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #e2dfff; --violet-line: #6b4dff; --violet-ink: #3a22c4; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: var(--bs-font-monospace, "Geist Mono", ui-monospace, Menlo, Consolas, monospace);
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --line: #2c2f35; --text: #e6e8eb; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #110a40; --violet-line: #9282ff; --violet-ink: #e2dfff; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+[data-style="dark"] svg { --ground: #070708; --line: #2c2f35; --text: #e6e8eb; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #110a40; --violet-line: #9282ff; --violet-ink: #e2dfff; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+[data-style="light"] svg { --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #e2dfff; --violet-line: #6b4dff; --violet-ink: #3a22c4; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c; }
+.ground { fill: var(--ground); }
+.arrow { fill: var(--quiet); }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.arrow.tone-blue { fill: var(--blue-line); }
+.arrow.tone-green { fill: var(--green-line); }
+.arrow.tone-violet { fill: var(--violet-line); }
+.arrow.tone-teal { fill: var(--teal-line); }
+.arrow.tone-red { fill: var(--red-line); }
+.arrow.tone-amber { fill: var(--amber-line); }
+svg {
+  --sans: var(--bs-font-sans-serif, "Geist", system-ui, -apple-system, "Segoe UI", sans-serif);
+}
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+</style>
+  <style>
+svg {
+  --pic-body: rgba(27, 42, 74, .065); --pic-hair: rgba(27, 42, 74, .2); --pic-march: rgba(255, 255, 255, .95);
+  --pic-sans: var(--bs-font-sans-serif, "Geist", system-ui, -apple-system, "Segoe UI", sans-serif);
+}
+@media (prefers-color-scheme: dark) {
+  svg { --pic-body: rgba(255, 255, 255, .045); --pic-hair: rgba(255, 255, 255, .1); --pic-march: rgba(255, 255, 255, .75); }
+}
+[data-style="dark"] svg { --pic-body: rgba(255, 255, 255, .045); --pic-hair: rgba(255, 255, 255, .1); --pic-march: rgba(255, 255, 255, .75); }
+[data-style="light"] svg { --pic-body: rgba(27, 42, 74, .065); --pic-hair: rgba(27, 42, 74, .2); --pic-march: rgba(255, 255, 255, .95); }
+.pic-edge { stroke: var(--quiet); }
+.pic-tint { fill: var(--chip); }
+.pic-fill { fill: var(--quiet); }
+.pic-ink { fill: var(--text); }
+.pic-edge.tone-blue { stroke: var(--blue-line); }
+.pic-tint.tone-blue { fill: var(--blue-fill); }
+.pic-fill.tone-blue { fill: var(--blue-line); }
+.pic-ink.tone-blue { fill: var(--blue-ink); }
+.pic-edge.tone-green { stroke: var(--green-line); }
+.pic-tint.tone-green { fill: var(--green-fill); }
+.pic-fill.tone-green { fill: var(--green-line); }
+.pic-ink.tone-green { fill: var(--green-ink); }
+.pic-edge.tone-violet { stroke: var(--violet-line); }
+.pic-tint.tone-violet { fill: var(--violet-fill); }
+.pic-fill.tone-violet { fill: var(--violet-line); }
+.pic-ink.tone-violet { fill: var(--violet-ink); }
+.pic-edge.tone-teal { stroke: var(--teal-line); }
+.pic-tint.tone-teal { fill: var(--teal-fill); }
+.pic-fill.tone-teal { fill: var(--teal-line); }
+.pic-ink.tone-teal { fill: var(--teal-ink); }
+.pic-edge.tone-red { stroke: var(--red-line); }
+.pic-tint.tone-red { fill: var(--red-fill); }
+.pic-fill.tone-red { fill: var(--red-line); }
+.pic-ink.tone-red { fill: var(--red-ink); }
+.pic-edge.tone-amber { stroke: var(--amber-line); }
+.pic-tint.tone-amber { fill: var(--amber-fill); }
+.pic-fill.tone-amber { fill: var(--amber-line); }
+.pic-ink.tone-amber { fill: var(--amber-ink); }
+.pic-panel { fill: var(--pic-body); stroke: var(--pic-hair); stroke-width: 1; }
+.pic-group {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.pic-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
+.pic-note { fill: var(--quiet); font: 11.5px var(--pic-sans); }
+.pic-means { fill: var(--text); font: 12px var(--pic-sans); }
+.pic-text { fill: var(--quiet); font: 12px var(--pic-sans); }
+.pic-word { fill: var(--quiet); font: 500 10px var(--mono); }
+.pic-pill { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
+.pic-pill-word { font: 500 10px var(--mono); }
+.pic-badge-icon {
+  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.pic-port { fill: var(--ground); stroke-width: 1.25; }
+.pic-line { fill: none; stroke-width: 2; stroke-linecap: round; }
+.pic-line.reads { stroke-dasharray: 3 5; }
+.pic-march {
+  fill: none; stroke: var(--pic-march); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 1 13;
+  animation: pic-march 1.1s linear infinite;
+}
+@keyframes pic-march { to { stroke-dashoffset: -14; } }
+@media (prefers-reduced-motion: reduce) {
+  .pic-march { display: none; }
+}
+svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top: .06; --mrq-sheet-end: .035; --mrq-hair: rgba(27, 42, 74, .18); }
+@media (prefers-color-scheme: dark) {
+  svg { --mrq-glow: .34; --mrq-glow-far: .1; --mrq-sheet: #ffffff; --mrq-sheet-top: .07; --mrq-sheet-end: .02; --mrq-hair: rgba(255, 255, 255, .1); }
+}
+[data-style="dark"] svg { --mrq-glow: .34; --mrq-glow-far: .1; --mrq-sheet: #ffffff; --mrq-sheet-top: .07; --mrq-sheet-end: .02; --mrq-hair: rgba(255, 255, 255, .1); }
+[data-style="light"] svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top: .06; --mrq-sheet-end: .035; --mrq-hair: rgba(27, 42, 74, .18); }
+.mrq-title { fill: var(--text); font: 600 13px var(--pic-sans); }
+.mrq-light { fill: url(#mrq-light); }
+.mrq-light-0 { stop-color: var(--violet-line); stop-opacity: var(--mrq-glow); }
+.mrq-light-1 { stop-color: var(--blue-line); stop-opacity: var(--mrq-glow-far); }
+.mrq-light-2 { stop-color: var(--blue-line); stop-opacity: 0; }
+.mrq-glass { fill: url(#mrq-glass); stroke: var(--mrq-hair); stroke-width: 1; }
+.mrq-glass-0 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-top); }
+.mrq-glass-1 { stop-color: var(--mrq-sheet); stop-opacity: var(--mrq-sheet-end); }
+.mrq-edge { fill: url(#mrq-edge); }
+.mrq-edge-0 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-edge-1 { stop-color: var(--violet-line); }
+.mrq-edge-2 { stop-color: var(--violet-line); stop-opacity: 0; }
+.mrq-rule { fill: url(#mrq-edge); opacity: .7; }
+.mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
+.mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
+.mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
+.seq-badge { fill: var(--quiet); }
+.seq-badge.tone-blue { fill: var(--blue-line); }
+.seq-badge.tone-green { fill: var(--green-line); }
+.seq-badge.tone-violet { fill: var(--violet-line); }
+.seq-badge.tone-teal { fill: var(--teal-line); }
+.seq-badge.tone-red { fill: var(--red-line); }
+.seq-badge.tone-amber { fill: var(--amber-line); }
+.seq-name { fill: var(--text); font: 700 16px var(--pic-sans); letter-spacing: -.2px; }
+.seq-life { fill: url(#seq-life); }
+.seq-life-0 { stop-color: var(--violet-line); stop-opacity: .7; }
+.seq-life-1 { stop-color: var(--blue-line); stop-opacity: .35; }
+.seq-life-2 { stop-color: var(--blue-line); stop-opacity: 0; }
+.seq-beam { fill: url(#seq-beam); }
+.seq-beam.back { fill: url(#seq-beam-back); }
+.seq-beam-glow { opacity: .45; filter: blur(4px); }
+.seq-beam-0 { stop-color: var(--violet-line); }
+.seq-beam-1 { stop-color: var(--blue-line); }
+.seq-beam-back-0 { stop-color: var(--blue-line); }
+.seq-beam-back-1 { stop-color: var(--violet-line); }
+.seq-tip { fill: none; }
+.seq-turn { fill: none; stroke: var(--violet-line); stroke-width: 2; stroke-linecap: round; }
+.seq-answer {
+  fill: none; stroke: var(--quiet); stroke-opacity: .8; stroke-width: 1.5; stroke-dasharray: 3 6;
+  stroke-linecap: round;
+}
+.seq-call-words { fill: var(--text); font: 600 12.5px var(--pic-sans); paint-order: stroke; stroke: var(--ground); stroke-width: 5px; stroke-linejoin: round; }
+.seq-answer-words { fill: var(--quiet); font: 12.5px var(--pic-sans); paint-order: stroke; stroke: var(--ground); stroke-width: 5px; stroke-linejoin: round; }
+.seq-cover { fill: var(--ground); }
+.seq-kind { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
+.seq-tab { fill: var(--text); font: 600 12.5px var(--pic-sans); paint-order: stroke; stroke: var(--ground); stroke-width: 5px; stroke-linejoin: round; }
+.seq-divide { fill: none; stroke: var(--mrq-hair); stroke-width: 1; stroke-dasharray: 4 6; }
+.seq-else { fill: var(--ground); stroke: var(--quiet); stroke-width: 1; stroke-opacity: .5; }
+.seq-else-word { fill: var(--quiet); font: 11px var(--mono); }
+.seq-ring.quiet { stroke: var(--quiet); }
+.seq-count { fill: var(--text); font: 700 10px var(--pic-sans); }
+.seq-quiet-node { fill: var(--ground); stroke: var(--quiet); stroke-width: 1.5; }
+.seq-swatch { fill: url(#mrq-glass); stroke: var(--mrq-sheet); stroke-opacity: .3; }.pic-name { fill: var(--text); font: 650 15px var(--pic-sans); letter-spacing: -.035em; }
+.pic-mark { fill: #6b4dff; font-size: 1.41em; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-blue" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <radialGradient id="mrq-light">
+      <stop class="mrq-light-0" offset="0" />
+      <stop class="mrq-light-1" offset="0.5" />
+      <stop class="mrq-light-2" offset="1" />
+    </radialGradient>
+    <linearGradient id="seq-beam" x1="0" y1="0" x2="1" y2="0">
+      <stop class="seq-beam-0" offset="0" />
+      <stop class="seq-beam-1" offset="1" />
+    </linearGradient>
+    <linearGradient id="seq-beam-back" x1="0" y1="0" x2="1" y2="0">
+      <stop class="seq-beam-back-0" offset="0" />
+      <stop class="seq-beam-back-1" offset="1" />
+    </linearGradient>
+    <linearGradient id="seq-life" x1="0" y1="0" x2="0" y2="1">
+      <stop class="seq-life-0" offset="0" />
+      <stop class="seq-life-1" offset="0.9" />
+      <stop class="seq-life-2" offset="1" />
+    </linearGradient>
+    <linearGradient id="mrq-edge" x1="0" y1="0" x2="1" y2="0">
+      <stop class="mrq-edge-0" offset="0" />
+      <stop class="mrq-edge-1" offset="0.5" />
+      <stop class="mrq-edge-2" offset="1" />
+    </linearGradient>
+    <linearGradient id="mrq-glass" x1="0" y1="0" x2="0" y2="1">
+      <stop class="mrq-glass-0" offset="0" />
+      <stop class="mrq-glass-1" offset="1" />
+    </linearGradient>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="842.8" height="936" rx="14" />
+  <g class="drawing" transform="translate(0 0)">
+    <path class="mrq-light" d="M-24 84a421.4 170 0 1 0 842.8 0a421.4 170 0 1 0 -842.8 0Z" />
+    <text class="mrq-title" x="16" y="14" text-anchor="start">F8 reliability: an overload asked again, a limit said plainly</text>
+    <text class="pic-group" x="778.8" y="14" text-anchor="end">Sequence diagram</text>
+    <rect class="mrq-rule" x="0" y="26" width="794.8" height="1" rx="0" />
+    <g class="seq-drawing" transform="translate(0 48)">
+      <rect class="seq-life" x="36.9" y="84" width="1.5" height="612" rx="0" />
+      <rect class="seq-life" x="166.2" y="84" width="1.5" height="612" rx="0" />
+      <rect class="seq-life" x="356.9" y="84" width="1.5" height="612" rx="0" />
+      <rect class="seq-life" x="561.4" y="84" width="1.5" height="612" rx="0" />
+      <rect class="seq-life" x="737.7" y="84" width="1.5" height="612" rx="0" />
+      <rect class="seq-beam seq-beam-glow" x="37.6" y="129" width="129.3" height="8" rx="0" />
+      <rect class="seq-beam" x="37.6" y="132" width="121.3" height="2" rx="0" />
+      <path class="pic-march" d="M37.6 133H158.9" />
+      <path class="seq-tip" d="M158.9 133H166.9" marker-end="url(#arrow-blue)" />
+      <circle class="mrq-node" cx="37.6" cy="133" r="4.5" />
+      <text class="seq-call-words" x="102.3" y="124" text-anchor="middle">a message</text>
+      <rect class="seq-beam seq-beam-glow" x="166.9" y="180" width="190.7" height="8" rx="0" />
+      <rect class="seq-beam" x="166.9" y="183" width="182.7" height="2" rx="0" />
+      <path class="pic-march" d="M166.9 184H349.6" />
+      <path class="seq-tip" d="M349.6 184H357.6" marker-end="url(#arrow-blue)" />
+      <circle class="mrq-node" cx="166.9" cy="184" r="4.5" />
+      <text class="seq-call-words" x="262.3" y="175" text-anchor="middle">stream the turn</text>
+      <rect class="seq-beam seq-beam-glow" x="357.6" y="231" width="380.8" height="8" rx="0" />
+      <rect class="seq-beam" x="357.6" y="234" width="372.8" height="2" rx="0" />
+      <path class="pic-march" d="M357.6 235H730.4" />
+      <path class="seq-tip" d="M730.4 235H738.4" marker-end="url(#arrow-blue)" />
+      <circle class="mrq-node" cx="357.6" cy="235" r="4.5" />
+      <text class="seq-call-words" x="548" y="226" text-anchor="middle">the request</text>
+      <path class="seq-answer" d="M738.4 286H357.6" marker-end="url(#arrow)" />
+      <circle class="seq-quiet-node" cx="738.4" cy="286" r="4.5" />
+      <text class="seq-answer-words" x="548" y="277" text-anchor="middle">event: error, overloaded, no words yet</text>
+      <rect class="seq-beam seq-beam-glow" x="357.6" y="333" width="204.5" height="8" rx="0" />
+      <rect class="seq-beam" x="357.6" y="336" width="196.5" height="2" rx="0" />
+      <path class="pic-march" d="M357.6 337H554.1" />
+      <path class="seq-tip" d="M554.1 337H562.1" marker-end="url(#arrow-blue)" />
+      <circle class="mrq-node" cx="357.6" cy="337" r="4.5" />
+      <text class="seq-call-words" x="459.9" y="328" text-anchor="middle">what kind?</text>
+      <path class="seq-answer" d="M562.1 388H357.6" marker-end="url(#arrow)" />
+      <circle class="seq-quiet-node" cx="562.1" cy="388" r="4.5" />
+      <text class="seq-answer-words" x="459.9" y="379" text-anchor="middle">worth asking again</text>
+      <rect class="seq-beam seq-beam-glow" x="357.6" y="435" width="380.8" height="8" rx="0" />
+      <rect class="seq-beam" x="357.6" y="438" width="372.8" height="2" rx="0" />
+      <path class="pic-march" d="M357.6 439H730.4" />
+      <path class="seq-tip" d="M730.4 439H738.4" marker-end="url(#arrow-blue)" />
+      <circle class="mrq-node" cx="357.6" cy="439" r="4.5" />
+      <text class="seq-call-words" x="548" y="430" text-anchor="middle">the request, after a wait</text>
+      <path class="seq-answer" d="M738.4 490H37.6" marker-end="url(#arrow)" />
+      <circle class="seq-quiet-node" cx="738.4" cy="490" r="4.5" />
+      <text class="seq-answer-words" x="388" y="481" text-anchor="middle">the answer, as if nothing happened</text>
+      <rect class="seq-beam seq-beam-glow" x="357.6" y="537" width="380.8" height="8" rx="0" />
+      <rect class="seq-beam" x="357.6" y="540" width="372.8" height="2" rx="0" />
+      <path class="pic-march" d="M357.6 541H730.4" />
+      <path class="seq-tip" d="M730.4 541H738.4" marker-end="url(#arrow-blue)" />
+      <circle class="mrq-node" cx="357.6" cy="541" r="4.5" />
+      <text class="seq-call-words" x="548" y="532" text-anchor="middle">a later request</text>
+      <path class="seq-answer" d="M738.4 592H357.6" marker-end="url(#arrow)" />
+      <circle class="seq-quiet-node" cx="738.4" cy="592" r="4.5" />
+      <text class="seq-answer-words" x="548" y="583" text-anchor="middle">400: you have reached your usage limits</text>
+      <path class="seq-answer" d="M357.6 658H37.6" marker-end="url(#arrow)" />
+      <circle class="seq-quiet-node" cx="357.6" cy="658" r="4.5" />
+      <text class="seq-answer-words" x="197.6" y="634" text-anchor="middle">account_limit_error: the reason, when it</text>
+      <text class="seq-answer-words" x="197.6" y="649" text-anchor="middle">lifts</text>
+      <rect class="seq-badge tone-blue" x="15.6" y="0" width="44" height="44" rx="13" />
+      <g class="pic-badge-icon" transform="translate(26.6 11) scale(0.9167)">
+        <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+        <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+      </g>
+      <text class="seq-name" x="37.6" y="68" text-anchor="middle">A person</text>
+      <circle class="mrq-node" cx="37.6" cy="84" r="4.5" />
+      <rect class="seq-badge tone-violet" x="144.9" y="0" width="44" height="44" rx="13" />
+      <g class="pic-badge-icon" transform="translate(155.9 11) scale(0.9167)">
+        <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
+        <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+      </g>
+      <text class="seq-name" x="166.9" y="68" text-anchor="middle">AgentEngine</text>
+      <circle class="mrq-node" cx="166.9" cy="84" r="4.5" />
+      <rect class="seq-badge tone-violet" x="335.6" y="0" width="44" height="44" rx="13" />
+      <g class="pic-badge-icon" transform="translate(346.6 11) scale(0.9167)">
+        <path d="M7 8l-4 4l4 4" />
+        <path d="M17 8l4 4l-4 4" />
+        <path d="M14 4l-4 16" />
+      </g>
+      <text class="seq-name" x="357.6" y="68" text-anchor="middle">RetryingChatClient</text>
+      <circle class="mrq-node" cx="357.6" cy="84" r="4.5" />
+      <rect class="seq-badge tone-violet" x="540.1" y="0" width="44" height="44" rx="13" />
+      <g class="pic-badge-icon" transform="translate(551.1 11) scale(0.9167)">
+        <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
+        <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+      </g>
+      <text class="seq-name" x="562.1" y="68" text-anchor="middle">AnthropicFailures</text>
+      <circle class="mrq-node" cx="562.1" cy="84" r="4.5" />
+      <rect class="seq-badge tone-green" x="716.4" y="0" width="44" height="44" rx="13" />
+      <g class="pic-badge-icon" transform="translate(727.4 11) scale(0.9167)">
+        <path d="M6.657 18c-2.572 0 -4.657 -2.007 -4.657 -4.483c0 -2.475 2.085 -4.482 4.657 -4.482c.393 -1.762 1.794 -3.2 3.675 -3.773c1.88 -.572 3.956 -.193 5.444 1c1.488 1.19 2.162 3.007 1.77 4.769h.99c1.913 0 3.464 1.56 3.464 3.486c0 1.927 -1.551 3.487 -3.465 3.487h-11.878" />
+      </g>
+      <text class="seq-name" x="738.4" y="68" text-anchor="middle">Messages API</text>
+      <circle class="mrq-node" cx="738.4" cy="84" r="4.5" />
+    </g>
+    <g class="seq-legend" transform="translate(0 756)">
+      <rect class="mrq-rule" x="0" y="0" width="794.8" height="1" rx="0" />
+      <text class="pic-group" x="0" y="22" text-anchor="start">How to read it</text>
+      <rect class="seq-badge tone-blue" x="0" y="39" width="18" height="18" rx="6" />
+      <text class="pic-means" x="28" y="52.5" text-anchor="start">starts it</text>
+      <rect class="seq-badge tone-green" x="117.4" y="39" width="18" height="18" rx="6" />
+      <text class="pic-means" x="145.4" y="52.5" text-anchor="start">this project</text>
+      <rect class="seq-badge tone-violet" x="254.6" y="39" width="18" height="18" rx="6" />
+      <text class="pic-means" x="282.6" y="52.5" text-anchor="start">the framework</text>
+      <rect class="seq-beam seq-beam-glow" x="402.9" y="44" width="43.5" height="8" rx="0" />
+      <rect class="seq-beam" x="402.9" y="47" width="35.5" height="2" rx="0" />
+      <path class="seq-tip" d="M438.4 48H446.4" marker-end="url(#arrow-blue)" />
+      <circle class="mrq-node" cx="402.9" cy="48" r="4.5" />
+      <text class="pic-means" x="456.4" y="52.5" text-anchor="start">a call</text>
+      <path class="seq-answer" d="M530.5 48H574" marker-end="url(#arrow)" />
+      <circle class="seq-quiet-node" cx="530.5" cy="48" r="4.5" />
+      <text class="pic-means" x="584" y="52.5" text-anchor="start">an answer</text>
+    </g>
+    <g class="pic-brand" transform="translate(0 0)">
+      <text class="pic-name" x="778.8" y="778" text-anchor="end" aria-label="louis-agent">l<tspan class="pic-mark" dy="1.5">•</tspan><tspan dy="-1.5">uis-agent</tspan></text>
+    </g>
+  </g>
+  <rect class="notebar" x="0" y="834" width="794.8" height="54" rx="8" />
+  <g class="note-icon" transform="translate(12 844) scale(0.6667)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 9h.01" />
+    <path d="M11 12h1v4h1" />
+  </g>
+  <text class="notes" x="38" y="856">
+    <tspan class="note-rest">An overload inside a stream before any words is asked again after a wait; an account limit is never</tspan>
+  </text>
+  <text class="notes" x="38" y="873">
+    <tspan class="note-rest">asked again and reaches the chat in words.</tspan>
+  </text>
+</svg>

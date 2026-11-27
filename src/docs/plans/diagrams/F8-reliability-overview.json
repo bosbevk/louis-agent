@@ -1,0 +1,31 @@
+{
+  "kind": "cards",
+  "title": "F8 reliability",
+  "caption": "The SDK already retries a busy moment before a stream; F8 adds the case inside it, before any words, and says an account limit plainly to the chat and the evals.",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "goal", "icon": "checks", "title": "A busy moment retried, a limit said plainly", "code": "RetryingChatClient", "look": "highlight",
+          "text": "Asked again only before any words; an account limit stops work at once, with when it lifts." }
+      ] },
+      { "cards": [
+        { "id": "sdk", "icon": "box", "title": "What the SDK already does", "code": "MaxRetries 2", "text": "A 429 or 529 before the stream is retried; a 400 is not." },
+        { "id": "gap", "icon": "info", "title": "The gap", "code": "overloaded_error", "text": "An overload inside a stream, before any words, fails at once." },
+        { "id": "kinds", "icon": "settings", "title": "A failure's kind", "code": "IModelFailures", "text": "The provider says what is worth asking again, and what is an account limit." }
+      ] },
+      { "cards": [
+        { "id": "retry", "icon": "code", "title": "Retry before any words", "code": "LLM_MAX_RETRIES", "text": "Backoff, logged, never after content, never an account limit." },
+        { "id": "chat", "icon": "message", "title": "The chat", "code": "account_limit_error", "text": "The reason in words, and when access comes back." },
+        { "id": "evals", "icon": "chart", "title": "The evals", "code": "could-not-finish", "text": "A run stops at the first limit, the agent's or the judge's." }
+      ] }
+    ],
+    "links": [
+      { "from": "goal", "to": "sdk" },
+      { "from": "goal", "to": "gap" },
+      { "from": "goal", "to": "kinds" },
+      { "from": "gap", "to": "retry" },
+      { "from": "kinds", "to": "chat" },
+      { "from": "kinds", "to": "evals" }
+    ]
+  }
+}

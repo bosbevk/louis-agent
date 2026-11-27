@@ -1,0 +1,91 @@
+{
+  "kind": "classes",
+  "title": "F8 reliability: the interface design",
+  "caption": "The provider names a failure's kind; the retrying client asks again only what is worth it and before any words, and turns an account limit into its own exception.",
+  "classes": {
+    "types": [
+      {
+        "id": "provider",
+        "name": "ILlmProvider",
+        "kind": "interface, changed in F8 step 1",
+        "members": [
+          "IChatClient Create(LlmOptions options)",
+          "IModelFailures CreateFailures(LlmOptions options) (new)"
+        ]
+      },
+      {
+        "id": "failures",
+        "name": "IModelFailures",
+        "kind": "interface, F8 step 1",
+        "members": [
+          "ModelFailure Of(Exception failure)"
+        ]
+      },
+      {
+        "id": "none",
+        "name": "NoModelFailures",
+        "kind": "class, F8 step 1 (OpenAI, Ollama)",
+        "members": [
+          "nothing worth asking again"
+        ]
+      },
+      {
+        "id": "anthropic",
+        "name": "AnthropicFailures",
+        "kind": "class, F8 step 2",
+        "members": [
+          "overloaded, api_error in a stream: worth asking again",
+          "400 usage limits, 429 spend cap, 402 billing: account limit",
+          "the resume time from Anthropic's sentence"
+        ]
+      },
+      {
+        "id": "failure",
+        "name": "ModelFailure",
+        "kind": "record, F8 step 1",
+        "members": [
+          "ModelFailureKind Kind",
+          "string? Reason",
+          "DateTimeOffset? ResumesAt"
+        ]
+      },
+      {
+        "id": "kind",
+        "name": "ModelFailureKind",
+        "kind": "enum, F8 step 1",
+        "members": [
+          "Transient",
+          "AccountLimit",
+          "Other"
+        ]
+      },
+      {
+        "id": "retrying",
+        "name": "RetryingChatClient",
+        "kind": "DelegatingChatClient, F8 step 3",
+        "members": [
+          "asks again before any content, up to LLM_MAX_RETRIES",
+          "backoff, each try logged"
+        ]
+      },
+      {
+        "id": "limit",
+        "name": "AccountLimitException",
+        "kind": "exception, F8 step 1",
+        "members": [
+          "string Reason",
+          "DateTimeOffset? ResumesAt"
+        ]
+      }
+    ],
+    "relations": [
+      { "from": "provider", "to": "failures", "kind": "creates" },
+      { "from": "none", "to": "failures", "kind": "implements" },
+      { "from": "anthropic", "to": "failures", "kind": "implements" },
+      { "from": "failures", "to": "failure", "kind": "creates" },
+      { "from": "failure", "to": "kind", "kind": "holds" },
+      { "from": "retrying", "to": "failures", "kind": "uses" },
+      { "from": "retrying", "to": "limit", "kind": "creates" }
+    ]
+  }
+}
