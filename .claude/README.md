@@ -74,6 +74,7 @@ own: its test jobs in `tests.md`, or detail it reads only when needed, as `answe
 | Site and brand | `write-the-copy` | Words a visitor reads on a site are written or changed, the framework's pages aside (the story and web writer) |
 | Site and brand | `check-a-page` | Something a visitor sees changed, or was deployed |
 | Site and brand | `review-a-design` | A built site's or a theme's design, look and feel is reviewed |
+| Sell | `check-a-product-idea` | A product idea is checked for whether it is worth building, or buyers' answers about one come back |
 | Sell | `plan-the-marketing` | How a product is sold, advertised or launched is planned, or a campaign's numbers come back |
 | Sell | `answer-a-message` | A customer or a prospect sent a message, and a reply is drafted |
 | Maintain | `write-a-skill` | A skill is written or changed |

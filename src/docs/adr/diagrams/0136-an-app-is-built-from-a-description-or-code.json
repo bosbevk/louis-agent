@@ -1,0 +1,26 @@
+{
+  "kind": "cards",
+  "title": "0136 at a glance: an app from a description or from code",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "ai", "icon": "chip", "title": "An AI builds an app over MCP",
+          "look": "highlight",
+          "text": "It picks one of two ways, and the tool says which." }
+      ] },
+      { "cards": [
+        { "id": "description", "icon": "checks", "title": "A description",
+          "text": "Data the framework checks, refuses with a reason, and builds only from parts tested by hand. The safe way." },
+        { "id": "code", "icon": "code", "title": "Code on the packages",
+          "text": "For what no description says yet. Not checked by the framework, so a person reviews it." },
+        { "id": "person", "icon": "user", "title": "A person confirms",
+          "text": "Nothing goes live, either way, until a person says yes." }
+      ] }
+    ],
+    "links": [
+      { "from": "ai", "to": "description" },
+      { "from": "ai", "to": "code" },
+      { "from": "ai", "to": "person" }
+    ]
+  }
+}
