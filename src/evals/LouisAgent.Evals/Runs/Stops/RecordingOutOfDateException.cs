@@ -1,4 +1,4 @@
-namespace LouisAgent.Evals.Runs;
+namespace LouisAgent.Evals.Runs.Stops;
 
 /// <summary>
 /// A replay asked its recording something the recording doesn't hold: a prompt, a doc the agent reads or a

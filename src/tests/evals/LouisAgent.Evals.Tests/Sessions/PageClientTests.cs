@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using LouisAgent.Core.Sessions.Replay.Store;
 using LouisAgent.Evals.Runs;
+using LouisAgent.Evals.Runs.Stops;
 using LouisAgent.Evals.Sessions;
 using LouisAgent.SessionStream.Wire.Requests;
 

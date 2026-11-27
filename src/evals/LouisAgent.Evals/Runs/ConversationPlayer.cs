@@ -9,6 +9,7 @@ using LouisAgent.Evals.Contracts.Transcripts;
 using LouisAgent.Evals.Files;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Turns;
+using LouisAgent.Evals.Runs.Stops;
 using LouisAgent.Evals.Sessions;
 using LouisAgent.Evals.Transcripts;
 using LouisAgent.SessionStream;
@@ -122,6 +123,9 @@ public sealed class ConversationPlayer(
         // A recording that no longer answers is the harness failing, not the agent: it stops the run.
         var miss = events.OfType<ErrorReported>().FirstOrDefault(error => error.Kind == StreamErrorKind.ReplayMiss);
         if (miss is not null) throw new RecordingOutOfDateException(TurnTranscripts.MessageOf(miss) ?? "");
+        // The model's account at its limit stops the run too: every ask after it would fail the same way (F8).
+        var limit = events.OfType<ErrorReported>().FirstOrDefault(error => error.Kind == StreamErrorKind.AccountLimit);
+        if (limit is not null) throw new AccountLimitReachedException(TurnTranscripts.MessageOf(limit) ?? "");
 
         var transcript = TurnTranscripts.Of(ask, events, _clock.GetElapsedTime(started));
         return new AskedTurn(transcript, TurnTranscripts.CostOf(events));
