@@ -3,10 +3,12 @@ using Anthropic.Core;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Anthropic.Messages;
 using LouisAgent.Core.Anthropic.Thinking;
+using LouisAgent.Core.Anthropic.ToolSearch;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Llm.Caching;
 using LouisAgent.Core.Llm.Providers;
 using LouisAgent.Core.Llm.Thinking;
+using LouisAgent.Core.Llm.ToolSearch;
 using LouisAgent.Core.Llm.UsageMapping;
 using Microsoft.Extensions.AI;
 
@@ -66,6 +68,9 @@ public sealed class AnthropicProvider : ILlmProvider
     /// <summary>
     /// On the models that take it, the API drops the thinking that no longer matches; on any other, it is stripped.
     /// </summary>
+    /// <summary>Anthropic's tool search, with the engine's own FindTool (F97.3).</summary>
+    public IToolSearch CreateToolSearch(LlmOptions options) => new AnthropicToolSearch();
+
     public IStaleThinking CreateStaleThinking(LlmOptions options) =>
         AnthropicDropBlock.Supports(options.Model)
             ? new AnthropicDropBlock(options.Model)
