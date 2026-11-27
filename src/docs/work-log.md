@@ -12,13 +12,13 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 169 | 76 |
+| Features (`F`) | 172 | 74 |
 | Fixes (`FX`) | 247 | 4 |
 | Cleanups (`CL`) | 49 | 25 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (105 in the TODO)
+## Open (103 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
@@ -86,8 +86,6 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F95 | What's left of CL29 | Later |
 | CL17 | what's left of the coding identity | Later |
 | F96 | The browser's user agent names the user's town per visit | Later |
-| F97 | A skill usable in the chat that made it (F97.1 one skill, used in the chat that made it, done; F97.3 tool search for the built-in tools) | Now, F97.3 next |
-| F38 | Tool search, when a measured need comes | Later |
 | F136 | How much of an asked agent's work the asker reads, as a framework choice: its tool calls, or those and its thinking, beside the answer; when a framework user needs it | Later |
 | F98 | Planning and a self-check before answering, tried on a simulation first | Later |
 | F99 | An error tracker behind `IErrorFeed`, after F39 | Later |
@@ -128,10 +126,13 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL71 | The ACP server on Microsoft's StreamJsonRpc, our read loop and writer gone; after FX4, plan first | Cleanups |
 | CL72 | The CLI's console drawn with Spectre.Console; after FX4, plan first | Cleanups |
 
-## Features (169 done)
+## Features (172 done)
 
 | Id | When | What |
 |---|---|---|
+| F97.3 | 2026-11-27 | Tool search for the built-in tools: on Anthropic a chat keeps most of its tools out of sight (`defer_loading`) until the engine's own `FindTool` finds them, answered as `tool_reference` blocks through a provider strategy; each toolset's skill names its everyday tools (`metadata.loaded`, ADR 0063 amended); `TOOL_SEARCH` auto, on or off; the coding agent's first eval, 38% fewer prompt tokens a request with the same tools chosen |
+| F97 | 2026-11-27 | A skill usable in the chat that made it, closed: F97.1 one skill, used in its chat, and F97.3 tool search for the built-in tools |
+| F38 | 2026-11-27 | Tool search, when a measured need comes: built and measured as F97.3 |
 | F97.1 | 2026-11-27 | One skill, used in the chat that made it: everything the agent makes is a skill in the Agent Skills shape, made by `CreateSkill` once its example runs, used at once through one door, `UseSkill`, a draft until `/approve`; core's and the packs' guides built-in skills; ADR 0033 amended |
 | F43.1 | 2026-11-25 | Durable sessions: a chat survives a restart, kept in a store behind one seam (in memory, or MongoDB locally and a free DocumentDB cluster in Azure) for 30 days after its last message; a visitor's chat resumes without the key, a keyed one still needs it |
 | F171.1 | 2026-11-24 | A photo or a PDF reaches a tool: a message carries one as bytes, the API keeps it checked (five kinds, 10 MB a file, 20 MB a chat) and the model sees only its name; a pack's tool finds it through the pack context and reads it with the model the program's catalogue handed it (`AgentHost.Build(models => …)`), each call a `tool` row in the ledger, unmarked for the cache, and replayed by its bytes; the live readings wait on a run with a key |
