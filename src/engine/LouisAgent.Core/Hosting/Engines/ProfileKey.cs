@@ -1,7 +1,7 @@
 using LouisAgent.Choices;
 
 using LouisAgent.Core.Agent.Toolsets;
-using LouisAgent.Core.Skills;
+using LouisAgent.Core.Prompting;
 
 namespace LouisAgent.Core.Hosting.Engines;
 /// <summary>

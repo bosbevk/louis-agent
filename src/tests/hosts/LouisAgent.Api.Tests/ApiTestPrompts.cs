@@ -1,4 +1,4 @@
-using LouisAgent.Core.Skills;
+using LouisAgent.Core.Prompting;
 
 /// <summary>
 /// The API's tests open the test agent's sessions (F166.1), so they register its prompts and its packs' (the fakes

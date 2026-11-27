@@ -1,5 +1,5 @@
-using LouisAgent.Core.Skills;
-using LouisAgent.Core.Skills.Roles;
+using LouisAgent.Core.Prompting;
+using LouisAgent.Core.Prompting.Roles;
 using LouisAgent.Identities.Coding;
 
 namespace LouisAgent.Coding.Tests;
@@ -56,6 +56,5 @@ public class CodingRouterTests
     public void CodeReview_IsPartOfTheCodingAgentsMode()
     {
         Assert.That(Routing(), Does.Contain("Reviewing a change").And.Contain("`git`"));
-        Assert.That(SkillFileSource.ReadEmbedded(SkillFiles.Function("code-review")), Is.Null);
     }
 }

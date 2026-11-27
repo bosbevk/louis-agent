@@ -6,11 +6,11 @@ using LouisAgent.Api.Sessions.Streaming;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Sessions.SubSessions;
-using LouisAgent.Core.Skills.Providers;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.SessionStream;
 using Microsoft.Extensions.AI;
 using System.Runtime.CompilerServices;
+using LouisAgent.Core.Prompting.Providers;
 
 namespace LouisAgent.Api.Tests.Sessions;
 
@@ -115,7 +115,7 @@ public class StreamGoldenTests
                 """{"type":"message_start","message":{"session_id":"sess_peer","role":"assistant","toolsets":["web"]}}""")));
 
         // A command is answered without the model.
-        events.AddRange(await TurnAsync(_ => new FakeChatClient(), "/tools"));
+        events.AddRange(await TurnAsync(_ => new FakeChatClient(), "/skills"));
 
         // A turn cancelled while the model answers: the request is cut off, as a cancelled HTTP call is, and the stop
         // says so.

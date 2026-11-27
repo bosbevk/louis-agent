@@ -4,7 +4,9 @@ using LouisAgent.Core.Logging;
 using LouisAgent.Core.Logging.Messages;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Hosting.Messages;
-using LouisAgent.Core.Usage.Messages;
+using LouisAgent.Core.Hosting.Messages.Holes;
+using LouisAgent.Core.Prompting.Messages;
+using LouisAgent.Core.Prompting.Messages.Holes.Library;
 using Microsoft.Extensions.Logging;
 
 namespace LouisAgent.Core.Tests.Logging;
@@ -70,18 +72,14 @@ public class AgentLoggingTests
         AgentLogging.Configure(null);
         var logger = AgentLogging.For<AgentLoggingTests>();
 
-        logger.Log(LogLevel.Error, UsageLogMessage.LedgerWriteFailed,
-            new
-            {
-                File = "devops-skills.md",
-                Reason = "locked"
-            });
-        logger.Log(LogLevel.Information, HostingLogMessage.SkillsFileDiscovered, new { File = "skills.md" },
-            tag: "MCP");
+        var leftOut = new SkillLeftOutHoles("skills/word-count", "locked");
+        logger.Log(LogLevel.Error, SkillLogMessage.SkillLeftOut, leftOut);
+        var loaded = new SkillFileEmbeddedHoles("toolsets/git.md");
+        logger.Log(LogLevel.Information, HostingLogMessage.SkillFileEmbedded, loaded, tag: "MCP");
 
-        Assert.That(_stderr.ToString(), Does.Contain("[ERROR] Could not write devops-skills.md: locked"),
+        Assert.That(_stderr.ToString(), Does.Contain("[ERROR] The skill in skills/word-count is left out: locked"),
             "not Serilog's EROR");
-        Assert.That(_stderr.ToString(), Does.Contain("[MCP] Discovered skills file: skills.md"));
+        Assert.That(_stderr.ToString(), Does.Contain("[MCP] Loaded toolsets/git.md (built in)"));
     }
 
     [Test]

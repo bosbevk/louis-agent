@@ -48,8 +48,8 @@ internal static class TurnStream
             // /tools, /approve, /reject and /usage are answered directly, never by the model (so they have no usage).
             // They are the operator's: a site visitor's chat sends them to the model as words (FX255).
             if (!session.FromAVisitor &&
-                engine.HandleUserCommand(prompt, engine.RecordsUsage ? session.Usage.Records : null) is
-                { } commandReply)
+                engine.HandleUserCommand(prompt, engine.RecordsUsage ? session.Usage.Records : null,
+                    session.Conversation) is { } commandReply)
             {
                 foreach (var item in stream.Text(commandReply)) yield return item;
                 foreach (var item in stream.Stop("end_turn", null)) yield return item;

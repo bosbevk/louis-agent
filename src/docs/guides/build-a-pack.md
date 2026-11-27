@@ -38,7 +38,7 @@ Delete the template's `Class1.cs`, and make the csproj look like the packs':
     <RootNamespace>LouisAgent.Packs.Units</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <!-- Keeps the embedded guides' folder paths: without it, toolsets/units.md is never found. -->
+    <!-- Keeps the embedded guides' folder paths: without it, skills/units/SKILL.md is never found. -->
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
   </PropertyGroup>
   <ItemGroup>
@@ -49,7 +49,7 @@ Delete the template's `Class1.cs`, and make the csproj look like the packs':
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.13" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="toolsets\**\*.md" />
+    <EmbeddedResource Include="skills\**\*.md" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\docs\projects\LouisAgent.Packs.Units.md" Link="docs\LouisAgent.Packs.Units.md" />
@@ -119,9 +119,9 @@ A big toolset is several classes, one concern each (the 200-line limit, [ADR 003
 
 ## 3. Write the guide
 
-The guide is a markdown file the model reads whenever a session loads the toolset: `toolsets/units.md`.
-It opens with the header every prompt has ([ADR 0063](../adr/0063-a-prompt-says-what-it-is.md)): its `name` (the
-file's, `units`) and a `description` of the guide, no level, since every level may load it. Then the one line that
+The guide is a built-in skill the model reads whenever a session loads the toolset: `skills/units/SKILL.md`, a
+folder named for the toolset, as the Agent Skills standard shapes a skill. It opens with the header every prompt has
+([ADR 0063](../adr/0063-a-prompt-says-what-it-is.md)): its `name` (its folder's, `units`) and a `description` of the guide, no level, since every level may load it. Then the one line that
 routes work here, because a pack can't add a row to an identity's routing; then the tools, one line each; then how to
 use them well.
 
@@ -166,7 +166,7 @@ public sealed class UnitsPack : IAgentPack
     public IReadOnlyList<PackToolset> Toolsets { get; } =
     [
         new(UnitsToolset.Units.Wire(), "A value converted between units of one kind",
-            GuideFile: PackToolset.Guide(UnitsToolset.Units.Wire()),
+            Skill: UnitsToolset.Units.Wire(),
             MissingSettings: _ => [],
             ToolTypes: [typeof(UnitTools)],
             CreateTools: _ => [new UnitTools()],
@@ -185,7 +185,7 @@ What each part of a `PackToolset` is for:
 |---|---|
 | `Name` | What a session asks for in `toolsets` (`"units"`), lowercase |
 | `Description` | One line, shown by `GET /v1/toolsets` |
-| `GuideFile` | `PackToolset.Guide("units")`, which is `toolsets/units.md` at the pack's root |
+| `Skill` | The name of the built-in skill the toolset always loads, `"units"`; `PackToolset.SkillFile("units")` gives where it sits, `skills/units/SKILL.md` at the pack's root |
 | `MissingSettings` | The settings this instance lacks, by name; empty when the toolset can load. The recipes pack returns `RECIPE_SOURCES` until a site is named, and `BROWSER_URL` until there is a browser |
 | `ToolTypes` | The tool classes, so the catalogue knows the tool names without building anything |
 | `CreateTools` | Builds one object per tool class for an engine. The `IPackContext` it receives holds what the engine shares: `WorkspaceRoot`, `Browser`, `WebSearch`, `Renderer`, `CurrencyRates`, and `NewFetcher()` for a fetcher with the guards around it |
@@ -336,7 +336,7 @@ start-up (`packs/tests/LouisAgent.Packs.Calculator.Tests/CalculatorPrompts.cs`):
 `[SetUpFixture] … SkillFileSource.Use([new UnitsPack().Prompts]);`
 
 The second is a pack test, and `CalculatorPackTests` is the one to copy. It checks the pack's name and its toolsets,
-that `toolsets/units.md` is in its prompts, and that the guide routes here and holds no `## Skill:`.
+that `skills/units/SKILL.md` is in its prompts, and that the guide routes here and holds no `## Skill:`.
 
 Then come the tool tests, one file per tool class, written test first. They check each result and each failure's text.
 

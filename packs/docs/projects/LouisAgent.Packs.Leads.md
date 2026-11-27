@@ -38,7 +38,7 @@ the guide never says Louis has it when he doesn't.
 ### 3. The pack and its guide
 
 `LeadsPack` holds the toolset `leads`, which is off without `LEADS_TO`. `RESEND_API_KEY` picks the sender. The guide,
-`toolsets/leads.md`, says to ask for the three things one at a time, repeat them back, and send on the
+`skills/leads/SKILL.md`, says to ask for the three things one at a time, repeat them back, and send on the
 visitor's yes, once.
 
 *Decided in:* [ADR 0101](../../../src/docs/adr/0101-a-lead-is-a-tool-sent-once-on-the-visitors-yes.md).

@@ -1,11 +1,14 @@
 using System.Reflection;
 using LouisAgent.Choices;
-using LouisAgent.Core.Skills;
+using LouisAgent.Composition.Packs;
+using LouisAgent.Core.Prompting;
 using LouisAgent.Packs.Triage.Tools;
 
 namespace LouisAgent.Packs.Triage.Tests;
 
-/// <summary>The pack is one toolset with its guide, off until its two settings are set, and shaped like every pack.</summary>
+/// <summary>
+/// The pack is one toolset with its guide, off until its two settings are set, and shaped like every pack.
+/// </summary>
 public class TriagePackTests
 {
     /// <summary>Its name, its toolset and its guide are the pack's own, and the guide says how to work.</summary>
@@ -16,13 +19,16 @@ public class TriagePackTests
 
         Assert.That(pack.Name, Is.EqualTo(TriageToolset.Triage.Wire()));
         Assert.That(pack.Toolsets.Select(t => t.Name), Is.EqualTo(new[] { TriageToolset.Triage.Wire() }));
-        Assert.That(pack.Toolsets[0].GuideFile, Is.EqualTo("toolsets/triage.md"));
-        Assert.That(SkillFileSource.CoreFiles, Has.None.EqualTo("toolsets/triage.md"), "core's don't hold it");
-        Assert.That(SkillFileSource.ReadEmbedded("toolsets/triage.md"),
+        string skill = PackToolset.SkillFile(TriageToolset.Triage.Wire());
+        Assert.That(pack.Toolsets[0].Skill, Is.EqualTo(TriageToolset.Triage.Wire()));
+        Assert.That(SkillFileSource.CoreFiles, Has.None.EqualTo(skill), "core's don't hold it");
+        Assert.That(SkillFileSource.ReadEmbedded(skill),
             Does.Contain("ReportInvestigation").And.Contain("ReadTriageRun").And.Not.Contain("## Skill:"));
     }
 
-    /// <summary>Without its settings the toolset says what it lacks; with them it loads both tool classes, one at a time.</summary>
+    /// <summary>
+    /// Without its settings the toolset says what it lacks; with them it loads both tool classes, one at a time.
+    /// </summary>
     [Test]
     public void ItNeedsItsThreeSettings_AndRunsOneCallAtATime()
     {

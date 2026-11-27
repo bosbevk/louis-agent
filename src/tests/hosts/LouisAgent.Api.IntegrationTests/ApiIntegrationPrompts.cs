@@ -1,5 +1,5 @@
 using LouisAgent.Api.IntegrationTests.Sessions;
-using LouisAgent.Core.Skills;
+using LouisAgent.Core.Prompting;
 
 /// <summary>
 /// The API's integration tests open a session on a made-up pack that reads a file (F171.1), so its guide is

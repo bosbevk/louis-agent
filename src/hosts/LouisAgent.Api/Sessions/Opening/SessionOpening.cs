@@ -9,8 +9,8 @@ using LouisAgent.Core.Delegation;
 using LouisAgent.Core.Delegation.Addresses;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Hosting.Prompts;
-using LouisAgent.Core.Skills;
-using LouisAgent.Core.Skills.Roles;
+using LouisAgent.Core.Prompting;
+using LouisAgent.Core.Prompting.Roles;
 using LouisAgent.Core.Usage.Records;
 
 namespace LouisAgent.Api.Sessions.Opening;

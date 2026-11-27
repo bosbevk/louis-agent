@@ -1,12 +1,15 @@
 using System.Reflection;
 using LouisAgent.Choices;
-using LouisAgent.Core.Skills;
+using LouisAgent.Composition.Packs;
+using LouisAgent.Core.Prompting;
 using LouisAgent.Packs.Docs;
 using LouisAgent.Packs.Docs.Tools;
 
 namespace LouisAgent.Packs.Docs.Tests;
 
-/// <summary>The pack is one toolset with its guide, off until its one setting is set, and shaped like every pack.</summary>
+/// <summary>
+/// The pack is one toolset with its guide, off until its one setting is set, and shaped like every pack.
+/// </summary>
 public class DocsPackTests
 {
     /// <summary>Its name, its toolset and its guide are the pack's own, and the guide says what comes here.</summary>
@@ -17,13 +20,16 @@ public class DocsPackTests
 
         Assert.That(pack.Name, Is.EqualTo(DocsToolset.Docs.Wire()));
         Assert.That(pack.Toolsets.Select(t => t.Name), Is.EqualTo(new[] { DocsToolset.Docs.Wire() }));
-        Assert.That(pack.Toolsets[0].GuideFile, Is.EqualTo("toolsets/docs.md"));
-        Assert.That(SkillFileSource.CoreFiles, Has.None.EqualTo("toolsets/docs.md"), "core's don't hold it");
-        Assert.That(SkillFileSource.ReadEmbedded("toolsets/docs.md"),
+        string skill = PackToolset.SkillFile(DocsToolset.Docs.Wire());
+        Assert.That(pack.Toolsets[0].Skill, Is.EqualTo(DocsToolset.Docs.Wire()));
+        Assert.That(SkillFileSource.CoreFiles, Has.None.EqualTo(skill), "core's don't hold it");
+        Assert.That(SkillFileSource.ReadEmbedded(skill),
             Does.Contain("Route here any question").And.Not.Contain("## Skill:"));
     }
 
-    /// <summary>Without DOCS_ROOT the toolset says what it lacks; with it, it loads and its tools may run side by side.</summary>
+    /// <summary>
+    /// Without DOCS_ROOT the toolset says what it lacks; with it, it loads and its tools may run side by side.
+    /// </summary>
     [Test]
     public void ItNeedsTheDocsRoot_AndRunsInParallel()
     {

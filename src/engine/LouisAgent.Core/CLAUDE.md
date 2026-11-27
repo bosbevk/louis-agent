@@ -23,8 +23,8 @@ The steps are [Build a pack](../../docs/guides/build-a-pack.md). What holds for 
 
 - **Every toolset follows that one pattern.** A mode's routing sends a task to a toolset. The toolset's guide names
   its tools and when to use them. Each tool's `[Description]` stays short.
-- **A guide is plain markdown, embedded**, and loads only when a session has the toolset
-  (`SkillLoader.Load(agent, toolsets)`). No provider class per toolset.
+- **A guide is the toolset's built-in skill**, `skills/{name}/SKILL.md`, embedded, loaded only when a session has
+  the toolset (`SkillLoader.Load(agent, toolsets)`). No provider class per toolset.
 - **Core's own toolsets are `agents` and `skills`.** `agents` is in `Delegation/`, named in
   `Agent/Toolsets/ToolsetCatalog.cs`, and it asks lookup agents too. `skills` is in `Agent/EngineTools/`, registered by
   `AgentEngine` because it needs the registry. Only something that needs the engine's own insides belongs here.
@@ -33,8 +33,9 @@ The steps are [Build a pack](../../docs/guides/build-a-pack.md). What holds for 
 ### Skill files we control are plain markdown, always
 
 - **That covers every file in a project's prompt folders** (`agents/`, with its subagents' `subagents/` and its
-  lookup agents' `lookups/` inside it, `toolsets/`, `shared/`, at the project's root; their names are
-  `PromptFolder`), and the function skills the agent writes into a demo's `skills/agents/functions/`. `SkillFilesTests` fails if a provider class for one of them appears.
+  lookup agents' `lookups/` inside it, `skills/`, `shared/`, at the project's root; their names are
+  `PromptFolder`), and the skills the agent makes in a demo's skills folder (`{name}/SKILL.md`, a draft in
+  `drafts/{name}/`). `SkillFilesTests` fails if a provider class for one of them appears.
 - **Every prompt opens with its front matter**: `name`, `description`, `metadata.level` and `toolsets`
   (ADR 0063). `PromptCatalog` reads it once and strips it before the model sees the file.
   `EveryPromptHasAHeaderTests` holds it.
@@ -85,12 +86,12 @@ This table is for looking a folder up.
 
 | Folder (core) | Concern |
 |---|---|
-| `Agent/` | The engine (`AgentEngine`, the facade that wires one agent) and its tool registry at the top; one folder per thing it does, one layer: `Turns/` (one turn: `TurnRunner`, the `ChatPipeline` middleware order, a call's text for displays; in `Guards/` the tool-call guards and the oversized-result summary that calls the model), `Commands/` (what the user types that the model never sees: `/tools`, `/approve`, `/reject`, `/usage`), `EngineTools/` (what the engine registers itself: the skill tools, the agent-built tools with their `Scripts/`, and the `Clock/`), `Toolsets/` (a toolset's definition, context and core's catalogue), `Replay/` (each tool recorded around, so a free replay plays back what the tools answered), `Catalog/` (the contracts an identity or a pack implements, and the catalogue built from them: the seam a later contracts project would be cut from) |
+| `Agent/` | The engine (`AgentEngine`, the facade that wires one agent, and its builder) and the conversation at the top; one folder per thing it does, one layer: `Tools/` (what a tool is to the engine: the registry, how a method is described to the model, a tool frozen as a chat first sent it, and a tool list's fingerprint), `Turns/` (one turn: `TurnRunner`, the `ChatPipeline` middleware order, a call's text for displays; in `Guards/` the tool-call guards and the oversized-result summary that calls the model), `Commands/` (what the user types that the model never sees: `/skills`, `/approve`, `/reject`, `/usage`), `EngineTools/` (what the engine registers itself: the skill tools, the agent-built tools with their `Scripts/`, and the `Clock/`), `Toolsets/` (a toolset's definition, context and core's catalogue), `Replay/` (each tool recorded around, so a free replay plays back what the tools answered), `Catalog/` (the contracts an identity or a pack implements, and the catalogue built from them: the seam a later contracts project would be cut from) |
 | `Llm/` | The model: the client factory at the top (`ILlmClientFactory`, `LlmClientFactory`, the registry of the providers a host gave) and `Providers/` (the `ILlmProvider` seam and `LlmLimits`; each SDK is a library on core, CL57); `Caching/` (how a provider marks a request for its prompt cache: the strategy, the no-op default, the middleware); `UsageMapping/` (a provider's usage into our record: the mapper and the recording middleware); `Thinking/` (what a resumed chat does with saved thinking once its tools moved: the strategy and the default that strips it) |
 | `Delegation/` | Asking another agent by its address or handing work to a lookup agent: `Agents/` (`AskAgent`, `ReadAgentWork`), `Addresses/` (an address resolved), `Sequences/` (an identity's fixed order of agents: its rules and the runner that asks each step, F176), the lookup agents' runner (`LookupAsk`), the sub-sessions and the usage they roll up. The engine's own (ADR 0031, ADR 0117) |
 | `Web/` | The seam for what the engine needs from the web (CL33): `IWebAccess` (the search provider, the browser if any, the renderer, a fetcher per call), `NoWebAccess` (every part says it isn't set up) and `WebParts` (web access from parts given). The browser, search, rendering, robots and the recorders are `LouisAgent.Core.Web`'s, which a host hands in through `HostServices` |
 | `Sessions/` | What a host sets for one session's turn and the tools read: the user's place (F22) and the attachments at the top; `SubSessions/` (the sub-sessions a chat keeps, F26, and the live feed of a child's events). Not what the model can do, and not the loop |
-| `Skills/` | Loading the markdown skills and a session's role into the prompt: the contract at the top (`ISkillProvider`, the embedded files, `SkillFolder`: where a file comes from), its implementations in `Providers/`, in `Languages/` the script languages a fence can name (`ScriptLanguage`, a leaf every other folder may use), in `Headers/` every prompt's front matter (`PromptHeaders`, `PromptCatalog`, CL27), and in `Roles/` what a session is (`RoleCatalog`, CL13; `RoleFiles`: which roles this instance offers); `RoleLevel` sits at the top |
+| `Prompting/` | Loading the markdown skills and a session's role into the prompt, and the skills the agent keeps: the contract at the top (`ISkillProvider`, the embedded files, `SkillFolder`: where a file comes from), its implementations in `Providers/`, in `Languages/` the script languages a fence can name (`ScriptLanguage`, a leaf every other folder may use), in `Headers/` every prompt's front matter (`PromptHeaders`, `PromptCatalog`, CL27), and in `Roles/` what a session is (`RoleCatalog`, CL13; `RoleFiles`: which roles this instance offers); `RoleLevel` sits at the top |
 | `Guardrails/` | Pure safety checks, no model: `Auth/` (the hosts' key check, failing closed, FX18), `Network/` (the SSRF guard and the address it blocks). The workspace boundary and the sensitive files are `LouisAgent.Composition`'s, in its `Guardrails/Workspace/`. The guards that call a model are in `Agent/` |
 | `Usage/` | The ledger: `Records/` (a record, its tokens and cost, its purpose, the turn's scope and tags, the session), `Sinks/` (where records go: the monthly JSONL file), `Reports/` (reading a ledger back: totals, the usage text every host shows, the lifetime cost, the cache gaps) |
 | `Telemetry/` | A turn's span on our own source (`TurnSpans`, F52), the last-chance handler for a crash, and the seam for what a host does with telemetry (CL33): `IHostTelemetry` (the log sinks, start, flush) and `NoTelemetry`. The OpenTelemetry tracer and the collector's sink are `LouisAgent.Core.Telemetry`'s, handed in through `HostServices` |
@@ -171,7 +172,7 @@ Only a demo's own project under `demos/` knows its identities and packs.
 ## Building another agent on core
 
 - **Its tools.** Pass `toolsets:` to the `AgentEngine` constructor to give an agent only your tool objects (plus
-  `ExecuteSkill`), instead of the toolsets a catalogue names.
+  `GetToday`), instead of the toolsets a catalogue names.
 - **Its prompt.** Build its system prompt from your own skill files, with `CompositeSkillProvider` and
   `MarkdownSkillProvider`.
 - **Its usage.** To record it, pass `usageSink: UsageLedger.Open(options)` and

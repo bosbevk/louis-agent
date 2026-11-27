@@ -1,5 +1,5 @@
 using LouisAgent.Composition.Packs;
-using LouisAgent.Core.Skills;
+using LouisAgent.Core.Prompting;
 using LouisAgent.Core.Tests.Hosting.Catalogue;
 
 // CL15 step 3: core embeds no subagent, no language mode and no lookup agent once Puls's files leave, so its tests

@@ -1,8 +1,8 @@
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Reports;
-using LouisAgent.Core.Skills;
-using LouisAgent.Core.Skills.Providers;
+using LouisAgent.Core.Prompting;
 using LouisAgent.Core.Agent;
+using LouisAgent.Core.Prompting.Providers;
 
 namespace LouisAgent.Core.Tests.Usage.Reports;
 

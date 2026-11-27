@@ -29,8 +29,8 @@ in its pack ([Build a pack](build-a-pack.md)).
 
 ## Add an MCP-only tool
 
-Some tools only MCP clients need. Today those are the three read-only skill tools, the methods `ListSkills`,
-`GetSkillInfo` and `GetSkillDocumentation` on `SkillsToolProvider`. To add one:
+Some tools only MCP clients need. Today that is one, `GetSkillDocumentation` on `SkillsToolProvider`, which hands
+a client the guidance the agent reads. To add one:
 
 1. Put it in a class marked `[McpServerToolType]`, as `SkillsToolProvider` is, each tool a method with
    `[McpServerTool]` and `[Description]`s.

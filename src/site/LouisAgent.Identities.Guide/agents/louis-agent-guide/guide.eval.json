@@ -6,7 +6,7 @@
       "turns": [
         { "ask": "What is louis-agent, in one minute?",
           "facts": ["no-error", "has-words", "used ReadSkill", "under 30s"],
-          "criteria": ["Says what louis-agent does for a business, in plain words", "Ends with one small nudge: a page, a question or the chat"] } ] },
+          "criteria": ["Says what louis-agent does for a business, in plain words", "Ends with one small nudge: a page, a question, a card of choices or the chat"] } ] },
     { "id": "guide-greets-first", "page": "/",
       "turns": [
         { "ask": "Hi, what is this site about?",
@@ -16,7 +16,7 @@
       "turns": [
         { "ask": "Tell me everything about louis-agent: what it is, what it costs, how it works and who made it.",
           "facts": ["no-error", "has-words", "never-says ;"],
-          "criteria": ["After its greeting, its words are three short sentences or fewer, counting any question it asks in them; the greeting and a choice card are not part of the count", "Uses no colon and no bracket"] } ] },
+          "criteria": ["After its greeting, its words are three short sentences or fewer, counting any question it asks in them; the greeting, with the line saying who it is, and a choice card are not part of the count", "Uses no colon and no bracket"] } ] },
     { "id": "guide-names-no-doc", "page": "/",
       "turns": [
         { "ask": "I'm a developer. Where do I read how a pack is built?",
@@ -26,7 +26,7 @@
       "turns": [
         { "ask": "What am I looking at here?",
           "facts": ["no-error", "has-words", "used ReadSkill"],
-          "criteria": ["Speaks to someone who came to watch an agent work for a business", "Offers a demo to try"] } ] },
+          "criteria": ["Speaks to someone who came to watch an agent work for a business", "Offers a demo to try, in words or as a choice to pick"] } ] },
     { "id": "guide-walkthrough", "page": "/",
       "turns": [
         { "ask": "Walk me through this page.",

@@ -8,7 +8,7 @@
 ![The engine at a glance: LouisAgent.Core holds the tool loop, prompts, settings, providers and guards, and the golden files pin what the model reads](diagrams/change-the-engine.svg)
 
 Core is the engine. It holds the tool loop (`Agent/`), asking other agents (`Delegation/`), skills and prompts
-(`Skills/`, and the prompts in `shared/` and `toolsets/`), the model providers' seam (`Llm/`), usage and prices (`Usage/`, `Pricing/`), the guards
+(`Prompting/`, and the prompts in `shared/` and `toolsets/`), the model providers' seam (`Llm/`), usage and prices (`Usage/`, `Pricing/`), the guards
 (`Guardrails/`) and the start-up every host shares (`Hosting/`). It names no product, shop or country. Who an agent is
 lives in an identity, and what it can do lives in a pack. `ArchitectureTests` holds that, in the code and in the
 comments.

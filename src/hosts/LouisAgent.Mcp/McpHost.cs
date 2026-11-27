@@ -20,8 +20,8 @@ namespace LouisAgent.Mcp;
 
 /// <summary>
 /// Hands an MCP client the agent's tools. The client brings its own model; this publishes the tools (workspace, git,
-/// DotNet*, Python*, PowerShell*, Bash*, skills, agent-built tools, ...) so it can call them, and the packs' feeds as
-/// resources it can read (F56).
+/// DotNet*, Python*, PowerShell*, Bash*, UseSkill and the skills tools, ...) so it can call them, and the packs' feeds
+/// as resources it can read (F56).
 /// </summary>
 /// <remarks>
 /// Composition Root: your program's entry point is the one place that wires the app, so this library never picks a pack

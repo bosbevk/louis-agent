@@ -7,6 +7,7 @@ using LouisAgent.Api.Sessions.Opening;
 using LouisAgent.Api.Sessions.Store;
 using LouisAgent.Core.Agent;
 using LouisAgent.Choices;
+using LouisAgent.Core.Agent.Tools;
 using LouisAgent.SessionStream.Wire.Replies;
 using LouisAgent.SessionStream.Wire.Requests;
 using Microsoft.AspNetCore.Builder;
@@ -104,7 +105,7 @@ public class SessionResumedTests
     }
 
     /// <summary>
-    /// A command such as /tools is a turn that keeps nothing, so a chat that had one and lived through a restart counts
+    /// A command such as /skills is a turn that keeps nothing, so a chat that had one and lived through a restart counts
     /// on from its last kept turn, never under a number it already used: every message after the restart is answered
     /// and kept (FX256: the restored chat counted its kept turns, wrote its next under a used number, and stayed busy).
     /// </summary>
@@ -114,7 +115,7 @@ public class SessionResumedTests
         var store = new InMemorySessionStore();
         var (before, beforeClient) = await RunAsync(store, Answers("Monday, Tuesday and Wednesday."));
         string id = await OpenAsync(beforeClient, keyed: true);
-        await SendAsync(beforeClient, id, "/tools", keyed: true);
+        await SendAsync(beforeClient, id, "/skills", keyed: true);
         await SendAsync(beforeClient, id, "Plan three dinners", keyed: true);
         await before.DisposeAsync();
 

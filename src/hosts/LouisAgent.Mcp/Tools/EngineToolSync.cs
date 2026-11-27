@@ -10,7 +10,8 @@ namespace LouisAgent.Mcp.Tools;
 
 /// <summary>
 /// Mirrors <see cref="AgentEngine.Tools"/> into the MCP tool collection. Changing the collection makes the server
-/// send notifications/tools/list_changed, so clients pick up agent-built tools without reconnecting.
+/// send notifications/tools/list_changed, so clients see UseSkill's list of skills change, on an approval or a
+/// reload, without reconnecting.
 /// </summary>
 public static class EngineToolSync
 {
@@ -38,7 +39,7 @@ public static class EngineToolSync
 
                 foreach (var (name, entry) in published.ToList())
                 {
-                    // Replaced (overwrite) or re-described (approval removes "pending approval") tools are republished.
+                    // A tool whose description changed (UseSkill's list, after an approval) is republished.
                     if (current.TryGetValue(name, out var function) && ReferenceEquals(function, entry.Function) &&
                         function.Description == entry.Description)
                         continue;

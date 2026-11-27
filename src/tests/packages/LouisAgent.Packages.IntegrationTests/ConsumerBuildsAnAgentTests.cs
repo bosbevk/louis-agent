@@ -144,7 +144,7 @@ public class ConsumerBuildsAnAgentTests
         string program = $$"""
             using LouisAgent.Core.Agent;
             using LouisAgent.Core.Config;
-            using LouisAgent.Core.Skills.Providers;
+            using LouisAgent.Core.Prompting.Providers;
             using LouisAgent.Testing;
             using Microsoft.Extensions.AI;
 

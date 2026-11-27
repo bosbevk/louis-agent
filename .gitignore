@@ -51,9 +51,8 @@ logs/
 **/config/.env.secrets.local
 **/config/.env.local
 
-# Agent-built tools and skill files awaiting /approve (approved ones in a demo's skills/ are committed)
-**/skills/tools/pending/
-**/skills/agent/functions/pending/
+# Skills the agent drafted, awaiting /approve or /reject (approved ones in a demo's skills/ are committed)
+**/skills/drafts/
 
 # Python bytecode (the sample scripts)
 __pycache__/

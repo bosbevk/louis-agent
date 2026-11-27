@@ -4,9 +4,9 @@ using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
-using LouisAgent.Core.Skills;
+using LouisAgent.Core.Prompting;
+using LouisAgent.Core.Prompting.Roles;
 using LouisAgent.Core.Sessions.Replay;
-using LouisAgent.Core.Skills.Roles;
 
 namespace LouisAgent.Core.Tests.Hosting;
 
@@ -314,7 +314,7 @@ public class AgentEngineFactoryTests
 
         Assert.That(ListToolNames(files), Does.Contain("ReadWorkspaceFile").And.Not.Contain("GetStatus"));
         Assert.That(ListToolNames(git), Does.Contain("GetStatus").And.Not.Contain("ReadWorkspaceFile"));
-        Assert.That(ListToolNames(files), Does.Contain("ExecuteSkill").And.Not.Contain("CreateTool"),
+        Assert.That(ListToolNames(files), Does.Not.Contain("ExecuteSkill").And.Not.Contain("CreateSkill"),
             "no skills toolset, no self-extension");
     }
 
@@ -323,7 +323,7 @@ public class AgentEngineFactoryTests
     public void TheSkillsToolset_AddsTheSelfExtensionTools()
     {
         Assert.That(ListToolNames(Factory().GetOrCreate([TestToolset.Files.Wire(), CoreToolset.Skills.Wire()])),
-            Does.Contain("CreateTool").And.Contain("CreateSkillFile"));
+            Does.Contain("CreateSkill").And.Contain("UseSkill"));
     }
 
     /// <summary>An engine's prompt holds only its toolsets' guides, and a reload keeps them so.</summary>
@@ -388,7 +388,7 @@ public class AgentEngineFactoryTests
     public void NoToolsets_GivesOnlyTheEnginesOwnTools()
     {
         Assert.That(ListToolNames(Factory().GetOrCreate([])),
-            Is.EquivalentTo(new[] { "ExecuteSkill", "GetToday", "ReadSkill" }));
+            Is.EquivalentTo(new[] { "GetToday", "ReadSkill" }));
     }
 
     /// <summary>
@@ -407,7 +407,7 @@ public class AgentEngineFactoryTests
             tool: "FetchUrl");
 
         Assert.That(ListToolNames(lookup), Is.EqualTo(new[] { "FetchUrl" }),
-            "one tool: no clock, no ExecuteSkill, no WebSearch");
+            "one tool: no clock, no WebSearch");
         Assert.That(lookup.SkillDocumentation, Does.Contain("# Testprod lookup agent: Lookup").And
             .Contain("You are a **lookup agent**")
             .And.Not.Contain("# Web Skills").And.Not.Contain("# Testprod - Routing"));

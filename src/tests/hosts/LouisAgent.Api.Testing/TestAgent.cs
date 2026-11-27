@@ -1,6 +1,6 @@
 using LouisAgent.Composition.Packs;
-using LouisAgent.Core.Skills;
-using LouisAgent.Core.Skills.Roles;
+using LouisAgent.Core.Prompting;
+using LouisAgent.Core.Prompting.Roles;
 
 namespace LouisAgent.Api.Testing;
 

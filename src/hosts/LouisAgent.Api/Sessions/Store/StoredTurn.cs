@@ -1,4 +1,5 @@
 using LouisAgent.Core.Agent;
+using LouisAgent.Core.Agent.Tools;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Api.Sessions.Store;

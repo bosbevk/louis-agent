@@ -1,6 +1,6 @@
 using LouisAgent.Core.Agent.EngineTools.Skills;
-using LouisAgent.Core.Skills.Headers;
-using LouisAgent.Core.Skills.Headers.Identities;
+using LouisAgent.Core.Prompting.Headers;
+using LouisAgent.Core.Prompting.Headers.Identities;
 
 namespace LouisAgent.Core.Tests.Agent.EngineTools.Skills;
 

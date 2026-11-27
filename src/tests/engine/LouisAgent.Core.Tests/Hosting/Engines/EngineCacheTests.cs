@@ -3,8 +3,8 @@ using LouisAgent.Core.Agent;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting.Engines;
-using LouisAgent.Core.Skills;
-using LouisAgent.Core.Skills.Providers;
+using LouisAgent.Core.Prompting;
+using LouisAgent.Core.Prompting.Providers;
 
 namespace LouisAgent.Core.Tests.Hosting.Engines;
 
@@ -14,7 +14,7 @@ public class EngineCacheTests
 {
     private static ProfileKey Key(string name) =>
         ProfileKey.Of(
-            [new ToolsetDefinition(name, "a toolset", GuideFile: null, MissingSettings: _ => [], CreateTools: _ => [])],
+            [new ToolsetDefinition(name, "a toolset", Skill: null, MissingSettings: _ => [], CreateTools: _ => [])],
             null, RoleLevel.Agent, null, null);
 
     private static AgentEngine Engine() => new(new CompositeSkillProvider(), new FakeChatClient(),
@@ -74,7 +74,7 @@ public class EngineCacheTests
         var cache = new EngineCache(16);
         var web = ProfileKey.Of(
         [
-            new ToolsetDefinition(TestToolset.Web.Wire(), "a toolset", GuideFile: null, MissingSettings: _ => [],
+            new ToolsetDefinition(TestToolset.Web.Wire(), "a toolset", Skill: null, MissingSettings: _ => [],
                 CreateTools: _ => [])
         ], "cook", RoleLevel.Subagent, "ollama-puls", null);
 

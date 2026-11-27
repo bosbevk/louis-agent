@@ -1,52 +1,29 @@
-using LouisAgent.Core.Hosting.Prompts;
 using System.Text.Json;
-using LouisAgent.Core.Config;
 using LouisAgent.Core.Agent;
+using LouisAgent.Core.Config;
+using LouisAgent.Core.Hosting.Prompts;
 using Microsoft.Extensions.AI;
-using LouisAgent.Core.Hosting;
 
 namespace LouisAgent.Core.Tests.Agent;
 
-// F4 step 2: a byte-stable prefix. The prompt cache is keyed by the exact bytes of tools + system prompt, so two engines
-// built from the same options must send the same tools in the same order, whatever order reflection returns methods in.
+/// <summary>
+/// F4 step 2: a byte-stable prefix. The prompt cache is keyed by the exact bytes of the tools and the system prompt, so
+/// two engines built from the same options must send the same tools in the same order, whatever order reflection
+/// returns methods in.
+/// </summary>
 public class ToolOrderTests
 {
-    private const string ApprovedTool = """
-        # Tool: AaaFirstByName
-        - Description: Sorts before every built-in tool
-        - Timeout: 30
-        - Parameters:
-          - `a` (integer, required): a number
-        - Implementation:
-
-        ```python
-        print(1)
-        ```
-        """;
-
     private string _skillsDir = null!;
 
+    /// <summary>A skills folder of its own for each test.</summary>
     [SetUp]
-    public void SetUp()
-    {
-        _skillsDir = Directory.CreateTempSubdirectory("tool-order-").FullName;
-    }
+    public void SetUp() => _skillsDir = Directory.CreateTempSubdirectory("tool-order-").FullName;
 
+    /// <summary>The folder goes with the test.</summary>
     [TearDown]
     public void TearDown() => Directory.Delete(_skillsDir, recursive: true);
 
-    private AgentEngine Engine()
-    {
-        var options = new AgentOptions { WorkspaceRoot = _skillsDir, SkillsDirectory = _skillsDir, RatesUrl = null };
-        var engine = new AgentEngine(SkillLoader.Load(options), new FakeChatClient(), options) { SkillsDirectory = _skillsDir };
-        engine.LoadApprovedTools();
-        return engine;
-    }
-
-    /// <summary>What the provider is sent for the tools: each one's name, description and parameter schema, in order.</summary>
-    private static string ToolsAsSent(AgentEngine engine) => JsonSerializer.Serialize(
-        engine.Tools.OfType<AIFunction>().Select(t => new { t.Name, t.Description, Schema = t.JsonSchema.GetRawText() }));
-
+    /// <summary>The tools are in name order, each name once.</summary>
     [Test]
     public void Tools_AreInNameOrder()
     {
@@ -56,6 +33,9 @@ public class ToolOrderTests
         Assert.That(names, Is.Unique);
     }
 
+    /// <summary>
+    /// Two engines of the same options send the same tools and the same system prompt, byte for byte.
+    /// </summary>
     [Test]
     public void TwoEngines_SameOptions_SendTheSameToolsAndSystemPrompt()
     {
@@ -65,32 +45,47 @@ public class ToolOrderTests
         Assert.That(second.SkillDocumentation, Is.EqualTo(first.SkillDocumentation));
     }
 
+    /// <summary>
+    /// A toolset whose method has the name of another tool is refused: the model couldn't tell them apart.
+    /// </summary>
     [Test]
     public void TwoToolsWithOneName_Throw()
     {
-        // A toolset whose method has the name of a built-in tool: the model couldn't tell them apart.
-        var options = new AgentOptions { WorkspaceRoot = _skillsDir, SkillsDirectory = _skillsDir, RatesUrl = null };
+        var options = Options();
 
-        Assert.That(() => new AgentEngine(SkillLoader.Load(options), new FakeChatClient(), options, toolsets: [new Clash(), new Clash()]),
+        Assert.That(
+            () => new AgentEngine(SkillLoader.Load(options), new FakeChatClient(), options,
+                toolsets: [new Clash(), new Clash()]),
             Throws.InvalidOperationException.With.Message.Contain("Two tools are named 'Ping'"));
     }
 
-    private sealed class Clash
+    /// <summary>The engine's settings, over this test's folder.</summary>
+    private AgentOptions Options() =>
+        new() { WorkspaceRoot = _skillsDir, SkillsDirectory = _skillsDir, RatesUrl = null };
+
+    /// <summary>An engine over this test's folder.</summary>
+    private AgentEngine Engine()
     {
-        [System.ComponentModel.Description("Answers pong")]
-        public string Ping() => "pong";
+        var options = Options();
+        return new AgentEngine(SkillLoader.Load(options), new FakeChatClient(), options)
+        {
+            SkillsDirectory = _skillsDir
+        };
     }
 
-    [Test]
-    public void AnAgentBuiltTool_TakesItsPlaceInNameOrder()
+    /// <summary>What the provider is sent for the tools: each one's name, description and schema, in order.</summary>
+    private static string ToolsAsSent(AgentEngine engine) => JsonSerializer.Serialize(
+        engine.Tools.OfType<AIFunction>()
+            .Select(t => new ToolAsSent(t.Name, t.Description, t.JsonSchema.GetRawText())));
+
+    /// <summary>One tool as the provider is sent it.</summary>
+    private sealed record ToolAsSent(string Name, string Description, string Schema);
+
+    /// <summary>A toolset whose one tool has a name another toolset uses too.</summary>
+    private sealed class Clash
     {
-        // It sorts first, so it lands at the start, not appended at the end.
-        Directory.CreateDirectory(Path.Combine(_skillsDir, "tools"));
-        File.WriteAllText(Path.Combine(_skillsDir, "tools", "AaaFirstByName.tool.md"), ApprovedTool);
-
-        var names = Engine().Tools.Select(t => t.Name).ToList();
-
-        Assert.That(names[0], Is.EqualTo("AaaFirstByName"));
-        Assert.That(names, Is.EqualTo(names.Order(StringComparer.Ordinal)));
+        /// <summary>Answers pong.</summary>
+        [System.ComponentModel.Description("Answers pong")]
+        public string Ping() => "pong";
     }
 }

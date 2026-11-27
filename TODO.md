@@ -82,6 +82,7 @@ known limitations below are facts about today, not tasks.
 | FX59 | binary attachments sent as files, not text | Later | [feature doc](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F22-role-tools.md) |
 | FX60 | a continued specialist's ledger rows name the turn that continued it | Later | [feature doc](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F26-specialist-follow-up.md) |
 | FX61 | A site whose host has no `ACCOUNTS_SQL_URL` still calls `/account/me` and `/account/providers`, gets `index.html` back and dies on the JSON (the starter's login and chat pages show Blazor's error bar); the client should take a host without accounts as "nobody signed in" (found in CL58) | Fixes | — |
+| FX252 | The coding agent's chat page lost its Stop button during a ten-minute turn (587 s, two builds) and took messages the server refused as "still answering" (409); cause not proved | Next, after F97.1 | — |
 | F90 | WhatsApp as a host | Later | — |
 | F92 | Voice: the person talks, our API turns it into text behind the chat's seam, the text lands in the box to check (Louis's pick B, 2026-11-11) | Later | [draft](src/docs/plans/F92-voice-input.md) |
 | F45 | Knowledge and retrieval | Later | — |
@@ -92,7 +93,7 @@ known limitations below are facts about today, not tasks.
 | F95 | What's left of CL29 | Later | [doc](src/docs/adr/0076-core-ships-no-agent.md) |
 | CL17 | what's left of the coding identity | Later | — |
 | F96 | The browser's user agent names the user's town per visit | Later | — |
-| F97 | A tool added mid-chat, after FX4 | Later | — |
+| F97 | A skill usable in the chat that made it: F97.1 one skill, used in the chat that made it (done 2026-11-27), F97.3 tool search for the built-in tools (done when the paid proof is recorded) | Now, F97.3 next | [plan](src/docs/plans/F97-a-skill-usable-in-its-chat.md) |
 | F38 | Tool search, when a measured need comes | Later | — |
 | F136 | How much of an asked agent's work the asker reads, as a framework choice (Louis, 2026-11-11, during F127.3.1: "AskAgentWithTools and AskAgentWithToolsAndThinking"; "we will not use it"): its tool calls, or those and its thinking as text, beside the answer; three options weighed then (one `ReadAgentWork` with a detail level, three tools, one `show` parameter); when a framework user needs it | Later | — |
 | F98 | Planning and a self-check before answering, tried on a simulation first | Later | — |
@@ -108,6 +109,8 @@ known limitations below are facts about today, not tasks.
 | F173 | Google Drive for a business's agent: a `google-drive` toolset in `LouisAgent.Packs.Google` on `drive.file` only, the files the owner picked or the app made; was F157.5, planned when a buyer asks | Later | — |
 | F174 | Gmail for a business's agent: a `google-gmail` toolset, a reply drafted for the owner to send, never sent by the agent; restricted scopes, so Google's security assessment comes first; was F157.6, planned when a buyer asks | Later | — |
 | F175 | Visitors connect their own Google: a try-it on the Integrations section with a visitor's own sheet, once Google has verified the app, with a privacy notice (POPIA, F145); was F157.7, after F157.4 | Later | — |
+| F178 | Skills over MCP as SEP-2640 has it: the MCP host serves each approved skill's files as `skill://` resources and answers `skills/list` and `skills/get`, once the C# SDK's skills package (reported in 2.4.0, experimental MCPEXP005) is stable; a package upgrade and a new package, each on its own card | Later | — |
+| F179 | The coding agent sees an image or a PDF you attach: today the model gets only its name and no pack's tool reads it (F171.1); research what it costs to put it in the message it came with against a general tool that reads an attachment, then three options | Next, after F97.1 | — |
 | CL34 | The work email out of git history | Cleanups | — |
 | CL35 | `Web/Browsing/RedirectBodies` goes when a PuppeteerSharp release awaits its own redirect body ta… | Cleanups | — |
 | CL36 | Design docs for the four projects that have none | Cleanups | [doc](src/docs/projects/README.md) |

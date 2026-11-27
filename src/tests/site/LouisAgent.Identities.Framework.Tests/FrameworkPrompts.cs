@@ -1,4 +1,4 @@
-using LouisAgent.Core.Skills;
+using LouisAgent.Core.Prompting;
 using LouisAgent.Packs.Docs;
 using LouisAgent.Packs.Site;
 

@@ -7,8 +7,8 @@ using LouisAgent.Composition.Messages;
 using System.Reflection;
 using LouisAgent.Core.Config.Messages;
 using LouisAgent.Testing.Messages;
-using LouisAgent.Core.Skills.Messages;
 using LouisAgent.Composition.Web.Messages;
+using LouisAgent.Core.Prompting.Messages;
 using LouisAgent.Core.Web.Messages;
 
 namespace LouisAgent.Core.Tests.Messages;
@@ -45,9 +45,10 @@ public class MessageEnumTests
                 "ConfigErrorMessage", "ConfigLogMessage", "ErrorMessage", "ScreenMessage", "GuardrailErrorMessage",
                 "GuardrailToolMessage", "HostingErrorMessage", "HostingLogMessage", "LlmErrorMessage",
                 "LoggingErrorMessage", "LoggingLogMessage", "PricingErrorMessage", "PricingLogMessage",
-                "PromptHeaderMessage", "ScriptToolMessage", "AnthropicErrorMessage", "OpenAiErrorMessage",
+                "PromptHeaderMessage", "AnthropicErrorMessage", "OpenAiErrorMessage",
                 "SequenceToolMessage", "SessionErrorMessage", "RunnerToolMessage", "SkillErrorMessage",
-                "SkillLogMessage", "SkillReadToolMessage", "SubSessionToolMessage", "TelemetryLogMessage", "TextErrorMessage",
+                "SkillLogMessage", "SkillReadToolMessage", "SkillToolMessage", "SubSessionToolMessage",
+                "TelemetryLogMessage", "TextErrorMessage",
                 "ToolMessage", "UserText", "UsageErrorMessage", "UsageLogMessage", "WebLogMessage",
                 "WebToolMessage", "WordsErrorMessage",
             }));

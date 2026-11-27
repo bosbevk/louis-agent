@@ -1,0 +1,34 @@
+{
+  "kind": "flow",
+  "type": "component",
+  "title": "F97 a skill usable in its chat: the architecture",
+  "caption": "One skills folder with its drafts apart; the engine reads it into one library, and the model reaches a skill through the door or, once approved, by its name.",
+  "flow": {
+    "nodes": [
+      { "id": "person", "label": "A person in a chat", "icon": "user", "tone": "blue", "shape": "terminal" },
+      { "id": "model", "label": "The model", "icon": "chip", "tone": "violet" },
+      { "id": "engine", "label": "AgentEngine\nthe chat's frozen tools (FX4)", "icon": "settings", "tone": "violet", "group": "core" },
+      { "id": "own", "label": "CreateSkill · UseSkill\n(F97.2)", "icon": "code", "tone": "violet", "group": "core" },
+      { "id": "library", "label": "SkillLibrary\nSkillRunner\n(F97.1)", "icon": "box", "tone": "violet", "group": "core" },
+      { "id": "commands", "label": "/skills /approve /reject\nthe note (F97.2)", "icon": "terminal", "tone": "violet", "group": "core" },
+      { "id": "approved", "label": "skills/{name}/\nSKILL.md · scripts/", "icon": "folder", "tone": "amber", "shape": "data", "group": "disk" },
+      { "id": "drafts", "label": "skills/drafts/{name}/\ngit-ignored", "icon": "folder", "tone": "amber", "shape": "data", "group": "disk" },
+      { "id": "claude", "label": "Anthropic's API\ndefer_loading (F97.3)", "icon": "world", "tone": "green" }
+    ],
+    "edges": [
+      { "from": "person", "to": "commands", "word": "types" },
+      { "from": "person", "to": "model", "word": "asks" },
+      { "from": "model", "to": "own", "word": "calls" },
+      { "from": "engine", "to": "own" },
+      { "from": "own", "to": "library" },
+      { "from": "commands", "to": "library" },
+      { "from": "library", "to": "drafts", "word": "writes, reads" },
+      { "from": "library", "to": "approved", "word": "reads, moves up" },
+      { "from": "engine", "to": "claude", "word": "on Claude" }
+    ],
+    "groups": [
+      { "id": "core", "label": "LouisAgent.Core" },
+      { "id": "disk", "label": "the skills folder" }
+    ]
+  }
+}

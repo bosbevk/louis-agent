@@ -1,11 +1,12 @@
 using LouisAgent.Composition.Logging;
 using LouisAgent.Composition.Messages;
+using LouisAgent.Composition.Packs;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Agent.Messages;
 using LouisAgent.Core.Logging;
-using LouisAgent.Core.Skills;
 using LouisAgent.Core.Delegation.Agents;
+using LouisAgent.Core.Prompting;
 using Microsoft.Extensions.Logging;
 
 namespace LouisAgent.Core.Agent.Toolsets;
@@ -26,7 +27,7 @@ public static class ToolsetCatalog
         new(CoreToolset.Agents.Wire(),
             "Ask another agent by its address: an identity in its own voice, one of its subagents, or one of its " +
             "lookup agents",
-            GuideFile: SkillFiles.Guide(CoreToolset.Agents.Wire()),
+            Skill: CoreToolset.Agents.Wire(),
             MissingSettings: ctx => ctx.Options.AgentPeers.Count == 0 ? ["AGENT_PEERS"] : [],
             ToolTypes: [typeof(AskAgentTools), typeof(AgentWorkTools)],
             CreateTools: ctx =>
@@ -35,10 +36,10 @@ public static class ToolsetCatalog
                 new AgentWorkTools(ctx.Options)
             ]),
 
-        // Engine-provided: CreateSkillFile, ReloadSkills, CreateTool and ListAgentTools are registered by AgentEngine
-        // when this name is in the resolved list (step 3), because they need the engine's own registry and skill set.
-        new(CoreToolset.Skills.Wire(), "Create and reload skills, and build and list agent-built tools",
-            GuideFile: SkillFiles.Guide("self-extension"),
+        // Engine-provided: UseSkill, CreateSkill and ReloadSkills are registered by AgentEngine when this name is in
+        // the resolved list (step 3), because they need the engine's own registry and skill set.
+        new(CoreToolset.Skills.Wire(), "Make, use and reload skills",
+            Skill: CoreToolset.Skills.Wire(),
             MissingSettings: _ => [],
             CreateTools: null)
     ];
@@ -158,7 +159,11 @@ public static class ToolsetCatalog
             .SelectMany(t => t.CreateTools!(context))
     ];
 
-    /// <summary>The guides the resolved toolsets need, in catalogue order.</summary>
-    public static IReadOnlyList<string> GuideFiles(IEnumerable<ToolsetDefinition> resolved) =>
-        [.. resolved.Where(t => t.GuideFile is not null).Select(t => t.GuideFile!).Distinct(StringComparer.Ordinal)];
+    /// <summary>The files of the skills the resolved toolsets always load, in catalogue order.</summary>
+    public static IReadOnlyList<string> SkillFilesOf(IEnumerable<ToolsetDefinition> resolved) =>
+    [
+        .. resolved.Where(t => t.Skill is not null)
+            .Select(t => PackToolset.SkillFile(t.Skill!))
+            .Distinct(StringComparer.Ordinal)
+    ];
 }

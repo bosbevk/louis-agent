@@ -14,7 +14,7 @@ public sealed class DotNetPack : IAgentPack
     public IReadOnlyList<PackToolset> Toolsets { get; } =
     [
         new(DotNetToolset.DotNet.Wire(), "Build, test, run and restore .NET projects; list packages; SDK information",
-            GuideFile: PackToolset.Guide(DotNetToolset.DotNet.Wire()),
+            Skill: DotNetToolset.DotNet.Wire(),
             MissingSettings: _ => [],
             ToolTypes: [typeof(DotNetTools)],
             CreateTools: context => [new DotNetTools(Path.GetFullPath(context.WorkspaceRoot))]),

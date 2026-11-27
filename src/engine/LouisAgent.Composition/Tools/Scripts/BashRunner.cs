@@ -5,8 +5,8 @@ using System.Text;
 namespace LouisAgent.Composition.Tools.Scripts;
 
 /// <summary>
-/// Runs bash for whoever needs it: the bash tools, and the engine's own skills and agent-built tools. Git Bash on
-/// Windows, /bin/bash elsewhere, and never the WSL stub.
+/// Runs bash for whoever needs it: the bash tools, and the scripts of the skills the agent keeps. Git Bash on Windows,
+/// /bin/bash elsewhere, and never the WSL stub.
 /// </summary>
 /// <remarks>
 /// Shared here because the engine runs skills whether or not a session has the toolset, and a pack can't be referenced
@@ -101,8 +101,8 @@ public sealed class BashRunner
     private static bool _searched;
 
     /// <summary>
-    /// The bash to start: <see cref="FindBash"/>, else the name the OS would find. Skills and agent-built tools use it,
-    /// so they run the same (Git) bash as BashRun, never the WSL stub.
+    /// The bash to start: <see cref="FindBash"/>, else the name the OS would find. A skill's script uses it, so it runs
+    /// the same (Git) bash as BashRun, never the WSL stub.
     /// </summary>
     public static string ResolveShell() => FindBash() ?? (OperatingSystem.IsWindows() ? "bash" : "/bin/bash");
 

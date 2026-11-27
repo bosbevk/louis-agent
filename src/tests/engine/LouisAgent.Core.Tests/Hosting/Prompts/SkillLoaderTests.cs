@@ -4,8 +4,8 @@ using LouisAgent.Core.Agent.Toolsets;
 using System.Text.RegularExpressions;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting.Prompts;
-using LouisAgent.Core.Skills;
-using LouisAgent.Core.Skills.Roles;
+using LouisAgent.Core.Prompting;
+using LouisAgent.Core.Prompting.Roles;
 
 namespace LouisAgent.Core.Tests.Hosting.Prompts;
 
@@ -77,7 +77,7 @@ public class SkillLoaderTests
     {
         Assert.Multiple(() =>
         {
-            Assert.That(ToolsetCatalog.Find(CoreToolset.Agents.Wire())?.GuideFile, Is.EqualTo("toolsets/agents.md"));
+            Assert.That(ToolsetCatalog.Find(CoreToolset.Agents.Wire())?.Skill, Is.EqualTo(CoreToolset.Agents.Wire()));
             Assert.That(ToolsetCatalog.Find(PromptFolder.Subagents.Wire()), Is.Null);
         });
     }
@@ -120,35 +120,6 @@ public class SkillLoaderTests
         foreach (string guide in OtherGuides.Append("# Files Skills").Append("# Git Skills").Append("# .NET Skills"))
             Assert.That(Regex.Matches(docs, "^" + Regex.Escape(guide) + @"\r?$", RegexOptions.Multiline).Count,
                 Is.EqualTo(1), guide);
-    }
-
-    /// <summary>
-    /// A function skill is a set of procedures run by ExecuteSkill: it belongs to the skills toolset, like a guide to
-    /// its tools, so a prompt without that toolset has no skill file (CL9: there's no setting to add one).
-    /// </summary>
-    [Test]
-    public void FunctionSkills_ComeWithTheSkillsToolset_AndNotWithout()
-    {
-        string skills = Directory.CreateTempSubdirectory("function-skills-").FullName;
-        try
-        {
-            Directory.CreateDirectory(Path.Combine(skills, PromptFolder.Agents.Wire(), PromptFolder.Functions.Wire()));
-            File.WriteAllText(
-                Path.Combine(skills, PromptFolder.Agents.Wire(), PromptFolder.Functions.Wire(), "greeting.md"),
-                "# Greeting Skills\n\nGreets people.");
-            var options = new AgentOptions { SkillsDirectory = skills };
-
-            Assert.That(
-                SkillLoader.Load(options, Toolsets(TestToolset.Files.Wire(), CoreToolset.Skills.Wire())).Documentation,
-                Does.Contain("# Greeting Skills"));
-            Assert.That(
-                SkillLoader.Load(options, Toolsets(CoreToolset.Agents.Wire(), TestToolset.Web.Wire()))
-                    .Documentation, Does.Not.Contain("# Greeting Skills"));
-        }
-        finally
-        {
-            Directory.Delete(skills, recursive: true);
-        }
     }
 
     /// <summary>

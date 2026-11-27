@@ -12,13 +12,13 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 168 | 74 |
-| Fixes (`FX`) | 247 | 3 |
+| Features (`F`) | 169 | 76 |
+| Fixes (`FX`) | 247 | 4 |
 | Cleanups (`CL`) | 49 | 25 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (102 in the TODO)
+## Open (105 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
@@ -75,6 +75,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | FX59 | binary attachments sent as files, not text | Later |
 | FX60 | a continued specialist's ledger rows name the turn that continued it | Later |
 | FX61 | A site whose host has no `ACCOUNTS_SQL_URL` still calls `/account/me` and `/account/providers`, gets `index.html` back and dies on the JSON (the starter's login and chat pages show Blazor's error bar); the client should take a host without accounts as "nobody signed in" (found in CL58) | Fixes |
+| FX252 | The coding agent's chat page lost its Stop button during a ten-minute turn and took messages the server refused as "still answering" | Next, after F97.1 |
 | F90 | WhatsApp as a host | Later |
 | F92 | Voice: the person talks, our API turns it into text behind the chat's seam, the text lands in the box to check (Louis's pick B, 2026-11-11) | Later |
 | F45 | Knowledge and retrieval | Later |
@@ -85,7 +86,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F95 | What's left of CL29 | Later |
 | CL17 | what's left of the coding identity | Later |
 | F96 | The browser's user agent names the user's town per visit | Later |
-| F97 | A tool added mid-chat, after FX4 | Later |
+| F97 | A skill usable in the chat that made it (F97.1 one skill, used in the chat that made it, done; F97.3 tool search for the built-in tools) | Now, F97.3 next |
 | F38 | Tool search, when a measured need comes | Later |
 | F136 | How much of an asked agent's work the asker reads, as a framework choice: its tool calls, or those and its thinking, beside the answer; when a framework user needs it | Later |
 | F98 | Planning and a self-check before answering, tried on a simulation first | Later |
@@ -101,6 +102,8 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F173 | Google Drive for a business's agent, was F157.5 | Later |
 | F174 | Gmail for a business's agent, a reply drafted for the owner, was F157.6 | Later |
 | F175 | Visitors connect their own Google, was F157.7 | Later |
+| F178 | Skills over MCP as SEP-2640 has it | Later |
+| F179 | The coding agent sees an image or a PDF you attach | Next, after F97.1 |
 | CL34 | The work email out of git history | Cleanups |
 | CL35 | `Web/Browsing/RedirectBodies` goes when a PuppeteerSharp release awaits its own redirect body ta… | Cleanups |
 | CL36 | Design docs for the four projects that have none | Cleanups |
@@ -125,10 +128,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL71 | The ACP server on Microsoft's StreamJsonRpc, our read loop and writer gone; after FX4, plan first | Cleanups |
 | CL72 | The CLI's console drawn with Spectre.Console; after FX4, plan first | Cleanups |
 
-## Features (168 done)
+## Features (169 done)
 
 | Id | When | What |
 |---|---|---|
+| F97.1 | 2026-11-27 | One skill, used in the chat that made it: everything the agent makes is a skill in the Agent Skills shape, made by `CreateSkill` once its example runs, used at once through one door, `UseSkill`, a draft until `/approve`; core's and the packs' guides built-in skills; ADR 0033 amended |
 | F43.1 | 2026-11-25 | Durable sessions: a chat survives a restart, kept in a store behind one seam (in memory, or MongoDB locally and a free DocumentDB cluster in Azure) for 30 days after its last message; a visitor's chat resumes without the key, a keyed one still needs it |
 | F171.1 | 2026-11-24 | A photo or a PDF reaches a tool: a message carries one as bytes, the API keeps it checked (five kinds, 10 MB a file, 20 MB a chat) and the model sees only its name; a pack's tool finds it through the pack context and reads it with the model the program's catalogue handed it (`AgentHost.Build(models => …)`), each call a `tool` row in the ledger, unmarked for the cache, and replayed by its bytes; the live readings wait on a run with a key |
 | F177 | 2026-11-24 | Work with us: how a job with a client goes, as a page of slides at `/work-with-us`, in the menu before Contact; FX246 and FX247 fixed the slides layout for it |

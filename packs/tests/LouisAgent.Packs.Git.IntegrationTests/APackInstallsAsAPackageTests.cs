@@ -2,27 +2,33 @@ using LouisAgent.Composition.Tools;
 
 namespace LouisAgent.Packs.Git.IntegrationTests;
 
-/// <summary>What "it's a framework of packages" means: a plain console app takes a pack from a feed, and nothing else.</summary>
+/// <summary>
+/// What "it's a framework of packages" means: a plain console app takes a pack from a feed, and nothing else.
+/// </summary>
 [Category("Integration")]
 public class APackInstallsAsAPackageTests
 {
     private static readonly TimeSpan Build = TimeSpan.FromMinutes(5);
 
-    /// <summary>The app lists the pack's tools and finds its guide, with no engine anywhere in its dependencies.</summary>
+    /// <summary>
+    /// The app lists the pack's tools and finds its guide, with no engine anywhere in its dependencies.
+    /// </summary>
     [Test]
     public void AConsoleApp_RunsAPackFromAPackage_WithoutTheEngine()
     {
-        Outside.Tool(ProcessRunner.Run("dotnet", ["--version"], Path.GetTempPath(), TimeSpan.FromMinutes(1)).ExitCode == 0,
+        Outside.Tool(
+            ProcessRunner.Run("dotnet", ["--version"], Path.GetTempPath(), TimeSpan.FromMinutes(1)).ExitCode == 0,
             "the .NET SDK isn't on this machine");
         string root = Directory.CreateTempSubdirectory("pack-proof-").FullName;
         try
         {
-            // The three packages, into a feed of their own, at the 1.0.0 the app asks for: MinVer versions every package
-            // from its tags (F166.2), so the version is said here, as a release's tag would say it (FX218).
+            // The three packages, into a feed of their own, at the 1.0.0 the app asks for: MinVer versions every
+            // package from its tags (F166.2), so the version is said here, as a release's tag would say it (FX218).
             string feed = Directory.CreateDirectory(Path.Combine(root, "feed")).FullName;
             foreach (string project in new[]
                      {
-                         "src/engine/LouisAgent.Choices", "src/engine/LouisAgent.Composition", "packs/tools/LouisAgent.Packs.Git",
+                         "src/engine/LouisAgent.Choices", "src/engine/LouisAgent.Composition",
+                         "packs/tools/LouisAgent.Packs.Git",
                      })
                 Assert.That(Run(TestPaths.RepoRoot, "pack", project, "-c", "Release", "-o", feed, "--nologo",
                     "-p:MinVerVersionOverride=1.0.0").ExitCode, Is.Zero);
@@ -30,32 +36,33 @@ public class APackInstallsAsAPackageTests
             // An app that knows only the feed.
             string app = Directory.CreateDirectory(Path.Combine(root, "app")).FullName;
             File.WriteAllText(Path.Combine(app, "app.csproj"), """
-                <Project Sdk="Microsoft.NET.Sdk">
-                  <PropertyGroup>
-                    <OutputType>Exe</OutputType>
-                    <TargetFramework>net10.0</TargetFramework>
-                    <ImplicitUsings>enable</ImplicitUsings>
-                  </PropertyGroup>
-                  <ItemGroup>
-                    <PackageReference Include="LouisAgent.Packs.Git" Version="1.0.0" />
-                  </ItemGroup>
-                </Project>
-                """);
+                                                               <Project Sdk="Microsoft.NET.Sdk">
+                                                                 <PropertyGroup>
+                                                                   <OutputType>Exe</OutputType>
+                                                                   <TargetFramework>net10.0</TargetFramework>
+                                                                   <ImplicitUsings>enable</ImplicitUsings>
+                                                                 </PropertyGroup>
+                                                                 <ItemGroup>
+                                                                   <PackageReference Include="LouisAgent.Packs.Git" Version="1.0.0" />
+                                                                 </ItemGroup>
+                                                               </Project>
+                                                               """);
             File.WriteAllText(Path.Combine(app, "Program.cs"), """
-                using LouisAgent.Packs.Git;
+                                                               using LouisAgent.Composition.Packs;
+                                                               using LouisAgent.Packs.Git;
 
-                var pack = new GitPack();
-                var toolset = pack.Toolsets.Single();
-                Console.WriteLine(string.Join(",", toolset.ToolTypes!.Select(t => t.Name)));
-                Console.WriteLine(pack.Prompts.GetFileInfo(toolset.GuideFile!).Exists);
-                """);
+                                                               var pack = new GitPack();
+                                                               var toolset = pack.Toolsets.Single();
+                                                               Console.WriteLine(string.Join(",", toolset.ToolTypes!.Select(t => t.Name)));
+                                                               Console.WriteLine(pack.Prompts.GetFileInfo(PackToolset.SkillFile(toolset.Skill!)).Exists);
+                                                               """);
             File.WriteAllText(Path.Combine(app, "nuget.config"), $"""
-                <configuration>
-                  <packageSources>
-                    <add key="local" value="{feed}" />
-                  </packageSources>
-                </configuration>
-                """);
+                                                                  <configuration>
+                                                                    <packageSources>
+                                                                      <add key="local" value="{feed}" />
+                                                                    </packageSources>
+                                                                  </configuration>
+                                                                  """);
 
             var result = Run(app, "run", "--nologo");
 

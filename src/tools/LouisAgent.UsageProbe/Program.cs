@@ -17,7 +17,7 @@ using LouisAgent.Core.Ollama;
 using LouisAgent.Core.OpenAi;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
-using LouisAgent.Core.Skills;
+using LouisAgent.Core.Prompting;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Llm;
 using LouisAgent.Core.Hosting;

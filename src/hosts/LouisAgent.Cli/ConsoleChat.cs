@@ -65,7 +65,7 @@ internal sealed class ConsoleChat(AgentEngine engine)
 
             // Approval commands and /usage come from the user only; they never reach the model.
             var usedSoFar = engine.RecordsUsage ? sessionUsage.Records : null;
-            if (engine.HandleUserCommand(userInput, usedSoFar) is { } commandReply)
+            if (engine.HandleUserCommand(userInput, usedSoFar, conversation) is { } commandReply)
             {
                 Console.WriteLine($"\n{commandReply}\n");
                 continue;

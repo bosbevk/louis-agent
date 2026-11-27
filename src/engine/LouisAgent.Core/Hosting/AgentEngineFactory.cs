@@ -15,14 +15,14 @@ using LouisAgent.Core.Agent;
 using LouisAgent.Core.Agent.EngineTools.Skills;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Logging;
-using LouisAgent.Core.Skills;
-using LouisAgent.Core.Skills.Roles;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Sessions.Replay.Store;
 using LouisAgent.Core.Hosting.Messages;
 using LouisAgent.Core.Hosting.Messages.Holes;
+using LouisAgent.Core.Prompting;
+using LouisAgent.Core.Prompting.Roles;
 
 namespace LouisAgent.Core.Hosting;
 
@@ -216,24 +216,22 @@ public sealed class AgentEngineFactory
         var skills = new SkillReadTools(SkillLoader.SkillsOf(_agent, role, level));
         // Whom a mode may ask (F127.3.1): its identity's Calls; below level 0 nobody, since agents is refused there.
         var calls = level == RoleLevel.Agent ? Catalog.IdentityOf(role ?? DefaultVoice)?.Calls : null;
-        var engine = new AgentEngine(SkillLoader.Load(_agent, guided, role, level, calls), model?.Client ?? _chatClient,
-            _agent,
-            model?.SupportsTools ?? _supportsTools, toolsets: skills.HasAny ? [.. tools, skills] : tools, _usageSink,
-            model is null ? _usageMapper : model.UsageMapper, selfExtension, ToolsetCatalog.RunsInParallel(resolved),
-            clock: _clock, replay: _replay, staleThinking: model is null ? _staleThinking : null)
-        {
-            SkillsDirectory = SkillFolder.Find(_agent),
-            // An agent-built tool may take no name of the catalogue's, a pack's included (CL15).
-            ReservedToolNames = Catalog.ToolNames,
-            // ReloadSkills reloads this profile's prompt (its guides, role and router), never another's.
-            SkillReloader = () => SkillLoader.Load(_agent, guided, role, level, calls),
-            Thinking = model is null ? _thinking : model.Thinking,
-            Display = _display,
+        var engine = AgentEngine.CreateBuilder(SkillLoader.Load(_agent, guided, role, level, calls),
+                model?.Client ?? _chatClient, _agent)
+            .WithSupportsTools(model?.SupportsTools ?? _supportsTools)
+            .WithToolsets(skills.HasAny ? [.. tools, skills] : tools)
+            .WithUsage(_usageSink, model is null ? _usageMapper : model.UsageMapper)
+            .WithSelfExtension(selfExtension)
+            .WithConcurrentToolCalls(ToolsetCatalog.RunsInParallel(resolved))
+            .WithClock(_clock)
+            .WithReplay(_replay)
+            .WithStaleThinking(model is null ? _staleThinking : null)
+            .WithSkillsDirectory(SkillFolder.Find(_agent))
+            .WithThinking(model is null ? _thinking : model.Thinking)
+            .WithDisplay(_display)
             // A trace names the agent (F52): the role it plays, or the mode a session without one runs.
-            Name = role ?? DefaultVoice ?? AgentLogging.ServiceName
-        };
-        // Approved agent-built tools come with the skills toolset (CreateTool, /approve).
-        if (selfExtension) engine.LoadApprovedTools();
+            .WithName(role ?? DefaultVoice ?? AgentLogging.ServiceName)
+            .Build();
         if (tool is not null) engine.KeepOnlyTool(tool);
 
         string toolsJson = JsonSerializer.Serialize(engine.Tools.OfType<AIFunction>()

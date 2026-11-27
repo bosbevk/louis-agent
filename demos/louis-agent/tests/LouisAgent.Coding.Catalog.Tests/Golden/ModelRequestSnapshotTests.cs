@@ -8,7 +8,7 @@ using LouisAgent.Core.Agent;
 using LouisAgent.Core.Agent.Turns.Guards;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
-using LouisAgent.Core.Skills;
+using LouisAgent.Core.Prompting;
 using LouisAgent.Core.Web.Search;
 using Microsoft.Extensions.AI;
 

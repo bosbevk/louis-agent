@@ -1,5 +1,6 @@
 using System.Text.Json;
 using LouisAgent.Core.Agent;
+using LouisAgent.Core.Agent.Tools;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson.Serialization.Options;
 using Microsoft.Extensions.AI;

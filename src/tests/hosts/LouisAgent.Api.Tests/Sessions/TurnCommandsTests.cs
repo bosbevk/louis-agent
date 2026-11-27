@@ -1,14 +1,14 @@
 using LouisAgent.Api.Endpoints.Sessions;
 using LouisAgent.Api.Sessions;
 using LouisAgent.Core.Agent;
-using LouisAgent.Core.Skills.Providers;
+using LouisAgent.Core.Prompting.Providers;
 using LouisAgent.Core.Usage.Records;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Api.Tests.Sessions;
 
 /// <summary>
-/// The engine's commands, <c>/tools</c>, <c>/approve</c>, <c>/reject</c> and <c>/usage</c>, are the operator's: a site
+/// The engine's commands, <c>/skills</c>, <c>/approve</c>, <c>/reject</c> and <c>/usage</c>, are the operator's: a site
 /// visitor's chat, which the open door admitted and tagged, sends them to the model as words (FX255).
 /// </summary>
 public class TurnCommandsTests
@@ -37,30 +37,30 @@ public class TurnCommandsTests
         return (asked, string.Concat(streamed));
     }
 
-    /// <summary>A visitor's /tools is a message like any other: the model answers it, not the engine.</summary>
+    /// <summary>A visitor's /approve is a message like any other: the model answers it, not the engine.</summary>
     [Test]
     public async Task AVisitorsCommand_GoesToTheModel()
     {
-        var (asked, streamed) = await SendAsync("/tools", Visitors);
+        var (asked, streamed) = await SendAsync("/approve", Visitors);
 
         Assert.Multiple(() =>
         {
             Assert.That(asked, Is.True);
             Assert.That(streamed, Does.Contain("The model's answer."));
-            Assert.That(streamed, Does.Not.Contain("/approve"));
+            Assert.That(streamed, Does.Not.Contain("Usage: /approve"));
         });
     }
 
-    /// <summary>The operator's /tools is still answered by the engine at once, and the model isn't asked.</summary>
+    /// <summary>The operator's /approve is still answered by the engine at once, and the model isn't asked.</summary>
     [Test]
     public async Task TheOperatorsCommand_IsAnsweredByTheEngine()
     {
-        var (asked, streamed) = await SendAsync("/tools", UsageTags.None);
+        var (asked, streamed) = await SendAsync("/approve", UsageTags.None);
 
         Assert.Multiple(() =>
         {
             Assert.That(asked, Is.False);
-            Assert.That(streamed, Does.Contain("/approve"));
+            Assert.That(streamed, Does.Contain("Usage: /approve"));
         });
     }
 }

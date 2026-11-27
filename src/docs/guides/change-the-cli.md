@@ -36,9 +36,10 @@ profile is in its `Properties/launchSettings.json`.
 
 ## Add a chat command
 
-Commands such as `/tools`, `/approve`, `/reject` and `/usage` belong to core, in `Agent/Commands/UserCommands.cs`, so
-Rider and the API get them too. The CLI passes every line to `AgentEngine.HandleUserCommand` before the model, so it
-needs no code of its own.
+Commands such as `/skills`, `/tools`, `/approve`, `/reject` and `/usage` belong to core, in
+`Agent/Commands/UserCommands.cs`, so Rider and the API get them too. The CLI passes every line to
+`AgentEngine.HandleUserCommand` before the model, with its chat, so a command the model never sees, such as `/approve`,
+can still be told to it on the next message, and it needs no code of its own.
 
 1. Write the test first, in `src/tests/engine/LouisAgent.Core.Tests/Agent/Commands/UserCommandsTests.cs`.
 2. Add the command to `UserCommands`' `switch`, with its reply in core's `UserText`.

@@ -1,5 +1,5 @@
 using LouisAgent.Core.Agent.Catalog;
-using LouisAgent.Core.Skills;
+using LouisAgent.Core.Prompting;
 using LouisAgent.Identities.Coding;
 using LouisAgent.Identities.Guide;
 using LouisAgent.Identities.Triage;

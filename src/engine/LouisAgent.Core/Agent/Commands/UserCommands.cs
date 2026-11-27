@@ -1,54 +1,107 @@
-
 using LouisAgent.Composition.Messages;
-using LouisAgent.Core.Agent.EngineTools;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Messages.Holes.Drafts;
 using LouisAgent.Core.Pricing.Rates;
+using LouisAgent.Core.Prompting.Headers.Agent;
+using LouisAgent.Core.Prompting.Headers.Agent.Drafting;
+using LouisAgent.Core.Prompting.Headers.Agent.Library;
+using LouisAgent.Core.Prompting.Messages;
+using LouisAgent.Core.Prompting.Messages.Holes.Door;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Reports;
 
 namespace LouisAgent.Core.Agent.Commands;
+
 /// <summary>
-/// What the user types that the model never sees (S, CL15, from AgentEngine): /tools, /approve &lt;Name&gt;,
-/// /reject &lt;Name&gt; and /usage, answered from the agent-built tools, the skill files and the session's usage.
+/// What the user types that the model never sees (S, CL15, from AgentEngine): /skills, /approve &lt;Name&gt;,
+/// /reject &lt;Name&gt; and /usage, answered from the skills the agent made and the session's usage.
 /// </summary>
+/// <param name="library">The skills the agent made, drafts and approved (F97.1), read when first needed.</param>
 /// <param name="display">The currency /usage shows costs in (F14), as the engine has it at the time.</param>
-internal sealed class UserCommands(AgentBuiltTools tools, SkillTools skills, Func<DisplayCurrency?> display)
+internal sealed class UserCommands(
+    Func<SkillLibrary> library,
+    Func<DisplayCurrency?> display)
 {
     /// <summary>The reply, or null when the input is not one of the commands.</summary>
+    /// <param name="input">What the user typed.</param>
     /// <param name="sessionUsage">
-    /// The session's usage records so far, for /usage (F3). The host keeps them: the engine serves every session of a host
-    /// and doesn't know which one is asking. Null when the host doesn't track usage.
+    /// The session's usage records so far, for /usage (F3). The host keeps them: the engine serves every session of a
+    /// host and doesn't know which one is asking. Null when the host doesn't track usage.
     /// </param>
-    public string? Handle(string input, IReadOnlyList<UsageRecord>? sessionUsage)
+    /// <param name="chat">
+    /// The chat the command was typed in, whose model is told on its next turn what /approve or /reject did (F97.1);
+    /// none when the host doesn't say.
+    /// </param>
+    public string? Handle(string input, IReadOnlyList<UsageRecord>? sessionUsage, Conversation? chat = null)
     {
-        string[] parts = (input ?? "").Trim().Split(' ', 2, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        string[] parts = (input ?? "").Trim()
+            .Split(' ', 2, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         if (parts.Length == 0) return null;
 
         string command = parts[0].ToLowerInvariant();
         string argument = parts.Length > 1 ? parts[1] : "";
         return command switch
         {
-            "/tools" => tools.ListAgentTools() + PendingSkillFileLines() + MessageText.Format(UserText.ToolsHint),
-            "/approve" => Pending(argument, tools.ApproveTool, skills.ApproveSkillFile),
-            "/reject" => Pending(argument, tools.RejectTool, skills.RejectSkillFile),
-            "/usage" => sessionUsage is null ? MessageText.Format(UserText.UsageNotTracked) : UsageText.Summary(sessionUsage, display()),
+            "/skills" => Skills(),
+            "/approve" when argument.Length == 0 => MessageText.Format(UserText.ApproveUsage),
+            "/reject" when argument.Length == 0 => MessageText.Format(UserText.RejectUsage),
+            "/approve" => Decided(library().Approve(argument), argument, SkillToolMessage.DraftApprovedNote, chat)
+                          ?? NoDraft(argument),
+            "/reject" => Decided(library().Reject(argument), argument, SkillToolMessage.DraftRejectedNote, chat)
+                         ?? NoDraft(argument),
+            "/usage" => sessionUsage is null
+                ? MessageText.Format(UserText.UsageNotTracked)
+                : UsageText.Summary(sessionUsage, display()),
             _ => null,
         };
     }
 
     /// <summary>
-    /// /approve and /reject reach an agent-built tool or a skill file the agent wrote (FX20), by name: a tool when one
-    /// is pending, else the skill file, else the tool's own "nothing pending" reply; a name that is both is refused.
+    /// The drafts waiting for /approve or /reject, each with the call it was proved with (F97.1), then the approved
+    /// skills.
     /// </summary>
-    private string Pending(string name, Func<string, string> onTool, Func<string, string> onSkillFile)
+    private string Skills()
     {
-        bool tool = !string.IsNullOrWhiteSpace(name) && tools.HasPendingTool(name);
-        bool skillFile = !string.IsNullOrWhiteSpace(name) && skills.HasPendingSkillFile(name);
-        if (tool && skillFile)
-            return MessageText.Format(UserText.PendingToolAndSkillFile, new { Name = name, Tool = $"{name}.tool.md", File = $"{name}.md" });
-        return skillFile ? onSkillFile(name) : onTool(name);
+        var drafts = library().Drafts;
+        var lines = drafts.Count == 0
+            ? [MessageText.Format(UserText.NoDraftsWaiting)]
+            : drafts.Select(Listed).Prepend(MessageText.Format(UserText.DraftsHeading));
+        return string.Join('\n', lines.Append(ApprovedLine(library().Approved)));
     }
 
-    private string PendingSkillFileLines() =>
-        skills.ListPendingSkillFiles() is { Length: > 0 } lines ? "\n" + lines : "";
+    /// <summary>The approved skills' names on one line, or a line saying there are none.</summary>
+    private static string ApprovedLine(IReadOnlyList<Skill> approved)
+    {
+        if (approved.Count == 0) return MessageText.Format(UserText.NoApprovedSkills);
+
+        var names = new ApprovedSkillsListedHoles(string.Join(", ", approved.Select(s => s.Name)));
+        return MessageText.Format(UserText.ApprovedSkillsListed, names);
+    }
+
+    /// <summary>
+    /// The person's reply to a draft approved or rejected, with a note kept for the chat's model, which never sees the
+    /// command; none when there was no draft by that name.
+    /// </summary>
+    private static string? Decided(string? reply, string name, SkillToolMessage note, Conversation? chat)
+    {
+        if (reply is null) return null;
+
+        var decided = new DraftDecidedHoles(name);
+        chat?.Note(MessageText.Format(note, decided));
+        return reply;
+    }
+
+    /// <summary>The reply to /approve or /reject of a name no draft has.</summary>
+    private static string NoDraft(string name)
+    {
+        var missing = new NoDraftNamedHoles(name);
+        return MessageText.Format(UserText.NoDraftNamed, missing);
+    }
+
+    /// <summary>A draft's line: its name, what it does, and its example.</summary>
+    private static string Listed(Skill draft)
+    {
+        var listed = new DraftListedHoles(draft.Name, draft.Description, SkillExample.TextOf(draft) ?? "");
+        return MessageText.Format(UserText.DraftListed, listed);
+    }
 }

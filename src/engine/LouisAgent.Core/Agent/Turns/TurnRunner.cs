@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using LouisAgent.Core.Agent.Messages;
 using LouisAgent.Core.Agent.Messages.Holes;
+using LouisAgent.Core.Agent.Tools;
 using LouisAgent.Core.Llm.Providers;
 using LouisAgent.Core.Llm.Thinking;
 using LouisAgent.Core.Logging;
@@ -95,7 +96,7 @@ internal sealed class TurnRunner(
         {
             ChatOptions chatOptions = Begin(conversation, userInput);
             // The loop's final request puts back these tools, the conversation's, never the engine's live list.
-            using var tools = TurnTools.Begin(conversation.Tools ?? []);
+            using var tools = TurnTools.Begin(conversation.Tools ?? [], conversation);
             ChatResponse response =
                 await chatClient.GetResponseAsync(conversation.Messages, chatOptions, cancellationToken);
 
@@ -124,7 +125,7 @@ internal sealed class TurnRunner(
     {
         using var span = TurnSpans.Start(agentName());
         ChatOptions chatOptions = Begin(conversation, userInput);
-        using var tools = TurnTools.Begin(conversation.Tools ?? []);
+        using var tools = TurnTools.Begin(conversation.Tools ?? [], conversation);
         bool owedAsked = false;
         for (int continuation = 0; ; continuation++)
         {
@@ -245,7 +246,8 @@ internal sealed class TurnRunner(
     /// </summary>
     private ChatOptions Begin(Conversation conversation, string userInput)
     {
-        conversation.Add(new ChatMessage(ChatRole.User, userInput));
+        // The person's words, after anything they did outside the chat that the model hasn't heard of (F97.1).
+        conversation.Add(new ChatMessage(ChatRole.User, conversation.WithNotes(userInput)));
 
         var chatOptions = new ChatOptions { MaxOutputTokens = MaxOutputTokens };
         if (thinking() is { } effort)

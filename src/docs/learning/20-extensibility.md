@@ -1323,3 +1323,38 @@ What it cost: nothing was paid for.
 
 Concept: *20 Extensibility* in the [goal](../GOAL.md): a folder at its limit is a sign that a class has two jobs, and
 splitting by job gives the next part a place to go.
+
+## F97.1: the agent makes a skill and uses it in the same chat (2026-11-27)
+
+It started with a complaint. Louis asked the coding agent to make a tool, and it did, but the chat that made it
+couldn't call it: since FX4 a chat keeps the tools it started with, so a new tool reached only the next chat. His words
+were "if a chat creates a tool it should be able to use it, not only in a new chat", and then "skills must work the
+same, and our tools and skill folders in the core needs to be standardised". So the question became how it should
+work, not how to patch what was there.
+
+The answer is one shape and one door. Everything the agent makes is a skill in the Agent Skills standard's shape: a
+folder with a `SKILL.md`, a JSON Schema of its parameters, one script that reads its arguments as JSON on stdin, and
+the example call it was proved with. `CreateSkill` keeps it only once that example runs. And every skill is reached
+through one tool that is always in the chat's list, `UseSkill`: called with a name it reads the skill, called with
+arguments it runs it. Because the door was there from the start, a skill made mid-chat is usable at once without
+changing a single tool the chat was sent, which is exactly what FX4 protects. A draft waits in `drafts/` and only its
+own chat can use it; `/approve` moves it up for every chat, `/reject` deletes it, and the chat that typed either is
+told on its next message. Core's own built-in guides took the same shape, `skills/{name}/SKILL.md`, and the old
+`ExecuteSkill`, `CreateSkillFile` and `CreateTool` are gone.
+
+The walk-through on the coding agent (Haiku 5.5, 14 requests, $0.0043) checked the whole loop: a chat made
+`count-words` and answered with it in the same reply, the model knew it was approved after `/approve`, a new chat found
+it listed in `UseSkill` and used it, a rejected draft was refused, and no request failed with the thinking 400. The
+three evals were re-recorded on the new tools: the guide 12 of 12 cases at 3 of 3, the framework Orbi 11 of 12, the
+triage team 6 of 6.
+
+What it cost: about twenty steps, more than the ten a feature should hold, because F97.2 was folded in; the Windows
+case clash between core's `Skills/` code folder and its `skills/` prompt folder, which renamed the code folder to
+`Prompting/`; and a replay bug the re-record found, a tool called twice with the same arguments replayed with the
+first answer both times, left open as FX258 for Louis's pick.
+
+What was left out: the MCP standard's own skills (SEP-2640, F178) and tool search for the hundred built-in tools
+(F97.3), which comes next with a paid proof first.
+
+Concept: *20 Extensibility* in the [goal](../GOAL.md): an agent that extends itself needs one stable door and a
+standard shape, so what it makes is usable at once, readable by a person, and approved before it spreads.

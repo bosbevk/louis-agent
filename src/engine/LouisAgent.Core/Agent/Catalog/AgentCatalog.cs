@@ -6,8 +6,10 @@ using LouisAgent.Core.Agent.Messages;
 using LouisAgent.Core.Agent.Messages.Holes.Catalog;
 using LouisAgent.Core.Agent.Toolsets;
 using System.Reflection;
-using LouisAgent.Core.Skills;
 using LouisAgent.Core.Agent.EngineTools.Clock;
+using LouisAgent.Core.Agent.EngineTools.Skills;
+using LouisAgent.Core.Agent.Tools;
+using LouisAgent.Core.Prompting;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.FileProviders;
 
@@ -24,14 +26,14 @@ namespace LouisAgent.Core.Agent.Catalog;
 public sealed class AgentCatalog
 {
     /// <summary>
-    /// The tools the engine registers itself, whatever the toolsets (<c>AgentEngine</c>): <c>ExecuteSkill</c>, the
-    /// clock, and the self-extension tools. A pack's tool may not take one of their names.
+    /// The tools the engine registers itself (<c>AgentEngine</c>): the clock, whatever the toolsets, and the
+    /// self-extension tools. A pack's tool may not take one of their names.
     /// </summary>
     private static readonly IReadOnlySet<string> EngineToolNames = new HashSet<string>(
         new[]
             {
-                nameof(AgentEngine.ExecuteSkill), nameof(AgentEngine.CreateSkillFile),
-                nameof(AgentEngine.ReloadSkills), nameof(AgentEngine.CreateTool), nameof(AgentEngine.ListAgentTools)
+                nameof(SkillReloadTools.ReloadSkills), nameof(SkillDoorTools.UseSkill),
+                nameof(SkillMakingTools.CreateSkill)
             }
             .Concat(ToolMethodsOfType(typeof(ClockTools)).Select(m => m.Name)),
         StringComparer.OrdinalIgnoreCase);
@@ -160,9 +162,8 @@ public sealed class AgentCatalog
     public IReadOnlyList<IFileProvider> Prompts { get; }
 
     /// <summary>
-    /// Every tool name a toolset of this catalogue can register, loaded in an engine or not, case ignored as
-    /// agent-built tools are named: an agent-built tool may not take one, or it would collide when a session loads
-    /// that toolset.
+    /// Every tool name a toolset of this catalogue can register, loaded in an engine or not, case ignored, so no two
+    /// tools a session might load differ only by case.
     /// </summary>
     public IReadOnlySet<string> ToolNames { get; }
 

@@ -32,7 +32,7 @@ public class OldWordsTests
         "demos/louis-agent/identity/LouisAgent.Identities.Coding/agents/louis-agent/voice.md",
         "src/tests/engine/LouisAgent.Core.Tests/Docs/OldWordsTests.cs",
         "src/tests/web/LouisAgent.Web.Framework.Tests/SubagentWordTests.cs",
-        "src/tests/engine/LouisAgent.Core.Tests/Skills/Headers/PromptHeadersTests.cs",
+        "src/tests/engine/LouisAgent.Core.Tests/Prompting/Headers/PromptHeadersTests.cs",
         "demos/louis-agent/tests/LouisAgent.Coding.Catalog.Tests/Golden/ModelRequestSnapshot.json",
         "src/site/recordings/evals/",
     ];

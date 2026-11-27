@@ -1,9 +1,9 @@
 using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Messages;
-using LouisAgent.Core.Skills;
-using LouisAgent.Core.Skills.Headers;
-using LouisAgent.Core.Skills.Providers;
-using LouisAgent.Core.Skills.Roles;
+using LouisAgent.Core.Prompting;
+using LouisAgent.Core.Prompting.Headers;
+using LouisAgent.Core.Prompting.Providers;
+using LouisAgent.Core.Prompting.Roles;
 using LouisAgent.Orchestrator.Messages;
 
 namespace LouisAgent.Orchestrator.Triage;

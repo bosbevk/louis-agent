@@ -4,8 +4,8 @@ using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Logging;
-using LouisAgent.Core.Skills;
-using LouisAgent.Core.Skills.Providers;
+using LouisAgent.Core.Prompting.Providers;
+using LouisAgent.Core.Prompting;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Core.Tests.Agent;

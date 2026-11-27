@@ -1,8 +1,8 @@
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Agent.Toolsets;
+using LouisAgent.Core.Prompting.Providers;
 using LouisAgent.Core.Sessions.Replay;
-using LouisAgent.Core.Skills.Providers;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Testing.Replay;
 using Microsoft.Extensions.AI;

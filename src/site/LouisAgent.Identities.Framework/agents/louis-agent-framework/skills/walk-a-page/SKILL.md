@@ -17,7 +17,8 @@ A walkthrough goes one section per answer, in the page's order. One section is t
 ## Steps
 
 1. Show that section with `ShowPage`, on its own, and wait for it to answer.
-2. Then explain it in two short sentences, as one developer to another, and end with the doc it was written from.
+2. Then explain that section alone in two short sentences, as one developer to another, and end with the doc it was
+   written from. What later sections show waits for their own stop, so a stop never runs on into the next one.
 3. After those words, end with `Offer` and three choices: on to the next section, by its name (suggested), explain
    another section, or Stop here.
 

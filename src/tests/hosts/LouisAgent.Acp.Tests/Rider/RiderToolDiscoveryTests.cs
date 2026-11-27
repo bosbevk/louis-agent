@@ -1,7 +1,7 @@
 using LouisAgent.Acp.Rider;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Config;
-using LouisAgent.Core.Skills.Providers;
+using LouisAgent.Core.Prompting.Providers;
 
 namespace LouisAgent.Acp.Tests.Rider;
 

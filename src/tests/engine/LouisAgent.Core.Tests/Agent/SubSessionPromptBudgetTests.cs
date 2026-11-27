@@ -3,10 +3,10 @@ using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Pricing.Prices;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Sinks;
-using LouisAgent.Core.Skills;
-using LouisAgent.Core.Skills.Providers;
+using LouisAgent.Core.Prompting;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Config;
+using LouisAgent.Core.Prompting.Providers;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Core.Tests.Agent;
@@ -36,12 +36,7 @@ public class SubSessionPromptBudgetTests
         .Select<int, Func<IList<ChatMessage>, ChatResponse>>(i => _ => new ChatResponse(new ChatMessage(
             ChatRole.Assistant,
             [
-                new FunctionCallContent($"call_{i}", "ExecuteSkill",
-                    new Dictionary<string, object?>
-                    {
-                        ["skillName"] = "SayHello",
-                        ["jsonArgs"] = "{\"name\":\"x\"}"
-                    }),
+                new FunctionCallContent($"call_{i}", "GetToday", new Dictionary<string, object?>()),
                 new UsageContent(new UsageDetails
                 {
                     InputTokenCount = 300 * i,

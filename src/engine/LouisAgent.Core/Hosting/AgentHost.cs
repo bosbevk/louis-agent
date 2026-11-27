@@ -12,9 +12,9 @@ using LouisAgent.Core.Llm;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Pricing.Prices;
 using LouisAgent.Core.Pricing.Rates;
+using LouisAgent.Core.Prompting;
+using LouisAgent.Core.Prompting.Roles;
 using LouisAgent.Core.Sessions.Replay.Store;
-using LouisAgent.Core.Skills;
-using LouisAgent.Core.Skills.Roles;
 using Microsoft.Extensions.Logging;
 
 namespace LouisAgent.Core.Hosting;
@@ -34,8 +34,8 @@ public static class AgentHost
 
     /// <summary>
     /// Builds an engine for hosts that only publish its tools (the MCP server): the calling client brings its own
-    /// model, so no LLM provider or API key is needed. It has every toolset this instance can load (F5); skills,
-    /// agent-built tools and approval work as usual.
+    /// model, so no LLM provider or API key is needed. It has every toolset this instance can load (F5); the skills the
+    /// agent keeps are reached through <c>UseSkill</c>, as in any chat.
     /// </summary>
     public static AgentEngine BuildToolHost() => BuildToolHost(AgentCatalog.CoreOnly);
 

@@ -22,11 +22,11 @@ public enum PromptFolder
     /// <summary>An agent's subagents, inside its folder: <c>agents/{identity}/subagents/{name}/voice.md</c>.</summary>
     [WireName("subagents")] Subagents,
 
-    /// <summary>An agent's skills, inside its folder: <c>agents/{identity}/skills/{name}/SKILL.md</c>.</summary>
+    /// <summary>
+    /// Skills, a folder each: an agent's, inside its folder (<c>agents/{identity}/skills/{name}/SKILL.md</c>), and
+    /// the built-in ones a toolset always loads, at a project's root (<c>skills/{name}/SKILL.md</c>).
+    /// </summary>
     [WireName("skills")] Skills,
-
-    /// <summary>The function skills the agent runs and writes: <c>agents/functions/</c>.</summary>
-    [WireName("functions")] Functions,
 
     /// <summary>
     /// An agent's lookup agents, inside its folder apart from its subagents (CL68.3, ADR 0021):
@@ -34,8 +34,6 @@ public enum PromptFolder
     /// </summary>
     [WireName("lookups")] Lookups,
 
-    /// <summary>The toolsets' guides: <c>toolsets/{name}.md</c>.</summary>
-    [WireName("toolsets")] Toolsets,
 
     /// <summary>What every agent loads: <c>shared/principles.md</c>.</summary>
     [WireName("shared")] Shared,

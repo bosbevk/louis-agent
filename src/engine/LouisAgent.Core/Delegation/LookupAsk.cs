@@ -52,17 +52,15 @@ public sealed class LookupAsk
 
     /// <summary>
     /// Tools a lookup agent never gets (F30), whatever its asker holds: delegation (a lookup agent is the end of the
-    /// tree) and the engine's self-extension (it runs one task with one tool; it doesn't write skills or build tools).
+    /// tree) and the engine's self-extension (it runs one task with one tool; it doesn't use or make skills).
     /// </summary>
     public static readonly IReadOnlySet<string> NeverHandedDown = new HashSet<string>(StringComparer.Ordinal)
     {
         nameof(AskAgentTools.AskAgent),
         nameof(AgentWorkTools.ReadAgentWork),
-        "ExecuteSkill",
-        "CreateSkillFile",
         "ReloadSkills",
-        "CreateTool",
-        "ListAgentTools"
+        "UseSkill",
+        "CreateSkill"
     };
 
     private readonly PeerSession _session;

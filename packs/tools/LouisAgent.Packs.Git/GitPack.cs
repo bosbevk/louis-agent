@@ -19,7 +19,7 @@ public sealed class GitPack : IAgentPack
     [
         new(GitToolset.Git.Wire(),
             "Status, diffs, branches, staging, commits, merges and history for the workspace repository",
-            GuideFile: PackToolset.Guide(GitToolset.Git.Wire()),
+            Skill: GitToolset.Git.Wire(),
             MissingSettings: _ => [],
             ToolTypes:
             [

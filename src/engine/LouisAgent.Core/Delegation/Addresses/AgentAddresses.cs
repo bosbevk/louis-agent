@@ -3,8 +3,8 @@ using LouisAgent.Composition.Messages;
 using LouisAgent.Composition.Packs;
 using LouisAgent.Core.Delegation.Messages;
 using LouisAgent.Core.Delegation.Messages.Holes.Addresses;
-using LouisAgent.Core.Skills;
-using LouisAgent.Core.Skills.Roles;
+using LouisAgent.Core.Prompting;
+using LouisAgent.Core.Prompting.Roles;
 
 namespace LouisAgent.Core.Delegation.Addresses;
 

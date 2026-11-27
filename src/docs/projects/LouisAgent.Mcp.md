@@ -26,8 +26,7 @@ it, the tools it keeps in step, the feeds it serves as resources, the key over H
 
 ### 1. Starting up without a model
 
-It starts with `AgentHost.BuildToolHost()`. That gives it the same engine, skills and agent-built tools as every
-other host. The only difference is the chat client: it's a stand-in that refuses to be called, since the model is
+It starts with `AgentHost.BuildToolHost()`. That gives it the same engine and skills as every other host. The only difference is the chat client: it's a stand-in that refuses to be called, since the model is
 the client's.
 
 ### 2. Stdio or HTTP
@@ -43,11 +42,15 @@ the start-up.
 
 ### 3. The tools, kept in step
 
-`EngineToolSync` copies `AgentEngine.Tools` into the MCP tool collection, and keeps the two in step. So when the
-agent builds or approves a tool, clients get told with `notifications/tools/list_changed`.
+`EngineToolSync` copies `AgentEngine.Tools` into the MCP tool collection, and keeps the two in step. So when a
+skill is approved or the skills are reloaded, `UseSkill`'s list of skills changes, and clients get told with
+`notifications/tools/list_changed`.
 
-`SkillsToolProvider` adds three read-only skill tools, its methods `ListSkills`, `GetSkillInfo` and
-`GetSkillDocumentation`. The skills themselves still run through the engine's `ExecuteSkill`.
+`SkillsToolProvider` adds one read-only tool of its own, `GetSkillDocumentation`, which hands a client the
+guidance the agent itself reads. The skills the agent keeps reach a client through the engine's `UseSkill`, published
+with the other tools: its description lists the approved skills, and a call reads one by name or runs it. MCP has a
+standard of its own for skills, SEP-2640, which serves a skill's files as `skill://` resources with `skills/list` and
+`skills/get`; the SDK this host is on (2.2.0) doesn't have it.
 
 ### 4. The feeds as resources
 
@@ -87,7 +90,7 @@ These are the types involved:
 |---|---|
 | `McpHost.cs` | The one call a program makes: transport choice, `RunStdioAsync`, `RunHttpAsync` (with the key middleware) |
 | `McpPrimitives.cs` | What both transports publish, in one call: the engine's tools and the feeds |
-| `Tools/` | `EngineToolSync` (engine tools → MCP tools, kept in sync), `SkillsToolProvider` (the three skill tools) |
+| `Tools/` | `EngineToolSync` (engine tools → MCP tools, kept in sync), `SkillsToolProvider` (the agent's guidance, `GetSkillDocumentation`) |
 | `Resources/` | `FeedResources` (feeds → resources), `ResourceScheme` (`feeds`) |
 | `Transport/` | `McpTransport` (stdio or HTTP), `McpTransportSetting` (`MCP_TRANSPORT`, read once) |
 | `Messages/` | The errors, the log lines and the words a client reads (ADR 0009) |

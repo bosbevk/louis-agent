@@ -12,7 +12,7 @@ public class DotNetGuideTests
     public void TheGuide_NamesOnlyToolsThatExist()
     {
         var pack = new DotNetPack();
-        IFileInfo guide = pack.Prompts.GetFileInfo(PackToolset.Guide(pack.Name));
+        IFileInfo guide = pack.Prompts.GetFileInfo(PackToolset.SkillFile(pack.Name));
         using var reader = new StreamReader(guide.CreateReadStream());
         var toolNames = typeof(DotNetTools).GetMethods().Select(m => m.Name).ToHashSet();
 

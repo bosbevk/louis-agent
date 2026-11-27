@@ -6,8 +6,8 @@ using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
-using LouisAgent.Core.Skills;
-using LouisAgent.Core.Skills.Roles;
+using LouisAgent.Core.Prompting;
+using LouisAgent.Core.Prompting.Roles;
 
 namespace LouisAgent.Core.Tests.Agent.Catalog;
 
@@ -203,9 +203,10 @@ public class AgentCatalogTests
     public void APromptPathInTwoPlaces_IsRefused()
     {
         // A pack that ships core's own web guide, and two identities with the same mode file.
-        var pack = new FakePack("mine", prompts: new Dictionary<string, string> { ["toolsets/web.md"] = "# web" });
+        string webSkill = PackToolset.SkillFile(TestToolset.Web.Wire());
+        var pack = new FakePack("mine", prompts: new Dictionary<string, string> { [webSkill] = "# web" });
         Assert.That(Assert.Throws<AgentCatalogException>(() => Catalog(packs: [TestTools.WebPack, pack]))!.Message,
-            Does.Contain("toolsets/web.md"));
+            Does.Contain(webSkill));
 
         var voice = new Dictionary<string, string> { ["agents/shared/voice.md"] = "# shared" };
         var error = Assert.Throws<AgentCatalogException>(() =>
@@ -272,43 +273,21 @@ public class AgentCatalogTests
         Assert.That(taken.Message, Does.Contain("GetToday").And.Contain("engine"), "named as the engine's own");
     }
 
-    /// <summary>The packs' tools count as taken, so a tool the agent builds can't reuse one's name.</summary>
+    /// <summary>
+    /// The packs' tools count among the catalogue's names, each with its toolset; the engine's own tools have none,
+    /// since no toolset builds them.
+    /// </summary>
     [Test]
-    public void ToolNames_CountThePacksTools_SoAnAgentBuiltToolCantTakeOne()
+    public void ToolNames_CountThePacksTools()
     {
         var catalog = Catalog(packs: [new FakePack(), TestTools.WebPack]);
 
         Assert.That(catalog.ToolNames, Does.Contain("FindFakeProducts").And.Contain("FetchUrl"));
         Assert.That(catalog.ToolsetOf("FindFakeProducts"), Is.EqualTo("fakeshop"));
         Assert.That(catalog.ToolsetOf("FetchUrl"), Is.EqualTo(TestToolset.Web.Wire()));
-        Assert.That(catalog.ToolsetOf("CreateTool"), Is.Null, "engine-provided: no toolset builds it");
+        Assert.That(catalog.ToolsetOf("CreateSkill"), Is.Null, "engine-provided: no toolset builds it");
         Assert.That(catalog.ToolNamesOf(catalog.Resolve(["fakeshop"], Context())),
             Is.EqualTo(new[] { "FindFakeProducts" }), "a lookup agent may be handed it");
-
-        // The engine's own check (AgentBuiltTools) reads the names it is given, not core's static list.
-        string skills = Directory.CreateTempSubdirectory("catalog-").FullName;
-        try
-        {
-            var options = new AgentOptions
-            {
-                WorkspaceRoot = skills,
-                SkillsDirectory = skills,
-                RatesUrl = null
-            };
-            var engine = new AgentEngine(SkillLoader.Load(options), new FakeChatClient(), options)
-            {
-                SkillsDirectory = skills,
-                ReservedToolNames = catalog.ToolNames
-            };
-            string refused =
-                engine.CreateTool(
-                    "# Tool: FindFakeProducts\n- Description: mine\n- Implementation:\n```python\nprint(1)\n```\n");
-            Assert.That(refused, Does.Contain("FindFakeProducts").And.Contain("built-in").IgnoreCase);
-        }
-        finally
-        {
-            Directory.Delete(skills, recursive: true);
-        }
     }
 
     /// <summary>Public methods of the tool class are the tools; each becomes a function with its description.</summary>
@@ -337,7 +316,7 @@ public class AgentCatalogTests
         Assert.That(core.Packs, Is.Empty);
         Assert.That(core.Toolsets, Is.EqualTo(ToolsetCatalog.All));
         Assert.That(core.ToolNames,
-            Does.Contain("AskAgent").And.Not.Contain("CreateTool"));
+            Does.Contain("AskAgent").And.Not.Contain("CreateSkill"));
         Assert.That(core.Resolve([CoreToolset.Skills.Wire()], Context()).Select(t => t.Name),
             Is.EqualTo(new[] { CoreToolset.Skills.Wire() }));
     }

@@ -1,4 +1,4 @@
-using LouisAgent.Core.Skills;
+using LouisAgent.Core.Prompting;
 
 namespace LouisAgent.Packs.Triage.Tests;
 

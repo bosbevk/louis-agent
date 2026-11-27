@@ -26,7 +26,7 @@ public sealed class CalculatorPack : IAgentPack
     [
         new(CalculatorToolset.Calculator.Wire(),
             "Sums worked out in code, instead of in the model's head",
-            GuideFile: PackToolset.Guide(CalculatorToolset.Calculator.Wire()),
+            Skill: CalculatorToolset.Calculator.Wire(),
             MissingSettings: _ => [],
             ToolTypes: [typeof(CalculatorTools)],
             CreateTools: _ => [new CalculatorTools()],

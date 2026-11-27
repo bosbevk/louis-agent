@@ -2,7 +2,7 @@ using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
-using LouisAgent.Core.Skills;
+using LouisAgent.Core.Prompting;
 
 namespace LouisAgent.Core.Tests.Hosting;
 

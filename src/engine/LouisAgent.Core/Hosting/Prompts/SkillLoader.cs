@@ -8,26 +8,24 @@ using LouisAgent.Core.Config;
 using LouisAgent.Core.Delegation.Addresses;
 using LouisAgent.Core.Delegation.Messages;
 using LouisAgent.Core.Hosting.Messages;
+using LouisAgent.Core.Hosting.Messages.Holes;
 using LouisAgent.Core.Logging;
-using LouisAgent.Core.Skills;
-using LouisAgent.Core.Skills.Headers;
-using LouisAgent.Core.Skills.Headers.Identities;
-using LouisAgent.Core.Skills.Providers;
-using LouisAgent.Core.Skills.Roles;
+using LouisAgent.Core.Prompting;
+using LouisAgent.Core.Prompting.Headers;
+using LouisAgent.Core.Prompting.Headers.Identities;
+using LouisAgent.Core.Prompting.Providers;
+using LouisAgent.Core.Prompting.Roles;
 using Microsoft.Extensions.Logging;
 
 namespace LouisAgent.Core.Hosting.Prompts;
 
 /// <summary>
 /// The system prompt assembled from skill files (S, CL15, from AgentHost): the principles, the role, the identity's
-/// skills (F129), the guides, the function skills.
+/// skills (F129) and the guides.
 /// </summary>
 public static class SkillLoader
 {
     private static readonly ILogger Log = AgentLogging.For<CompositeSkillProvider>();
-
-    /// <summary>The toolset the function skill files come with (ExecuteSkill runs their procedures).</summary>
-    private static readonly string SkillsToolset = CoreToolset.Skills.Wire();
 
     /// <summary>The system prompt with every toolset's guide (hosts that load every toolset, and tests).</summary>
     public static ISkillProvider Load(AgentOptions agent) => Load(agent, ToolsetCatalog.All);
@@ -35,11 +33,10 @@ public static class SkillLoader
     /// <summary>
     /// Loads the system prompt for a toolset profile (F5): the role, at level 0 its identity's skills (F129: the always
     /// ones, then the list of the on-demand ones), the guide of each of <paramref name="toolsets"/> and no other
-    /// (docs/CLAUDE.md, *Adding a toolset*), then, when the profile has the skills toolset, every function skill the
-    /// agent wrote (agent/functions/*.md in the skills folder; CL9). Our own skill files are plain markdown read by
-    /// <see cref="MarkdownSkillProvider"/>; a provider class of its own is only for skills we don't control.
-    /// Built-in files are read only from the assembly (<see cref="SkillFileSource"/>, CL8 step 4); only what the agent
-    /// wrote (its function files) comes from the skills folder (<see cref="SkillFolder"/>).
+    /// (docs/CLAUDE.md, *Adding a toolset*). Our own skill files are plain markdown read by
+    /// <see cref="MarkdownSkillProvider"/>; a provider class of its own is only for skills we don't control. Every
+    /// file is read from the assembly (<see cref="SkillFileSource"/>, CL8 step 4): the skills the agent keeps are no
+    /// part of the prompt, since the door reads them (F97.1).
     /// </summary>
     /// <param name="agent">The instance's settings: where its skills are, and its default mode.</param>
     /// <param name="toolsets">The session's toolsets: their guides, and no other, go in the prompt.</param>
@@ -69,7 +66,7 @@ public static class SkillLoader
             // No role and no identity's default: only the principles and the guides.
         }
         else if (role is null && level != RoleLevel.Agent && Read(agent, roleFile) is { } mode)
-            composite.AddProvider(MarkdownSkillProvider.FromText(RoleCatalog.ModeParts(mode.Text).Voice));
+            composite.AddProvider(MarkdownSkillProvider.FromText(RoleCatalog.ModeParts(mode).Voice));
         else
             AddBuiltIn(agent, composite, roleFile);
 
@@ -82,7 +79,7 @@ public static class SkillLoader
 
         // The guides of this profile's toolsets only, so the prompt never describes tools the session doesn't have
         var profile = toolsets.ToList();
-        foreach (string fileName in ToolsetCatalog.GuideFiles(profile))
+        foreach (string fileName in ToolsetCatalog.SkillFilesOf(profile))
             AddBuiltIn(agent, composite, fileName);
         // Whom it may ask (F127.3.1): the identity's Calls, the same list AskAgent checks, so the two never differ;
         // its lookup agents are no agents to ask, and the roles that hand them work name them (F127.5).
@@ -98,20 +95,6 @@ public static class SkillLoader
                     MessageText.Format(SubSessionToolMessage.AgentYouMayAsk, new { Address = call }))
             ])));
 
-        // Function skill files are procedures ExecuteSkill runs: they come with the skills toolset, like a guide with
-        // its tools. A profile without it (a product's chats with only their own toolsets) gets its mode and its
-        // guides, no skill file.
-        if (profile.All(t => t.Name != SkillsToolset)) return composite;
-
-        // Every function skill the agent wrote (CL9: no setting picks one; none is built in any more)
-        foreach (string file in SkillFolder.Discover(agent).Where(f =>
-                     !SkillFiles.IsBuiltIn(SkillFiles.Function(Path.GetFileNameWithoutExtension(f)))))
-        {
-            composite.AddProvider(new MarkdownSkillProvider(file));
-            Log.Log(LogLevel.Information, HostingLogMessage.SkillsFileDiscovered,
-                new { File = Path.GetFileName(file) });
-        }
-
         return composite;
     }
 
@@ -125,13 +108,10 @@ public static class SkillLoader
             : [];
 
     /// <summary>
-    /// A skill file as the model reads it: a built-in one without its header (CL27), which is for the loader; one the
-    /// agent wrote on disk as it is.
+    /// A prompt file as the model reads it, without its header (CL27), which is for the loader.
     /// </summary>
-    internal static (string Text, bool FromDisk)? Read(AgentOptions agent, string fileName) =>
-        SkillFolder.Read(agent, fileName) is { } file
-            ? (file.FromDisk ? file.Text : PromptCatalog.Get(fileName)?.Body ?? file.Text, file.FromDisk)
-            : null;
+    internal static string? Read(AgentOptions agent, string fileName) =>
+        SkillFolder.Read(agent, fileName) is { } file ? PromptCatalog.Get(fileName)?.Body ?? file : null;
 
     /// <summary>
     /// The skills of the identity a session speaks for (F129): its mode's, named or the default, at level 0 only,
@@ -168,10 +148,10 @@ public static class SkillLoader
     /// <summary>Adds a skill file to the prompt (<see cref="Read"/>); a missing one is skipped.</summary>
     private static void AddBuiltIn(AgentOptions agent, CompositeSkillProvider composite, string fileName)
     {
-        if (Read(agent, fileName) is not { } file) return;
-        composite.AddProvider(MarkdownSkillProvider.FromText(file.Text));
-        Log.Log(LogLevel.Information,
-            file.FromDisk ? HostingLogMessage.SkillProviderLoaded : HostingLogMessage.SkillFileEmbedded,
-            new { Provider = fileName });
+        if (Read(agent, fileName) is not { } text) return;
+
+        composite.AddProvider(MarkdownSkillProvider.FromText(text));
+        var loaded = new SkillFileEmbeddedHoles(fileName);
+        Log.Log(LogLevel.Information, HostingLogMessage.SkillFileEmbedded, loaded);
     }
 }

@@ -26,8 +26,6 @@ public class FileSizeTests
     /// </summary>
     private static readonly HashSet<string> Oversized =
     [
-        "src/engine/LouisAgent.Core/Agent/EngineTools/AgentBuiltTools.cs",
-        "src/engine/LouisAgent.Core/Agent/EngineTools/SkillTools.cs",
         "packs/tools/LouisAgent.Packs.DotNet/DotNetTools.cs",
         "src/engine/LouisAgent.Core.Web/Browsing/ChromeWebBrowser.cs",
         "src/tools/LouisAgent.UsageProbe/Program.cs",

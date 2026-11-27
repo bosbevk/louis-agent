@@ -1,6 +1,6 @@
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Agent.Catalog;
-using LouisAgent.Core.Skills.Providers;
+using LouisAgent.Core.Prompting.Providers;
 using ModelContextProtocol.Server;
 
 namespace LouisAgent.Mcp.Tests;

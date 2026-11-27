@@ -14,8 +14,8 @@ using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Sessions.Replay;
-using LouisAgent.Core.Skills.Roles;
 using LouisAgent.Core.Delegation;
+using LouisAgent.Core.Prompting.Roles;
 using LouisAgent.SessionStream.Wire.Requests;
 
 namespace LouisAgent.Api.Tests.Sessions;
@@ -111,17 +111,17 @@ public class AgentSessionsTests
         var session = (await Sessions().CreateAsync(new SessionRequest()));
 
         Assert.That(session.Toolsets, Is.EqualTo(AgentSessions.DefaultToolsets));
-        Assert.That(Names(session), Does.Contain("CreateTool").And.Not.Contain("ReadWorkspaceFile"));
+        Assert.That(Names(session), Does.Contain("CreateSkill").And.Not.Contain("ReadWorkspaceFile"));
     }
 
     /// <summary>
-    /// An empty list really means none: only the two tools every session has.
+    /// An empty list really means none: only the tool every session has, the clock.
     /// </summary>
     [Test]
     public async Task AnEmptyList_GivesNoToolsets()
     {
         Assert.That(Names((await Sessions().CreateAsync(new SessionRequest([])))),
-            Is.EquivalentTo(new[] { "ExecuteSkill", "GetToday" }));
+            Is.EquivalentTo(new[] { "GetToday" }));
     }
 
     /// <summary>
@@ -537,7 +537,7 @@ public class AgentSessionsTests
         Assert.That(
             async () => (await sessions.CreateAsync(new SessionRequest([CoreToolset.Skills.Wire()], ParentOf(withWeb),
                 Depth: 2,
-                Role: TestAgent.Lookup, Tool: "ExecuteSkill"))),
+                Role: TestAgent.Lookup, Tool: "ReloadSkills"))),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("never handed"));
     }
 

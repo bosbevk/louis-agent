@@ -70,7 +70,7 @@ holds them equal to the library's. A card this pack calls shown is a card the wi
 ### 3. One toolset, and its guide
 
 `SitePack` has the one toolset, `site`, always on, with both tool classes in it and its guide,
-`toolsets/site.md`. The guide says when to move the page, and when to show a card: before anything goes on the
+`skills/site/SKILL.md`. The guide says when to move the page, and when to show a card: before anything goes on the
 visitor's behalf. It says when to offer: for a decision, and at every stop of a walkthrough (the next stop, another
 section, or stop here). It says when to ask with a form: for whatever the visitor must write, never for a choice that
 only says to type. And it says never to act on an answer before it comes back.

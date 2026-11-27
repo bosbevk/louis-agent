@@ -18,7 +18,7 @@ public sealed class AccountReaderPack(IChatClient model) : IAgentPack
     /// <summary>Its one guide, held in memory: read a file the user sent with the tool, by its name.</summary>
     public static readonly IFileProvider Guides = new FakePrompts(new Dictionary<string, string>
     {
-        [PackToolset.Guide(PackName)] =
+        [PackToolset.SkillFile(PackName)] =
             "# accountreader\n\nWhen the user sends a photo or a PDF of an account, read it with `ReadAccount`, " +
             "giving it the file's name, and answer with the account number and the total it found.\n"
     });

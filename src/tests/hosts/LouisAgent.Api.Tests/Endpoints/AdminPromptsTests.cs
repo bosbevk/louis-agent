@@ -1,7 +1,7 @@
 using System.Net;
 using System.Text.Json;
 using LouisAgent.Choices;
-using LouisAgent.Core.Skills;
+using LouisAgent.Core.Prompting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.TestHost;
 

@@ -4,7 +4,7 @@ using System.Diagnostics;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Agent.Turns;
 using LouisAgent.Core.Agent.Turns.Guards;
-using LouisAgent.Core.Skills.Providers;
+using LouisAgent.Core.Prompting.Providers;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Sinks;
 using Microsoft.Extensions.AI;

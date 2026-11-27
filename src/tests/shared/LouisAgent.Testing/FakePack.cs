@@ -23,8 +23,15 @@ public sealed class FakePack(
 {
     public string Name => name;
     public bool ComesBeforeTheEngine => comesBeforeTheEngine;
-    public IReadOnlyList<PackToolset> Toolsets { get; } = toolsets ?? [Toolset(name, typeof(FakeShopTools), _ => [new FakeShopTools()])];
-    public IFileProvider Prompts { get; } = new FakePrompts(prompts ?? new Dictionary<string, string> { [$"toolsets/{name}.md"] = $"# {name}\n\nA guide.\n" });
+
+    public IReadOnlyList<PackToolset> Toolsets { get; } =
+        toolsets ?? [Toolset(name, typeof(FakeShopTools), _ => [new FakeShopTools()])];
+
+    public IFileProvider Prompts { get; } = new FakePrompts(prompts ?? new Dictionary<string, string>
+    {
+        [PackToolset.SkillFile(name)] = $"# {name}\n\nA guide.\n"
+    });
+
     public IReadOnlyList<string> Requires => requires ?? [];
     public IReadOnlyList<IDataFeed> Feeds => feeds ?? [];
     public IReadOnlyList<IDataImport> Imports => imports ?? [];
@@ -32,5 +39,6 @@ public sealed class FakePack(
 
     /// <summary>A toolset definition shaped like the catalogue's own, for a tool class a test names.</summary>
     public static PackToolset Toolset(string name, Type toolType, Func<IPackContext, IReadOnlyList<object>> create) =>
-        new(name, $"The {name} toolset", GuideFile: $"toolsets/{name}.md", MissingSettings: _ => [], CreateTools: create, ToolTypes: [toolType]);
+        new(name, $"The {name} toolset", Skill: name, MissingSettings: _ => [], CreateTools: create,
+            ToolTypes: [toolType]);
 }

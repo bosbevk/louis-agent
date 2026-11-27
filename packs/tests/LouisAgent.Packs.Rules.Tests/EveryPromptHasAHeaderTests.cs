@@ -1,9 +1,9 @@
 using LouisAgent.Choices;
 using LouisAgent.Composition.Prompts;
 using LouisAgent.Composition.Packs;
-using LouisAgent.Core.Skills;
-using LouisAgent.Core.Skills.Headers;
-using LouisAgent.Core.Skills.Roles;
+using LouisAgent.Core.Prompting;
+using LouisAgent.Core.Prompting.Headers;
+using LouisAgent.Core.Prompting.Roles;
 
 namespace LouisAgent.Packs.Rules.Tests;
 
@@ -53,6 +53,19 @@ public class EveryPromptHasAHeaderTests
     }
 
     /// <summary>
+    /// F97.1 step 17: no prompt names a tool that's gone, or the way a skill was run before UseSkill, so the model is
+    /// never sent to a call that fails.
+    /// </summary>
+    [TestCase("ExecuteSkill")]
+    [TestCase("CreateSkillFile")]
+    [TestCase("CreateTool")]
+    [TestCase("ListAgentTools")]
+    [TestCase("SKILL_ARG_")]
+    public void NoPrompt_NamesAToolThatIsGone(string gone) =>
+        Assert.That(Prompts().Where(p => p.Text.Contains(gone, StringComparison.Ordinal)).Select(p => p.Path),
+            Is.Empty);
+
+    /// <summary>
     /// Each prompt has a header, which the reader takes: its name is its file's, with its description.
     /// </summary>
     [Test]
@@ -97,11 +110,19 @@ public class EveryPromptHasAHeaderTests
     /// <summary>
     /// The level a prompt's folders stand for, the deepest on its path (ADR 0133): an agent's voice is under
     /// <c>agents/</c>, its subagent's a few folders deeper, under <c>subagents/</c>, and its lookup agent's under
-    /// <c>lookups/</c>; the lookup agents' base, <c>lookup.md</c>, is theirs too (CL68.3); none outside them.
+    /// <c>lookups/</c>; the lookup agents' base, <c>lookup.md</c>, is theirs too (CL68.3); none outside them. A
+    /// <c>SKILL.md</c>'s own folder is the skill's name, never a level: the agents toolset's built-in skill is
+    /// <c>skills/agents/SKILL.md</c> (F97.1).
     /// </summary>
     private static RoleLevel? LevelOf(string path) => Path.GetFileName(path) == PromptFileName.Lookup.Wire()
         ? RoleLevel.Lookup
-        : path.Split('/').SkipLast(1).Select(LevelOfFolder).LastOrDefault(level => level is not null);
+        : FoldersOf(path).Select(LevelOfFolder).LastOrDefault(level => level is not null);
+
+    /// <summary>
+    /// The folders a prompt's level is read from: every one on its path, a skill's own folder left out.
+    /// </summary>
+    private static IEnumerable<string> FoldersOf(string path) =>
+        path.Split('/').SkipLast(Path.GetFileName(path) == PromptFileName.Skill.Wire() ? 2 : 1);
 
     /// <summary>The level one folder stands for, or none: a folder's name is parsed once, then switched on.</summary>
     /// <remarks>A switch on the folder, one arm per level, read like a table (ADR 0051, ADR 0043).</remarks>

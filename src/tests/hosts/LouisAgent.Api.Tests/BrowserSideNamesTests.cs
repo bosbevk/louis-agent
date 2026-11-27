@@ -3,7 +3,7 @@ using LouisAgent.Composition.Packs.Screens;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Components.Screens.Table;
-using CoreScriptLanguage = LouisAgent.Core.Skills.Languages.ScriptLanguage;
+using CoreScriptLanguage = LouisAgent.Core.Prompting.Languages.ScriptLanguage;
 using WebScriptLanguage = LouisAgent.Web.Api.ScriptLanguage;
 
 namespace LouisAgent.Api.Tests;

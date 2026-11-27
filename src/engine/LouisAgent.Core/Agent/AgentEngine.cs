@@ -2,6 +2,7 @@ using LouisAgent.Composition.Logging;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Agent.Commands;
 using LouisAgent.Core.Agent.EngineTools;
+using LouisAgent.Core.Agent.EngineTools.Skills;
 using LouisAgent.Core.Agent.Messages;
 using LouisAgent.Core.Agent.Turns;
 using LouisAgent.Core.Agent.Turns.Pacing;
@@ -11,9 +12,14 @@ using LouisAgent.Core.Llm.UsageMapping;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Pricing.Rates;
-using LouisAgent.Core.Skills;
 using LouisAgent.Composition.Tools.Scripts;
+using LouisAgent.Core.Agent.Tools;
 using LouisAgent.Core.Agent.Turns.Guards;
+using LouisAgent.Core.Prompting;
+using LouisAgent.Core.Prompting.Headers.Agent.Door;
+using LouisAgent.Core.Prompting.Headers.Agent.Drafting;
+using LouisAgent.Core.Prompting.Headers.Agent.Library;
+using LouisAgent.Core.Prompting.Headers.Agent.Running;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Sinks;
 using Microsoft.Extensions.AI;
@@ -33,8 +39,8 @@ public class AgentEngine
     /// <summary>The engine's own lines: a model without tools.</summary>
     private static readonly ILogger Log = AgentLogging.For<AgentEngine>();
 
-    /// <summary>The skills: the system prompt, running one, writing and reloading them.</summary>
-    private readonly SkillTools _skillTools;
+    /// <summary>The reload of the skills folder, the model's <c>ReloadSkills</c> and the engine's.</summary>
+    private readonly SkillReloadTools _reload;
 
     /// <summary>The tools the model is offered.</summary>
     private readonly ToolRegistry _registry;
@@ -58,8 +64,11 @@ public class AgentEngine
     /// <summary>What a chat resumed on moved tools does with its saved thinking: the provider's way.</summary>
     private readonly IStaleThinking _staleThinking;
 
-    /// <summary>Combined default instructions and skill documentation used as the system prompt.</summary>
-    public string SkillDocumentation => _skillTools.Documentation;
+    /// <summary>
+    /// The system prompt: the principles, the role, the identity's skills and the guides, read once when the engine
+    /// is built, since all of it is built in.
+    /// </summary>
+    public string SkillDocumentation { get; }
 
     /// <summary>
     /// Which agent this is, as a trace names it (F52): the factory gives a role's engine its role and a session's
@@ -91,57 +100,38 @@ public class AgentEngine
     /// <summary>The tool-call guards in this engine's pipeline (tests call them directly).</summary>
     internal ToolCallGuards Guards => _guards;
 
-    /// <summary>The currently loaded skills (refreshed by <see cref="ReloadSkills"/>).</summary>
-    public IReadOnlyCollection<MarkdownSkillLoader.SkillDef> Skills => _skillTools.Skills;
-
     /// <summary>
-    /// Raised after agent-built tools are added or removed, so hosts that publish <see cref="Tools"/> can resync.
+    /// Raised when a tool's description changes, so hosts that publish <see cref="Tools"/> can resync: since F97.1, an
+    /// approval or a reload changes the approved skills <c>UseSkill</c> lists.
     /// </summary>
     public event Action? ToolsChanged
     {
-        add => _agentBuiltTools.ToolsChanged += value;
-        remove => _agentBuiltTools.ToolsChanged -= value;
+        add => _library.Value.Changed += value;
+        remove => _library.Value.Changed -= value;
     }
 
     /// <summary>
-    /// The skills folder; <see cref="CreateSkillFile"/> writes into its agents/functions/; null disables skill
-    /// authoring.
+    /// The skills folder: the approved skills <c>UseSkill</c> reaches, and the drafts <c>CreateSkill</c> writes into
+    /// its <c>drafts/</c>; null leaves the agent no skills of its own.
     /// </summary>
-    public string? SkillsDirectory
-    {
-        get => _skillTools.SkillsDirectory;
-        init => _skillTools.SkillsDirectory = value;
-    }
+    public string? SkillsDirectory { get; init; }
 
     /// <summary>
     /// Reasoning effort for each turn (the model's thinking is streamed to hosts); null disables thinking.
     /// </summary>
     public ReasoningEffort? Thinking { get; init; }
 
-    /// <summary>Rebuilds the skill set from disk for <see cref="ReloadSkills"/>; null disables reloading.</summary>
-    public Func<ISkillProvider>? SkillReloader
-    {
-        get => _skillTools.SkillReloader;
-        init => _skillTools.SkillReloader = value;
-    }
-
-    /// <summary>Approved agent-built tools live here (*.tool.md); new ones wait in its 'pending' subfolder.</summary>
-    public string? ToolsDirectory => _agentBuiltTools.ToolsDirectory;
-
     /// <summary>
-    /// The names an agent-built tool may not take (CL15): every tool a toolset of the host's catalogue can register,
-    /// loaded here or not. Core's by default; <c>AgentEngineFactory</c> sets the catalogue's, so a pack's count too.
+    /// The skills in the skills folder, read when first needed, since the folder is set after the engine is built
+    /// (F97.1).
     /// </summary>
-    public IReadOnlySet<string> ReservedToolNames { get; init; } = AgentCatalog.CoreOnly.ToolNames;
-
-    /// <summary>The tools the agent wrote itself, approved or waiting.</summary>
-    private readonly AgentBuiltTools _agentBuiltTools;
+    private readonly Lazy<SkillLibrary> _library;
 
     /// <summary>Builds the agent's parts once and registers its tools; a model without tools gets none.</summary>
     /// <param name="toolsets">
-    /// Objects whose public methods become the agent's tools (plus <see cref="ExecuteSkill"/>): a session's catalogue
-    /// toolsets (<c>AgentEngineFactory</c>), or another agent's own tools, such as the orchestrator's. Null registers
-    /// no tool object, only <see cref="ExecuteSkill"/> and the self-extension tools.
+    /// Objects whose public methods become the agent's tools (plus the clock): a session's catalogue toolsets
+    /// (<c>AgentEngineFactory</c>), or another agent's own tools, such as the orchestrator's. Null registers no tool
+    /// object, only the clock and the self-extension tools.
     /// </param>
     /// <param name="usageSink">Where one usage record per model request goes; null records nothing.</param>
     /// <param name="usageMapper">
@@ -155,8 +145,8 @@ public class AgentEngine
     /// (<c>LlmClientFactory.CreateStaleThinking</c>); null strips it, which every provider takes.
     /// </param>
     /// <param name="selfExtension">
-    /// On a toolsets engine, also register the self-extension tools (CreateSkillFile, ReloadSkills, CreateTool,
-    /// ListAgentTools): the <c>skills</c> toolset. Ignored when <paramref name="toolsets"/> is null, which always
+    /// On a toolsets engine, also register the self-extension tools (UseSkill, CreateSkill, ReloadSkills): the
+    /// <c>skills</c> toolset. Ignored when <paramref name="toolsets"/> is null, which always
     /// registers them.
     /// </param>
     public AgentEngine(ISkillProvider skillProvider, IChatClient chatClient, AgentOptions options,
@@ -172,10 +162,15 @@ public class AgentEngine
         _registry = new ToolRegistry(supportsTools, replay);
         var python = new PythonRunner(WorkspaceRoot);
         var powerShell = new PowerShellRunner(WorkspaceRoot);
-        _skillTools = new SkillTools(skillProvider, options, WorkspaceRoot, python, powerShell);
-        _agentBuiltTools = new AgentBuiltTools(_registry, supportsTools, WorkspaceRoot, python, powerShell,
-            () => SkillsDirectory, () => ReservedToolNames);
-        _commands = new UserCommands(_agentBuiltTools, _skillTools, () => Display);
+        SkillDocumentation = Normalise(skillProvider.Documentation);
+        // The one door to every skill (F97.1): the library and the door are made when first used.
+        _library = new Lazy<SkillLibrary>(() => SkillLibrary.Read(SkillsDirectory ?? ""));
+        _commands = new UserCommands(() => _library.Value, () => Display);
+        var skillRunner = SkillRunner.For(python, powerShell, new BashRunner(WorkspaceRoot));
+        var door = new Lazy<SkillDoor>(() => new SkillDoor(_library.Value, skillRunner));
+        var doorTools = new SkillDoorTools(() => door.Value);
+        var making = new SkillMakingTools(() => new SkillDrafting(SkillsDirectory ?? "", skillRunner));
+        _reload = new SkillReloadTools(() => _library.Value.Reload());
 
         RecordsUsage = usageSink is not null;
         _guards = new ToolCallGuards(_registry,
@@ -193,8 +188,18 @@ public class AgentEngine
             return;
         }
 
-        OwnTools.Register(_registry, _skillTools, _agentBuiltTools, options, toolsets, selfExtension, clock);
+        var agentSkills = OwnTools.AgentSkills(doorTools, () => SkillListing.LinesFor(_library.Value.Approved),
+            making, _reload);
+        OwnTools.Register(_registry, agentSkills, options, toolsets, selfExtension, clock);
     }
+
+    /// <summary>
+    /// Starts a builder for an agent: its skills, its model and its settings are given here, and each other part is a
+    /// fluent call on <see cref="AgentEngineBuilder"/>. Prefer it to the constructor, which it calls with the defaults.
+    /// </summary>
+    public static AgentEngineBuilder CreateBuilder(ISkillProvider skillProvider, IChatClient chatClient,
+        AgentOptions options) =>
+        new(skillProvider, chatClient, options);
 
     /// <summary>
     /// Keeps the one tool named and drops every other, for a lookup agent's one task (F30; see
@@ -251,48 +256,25 @@ public class AgentEngine
     }
 
     /// <summary>
-    /// Runs a loaded skill (the <c>ExecuteSkill</c> tool; see <see cref="SkillTools.ExecuteSkill"/>).
+    /// Reads the skills folder again (the <c>ReloadSkills</c> tool, F97.1), so a skill dropped in by hand is reachable
+    /// now and listed in the next chat.
     /// </summary>
-    public string ExecuteSkill(string skillName, string jsonArgs = "{}") =>
-        _skillTools.ExecuteSkill(skillName, jsonArgs);
+    public string ReloadSkills() => _reload.ReloadSkills();
 
     /// <summary>
-    /// Saves and loads a skills file (the <c>CreateSkillFile</c> tool; see <see cref="SkillTools.CreateSkillFile"/>).
-    /// </summary>
-    public string CreateSkillFile(string name, string markdown, bool overwrite = false) =>
-        _skillTools.CreateSkillFile(name, markdown, overwrite);
-
-    /// <summary>
-    /// Re-reads the skills from disk (the <c>ReloadSkills</c> tool; see <see cref="SkillTools.ReloadSkills"/>).
-    /// </summary>
-    public string ReloadSkills() => _skillTools.ReloadSkills();
-
-    /// <summary>
-    /// Builds an agent tool (the <c>CreateTool</c> tool; see <see cref="AgentBuiltTools.CreateTool"/>).
-    /// </summary>
-    public string CreateTool(string definition, bool overwrite = false) =>
-        _agentBuiltTools.CreateTool(definition, overwrite);
-
-    /// <summary>
-    /// The agent-built tools (the <c>ListAgentTools</c> tool; see <see cref="AgentBuiltTools.ListAgentTools"/>).
-    /// </summary>
-    public string ListAgentTools() => _agentBuiltTools.ListAgentTools();
-
-    /// <summary>
-    /// Loads approved tools from <see cref="ToolsDirectory"/>. Called once by the host after construction.
-    /// </summary>
-    public int LoadApprovedTools() => _agentBuiltTools.LoadApprovedTools();
-
-    /// <summary>
-    /// Handles commands typed by the user (never exposed to the model): /tools, /approve &lt;Name&gt;,
+    /// Handles commands typed by the user (never exposed to the model): /skills, /approve &lt;Name&gt;,
     /// /reject &lt;Name&gt;, /usage (<see cref="UserCommands"/>). Returns the reply, or null when the input is not one
     /// of these commands.
     /// </summary>
     /// <param name="sessionUsage">
     /// The session's usage records so far, for /usage (F3); null when the host doesn't track usage.
     /// </param>
-    public string? HandleUserCommand(string input, IReadOnlyList<UsageRecord>? sessionUsage = null) =>
-        _commands.Handle(input, sessionUsage);
+    /// <param name="chat">
+    /// The chat the command was typed in, which tells its model what /approve or /reject did.
+    /// </param>
+    public string? HandleUserCommand(string input, IReadOnlyList<UsageRecord>? sessionUsage = null,
+        Conversation? chat = null) =>
+        _commands.Handle(input, sessionUsage, chat);
 
     /// <summary>
     /// What the model is sent must be the same bytes on every machine. Text read from the skill files, and a

@@ -1,23 +1,23 @@
 {
   "kind": "cards",
   "title": "Add a skill at a glance",
-  "caption": "A function skill is a markdown file: written, approved, then loaded with the skills toolset.",
+  "caption": "A skill is a folder: made by the agent or dropped in by you, a draft until you approve it, then every chat's through UseSkill.",
   "cards": {
     "rows": [
       { "cards": [
-        { "id": "skill", "icon": "file", "title": "A function skill", "code": "skills/agents/functions", "look": "highlight",
-          "text": "A markdown file the agent runs with ExecuteSkill." }
+        { "id": "skill", "icon": "file", "title": "A skill", "code": "skills/{name}/SKILL.md", "look": "highlight",
+          "text": "A SKILL.md, its parameters and one script that reads JSON on stdin." }
       ] },
       { "cards": [
-        { "id": "write", "icon": "code", "title": "Write the file", "text": "Skill sections with an Execution fence." },
-        { "id": "approve", "icon": "checks", "title": "Approve it", "text": "From pending to every session." },
-        { "id": "load", "icon": "stack", "title": "Who gets it", "text": "Sessions with the skills toolset." }
+        { "id": "make", "icon": "code", "title": "Make it", "text": "CreateSkill keeps it only once its example runs." },
+        { "id": "approve", "icon": "checks", "title": "Approve it", "text": "From drafts/ to every chat, with /approve." },
+        { "id": "use", "icon": "stack", "title": "Use it", "text": "UseSkill reads it by name, or runs it with arguments." }
       ] }
     ],
     "links": [
-      { "from": "skill", "to": "write" },
+      { "from": "skill", "to": "make" },
       { "from": "skill", "to": "approve" },
-      { "from": "skill", "to": "load" }
+      { "from": "skill", "to": "use" }
     ]
   }
 }

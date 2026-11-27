@@ -2,7 +2,7 @@ using LouisAgent.Composition.Logging.Content;
 using System.Text.Json;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Logging;
-using LouisAgent.Core.Skills.Providers;
+using LouisAgent.Core.Prompting.Providers;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Acp.Tests.Turns;

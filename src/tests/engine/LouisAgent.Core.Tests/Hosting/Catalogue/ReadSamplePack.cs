@@ -26,7 +26,7 @@ public sealed class ReadSamplePack(IChatClient model) : IAgentPack
     public IReadOnlyList<PackToolset> Toolsets { get; } =
     [
         FakePack.Toolset(PackName, typeof(ReadSampleTools), context => [new ReadSampleTools(model, context.Files)])
-            with { GuideFile = null }
+            with { Skill = null }
     ];
 
     /// <inheritdoc/>

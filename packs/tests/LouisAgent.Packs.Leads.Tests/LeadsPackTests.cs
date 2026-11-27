@@ -1,4 +1,5 @@
 using LouisAgent.Choices;
+using LouisAgent.Composition.Packs;
 using LouisAgent.Packs.Leads.Sending;
 using LouisAgent.Packs.Leads.Tools;
 
@@ -10,20 +11,24 @@ namespace LouisAgent.Packs.Leads.Tests;
 /// </summary>
 public class LeadsPackTests
 {
-    /// <summary>Its name, its toolset and its guide are the pack's own, and the guide says to ask before sending.</summary>
+    /// <summary>
+    /// Its name, its toolset and its guide are the pack's own, and the guide says to ask before sending.
+    /// </summary>
     [Test]
     public void TheGuide_ComesFromThePack()
     {
         var pack = new LeadsPack(new LeadsOptions());
 
-        using var reader = new StreamReader(pack.Prompts.GetFileInfo(pack.Toolsets[0].GuideFile!).CreateReadStream());
+        using var reader =
+            new StreamReader(
+                pack.Prompts.GetFileInfo(PackToolset.SkillFile(pack.Toolsets[0].Skill!)).CreateReadStream());
         string guide = reader.ReadToEnd();
 
         Assert.Multiple(() =>
         {
             Assert.That(pack.Name, Is.EqualTo(LeadsToolset.Leads.Wire()));
             Assert.That(pack.Toolsets.Select(t => t.Name), Is.EqualTo(new[] { LeadsToolset.Leads.Wire() }));
-            Assert.That(pack.Toolsets[0].GuideFile, Is.EqualTo("toolsets/leads.md"));
+            Assert.That(pack.Toolsets[0].Skill, Is.EqualTo(LeadsToolset.Leads.Wire()));
             Assert.That(guide, Does.Contain("ask if you may send it").And.Contain("never send twice"));
         });
     }
@@ -51,7 +56,11 @@ public class LeadsPackTests
         Assert.Multiple(() =>
         {
             Assert.That(LeadsPack.Sender(new LeadsOptions { To = "a@b.test" }, null, null), Is.TypeOf<LogLeadSender>());
-            Assert.That(LeadsPack.Sender(new LeadsOptions { To = "a@b.test", ApiKey = "re_x" }, null, null), Is.TypeOf<ResendLeadSender>());
+            Assert.That(LeadsPack.Sender(new LeadsOptions
+            {
+                To = "a@b.test",
+                ApiKey = "re_x"
+            }, null, null), Is.TypeOf<ResendLeadSender>());
         });
     }
 

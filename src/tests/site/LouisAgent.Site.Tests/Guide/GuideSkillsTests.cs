@@ -1,8 +1,9 @@
 using LouisAgent.Choices;
+using LouisAgent.Composition.Packs;
 using LouisAgent.Composition.Prompts;
 using System.Reflection;
-using LouisAgent.Core.Skills;
-using LouisAgent.Core.Skills.Headers;
+using LouisAgent.Core.Prompting.Headers;
+using LouisAgent.Core.Prompting;
 using LouisAgent.Identities.Guide;
 using LouisAgent.Packs.Site;
 using LouisAgent.Site.Pages;
@@ -122,7 +123,9 @@ public class GuideSkillsTests
     [Test]
     public void StopHere_Ends()
     {
-        using var reader = new StreamReader(new SitePack().Prompts.GetFileInfo("toolsets/site.md").CreateReadStream());
+        using var reader = new StreamReader(new SitePack().Prompts
+            .GetFileInfo(PackToolset.SkillFile(SiteToolset.Site.Wire()))
+            .CreateReadStream());
         string siteGuide = reader.ReadToEnd();
         string walk = Skill("walk-a-page").Body;
 

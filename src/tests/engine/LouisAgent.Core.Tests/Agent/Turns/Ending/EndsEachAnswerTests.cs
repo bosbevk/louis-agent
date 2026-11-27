@@ -1,7 +1,7 @@
 using LouisAgent.Composition.Sessions;
 using LouisAgent.Composition.Tools;
 using LouisAgent.Core.Agent;
-using LouisAgent.Core.Skills.Providers;
+using LouisAgent.Core.Prompting.Providers;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Core.Tests.Agent.Turns.Ending;

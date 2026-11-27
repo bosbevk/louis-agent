@@ -1,6 +1,5 @@
 using LouisAgent.Composition.Messages;
-using LouisAgent.Core.Messages.Holes.Approvals;
-using LouisAgent.Core.Messages.Holes.SkillFiles;
+using LouisAgent.Core.Messages.Holes.Drafts;
 using LouisAgent.Core.Messages.Holes.UsageFigures;
 using LouisAgent.Core.Messages.Holes.UsageLines;
 using System.ComponentModel;
@@ -67,71 +66,41 @@ public enum UserText
     [Holes(typeof(UsageRequestsHoles))]
     UsageRequests,
 
-    [Description(" and stopped it: it no longer runs, in an open chat or the next")]
-    ToolRejectedFromSession,
-
-    [Description("Tool building is not available.")]
-    ToolBuildingNotAvailable,
-
     [Description("Usage: /approve <Name>")]
     ApproveUsage,
 
     [Description("Usage: /reject <Name>")] RejectUsage,
 
-    [Description("No pending tool or skill file named '{Name}'. Use /tools to see what is pending.")]
-    [Holes(typeof(NoPendingToolSeeToolsHoles))]
-    NoPendingToolSeeTools,
-
-    [Description("Cannot approve '{Name}': the definition is invalid ({Errors}).")]
-    [Holes(typeof(CannotApproveHoles))]
-    CannotApprove,
-
-    [Description("An approved tool '{Name}' already exists; remove {Path} first.")]
-    [Holes(typeof(ApprovedToolAlreadyThereHoles))]
-    ApprovedToolAlreadyThere,
-
-    [Description("Approved '{Name}'. Saved to {Path}; it loads in every future session, from your next chat on.")]
-    [Holes(typeof(ToolApprovedHoles))]
-    ToolApproved,
-
-    [Description("Rejected '{Name}': deleted the pending definition{Removed}.")]
-    [Holes(typeof(ToolRejectedHoles))]
-    ToolRejected,
-
-    [Description("No pending tool or skill file named '{Name}'.")]
-    [Holes(typeof(NoPendingToolHoles))]
-    NoPendingTool,
-
-    [Description("\n\nApprove with /approve <Name>, discard with /reject <Name>.")]
-    ToolsHint,
-
-    [Description(
-        "Approved skill file '{Name}'. Moved to {Path}; every later session with the skills toolset loads it, from " +
-        "your next chat on.")]
-    [Holes(typeof(SkillFileApprovedHoles))]
-    SkillFileApproved,
-
-    [Description("Rejected skill file '{Name}': deleted {Path}{Removed}.")]
-    [Holes(typeof(SkillFileRejectedHoles))]
-    SkillFileRejected,
-
-    [Description(" and unloaded it from this session")]
-    SkillFileRejectedFromSession,
-
-    [Description("- {Name} [skill file pending, active here]")]
-    [Holes(typeof(PendingSkillFileActiveHoles))]
-    PendingSkillFileActive,
-
-    [Description("- {Name} [skill file pending from an earlier session, not loaded]")]
-    [Holes(typeof(PendingSkillFileNotLoadedHoles))]
-    PendingSkillFileNotLoaded,
-
-    [Description(
-        "'{Name}' is both a pending tool ({Tool}) and a pending skill file ({File}); nothing was done. Reject one of " +
-        "them first, then approve the other.")]
-    [Holes(typeof(PendingToolAndSkillFileHoles))]
-    PendingToolAndSkillFile,
+    [Description("No draft named '{Name}' is waiting; /skills lists the drafts.")]
+    [Holes(typeof(NoDraftNamedHoles))]
+    NoDraftNamed,
 
     [Description("Usage isn't tracked in this session.")]
     UsageNotTracked,
+
+    [Description(
+        "Approved {Name}: this chat can use it now through UseSkill, and every chat from the next lists it.")]
+    [Holes(typeof(DraftApprovedHoles))]
+    DraftApproved,
+
+    [Description("Rejected {Name}: its draft is deleted, and no chat can use it.")]
+    [Holes(typeof(DraftRejectedHoles))]
+    DraftRejected,
+
+    [Description("Drafts waiting for /approve or /reject:")]
+    DraftsHeading,
+
+    [Description("- {Name}: {Description} Proved with: {Example}")]
+    [Holes(typeof(DraftListedHoles))]
+    DraftListed,
+
+    [Description("No drafts are waiting.")]
+    NoDraftsWaiting,
+
+    [Description("Approved skills: {Names}.")]
+    [Holes(typeof(ApprovedSkillsListedHoles))]
+    ApprovedSkillsListed,
+
+    [Description("No skills are approved yet.")]
+    NoApprovedSkills,
 }
