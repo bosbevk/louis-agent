@@ -1,0 +1,24 @@
+{
+  "kind": "flow",
+  "type": "object",
+  "title": "F97.3 tool search: what one chat holds in memory",
+  "caption": "The chat keeps the tools it started with (FX4); the loaded names come from the toolsets, the deferred ones are the rest, and the strategy reads both on every request.",
+  "flow": {
+    "nodes": [
+      { "id": "chat", "label": "chat : Conversation", "icon": "message", "tone": "blue" },
+      { "id": "frozen", "label": "frozen : FrozenTool[]\n98 tools", "icon": "box", "tone": "amber", "shape": "data" },
+      { "id": "loaded", "label": "loaded : string[]\nReadWorkspaceFile, GetStatus, ...", "icon": "box", "tone": "amber", "shape": "data" },
+      { "id": "deferred", "label": "deferred : string[]\nthe other 90", "icon": "box", "tone": "amber", "shape": "data" },
+      { "id": "find", "label": "find : FindTool", "icon": "search", "tone": "violet" },
+      { "id": "strategy", "label": "search : AnthropicToolSearch", "icon": "settings", "tone": "violet" }
+    ],
+    "edges": [
+      { "from": "chat", "to": "frozen", "word": "holds" },
+      { "from": "chat", "to": "loaded", "word": "holds" },
+      { "from": "chat", "to": "deferred", "word": "holds" },
+      { "from": "find", "to": "frozen", "word": "searches" },
+      { "from": "strategy", "to": "deferred", "word": "marks" }
+    ],
+    "direction": "right"
+  }
+}

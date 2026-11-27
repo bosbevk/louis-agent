@@ -1,0 +1,31 @@
+{
+  "kind": "cards",
+  "title": "F97.3 tool search for the built-in tools",
+  "caption": "A search of our own finds a tool the model can't see yet; each toolset keeps its few most-used tools loaded; a setting turns it on; a coding eval measures it before and after.",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "goal", "icon": "search", "title": "Find a tool, don't send them all", "code": "FindTool", "look": "highlight",
+          "text": "98 tools, about 17,000 tokens, become a few loaded ones and a search; the rest are deferred on Anthropic." }
+      ] },
+      { "cards": [
+        { "id": "proof", "icon": "checks", "title": "The proof first", "code": "Haiku 5.5", "text": "Thinking and the cache survive a found tool, or the plan stops." },
+        { "id": "find", "icon": "code", "title": "FindTool, in core", "code": "FoundTools", "text": "Scores the chat's frozen tools by the query's words, best five." },
+        { "id": "strategy", "icon": "settings", "title": "A strategy per provider", "code": "AnthropicToolSearch", "text": "defer_loading and tool_reference on Anthropic; the full list elsewhere." }
+      ] },
+      { "cards": [
+        { "id": "loaded", "icon": "stack", "title": "What stays loaded", "code": "metadata.loaded", "text": "Each toolset names its most-used tools; the engine's own always stay." },
+        { "id": "setting", "icon": "settings", "title": "When it is on", "code": "TOOL_SEARCH=auto", "text": "auto past ten deferrable tools; on and off for a test and the measure." },
+        { "id": "eval", "icon": "chart", "title": "Measured", "code": "coding.eval.json", "text": "The coding agent's first eval, run before and after." }
+      ] }
+    ],
+    "links": [
+      { "from": "goal", "to": "proof" },
+      { "from": "goal", "to": "find" },
+      { "from": "goal", "to": "strategy" },
+      { "from": "find", "to": "loaded" },
+      { "from": "strategy", "to": "setting" },
+      { "from": "proof", "to": "eval" }
+    ]
+  }
+}

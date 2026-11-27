@@ -1,0 +1,107 @@
+{
+  "kind": "classes",
+  "title": "F97.3 tool search: the interface design",
+  "caption": "FindTool searches the chat's frozen tools and answers names; the provider's strategy decides what the request carries; NoToolSearch for every provider but Anthropic.",
+  "classes": {
+    "types": [
+      {
+        "id": "provider",
+        "name": "ILlmProvider",
+        "kind": "interface, changed in F97.3 step 6",
+        "members": [
+          "IChatClient Create(LlmOptions options)",
+          "IPromptCachingStrategy CreatePromptCaching(LlmOptions options)",
+          "IStaleThinking CreateStaleThinking(LlmOptions options)",
+          "IToolSearch CreateToolSearch(LlmOptions options) (new)"
+        ]
+      },
+      {
+        "id": "search",
+        "name": "IToolSearch",
+        "kind": "interface, F97.3 step 6",
+        "members": [
+          "bool Available",
+          "IChatClient Around(IChatClient inner, IReadOnlySet<string> deferred)"
+        ]
+      },
+      {
+        "id": "none",
+        "name": "NoToolSearch",
+        "kind": "class, F97.3 step 6 (OpenAI, Ollama)",
+        "members": [
+          "static NoToolSearch Instance",
+          "Available = false"
+        ]
+      },
+      {
+        "id": "anthropic",
+        "name": "AnthropicToolSearch",
+        "kind": "class, F97.3 step 7",
+        "members": [
+          "Available = true",
+          "marks each deferred tool DeferLoading",
+          "turns FindTool's names into tool_reference blocks",
+          "never a cache marker on a deferred tool"
+        ]
+      },
+      {
+        "id": "find",
+        "name": "FindTool",
+        "kind": "the engine's own tool, F97.3 step 5",
+        "members": [
+          "FoundTools FindTool(string query)",
+          "reads the chat's frozen tools (FX4)"
+        ]
+      },
+      {
+        "id": "found",
+        "name": "FoundTools",
+        "kind": "record, F97.3 step 5",
+        "members": [
+          "IReadOnlyList<string> Names",
+          "IReadOnlyList<string> Toolsets"
+        ]
+      },
+      {
+        "id": "mode",
+        "name": "ToolSearchMode",
+        "kind": "enum, F97.3 step 3",
+        "members": [
+          "Auto",
+          "On",
+          "Off"
+        ]
+      },
+      {
+        "id": "header",
+        "name": "PromptHeader",
+        "kind": "record, changed in F97.3 step 4",
+        "members": [
+          "string Name",
+          "string Description",
+          "SkillLoad? Load",
+          "IReadOnlyList<string> Loaded (new)"
+        ]
+      },
+      {
+        "id": "toolset",
+        "name": "ToolsetDefinition",
+        "kind": "record, changed in F97.3 step 4",
+        "members": [
+          "string Name",
+          "string? Skill",
+          "IReadOnlyList<string> Loaded (new)"
+        ]
+      }
+    ],
+    "relations": [
+      { "from": "provider", "to": "search", "kind": "creates" },
+      { "from": "none", "to": "search", "kind": "implements" },
+      { "from": "anthropic", "to": "search", "kind": "implements" },
+      { "from": "find", "to": "found", "kind": "creates" },
+      { "from": "anthropic", "to": "found", "kind": "uses" },
+      { "from": "toolset", "to": "header", "kind": "uses" },
+      { "from": "find", "to": "mode", "kind": "uses" }
+    ]
+  }
+}
