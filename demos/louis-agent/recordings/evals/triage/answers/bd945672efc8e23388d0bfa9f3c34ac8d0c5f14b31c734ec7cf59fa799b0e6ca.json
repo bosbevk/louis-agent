@@ -1,0 +1,1 @@
+"Run eval-order-total-1003-again-20261127-053832-triage-1: 1 steps so far.\n1. manager (decided, 05:39:59): The manager decided: investigate. The order-total runbook does not list KeyNotFoundException under Expected, and its Decisions table gives different decisions depending on what the investigation finds (auto-fix or person), so the cause has to be checked first."

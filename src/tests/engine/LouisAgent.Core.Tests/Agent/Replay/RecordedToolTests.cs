@@ -80,6 +80,65 @@ public class RecordedToolTests
         });
     }
 
+    /// <summary>
+    /// The same tool asked the same thing twice in one trial, by two calls, can answer two things (a run read back
+    /// before and after it grew): each call is replayed with its own answer, by the model's id for the call, even in
+    /// the other order (FX258: the second call was played the first one's answer).
+    /// </summary>
+    [Test]
+    public async Task TwoCallsWithTheSameArguments_EachReplayTheirOwnAnswer()
+    {
+        int asked = 0;
+        var grows = AIFunctionFactory.Create((string query) => ++asked == 1 ? "1 step" : "2 steps", "ReadRun");
+        using (Flow(WebReplayMode.Record, model: false))
+        {
+            await CallAsync(Recorded(grows), "toolu_first", Query("run-1"));
+            await CallAsync(Recorded(grows), "toolu_second", Query("run-1"));
+        }
+
+        object? second, first;
+        using (Flow(WebReplayMode.Replay, model: true))
+        {
+            second = await CallAsync(Recorded(grows), "toolu_second", Query("run-1"));
+            first = await CallAsync(Recorded(grows), "toolu_first", Query("run-1"));
+        }
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(Json(first), Is.EqualTo(Json("1 step")));
+            Assert.That(Json(second), Is.EqualTo(Json("2 steps")));
+        });
+    }
+
+    /// <summary>Invokes a tool as the model's call with this id, the way the tool loop does.</summary>
+    private static async Task<object?> CallAsync(AIFunction tool, string callId, AIFunctionArguments arguments)
+    {
+        ToolLoop.Calling(new FunctionInvocationContext
+        {
+            CallContent = new FunctionCallContent(callId, tool.Name),
+            Function = tool,
+            Arguments = arguments
+        });
+        try
+        {
+            return await tool.InvokeAsync(arguments);
+        }
+        finally
+        {
+            ToolLoop.Calling(null);
+        }
+    }
+
+    /// <summary>
+    /// The tool loop's current call, which only the loop may set: a class derived from it, for the test to set it
+    /// as the loop would.
+    /// </summary>
+    private sealed class ToolLoop(IChatClient inner) : FunctionInvokingChatClient(inner)
+    {
+        /// <summary>Sets the call the loop is running now, or none.</summary>
+        public static void Calling(FunctionInvocationContext? context) => CurrentContext = context;
+    }
+
     /// <summary>An answer that is a record comes back as the same JSON the live tool gave the model.</summary>
     [Test]
     public async Task ARecordAnswer_IsPlayedBackAsTheSameJson()

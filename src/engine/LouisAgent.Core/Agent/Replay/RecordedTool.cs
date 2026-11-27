@@ -11,9 +11,9 @@ namespace LouisAgent.Core.Agent.Replay;
 /// <summary>
 /// A tool whose answers are recorded on a live run and played back on a free replay, so a replay never reads the
 /// world again: a doc that changed since, or a page, can't change what the model is handed. While the session's trial
-/// records, it runs the tool and saves what it answered, or the message it failed with, under the tool's name and its
-/// arguments. While the trial replays the model too, it answers from the first recording of that call and never runs
-/// the tool; a call the recording never saw is a <see cref="ToolReplayMissException"/>. Any other time, a replay with
+/// records, it runs the tool and saves what it answered, or the message it failed with, under the tool's name, the
+/// model's id for the call and its arguments. While the trial replays the model too, it answers from the recording of
+/// that call and never runs the tool; a call the recording never saw is a <see cref="ToolReplayMissException"/>. Any other time, a replay with
 /// a live model included, the tool runs as it is.
 /// </summary>
 /// <remarks>
@@ -55,11 +55,15 @@ public sealed class RecordedTool(AIFunction inner, ReplayStore store) : Delegati
             _ => await base.InvokeCoreAsync(arguments, cancellationToken),
         };
 
-    /// <summary>The call as the store keys it: this tool's name and the arguments the model wrote.</summary>
+    /// <summary>
+    /// The call as the store keys it: this tool's name, the model's id for the call the tool loop is running, and the
+    /// arguments the model wrote.
+    /// </summary>
     private ReplayAsk AskOf(AIFunctionArguments arguments)
     {
         var written = new Dictionary<string, object?>(arguments);
-        var key = new ToolKey(Name, JsonSerializer.Serialize(written, Compact));
+        string? call = FunctionInvokingChatClient.CurrentContext?.CallContent.CallId;
+        var key = new ToolKey(Name, call, JsonSerializer.Serialize(written, Compact));
         return ReplayAsk.Of(ReplayKind.Tool, key);
     }
 
