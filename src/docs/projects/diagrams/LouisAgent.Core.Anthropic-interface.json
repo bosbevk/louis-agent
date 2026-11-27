@@ -1,7 +1,7 @@
 {
   "kind": "classes",
   "title": "LouisAgent.Core.Anthropic: the interface design",
-  "caption": "Core's five seams made real for Claude: the client, its usage read whole, the cache marks on the prompt, a resumed chat's thinking, and tool search.",
+  "caption": "Core's six seams made real for Claude: the client, its usage read whole, the cache marks on the prompt, a resumed chat's thinking, tool search, and its failures named.",
   "classes": {
     "types": [
       {
@@ -98,6 +98,22 @@
         "name": "IToolSearch",
         "kind": "interface, LouisAgent.Core",
         "tone": "violet"
+      },
+      {
+        "id": "failures",
+        "name": "AnthropicFailures",
+        "kind": "failures named (F8)",
+        "members": [
+          "+Of(exception) ModelFailure",
+          "an overload in a stream: worth asking again",
+          "400, 429 spend cap, 402: an account limit"
+        ]
+      },
+      {
+        "id": "ifailures",
+        "name": "IModelFailures",
+        "kind": "interface, LouisAgent.Core",
+        "tone": "violet"
       }
     ],
     "relations": [
@@ -151,6 +167,16 @@
       {
         "from": "search",
         "to": "isearch",
+        "kind": "implements"
+      },
+      {
+        "from": "provider",
+        "to": "failures",
+        "kind": "creates"
+      },
+      {
+        "from": "failures",
+        "to": "ifailures",
         "kind": "implements"
       }
     ]

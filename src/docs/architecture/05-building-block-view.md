@@ -199,7 +199,7 @@ providers really differ; a job every provider does the same way needs none.
 | Tools that wait to be found | `IToolSearch` | `NoToolSearch` (default: every tool is sent, as on OpenAI and Ollama), `AnthropicToolSearch` (the waiting tools go with `defer_loading`, and the engine's `FindTool` answers go back as `tool_reference` blocks) | Built (F97.3) |
 | Thinking settings | `ThinkingBudget` (core.anthropic) | Anthropic's fixed budget for pre-4.6 models, wrapped on the client by `AnthropicProvider` | Built (CL57) |
 | Context window | to be designed | Ollama needs `num_ctx` sent; Claude's window is fixed | Planned ([F15](../features/F15-model-limits.md)) |
-| Errors, retries and limits | to be designed | Each provider reports rate and account limits differently | Planned ([F8](../features/F08-reliability.md)) |
+| Errors, retries and limits | `IModelFailures` | `NoModelFailures` (default: no failure is named, so nothing is asked again), `AnthropicFailures` (an overload inside a stream worth asking again; the 400, 429 and 402 account limits, with when they lift) | Built (F8) |
 
 The same pattern shows up away from the providers too: `IRatesMapper` for where exchange rates come from, and
 `IWebSearchProvider` for the search engines (SearXNG, Tavily, Google and DuckDuckGo).

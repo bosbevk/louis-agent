@@ -216,8 +216,9 @@ A conversation passes only when it holds every repeat the run asked for and each
 when every mark of every turn is met. That is asked of the records, as section 2 of the contracts' doc tells. So a
 run cut short part way through a conversation never counts it as passed.
 
-Three things end a run as could not finish, with the reason in `StoppedBecause`: a judge that can't mark, the API
-refusing, and a page a conversation names that isn't a page of the site, which `PageClient` throws as a
+Four things end a run as could not finish, with the reason in `StoppedBecause`: a judge that can't mark, the API
+refusing, a model whose account reached its limit (the agent's, when its stream ends in `account_limit_error`, or the
+judge's), and a page a conversation names that isn't a page of the site, which `PageClient` throws as a
 `PageMissingException` naming its address. A host that maps no site says the same, since the route isn't there. In
 each, nothing was learnt about the agent, so no mark is made up. Everything graded before the stop
 stays on the run, the repeats of the conversation cut short too. Anything else that goes wrong is a bug and
@@ -319,8 +320,8 @@ src/evals/LouisAgent.Evals/
 ├── Sessions/                  # SessionClient, SessionRefusedException: the agent asked over the sessions API;
 │                              # PageClient, PageMissingException: the page a conversation names
 ├── Transcripts/               # TurnTranscripts and TurnCost: a turn's stream written down
-├── Runs/                      # ConversationPlayer, EvalRunner, Regrader, RunTrial, JudgeReplay,
-│                              # RecordingOutOfDateException
+├── Runs/                      # ConversationPlayer, EvalRunner, Regrader, RunTrial, JudgeReplay
+│   ├── Stops/                 # RecordingOutOfDateException, AccountLimitReachedException: what stops a run
 │   └── Store/                 # RunStore, RunId: a run kept as one file
 └── Messages/                  # EvalFileMessage, FactMessage, JudgeMessage, SessionMessage, RunMessage,
                                # CatalogMessage, and their Holes/

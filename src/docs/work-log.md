@@ -12,7 +12,7 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 172 | 74 |
+| Features (`F`) | 173 | 74 |
 | Fixes (`FX`) | 247 | 4 |
 | Cleanups (`CL`) | 49 | 25 |
 
@@ -24,7 +24,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 |---|---|---|
 | F171 | The bill checker (Louis, 2026-11-21; 2026-11-22: "this feature is next"): a phone app that reads a Western Cape municipal account from a photo or a PDF, checks every line against Cape Town's, Swartland's and Overstrand's own tariffs and drafts the dispute, free to download with one subscription; the product in its own private `bill-checker` repository on the framework's packages, the framework's parts here: F171.1 a photo or PDF reaches a tool (done 2026-11-24); F171.2 the bills pack reads and checks; F171.3 the dispute letter; F171.4 the identity and evals; F171.5 the account, consent and our own subscriptions part; F171.6 the phone app; F171.7 the stores; F171.8 the monthly report | Now, F171.2 on after F140 |
 | F43 | Accounts, tenants and durable sessions; its first child, durable sessions, after F171.1 and before F157 | Now, F43.1 done; accounts and tenants not yet planned |
-| F8 | Reliability | Now, after FX4 |
+| F180 | A second model takes over when the first keeps failing | Later |
 | F7 | Cost you can see and stop | Now, after F8 |
 | F41 | Drafts and approvals | Now, after F7 |
 | F42 | Safety and audit | Now, after F41 |
@@ -126,10 +126,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL71 | The ACP server on Microsoft's StreamJsonRpc, our read loop and writer gone; after FX4, plan first | Cleanups |
 | CL72 | The CLI's console drawn with Spectre.Console; after FX4, plan first | Cleanups |
 
-## Features (172 done)
+## Features (173 done)
 
 | Id | When | What |
 |---|---|---|
+| F8 | 2026-11-27 | Reliability: a model busy before it said anything is asked again, never after words, up to `LLM_MAX_RETRIES` (an overload inside a stream, which the SDK doesn't retry); an account limit is its own failure (`IModelFailures`, `AccountLimitException`), said to the chat as `account_limit_error` with when it lifts, and stopping an eval run; the fallback model moved out as F180 |
 | F97.3 | 2026-11-27 | Tool search for the built-in tools: on Anthropic a chat keeps most of its tools out of sight (`defer_loading`) until the engine's own `FindTool` finds them, answered as `tool_reference` blocks through a provider strategy; each toolset's skill names its everyday tools (`metadata.loaded`, ADR 0063 amended); `TOOL_SEARCH` auto, on or off; the coding agent's first eval, 38% fewer prompt tokens a request with the same tools chosen |
 | F97 | 2026-11-27 | A skill usable in the chat that made it, closed: F97.1 one skill, used in its chat, and F97.3 tool search for the built-in tools |
 | F38 | 2026-11-27 | Tool search, when a measured need comes: built and measured as F97.3 |

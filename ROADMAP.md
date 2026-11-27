@@ -112,7 +112,7 @@ done when Claude has written its learning write-up and Louis has read it.
 | 3d | Localisation: every text from a resource file beside its enum | Configured, not coded | Next, after the framework | F46 |
 | 3e | Puls's local specialists: the where-to-buy, shop-prices and weather packs, then one specialist at a time | Measured | Next, after the framework; F50.2 done | [Puls's TODO](https://github.com/bosbevk/puls/blob/main/TODO.md) |
 | 4 | The sales playground: the demo identity, each pitch a simulation over made-up data, cost on screen | Measured | Next, after the framework | F40 |
-| 5 | Cost you can see and stop: estimates, budgets that warn, ask or stop, cost per customer, the bill check | Cost | Now, after F8 (2026-11-22) | F7 |
+| 5 | Cost you can see and stop: estimates, budgets that warn, ask or stop, cost per customer, the bill check | Cost | Now, F8 done (2026-11-27) | F7 |
 | 6 | Orchestration, the engine's workflow: one delegation function, hand-off, typed results checked in code (the orchestrator as an identity dropped, 2026-11-07) | Checked, not trusted | Now, after the builder | F39 |
 | 7 | Checked and guarded: append-only history, drafts a person approves, safety and audit | Guards in code | Now: FX4 after durable sessions, F41 and F42 after F7 (2026-11-22) | FX4, F41, F42 |
 | 8 | Their systems, no code: someone else's MCP server plugged in as a pack, our guards around it | Their systems | Next | F36 |

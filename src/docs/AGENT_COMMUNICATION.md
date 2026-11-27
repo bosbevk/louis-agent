@@ -130,7 +130,7 @@ data: {"type":"message_stop"}
 | `content_block_stop` | The block is complete |
 | `message_delta` | The stop reason (`end_turn` or `cancelled`) and the turn's `usage` (below) |
 | `message_stop` | The stream is complete |
-| `error` | The turn failed; the data is the error shape above (type `api_error`), plus the turn's `usage` when a model request had returned before the failure ([FX6](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/fixes/FX06-usage-on-failed-turns.md)) |
+| `error` | The turn failed; the data is the error shape above (type `api_error`, or `account_limit_error` when the model's account reached its limit, F8), plus the turn's `usage` when a model request had returned before the failure ([FX6](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/fixes/FX06-usage-on-failed-turns.md)) |
 
 **In another currency** (F14): the usage object keeps `cost` and `currency` as charged and adds `display_cost`,
 `display_currency`, `display_symbol` and `rate_as_of`, the cost in the server's display currency (`HOST_CULTURE` /

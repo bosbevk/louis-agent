@@ -1,5 +1,5 @@
-<svg viewBox="-24 -24 1048 490" width="1048" height="490" role="img" aria-label="F8 reliability: what one request holds while it is retried" xmlns="http://www.w3.org/2000/svg">
-  <title>F8 reliability: what one request holds while it is retried</title>
+<svg viewBox="-24 -24 944 563" width="944" height="563" role="img" aria-label="14 · Reliability: what F8 taught" xmlns="http://www.w3.org/2000/svg">
+  <title>14 · Reliability: what F8 taught</title>
   <style>svg {
   --ground: #ffffff; --line: #d9dce0; --text: #15171a; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #e2dfff; --violet-line: #6b4dff; --violet-ink: #3a22c4; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
   --mono: var(--bs-font-monospace, "Geist Mono", ui-monospace, Menlo, Consolas, monospace);
@@ -116,7 +116,54 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .mrq-pill { fill: none; stroke: var(--violet-line); stroke-width: 1; stroke-opacity: .6; }
 .mrq-code { fill: var(--violet-ink); font: 11px var(--mono); }
 .mrq-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
-.flow-shape { stroke: var(--quiet); stroke-width: 1.25; stroke-opacity: .8; stroke-linejoin: round; }.pic-name { fill: var(--text); font: 650 15px var(--pic-sans); letter-spacing: -.035em; }
+.crd-rail { fill: url(#crd-rail); }
+.crd-rail-glow { fill: url(#crd-rail); opacity: .5; filter: blur(5px); }
+.crd-rail-0 { stop-color: var(--violet-line); stop-opacity: 0; }
+.crd-rail-1 { stop-color: var(--violet-line); }
+.crd-rail-2 { stop-color: var(--blue-line); }
+.crd-rail-3 { stop-color: var(--blue-line); stop-opacity: 0; }
+.crd-line { fill: none; stroke: var(--violet-line); stroke-width: 1.5; stroke-opacity: .85; }
+.crd-badge { fill: url(#crd-badge); }
+.crd-badge-0 { stop-color: var(--violet-line); }
+.crd-badge-1 { stop-color: var(--blue-line); }
+.crd-badge-icon {
+  fill: none; stroke: #ffffff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.crd-headline { fill: var(--text); font: 700 30px var(--pic-sans); letter-spacing: -.4px; }
+.crd-heading { fill: var(--text); font: 700 22px var(--pic-sans); letter-spacing: -.3px; }
+.crd-summary { fill: var(--quiet); font: 13px var(--pic-sans); }
+.crd-tint { fill: var(--violet-line); fill-opacity: .16; }
+.crd-icon {
+  fill: none; stroke: var(--violet-ink); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+}
+.crd-icon.quiet { stroke: var(--quiet); }
+.crd-name { fill: var(--text); font: 600 15px var(--pic-sans); }
+.crd-name.quiet { font-size: 14px; }
+.crd-quiet {
+  fill: var(--mrq-sheet); fill-opacity: .018; stroke: var(--mrq-sheet); stroke-opacity: .08;
+  stroke-width: 1;
+}.crd-badge.tone-plain { fill: var(--plain-line); }
+.crd-tint.tone-plain { fill: var(--plain-line); }
+.crd-icon.tone-plain { stroke: var(--plain-ink); }
+.crd-badge.tone-blue { fill: var(--blue-line); }
+.crd-tint.tone-blue { fill: var(--blue-line); }
+.crd-icon.tone-blue { stroke: var(--blue-ink); }
+.crd-badge.tone-green { fill: var(--green-line); }
+.crd-tint.tone-green { fill: var(--green-line); }
+.crd-icon.tone-green { stroke: var(--green-ink); }
+.crd-badge.tone-violet { fill: var(--violet-line); }
+.crd-tint.tone-violet { fill: var(--violet-line); }
+.crd-icon.tone-violet { stroke: var(--violet-ink); }
+.crd-badge.tone-teal { fill: var(--teal-line); }
+.crd-tint.tone-teal { fill: var(--teal-line); }
+.crd-icon.tone-teal { stroke: var(--teal-ink); }
+.crd-badge.tone-red { fill: var(--red-line); }
+.crd-tint.tone-red { fill: var(--red-line); }
+.crd-icon.tone-red { stroke: var(--red-ink); }
+.crd-badge.tone-amber { fill: var(--amber-line); }
+.crd-tint.tone-amber { fill: var(--amber-line); }
+.crd-icon.tone-amber { stroke: var(--amber-ink); }
+.pic-name { fill: var(--text); font: 650 15px var(--pic-sans); letter-spacing: -.035em; }
 .pic-mark { fill: #6b4dff; font-size: 1.41em; }
 </style>
   <defs>
@@ -131,107 +178,107 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <stop class="mrq-light-1" offset="0.5" />
       <stop class="mrq-light-2" offset="1" />
     </radialGradient>
+    <linearGradient id="crd-rail" x1="0" y1="0" x2="1" y2="0">
+      <stop class="crd-rail-0" offset="0" />
+      <stop class="crd-rail-1" offset="0.2" />
+      <stop class="crd-rail-2" offset="0.8" />
+      <stop class="crd-rail-3" offset="1" />
+    </linearGradient>
+    <linearGradient id="crd-badge" x1="0" y1="0" x2="1" y2="1">
+      <stop class="crd-badge-0" offset="0" />
+      <stop class="crd-badge-1" offset="1" />
+    </linearGradient>
     <linearGradient id="mrq-edge" x1="0" y1="0" x2="1" y2="0">
       <stop class="mrq-edge-0" offset="0" />
       <stop class="mrq-edge-1" offset="0.5" />
       <stop class="mrq-edge-2" offset="1" />
     </linearGradient>
+    <linearGradient id="mrq-glass" x1="0" y1="0" x2="0" y2="1">
+      <stop class="mrq-glass-0" offset="0" />
+      <stop class="mrq-glass-1" offset="1" />
+    </linearGradient>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="1048" height="490" rx="14" />
+  <rect class="ground" x="-24" y="-24" width="944" height="563" rx="14" />
   <g class="drawing" transform="translate(0 0)">
-    <path class="mrq-light" d="M-24 74a524 190 0 1 0 1048 0a524 190 0 1 0 -1048 0Z" />
-    <text class="mrq-title" x="16" y="14" text-anchor="start">F8 reliability: what one request holds while it is retried</text>
-    <text class="pic-group" x="984" y="14" text-anchor="end">Object diagram</text>
-    <rect class="mrq-rule" x="0" y="26" width="1000" height="1" rx="0" />
-    <g class="flow" transform="translate(0 44)">
-      <path class="pic-line pic-edge tone-violet" d="M286.4 120L298.4 120Q310.4 120 310.4 108L310.4 58Q310.4 34 334.4 34L391.4 34" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M286.4 120L298.4 120Q310.4 120 310.4 108L310.4 58Q310.4 34 334.4 34L391.4 34" />
-      <path class="pic-line pic-edge tone-violet" d="M286.4 120L391.4 120" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M286.4 120L391.4 120" />
-      <path class="pic-line pic-edge tone-violet" d="M286.4 120L298.4 120Q310.4 120 310.4 132L310.4 182Q310.4 206 334.4 206L382.4 206" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M286.4 120L298.4 120Q310.4 120 310.4 132L310.4 182Q310.4 206 334.4 206L382.4 206" />
-      <path class="pic-line pic-edge tone-violet" d="M661.2 206L750.2 206" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M661.2 206L750.2 206" />
-      <rect class="pic-pill pic-edge tone-violet" x="321.4" y="25" width="50" height="18" rx="9" />
-      <text class="pic-pill-word pic-ink tone-violet" x="346.4" y="37" text-anchor="middle">counts</text>
-      <rect class="pic-pill pic-edge tone-violet" x="317.9" y="111" width="57" height="18" rx="9" />
-      <text class="pic-pill-word pic-ink tone-violet" x="346.4" y="123" text-anchor="middle">watches</text>
-      <rect class="pic-pill pic-edge tone-violet" x="328.4" y="197" width="36" height="18" rx="9" />
-      <text class="pic-pill-word pic-ink tone-violet" x="346.4" y="209" text-anchor="middle">asks</text>
-      <rect class="pic-pill pic-edge tone-violet" x="667.7" y="197" width="43" height="18" rx="9" />
-      <text class="pic-pill-word pic-ink tone-violet" x="689.2" y="209" text-anchor="middle">names</text>
-      <rect class="pic-panel" x="0" y="94" width="286.4" height="52" rx="10" />
-      <rect class="pic-fill tone-violet" x="16" y="106" width="28" height="28" rx="9" />
-      <g class="pic-badge-icon" transform="translate(22 112) scale(0.6667)">
+    <path class="mrq-light" d="M-22 126a470 210 0 1 0 940 0a470 210 0 1 0 -940 0Z" />
+    <text class="mrq-title" x="16" y="14" text-anchor="start">14 · Reliability: what F8 taught</text>
+    <text class="pic-group" x="880" y="14" text-anchor="end">Overview</text>
+    <rect class="mrq-rule" x="0" y="26" width="896" height="1" rx="0" />
+    <g class="crd-cards" transform="translate(0 38)">
+      <rect class="crd-rail-glow" x="58" y="186" width="780" height="8" rx="0" />
+      <rect class="crd-rail" x="58" y="189.3" width="780" height="1.5" rx="0" />
+      <path class="crd-line" d="M448 174V190" />
+      <path class="pic-march" d="M448 174V190" />
+      <path class="crd-line" d="M142 190V222" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M142 190V222" />
+      <path class="crd-line" d="M448 190V222" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M448 190V222" />
+      <path class="crd-line" d="M754 190V222" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M754 190V222" />
+      <circle class="mrq-node" cx="448" cy="190" r="4.5" />
+      <circle class="mrq-node" cx="142" cy="190" r="4.5" />
+      <circle class="mrq-node" cx="448" cy="190" r="4.5" />
+      <circle class="mrq-node" cx="754" cy="190" r="4.5" />
+      <rect class="crd-badge" x="424" y="0" width="48" height="48" rx="14" />
+      <g class="crd-badge-icon" transform="translate(436 12) scale(1)">
+        <path d="M7 12l5 5l10 -10" />
+        <path d="M2 12l5 5m5 -5l5 -5" />
+      </g>
+      <text class="crd-headline" x="448" y="92" text-anchor="middle">A busy moment retried, a limit said plainly</text>
+      <rect class="mrq-pill" x="429.2" y="108" width="37.6" height="24" rx="12" />
+      <text class="mrq-code" x="448" y="124" text-anchor="middle">F8</text>
+      <text class="crd-summary" x="448" y="160" text-anchor="middle">Measured first, with a free probe of the SDK, before anything was built.</text>
+      <rect class="mrq-glass" x="0" y="222" width="284" height="142" rx="14" />
+      <rect class="mrq-edge" x="28" y="221.5" width="228" height="1.6" rx="0" />
+      <rect class="crd-tint" x="18" y="240" width="34" height="34" rx="10" />
+      <g class="crd-icon" transform="translate(26 248) scale(0.75)">
+        <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+        <path d="M12 9h.01" />
+        <path d="M11 12h1v4h1" />
+      </g>
+      <text class="crd-name" x="64" y="263" text-anchor="start">The probe</text>
+      <rect class="mrq-pill" x="18" y="280" width="108.4" height="22" rx="11" />
+      <text class="mrq-code" x="28" y="295" text-anchor="start">429, 529, 400</text>
+      <text class="pic-text" x="18" y="326" text-anchor="start">The SDK retries before a stream; an</text>
+      <text class="pic-text" x="18" y="344" text-anchor="start">overload inside one fails at once.</text>
+      <rect class="mrq-glass" x="306" y="222" width="284" height="142" rx="14" />
+      <rect class="mrq-edge" x="334" y="221.5" width="228" height="1.6" rx="0" />
+      <rect class="crd-tint" x="324" y="240" width="34" height="34" rx="10" />
+      <g class="crd-icon" transform="translate(332 248) scale(0.75)">
         <path d="M7 8l-4 4l4 4" />
         <path d="M17 8l4 4l-4 4" />
         <path d="M14 4l-4 16" />
       </g>
-      <text class="pic-name" x="52" y="125" text-anchor="start">retrying : RetryingChatClient</text>
-      <path class="pic-panel flow-shape pic-edge tone-amber" d="M400.4 0L661.2 0L643.2 68L382.4 68Z" />
-      <rect class="pic-fill tone-amber" x="410.4" y="20" width="28" height="28" rx="9" />
-      <g class="pic-badge-icon" transform="translate(416.4 26) scale(0.6667)">
-        <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
-        <path d="M12 12l8 -4.5" />
-        <path d="M12 12l0 9" />
-        <path d="M12 12l-8 -4.5" />
-      </g>
-      <text class="pic-name" x="446.4" y="31" text-anchor="start">tries : int</text>
-      <text class="pic-name" x="446.4" y="47" text-anchor="start">0..LLM_MAX_RETRIES</text>
-      <path class="pic-panel flow-shape pic-edge tone-amber" d="M400.4 86L661.2 86L643.2 154L382.4 154Z" />
-      <rect class="pic-fill tone-amber" x="410.4" y="106" width="28" height="28" rx="9" />
-      <g class="pic-badge-icon" transform="translate(416.4 112) scale(0.6667)">
-        <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
-        <path d="M12 12l8 -4.5" />
-        <path d="M12 12l0 9" />
-        <path d="M12 12l-8 -4.5" />
-      </g>
-      <text class="pic-name" x="446.4" y="117" text-anchor="start">spoken : bool</text>
-      <text class="pic-name" x="446.4" y="133" text-anchor="start">any content out yet</text>
-      <rect class="pic-panel" x="382.4" y="180" width="278.8" height="52" rx="10" />
-      <rect class="pic-fill tone-violet" x="398.4" y="192" width="28" height="28" rx="9" />
-      <g class="pic-badge-icon" transform="translate(404.4 198) scale(0.6667)">
+      <text class="crd-name" x="370" y="263" text-anchor="start">Before any words</text>
+      <rect class="mrq-pill" x="324" y="280" width="142.4" height="22" rx="11" />
+      <text class="mrq-code" x="334" y="295" text-anchor="start">RetryingChatClient</text>
+      <text class="pic-text" x="324" y="326" text-anchor="start">The empty opening held back, so a retry</text>
+      <text class="pic-text" x="324" y="344" text-anchor="start">says nothing twice.</text>
+      <rect class="mrq-glass" x="612" y="222" width="284" height="142" rx="14" />
+      <rect class="mrq-edge" x="640" y="221.5" width="228" height="1.6" rx="0" />
+      <rect class="crd-tint" x="630" y="240" width="34" height="34" rx="10" />
+      <g class="crd-icon" transform="translate(638 248) scale(0.75)">
         <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
         <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
       </g>
-      <text class="pic-name" x="434.4" y="211" text-anchor="start">failures : AnthropicFailures</text>
-      <path class="pic-panel flow-shape pic-edge tone-amber" d="M759.2 172L1000 172L982 240L741.2 240Z" />
-      <rect class="pic-fill tone-amber" x="769.2" y="192" width="28" height="28" rx="9" />
-      <g class="pic-badge-icon" transform="translate(775.2 198) scale(0.6667)">
-        <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
-        <path d="M12 12l8 -4.5" />
-        <path d="M12 12l0 9" />
-        <path d="M12 12l-8 -4.5" />
-      </g>
-      <text class="pic-name" x="805.2" y="203" text-anchor="start">failure : ModelFailure</text>
-      <text class="pic-name" x="805.2" y="219" text-anchor="start">Kind, Reason, ResumesAt</text>
-      <circle class="pic-port pic-edge tone-violet" cx="286.4" cy="120" r="4" />
-      <circle class="pic-port pic-edge tone-violet" cx="661.2" cy="206" r="4" />
+      <text class="crd-name" x="676" y="263" text-anchor="start">An account limit</text>
+      <rect class="mrq-pill" x="630" y="280" width="149.2" height="22" rx="11" />
+      <text class="mrq-code" x="640" y="295" text-anchor="start">account_limit_error</text>
+      <text class="pic-text" x="630" y="326" text-anchor="start">Our words to the chat, and an eval run</text>
+      <text class="pic-text" x="630" y="344" text-anchor="start">stops at once.</text>
     </g>
-    <rect class="mrq-rule" x="0" y="310" width="1000" height="1" rx="0" />
-    <text class="pic-group" x="0" y="332" text-anchor="start">How to read it</text>
-    <rect class="pic-fill tone-violet" x="0" y="349" width="18" height="18" rx="6" />
-    <text class="pic-means" x="28" y="362.5" text-anchor="start">the framework</text>
-    <rect class="pic-fill tone-amber" x="143.8" y="349" width="18" height="18" rx="6" />
-    <text class="pic-means" x="171.8" y="362.5" text-anchor="start">files and data</text>
-    <path class="pic-panel flow-shape pic-edge" d="M312.2 350L324.2 350L306.2 366L294.2 366Z" />
-    <text class="pic-means" x="334.2" y="362.5" text-anchor="start">data in or out</text>
-    <path class="flow-key pic-line pic-edge" d="M456.6 358H486.6" marker-end="url(#arrow)" />
-    <text class="pic-means" x="496.6" y="362.5" text-anchor="start">a line has the colour of the box it leaves</text>
+    <rect class="mrq-rule" x="0" y="428" width="896" height="1" rx="0" />
     <g class="pic-brand" transform="translate(0 0)">
-      <text class="pic-name" x="984" y="332" text-anchor="end" aria-label="louis-agent">l<tspan class="pic-mark" dy="1.5">•</tspan><tspan dy="-1.5">uis-agent</tspan></text>
+      <text class="pic-name" x="880" y="450" text-anchor="end" aria-label="louis-agent">l<tspan class="pic-mark" dy="1.5">•</tspan><tspan dy="-1.5">uis-agent</tspan></text>
     </g>
   </g>
-  <rect class="notebar" x="0" y="388" width="1000" height="54" rx="8" />
-  <g class="note-icon" transform="translate(12 398) scale(0.6667)">
+  <rect class="notebar" x="0" y="478" width="896" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 488) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />
     <path d="M11 12h1v4h1" />
   </g>
-  <text class="notes" x="38" y="410">
-    <tspan class="note-rest">The retrying client keeps how many tries it has made and whether any content has gone out; the first content ends every chance of</tspan>
-  </text>
-  <text class="notes" x="38" y="427">
-    <tspan class="note-rest">asking again.</tspan>
+  <text class="notes" x="38" y="500">
+    <tspan class="note-rest">Retry what passes, never what is final, and never after the answer has started; say a spent account plainly.</tspan>
   </text>
 </svg>

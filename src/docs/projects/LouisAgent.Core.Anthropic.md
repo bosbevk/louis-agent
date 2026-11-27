@@ -101,7 +101,20 @@ by its own name in the same answer. This is the custom search Anthropic document
 used, because the SDK's adapter drops its blocks from the next request. A run on Haiku 5.5 with thinking on proved
 that the found tool is called, the request after it is accepted with its thinking, and the cache is read.
 
-### 7. Where the factory comes in
+### 7. Its failures, named
+
+Claude fails in a few ways that core treats differently, and `CreateFailures(options)` gives `AnthropicFailures`, which
+reads the SDK's own exceptions. The SDK already waits and asks again when a request fails before its stream starts,
+as many times as `LLM_MAX_RETRIES` says, but not when an `overloaded_error` or `api_error` arrives inside a stream that
+has begun, so that one is named worth asking again, and core's retrying client does it before any words.
+
+An account limit comes three ways, all named the same: a spend limit a person set answers 400 with a message that
+starts "You have reached your specified", the tier's monthly cap answers 429 with `enforced_spend_limit_reached`, and a
+billing problem answers 402. The time access comes back is read from Anthropic's own sentence, "You will regain access
+on 2026-12-01 at 00:00 UTC", with plain string methods. Anything else, a bad request or an ordinary rate limit the SDK
+already waited out, is neither.
+
+### 8. Where the factory comes in
 
 `LlmClientFactory`, in core, is the registry that ties this together. It finds the provider by its name, wraps the
 client for caching, and asks the provider for its mapper and its markers. If a program handed it no providers at
@@ -113,7 +126,7 @@ all, it says every name is unknown.
 
 These are the types involved:
 
-![The types: AnthropicProvider makes core's five seams real, the client, the usage mapper, the cache marks, a resumed chat's thinking and tool search](diagrams/LouisAgent.Core.Anthropic-interface.svg)
+![The types: AnthropicProvider makes core's six seams real, the client, the usage mapper, the cache marks, a resumed chat's thinking, tool search and its failures](diagrams/LouisAgent.Core.Anthropic-interface.svg)
 
 ## Structure
 
@@ -125,6 +138,7 @@ src/engine/LouisAgent.Core.Anthropic/
 ├── Thinking/ThinkingBudget.cs      # the budget swap for Claude models before 4.6
 ├── Thinking/AnthropicDropBlock.cs  # a resumed chat's thinking: the API asked to drop the blocks that fail
 ├── ToolSearch/                 # tool search (F97.3): AnthropicToolSearch, its client, DeferredFunction, ToolReferences
+├── Failures/AnthropicFailures.cs  # a failure named (F8): an overload in a stream, the three account limits
 └── Messages/AnthropicErrorMessage.cs
 src/tests/engine/LouisAgent.Core.Anthropic.Tests/   # the provider, the budget and drop_block, the markers on the wire, the mapper, the lifetimes
 ```
