@@ -314,8 +314,11 @@ tool_use and tool_result), then `message_delta` (the stop reason and the turn's 
 
 A failure becomes an `error` event in Claude's shape, with the turn's `usage` if a request had come back. The error's
 `type` says what kind of failure it was (`StreamErrorKind`, in `LouisAgent.SessionStream`). It's `api_error` for any
-failure, and `replay_miss_error` when the engine's replay had no recorded answer (`ModelReplayMissException`, mapped
-by `Sessions/Streaming/StreamErrorKinds`). So a client can tell a replay miss from the agent's own failure.
+failure, `replay_miss_error` when the engine's replay had no recorded answer (`ModelReplayMissException`), and
+`account_limit_error` when the model's account reached its limit (`AccountLimitException`), all mapped by
+`Sessions/Streaming/StreamErrorKinds`. So a client can tell a replay miss and a spent account from the agent's own
+failure. An account limit's words are ours: the agent can't answer until the time it lifts, or until its owner raises
+it. The provider's own sentence, which names its workspace and its limits, stays in the log.
 
 `/skills`, `/approve`, `/reject` and `/usage` are answered without the model, for whoever runs the agent. A site
 visitor's chat is the exception: the open door tags it as the door's for the ledger, and a session so tagged
@@ -502,8 +505,7 @@ finds its parent in memory only. Azure's free DocumentDB tier has no backup, so 
 
 A usage API over the ledger (`/v1/usage` endpoints, `/v1/budgets`, `/v1/estimates`) and budget errors are
 [F7](../features/F07-budgets.md), which takes in [F11](../features/F11-usage-tab-and-reconciliation.md).
-Account-limit errors are [F8](../features/F08-reliability.md), and settings per role and per session are
-[F10](../features/F10-route-settings.md).
+Settings per role and per session are [F10](../features/F10-route-settings.md).
 
 ## Related docs
 

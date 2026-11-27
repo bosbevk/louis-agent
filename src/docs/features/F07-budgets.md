@@ -104,4 +104,4 @@ Then finish up (see [Finishing a feature](README.md#finishing-a-feature)): move 
 to done here and in the features table, and note it in the spec's implementation map.
 
 ---
-[Features](README.md) · Previous: [F6 Estimates](F06-estimates.md) · Next: [F8 Reliability](F08-reliability.md)
+[Features](README.md) · Previous: [F6 Estimates](F06-estimates.md) · Next: [F9 Bounded history](F09-context-management.md)

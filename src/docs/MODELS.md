@@ -196,6 +196,9 @@ Works with anything that speaks the OpenAI Chat Completions API. Tool calling de
   `curl http://host.docker.internal:11434/api/tags` from the host. Inside Docker `localhost` is the container itself.
 - **`[WARN] LLM_PROFILE 'x' has no config/.env.x`** — a typo in `LLM_PROFILE`, or the profile file is missing; the
   settings fall back to `config/.env` and the defaults (Claude Haiku 5.5).
+- **"This agent has reached its usage limit"** — the account behind the model ran out: a spend limit set in the
+  Anthropic Console, the tier's monthly cap, or billing. Raise it in the Console; the message says when it lifts on
+  its own. A busy moment is asked again by itself, up to `LLM_MAX_RETRIES` (two by default), before any words.
 - **The agent talks about tools instead of using them** — the model can't call tools well; switch model or check
   `tools=on` in the startup line.
 

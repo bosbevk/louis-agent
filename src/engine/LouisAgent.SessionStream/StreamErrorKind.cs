@@ -3,8 +3,8 @@ using LouisAgent.Choices;
 namespace LouisAgent.SessionStream;
 
 /// <summary>
-/// What kind of failure ended a turn, as its error event names it in <c>error.type</c>: the API's own error, or a
-/// replay with no recorded answer.
+/// What kind of failure ended a turn, as its error event names it in <c>error.type</c>: the API's own error, a replay
+/// with no recorded answer, or the model's account at its limit.
 /// </summary>
 /// <remarks>
 /// One enum where both sides can see it (ADR 0043): the API writes a failed turn's kind from it and a stream reader
@@ -20,4 +20,10 @@ public enum StreamErrorKind
 
     /// <summary>A replay asked the model something it has no recorded answer for; the model wasn't called.</summary>
     [WireName("replay_miss_error")] ReplayMiss,
+
+    /// <summary>
+    /// The model's account reached its limit (F8): asking again fails until it lifts, so a chat says so and an eval
+    /// run stops.
+    /// </summary>
+    [WireName("account_limit_error")] AccountLimit,
 }

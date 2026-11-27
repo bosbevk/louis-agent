@@ -1,4 +1,5 @@
 using LouisAgent.Composition.Agents;
+using LouisAgent.Core.Llm.Failures;
 using LouisAgent.Core.Sessions.Replay.Store;
 using LouisAgent.Evals.Contracts.Grading;
 using LouisAgent.Evals.Contracts.Runs;
@@ -105,6 +106,52 @@ public class EvalRunnerTests
         Assert.That(run.StoppedBecause, Does.Contain("The judge gave no answer."));
         Assert.That(run.Conversations.Select(c => c.Id), Is.EqualTo(new[] { "guide-what-is" }));
         Assert.That(kept[^1], Is.EqualTo(run));
+    }
+
+    /// <summary>
+    /// The agent's model at its account limit stops the run at once as could-not-finish, naming the limit, instead of
+    /// failing every conversation after it (F8).
+    /// </summary>
+    [Test]
+    public async Task TheAgentsAccountLimit_StopsTheRunAtOnce_NamingIt()
+    {
+        const string words = "This agent has reached its usage limit and can't answer until 2026-12-01 00:00 UTC.";
+        var api = new FakeSessionsApi(AccountLimited(words), Answered("never asked"));
+        var kept = new List<EvalRun>();
+
+        var run = await Runner(api).RunAsync(StartedRun(1), TwoConversations, Kept(kept));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(run.Status, Is.EqualTo(RunStatus.CouldNotFinish));
+            Assert.That(run.StoppedBecause, Does.Contain("account").And.Contain("2026-12-01 00:00 UTC"));
+            Assert.That(run.Conversations, Is.Empty, "the conversation it stopped in has no graded repeat");
+            Assert.That(api.Asked(), Has.Count.EqualTo(1), "nothing more was asked");
+        });
+    }
+
+    /// <summary>The judge's model at its account limit stops the run the same way, naming it.</summary>
+    [Test]
+    public async Task TheJudgesAccountLimit_StopsTheRun_NamingIt()
+    {
+        var file = TwoConversations with
+        {
+            Conversations =
+            [
+                new Conversation("guide-pricing", [new Turn("What does it cost?") { Criteria = ["Says it is free"] }])
+            ]
+        };
+        var api = new FakeSessionsApi(Answered("It is free."));
+        var limit = ModelFailure.AccountLimit("Your credit balance is too low.", null);
+        var judgeAtItsLimit = new FakeChatClient(_ => throw new AccountLimitException(limit));
+
+        var run = await Runner(api, judgeAtItsLimit).RunAsync(StartedRun(1), file, Kept([]));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(run.Status, Is.EqualTo(RunStatus.CouldNotFinish));
+            Assert.That(run.StoppedBecause, Does.Contain("account").And.Contain("credit balance"));
+        });
     }
 
     /// <summary>The API refusing a session does the same, with the API's reason.</summary>

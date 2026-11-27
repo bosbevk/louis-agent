@@ -1,0 +1,23 @@
+{
+  "kind": "cards",
+  "title": "14 · Reliability: what F8 taught",
+  "caption": "Retry what passes, never what is final, and never after the answer has started; say a spent account plainly.",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "goal", "icon": "checks", "title": "A busy moment retried, a limit said plainly", "code": "F8", "look": "highlight",
+          "text": "Measured first, with a free probe of the SDK, before anything was built." }
+      ] },
+      { "cards": [
+        { "id": "probe", "icon": "info", "title": "The probe", "code": "429, 529, 400", "text": "The SDK retries before a stream; an overload inside one fails at once." },
+        { "id": "retry", "icon": "code", "title": "Before any words", "code": "RetryingChatClient", "text": "The empty opening held back, so a retry says nothing twice." },
+        { "id": "limit", "icon": "settings", "title": "An account limit", "code": "account_limit_error", "text": "Our words to the chat, and an eval run stops at once." }
+      ] }
+    ],
+    "links": [
+      { "from": "goal", "to": "probe" },
+      { "from": "goal", "to": "retry" },
+      { "from": "goal", "to": "limit" }
+    ]
+  }
+}

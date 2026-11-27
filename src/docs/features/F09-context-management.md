@@ -96,4 +96,4 @@ Then finish up (see [Finishing a feature](README.md#finishing-a-feature)): move 
 to done here and in the features table, and note it in the spec's implementation map.
 
 ---
-[Features](README.md) · Previous: [F8 Reliability](F08-reliability.md) · Next: [F10 Route settings](F10-route-settings.md)
+[Features](README.md) · Previous: [F7 Budgets](F07-budgets.md) · Next: [F10 Route settings](F10-route-settings.md)

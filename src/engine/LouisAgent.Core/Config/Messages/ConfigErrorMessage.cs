@@ -4,14 +4,18 @@ using System.ComponentModel;
 
 namespace LouisAgent.Core.Config.Messages;
 // The message enums (src/docs/CLAUDE.md, *Messages and logging*). Each member is named for what happened, and its
-// [Description] is the text, with named holes filled by MessageText.Format (or by the structured logger). Members are added
-// as code is written or moved; the refactor after F4 moves the existing messages here.
+// [Description] is the text, with named holes filled by MessageText.Format (or by the structured logger). Members are
+// added as code is written or moved; the refactor after F4 moves the existing messages here.
 
 /// <summary>Exception texts for the settings area: what is wrong and how to fix it.</summary>
 public enum ConfigErrorMessage
 {
     [Description("Unknown LLM_CACHE '{Value}'. Use on or off.")]
     UnknownCacheSetting,
+
+    [Description("LLM_MAX_RETRIES '{Value}' isn't a count. Use 0 or more, or leave it unset for {Default}.")]
+    [Holes(typeof(UnknownMaxRetriesHoles))]
+    UnknownMaxRetries,
 
     [Description("Unknown {Setting} '{Value}'. Use {Supported}.")]
     [Holes(typeof(UnknownToolSearchHoles))]
@@ -30,6 +34,7 @@ public enum ConfigErrorMessage
     SettingValueNotOneLine,
 
     [Description(
-        "HOST_TIME_ZONE '{Value}' isn't a time zone this machine knows: use an IANA name such as Europe/London, or leave it unset for the machine's own.")]
+        "HOST_TIME_ZONE '{Value}' isn't a time zone this machine knows: use an IANA name such as Europe/London, or " +
+        "leave it unset for the machine's own.")]
     UnknownHostTimeZone,
 }

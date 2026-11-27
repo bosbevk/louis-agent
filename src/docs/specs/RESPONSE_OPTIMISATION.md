@@ -14,7 +14,7 @@ Built as features in [docs/features/](../features/README.md); each planned one i
 | §C Toolset profiles | [F5 Toolset profiles](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F05-toolset-profiles.md) | **done** (2026-10-14; short benchmark: prefix ~48.5k → ~24.4k tokens, run $0.0488 → $0.0378; the full run waived). Went further than §C: a session names its toolsets when it opens, an engine per list, and sub-sessions on a peer (Puls's delegation, measured in [the delegation check](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/sample-output-puls-check-repeat/README.md)) |
 | §D Bounded history | [F9 Bounded history](../features/F09-context-management.md) | planned |
 | §E Settings per route | [F10 Route settings](../features/F10-route-settings.md) | planned |
-| §F Reliability | [F8 Reliability](../features/F08-reliability.md) | planned |
+| §F Reliability | F8 Reliability ([write-up](../learning/14-reliability.md)); the fallback model is F180 | done 2026-11-27, but the fallback |
 | §B–D Model limits (cache minimum, window, price step per model) | [F15 Model limits](../features/F15-model-limits.md) | planned |
 | §G Later | not planned yet | — |
 

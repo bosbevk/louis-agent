@@ -1,4 +1,6 @@
+using LouisAgent.Choices;
 using LouisAgent.Composition.Messages;
+using LouisAgent.Core.Llm.Failures;
 using LouisAgent.Core.Llm.Replay;
 using LouisAgent.Evals.Contracts.Runs;
 using LouisAgent.Evals.Files;
@@ -6,6 +8,8 @@ using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Turns;
 using LouisAgent.Evals.Messages;
 using LouisAgent.Evals.Messages.Holes.Runs;
+using LouisAgent.Evals.Messages.Holes.Stops;
+using LouisAgent.Evals.Runs.Stops;
 using LouisAgent.Evals.Sessions;
 
 namespace LouisAgent.Evals.Runs;
@@ -85,6 +89,14 @@ public sealed class EvalRunner(ConversationPlayer player, TimeProvider clock)
         {
             return Stopped(conversation, started, repeats, miss.Message);
         }
+        catch (AccountLimitReachedException limit)
+        {
+            return AtTheLimit(conversation, started, repeats, Whose.Agent, limit.Message);
+        }
+        catch (JudgeFailedException failed) when (failed.InnerException is AccountLimitException limit)
+        {
+            return AtTheLimit(conversation, started, repeats, Whose.Judge, limit.Message);
+        }
         catch (JudgeFailedException failed)
         {
             var judgeFailed = new JudgeFailedHoles(failed.Message);
@@ -112,6 +124,22 @@ public sealed class EvalRunner(ConversationPlayer player, TimeProvider clock)
         var outOfDate = new RecordingOutOfDateHoles(changed);
         return new PlayedConversation(new ConversationRun(conversation.Id, started.Repeats, repeats),
             MessageText.Format(RunMessage.RecordingOutOfDate, outOfDate));
+    }
+
+    /// <summary>Whose model reached its account's limit, as the stop names it.</summary>
+    private enum Whose
+    {
+        Agent,
+        Judge
+    }
+
+    /// <summary>A conversation stopped at a model's account limit, with what was graded before it (F8).</summary>
+    private static PlayedConversation AtTheLimit(Conversation conversation, EvalRun started, List<RepeatRun> repeats,
+        Whose whose, string reason)
+    {
+        var reached = new AccountLimitReachedHoles(whose.Wire(), reason);
+        return new PlayedConversation(new ConversationRun(conversation.Id, started.Repeats, repeats),
+            MessageText.Format(RunMessage.AccountLimitReached, reached));
     }
 
     /// <summary>The run ended as it ended, at the clock's time, and kept once more.</summary>

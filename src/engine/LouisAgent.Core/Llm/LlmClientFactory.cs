@@ -5,6 +5,7 @@ using LouisAgent.Core.Llm.Messages;
 using LouisAgent.Core.Llm.Messages.Holes.Providers;
 using LouisAgent.Core.Llm.Providers;
 using LouisAgent.Core.Llm.Thinking;
+using LouisAgent.Core.Llm.Failures;
 using LouisAgent.Core.Llm.ToolSearch;
 using LouisAgent.Core.Llm.UsageMapping;
 using Microsoft.Extensions.AI;
@@ -40,8 +41,10 @@ public sealed class LlmClientFactory : ILlmClientFactory
         if (string.IsNullOrWhiteSpace(options.Model))
             throw new ArgumentException(MessageText.Format(LlmErrorMessage.LlmModelRequired), nameof(options));
 
-        // Innermost in the engine's pipeline, under the tool loop, so every round is marked.
-        return new PromptCachingChatClient(Provider(options).Create(options), CreatePromptCaching(options));
+        // Innermost in the engine's pipeline, under the tool loop, so every round is marked; and asked again around
+        // the marking after a busy moment before any words (F8).
+        var marked = new PromptCachingChatClient(Provider(options).Create(options), CreatePromptCaching(options));
+        return new RetryingChatClient(marked, CreateFailures(options), options.MaxRetries);
     }
 
     /// <summary>The provider's own way of counting tokens.</summary>
@@ -52,6 +55,9 @@ public sealed class LlmClientFactory : ILlmClientFactory
 
     /// <summary>The provider's own way of letting a chat's tools wait to be found (F97.3).</summary>
     public IToolSearch CreateToolSearch(LlmOptions options) => Provider(options).CreateToolSearch(options);
+
+    /// <summary>The provider's own way of naming its failures (F8).</summary>
+    public IModelFailures CreateFailures(LlmOptions options) => Provider(options).CreateFailures(options);
 
     /// <summary>
     /// The provider's markers when <c>LLM_CACHE</c> is on; nothing when it's off, whoever the provider is.

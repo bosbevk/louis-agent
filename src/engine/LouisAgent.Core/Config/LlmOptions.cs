@@ -1,6 +1,8 @@
 
+using System.Globalization;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Config.Messages;
+using LouisAgent.Core.Config.Messages.Holes;
 using LouisAgent.Core.Messages;
 using Microsoft.Extensions.AI;
 
@@ -14,7 +16,8 @@ public sealed class LlmOptions
     public const string Ollama = "ollama";
     public const string OpenAiCompatible = "openai-compatible";
 
-    // Models known to reject tool definitions or to answer with tool-call JSON as text (qwen2); everything else is assumed to support them unless overridden.
+    // Models known to reject tool definitions or to answer with tool-call JSON as text (qwen2); everything else is
+    // assumed to support them unless overridden.
     private static readonly string[] KnownNoToolsPrefixes =
         ["llama2", "codellama", "deepseek-r1", "deepseek-coder", "qwen2"];
 
@@ -35,7 +38,9 @@ public sealed class LlmOptions
     /// <summary>Explicit override for tool support; null means infer from provider/model.</summary>
     public bool? SupportsTools { get; set; }
 
-    /// <summary>LLM_THINKING: off | low | medium | high. Null means medium for Anthropic and off for other providers.</summary>
+    /// <summary>
+    /// LLM_THINKING: off | low | medium | high. Null means medium for Anthropic and off for other providers.
+    /// </summary>
     public string? Thinking { get; set; }
 
     /// <summary>How hard the model should reason before answering; null disables thinking.</summary>
@@ -51,7 +56,9 @@ public sealed class LlmOptions
                 new { Value = other })),
         };
 
-    /// <summary>LLM_CACHE: on | off. Null means on. Only providers with a caching strategy act on it (F4: Anthropic).</summary>
+    /// <summary>
+    /// LLM_CACHE: on | off. Null means on. Only providers with a caching strategy act on it (F4: Anthropic).
+    /// </summary>
     public string? Cache { get; set; }
 
     /// <summary>Whether to mark requests for the provider's prompt cache (F4).</summary>
@@ -69,6 +76,17 @@ public sealed class LlmOptions
     /// 5 minutes.
     /// </summary>
     public string? CacheTtl { get; set; }
+
+    /// <summary>
+    /// How many more times a busy moment is asked again when LLM_MAX_RETRIES is unset: the SDK's own two.
+    /// </summary>
+    public const int DefaultMaxRetries = 2;
+
+    /// <summary>
+    /// LLM_MAX_RETRIES (F8): how many more times a busy moment is asked again, by the SDK before a stream and by the
+    /// engine inside one; 0 asks once.
+    /// </summary>
+    public int MaxRetries { get; set; } = DefaultMaxRetries;
 
     /// <summary>The prefix's cache lifetime (F4).</summary>
     public CacheLifetime ResolveCacheTtl() => (CacheTtl ?? "5m").ToLowerInvariant() switch
@@ -92,7 +110,8 @@ public sealed class LlmOptions
 
     /// <summary>
     /// Reads LLM_PROVIDER, LLM_MODEL, LLM_ENDPOINT, LLM_API_KEY, LLM_SUPPORTS_TOOLS.
-    /// When no provider is set it is inferred from the model name (claude* is anthropic, else ollama) so older .env files keep working.
+    /// When no provider is set it is inferred from the model name (claude* is anthropic, else ollama) so older .env
+    /// files keep working.
     /// </summary>
     public static LlmOptions FromEnvironment(Func<string, string?>? getVariable = null)
     {
@@ -117,9 +136,22 @@ public sealed class LlmOptions
         options.Thinking = Get("LLM_THINKING");
         options.Cache = Get("LLM_CACHE");
         options.CacheTtl = Get("LLM_CACHE_TTL");
+        options.MaxRetries = MaxRetriesOf(Get("LLM_MAX_RETRIES"));
         return options;
     }
 
+    /// <summary>
+    /// LLM_MAX_RETRIES as a count of zero or more; unset is the default, anything else stops start-up.
+    /// </summary>
+    private static int MaxRetriesOf(string? setting)
+    {
+        if (setting is null) return DefaultMaxRetries;
+        if (int.TryParse(setting, NumberStyles.None, CultureInfo.InvariantCulture, out int retries)) return retries;
+        var notACount = new UnknownMaxRetriesHoles(setting, DefaultMaxRetries);
+        throw new ArgumentException(MessageText.Format(ConfigErrorMessage.UnknownMaxRetries, notACount));
+    }
+
     public override string ToString() =>
-        $"{Provider}:{Model} (endpoint={Endpoint ?? "default"}, apiKey={(string.IsNullOrEmpty(ApiKey) ? "unset" : "set")})";
+        $"{Provider}:{Model} (endpoint={Endpoint ?? "default"}, " +
+        $"apiKey={(string.IsNullOrEmpty(ApiKey) ? "unset" : "set")})";
 }

@@ -15,7 +15,7 @@ Built as features in [docs/features/](../features/README.md); each planned one i
 | §4.2, §7 Costs in another currency | [F14 Display currency](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F14-display-currency.md) | **done** (2026-10-11): shown in the PC's region's currency (`HOST_CULTURE`) at a dated rate (Frankfurter, mapped into our `rates.json`; `config/rates.json` as the fallback; `GET /v1/rates`), with the rate and the USD charged beside converted totals; the ledger and the jsonl files stay in USD |
 | §4 Recording: the prompt's hash, a replayed answer | [F18 Evals in C#](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F18-evaluation.md) | **done** (2026-10-29): `prompt_hash` on every row; an eval's replayed answer is a row with `cache_hit` and a known cost of 0, never blank (the first v2 replays: $0, every request a hit) |
 | §5 Estimates | [F6 Estimates](../features/F06-estimates.md) | planned |
-| §6 Budgets | [F7 Budgets](../features/F07-budgets.md) (account-limit refusals: [F8](../features/F08-reliability.md)) | planned |
+| §6 Budgets | [F7 Budgets](../features/F07-budgets.md) (account-limit refusals: F8, done, [write-up](../learning/14-reliability.md)) | planned |
 | §7.1–7.2 Usage tab and API, §4.4 Reconciliation | [F11 Usage tab and reconciliation](../features/F11-usage-tab-and-reconciliation.md) | planned |
 
 ## 1. Goal
