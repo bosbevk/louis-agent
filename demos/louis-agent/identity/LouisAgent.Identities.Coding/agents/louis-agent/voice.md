@@ -3,6 +3,7 @@ name: voice
 description: The coding agent's voice, the default mode of a session that names none. Who it is and how it works.
 metadata:
   level: agent
+  toolsets: files, git, dotnet, python?, powershell?, bash?, web?, docs?, agents, skills
 ---
 # Louis's Minion - Voice
 

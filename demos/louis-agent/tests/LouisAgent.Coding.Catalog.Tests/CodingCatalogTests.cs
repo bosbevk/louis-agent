@@ -1,7 +1,10 @@
 using LouisAgent.Choices;
 using LouisAgent.Composition.Agents;
 using LouisAgent.Composition.Packs;
+using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Delegation.Addresses;
+using LouisAgent.Core.Hosting.Prompts;
+using LouisAgent.Core.Prompting;
 using LouisAgent.Identities.Guide;
 using LouisAgent.Identities.Triage;
 
@@ -13,6 +16,26 @@ namespace LouisAgent.Coding.Tests;
 /// </summary>
 public class CodingCatalogTests
 {
+    /// <summary>
+    /// The coding agent's voice names the toolsets it works with, as the triage team's does (ADR 0025), so a chat
+    /// opened for it gets them, an eval's included, and only the optional ones an instance lacks are left out.
+    /// </summary>
+    [Test]
+    public void TheCodingAgentsVoice_NamesItsToolsets()
+    {
+        var coding = CodingPrompts.Catalog.Identities[0];
+
+        var toolsets = SkillLoader.ToolsetsOf(coding.DefaultVoice, RoleLevel.Agent);
+
+        // The packs' names as the voice writes them, core's two through their enum.
+        string[] named =
+        [
+            "files", "git", "dotnet", "python?", "powershell?", "bash?", "web?", "docs?",
+            CoreToolset.Agents.Wire(), CoreToolset.Skills.Wire()
+        ];
+        Assert.That(toolsets, Is.EqualTo(named));
+    }
+
     /// <summary>
     /// The triage team is there by name, with its own voice, and every pack it names is one the catalogue loads.
     /// </summary>
