@@ -4,6 +4,7 @@ using LouisAgent.Composition.Messages;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Agent.Toolsets;
+using LouisAgent.Core.Llm.Failures;
 using LouisAgent.Core.Llm.Replay;
 using LouisAgent.Core.Prompting.Providers;
 using LouisAgent.Core.Usage.Records;
@@ -57,6 +58,42 @@ public class TurnFailureKindTests
     /// The API's own failure streams a plain sentence a visitor can read, never the exception's name or text (FX239:
     /// a rejected model key showed a visitor <c>AnthropicUnauthorizedException</c> and the provider's answer).
     /// </summary>
+    /// <summary>
+    /// An account limit streams its own kind (F8), in our words with when the agent answers again, never the
+    /// provider's sentence, which names its workspace and its limits (FX239).
+    /// </summary>
+    [Test]
+    public async Task AnAccountLimit_StreamsItsKind_InOurWords_WithWhenItLifts()
+    {
+        var limit = ModelFailure.AccountLimit(
+            "You have reached your specified workspace API usage limits. You will regain access on 2026-12-01 at " +
+            "00:00 UTC.", new DateTimeOffset(2026, 12, 1, 0, 0, 0, TimeSpan.Zero));
+
+        string stream = await FailedTurnAsync(new AccountLimitException(limit));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(stream, Does.Contain($"\"type\":\"{StreamErrorKind.AccountLimit.Wire()}\""));
+            Assert.That(stream, Does.Contain("2026-12-01 00:00 UTC"));
+            Assert.That(stream, Does.Not.Contain("workspace API usage limits"));
+        });
+    }
+
+    /// <summary>An account limit with no time it lifts says the agent's owner must raise it.</summary>
+    [Test]
+    public async Task AnAccountLimitWithNoTime_SaysItsOwnerMustRaiseIt()
+    {
+        string stream = await FailedTurnAsync(
+            new AccountLimitException(ModelFailure.AccountLimit("Your credit balance is too low.", null)));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(stream, Does.Contain($"\"type\":\"{StreamErrorKind.AccountLimit.Wire()}\""));
+            Assert.That(stream, Does.Contain(MessageText.Format(ApiUserText.AccountLimitUntilRaised)));
+            Assert.That(stream, Does.Not.Contain("credit balance"));
+        });
+    }
+
     [Test]
     public async Task TheApisFailure_StreamsAPlainSentence_NotTheException()
     {
