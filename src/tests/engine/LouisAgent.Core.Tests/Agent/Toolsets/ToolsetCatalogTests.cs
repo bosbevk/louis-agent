@@ -23,6 +23,23 @@ public class ToolsetCatalogTests
         Assert.That(AgentCatalog.CoreOnly.ToolNames, Has.None.EqualTo("FindProducts"));
     }
 
+    /// <summary>
+    /// A toolset keeps loaded the tools its built-in skill names (F97.3), read from the skill's header; one whose skill
+    /// names none, or that has no skill, keeps none.
+    /// </summary>
+    [Test]
+    public void AToolset_KeepsLoaded_TheToolsItsSkillNames()
+    {
+        ToolsetDefinition Toolset(TestToolset name) =>
+            ToolsetDefinition.Of(TestTools.Pack.Toolsets.Single(t => t.Name == name.Wire()));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(Toolset(TestToolset.Git).Loaded, Is.EqualTo(new[] { "GetStatus" }));
+            Assert.That(Toolset(TestToolset.Files).Loaded, Is.Empty);
+        });
+    }
+
     // F34: only toolsets whose calls don't depend on each other's order run in parallel: reading the web and the shops
     // (a pack since CL15, so a parallel-safe definition stands in for it here). Files, shells, git and asking agents
     // keep their order.

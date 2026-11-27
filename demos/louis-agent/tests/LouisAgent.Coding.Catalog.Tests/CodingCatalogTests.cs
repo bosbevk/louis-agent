@@ -1,7 +1,10 @@
 using LouisAgent.Choices;
 using LouisAgent.Composition.Agents;
 using LouisAgent.Composition.Packs;
+using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Delegation.Addresses;
+using LouisAgent.Core.Hosting.Prompts;
+using LouisAgent.Core.Prompting;
 using LouisAgent.Identities.Guide;
 using LouisAgent.Identities.Triage;
 
@@ -13,6 +16,47 @@ namespace LouisAgent.Coding.Tests;
 /// </summary>
 public class CodingCatalogTests
 {
+    /// <summary>
+    /// The coding agent's voice names the toolsets it works with, as the triage team's does (ADR 0025), so a chat
+    /// opened for it gets them, an eval's included, and only the optional ones an instance lacks are left out.
+    /// </summary>
+    [Test]
+    public void TheCodingAgentsVoice_NamesItsToolsets()
+    {
+        var coding = CodingPrompts.Catalog.Identities[0];
+
+        var toolsets = SkillLoader.ToolsetsOf(coding.DefaultVoice, RoleLevel.Agent);
+
+        // The packs' names as the voice writes them, core's two through their enum.
+        string[] named =
+        [
+            "files", "git", "dotnet", "python?", "powershell?", "bash?", "web?", "docs?",
+            CoreToolset.Agents.Wire(), CoreToolset.Skills.Wire()
+        ];
+        Assert.That(toolsets, Is.EqualTo(named));
+    }
+
+    /// <summary>
+    /// Every tool a toolset keeps loaded when the rest wait to be found (F97.3) is one of that toolset's own, so a
+    /// renamed tool can't leave a name behind that loads nothing; and every pack's toolset names some.
+    /// </summary>
+    [Test]
+    public void EveryToolAToolsetKeepsLoaded_IsOneOfItsOwn()
+    {
+        var catalog = CodingPrompts.Catalog;
+
+        Assert.Multiple(() =>
+        {
+            foreach (var toolset in catalog.Toolsets.Where(t => !t.IsEngineProvided))
+            {
+                var own = catalog.ToolNamesOf([toolset]);
+                Assert.That(toolset.Loaded, Is.Not.Empty, $"{toolset.Name} keeps no tool loaded");
+                Assert.That(toolset.Loaded.Where(name => !own.Contains(name)), Is.Empty,
+                    $"{toolset.Name} keeps loaded a tool it doesn't have");
+            }
+        });
+    }
+
     /// <summary>
     /// The triage team is there by name, with its own voice, and every pack it names is one the catalogue loads.
     /// </summary>

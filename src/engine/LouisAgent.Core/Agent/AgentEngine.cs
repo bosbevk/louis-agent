@@ -3,11 +3,13 @@ using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Agent.Commands;
 using LouisAgent.Core.Agent.EngineTools;
 using LouisAgent.Core.Agent.EngineTools.Skills;
+using LouisAgent.Core.Agent.EngineTools.ToolSearch;
 using LouisAgent.Core.Agent.Messages;
 using LouisAgent.Core.Agent.Turns;
 using LouisAgent.Core.Agent.Turns.Pacing;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Llm.Thinking;
+using LouisAgent.Core.Llm.ToolSearch;
 using LouisAgent.Core.Llm.UsageMapping;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
@@ -149,13 +151,21 @@ public class AgentEngine
     /// <c>skills</c> toolset. Ignored when <paramref name="toolsets"/> is null, which always
     /// registers them.
     /// </param>
+    /// <param name="toolSearch">
+    /// The provider's way of letting tools wait to be found (F97.3); null sends every tool, as a provider without one.
+    /// </param>
+    /// <param name="kept">The tools the toolsets keep loaded when the rest wait (<c>metadata.loaded</c>).</param>
     public AgentEngine(ISkillProvider skillProvider, IChatClient chatClient, AgentOptions options,
         bool supportsTools = true,
         IEnumerable<object>? toolsets = null,
         IUsageSink? usageSink = null, IUsageMapper? usageMapper = null, bool selfExtension = false,
         bool concurrentToolCalls = false, TimeProvider? clock = null, Sessions.Replay.Store.ReplayStore? replay = null,
-        IStaleThinking? staleThinking = null)
+        IStaleThinking? staleThinking = null, IToolSearch? toolSearch = null, IReadOnlySet<string>? kept = null)
     {
+        var search = toolSearch ?? NoToolSearch.Instance;
+        var deferral = new ToolDeferral(options.ToolSearch, kept ?? new HashSet<string>());
+        // Below the replay, so what the provider marks never reaches the history or the recordings' keys.
+        chatClient = search.Around(chatClient, () => deferral.Deferred);
         SupportsTools = supportsTools;
         _staleThinking = staleThinking ?? StripStaleThinking.Instance;
         WorkspaceRoot = Path.GetFullPath(options.WorkspaceRoot);
@@ -191,6 +201,9 @@ public class AgentEngine
         var agentSkills = OwnTools.AgentSkills(doorTools, () => SkillListing.LinesFor(_library.Value.Approved),
             making, _reload);
         OwnTools.Register(_registry, agentSkills, options, toolsets, selfExtension, clock);
+        // F97.3: once the tools are in, which of them wait to be found, and the search that finds them.
+        deferral.Decide(_registry.Live.Select(tool => tool.Name), search.Available);
+        if (deferral.On) _registry.AddPublicMethods(new ToolSearchTools(() => TurnTools.Current?.Tools ?? []));
     }
 
     /// <summary>

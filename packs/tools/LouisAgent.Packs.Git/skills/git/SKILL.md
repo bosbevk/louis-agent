@@ -1,6 +1,8 @@
 ---
 name: git
 description: The git toolset's guide, loaded with it. Status, diffs, branches, staging, commits, merges and history, and the rules for each.
+metadata:
+  loaded: GetStatus, ShowCommit, GetLog, DiffUnstaged
 ---
 # Git Skills
 

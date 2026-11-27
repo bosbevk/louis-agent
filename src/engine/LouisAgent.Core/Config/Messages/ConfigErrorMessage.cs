@@ -1,5 +1,5 @@
-
 using LouisAgent.Composition.Messages;
+using LouisAgent.Core.Config.Messages.Holes;
 using System.ComponentModel;
 
 namespace LouisAgent.Core.Config.Messages;
@@ -12,6 +12,10 @@ public enum ConfigErrorMessage
 {
     [Description("Unknown LLM_CACHE '{Value}'. Use on or off.")]
     UnknownCacheSetting,
+
+    [Description("Unknown {Setting} '{Value}'. Use {Supported}.")]
+    [Holes(typeof(UnknownToolSearchHoles))]
+    UnknownToolSearch,
 
     [Description("Unknown LLM_CACHE_TTL '{Value}'. Use 5m or 1h.")]
     UnknownCacheTtl,

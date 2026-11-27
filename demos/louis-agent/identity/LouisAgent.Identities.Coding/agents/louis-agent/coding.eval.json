@@ -1,0 +1,46 @@
+{
+  "$schema": "../../../../../src/evals/LouisAgent.Evals/eval.schema.json",
+  "agent": "louis-agent",
+  "conversations": [
+    { "id": "coding-last-commit",
+      "turns": [
+        { "ask": "Show me what the last commit in this repository changed.",
+          "facts": ["no-error", "has-words", "used ShowCommit"],
+          "criteria": ["Says what the last commit changed, from the commit itself"] } ] },
+    { "id": "coding-current-branch",
+      "turns": [
+        { "ask": "Which branch is this repository on right now?",
+          "facts": ["no-error", "has-words", "used GetCurrentBranch"],
+          "criteria": ["Names the branch"] } ] },
+    { "id": "coding-find-a-file",
+      "turns": [
+        { "ask": "Where is the file ToolKey.cs in this repository?",
+          "facts": ["no-error", "has-words", "used FindFiles"],
+          "criteria": ["Gives the file's path in the repository"] } ] },
+    { "id": "coding-read-a-file",
+      "turns": [
+        { "ask": "What is the first request in demos/louis-agent/samples/order-service/data/requests-short.txt?",
+          "facts": ["no-error", "has-words", "used ReadWorkspaceFile"],
+          "criteria": ["Says the first request is get-order 1001"] } ] },
+    { "id": "coding-search-the-code",
+      "turns": [
+        { "ask": "Which files in this repository mention ToolReplayMissException?",
+          "facts": ["no-error", "has-words", "used SearchWorkspace"],
+          "criteria": ["Lists the files that mention it, from a search of the workspace"] } ] },
+    { "id": "coding-list-projects",
+      "turns": [
+        { "ask": "List the .NET projects in demos/louis-agent/samples/order-service.",
+          "facts": ["no-error", "has-words", "used FindFiles"],
+          "criteria": ["Names OrderService and OrderService.Tests"] } ] },
+    { "id": "coding-find-a-doc",
+      "turns": [
+        { "ask": "Which of this project's docs explains how to run an eval?",
+          "facts": ["no-error", "has-words", "used SearchDocs"],
+          "criteria": ["Names the run-an-eval guide"] } ] },
+    { "id": "coding-today",
+      "turns": [
+        { "ask": "What's today's date?",
+          "facts": ["no-error", "has-words", "used GetToday"],
+          "criteria": ["Gives today's date"] } ] }
+  ]
+}

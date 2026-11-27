@@ -86,7 +86,22 @@ request names its own thinking, the adapter stops adding the turn's effort and h
 carries them too. A request with thinking off is left alone, since the API refuses the setting there. The API then
 answers, and lists what it dropped as `thinking_dropped` in the reply's `input_transformations`.
 
-### 6. Where the factory comes in
+### 6. Finding a tool on demand
+
+Claude can be sent a tool it doesn't see yet: a tool marked `defer_loading` stays out of the model's context, and out
+of the cached prefix, until a search loads it. Core decides which tools wait and offers its own `FindTool`
+([core's part 16](LouisAgent.Core.md#16-finding-a-tool-when-its-needed)), and `CreateToolSearch(options)` gives
+Claude's way of doing the rest, `AnthropicToolSearch`.
+
+On each request its client works on copies, so the chat's own history and options never change. The tools that wait
+go as `DeferredFunction`s, the same tools with the one key the SDK's adapter reads to send `defer_loading`. And each of
+`FindTool`'s answers goes back as Anthropic's tool references, one `tool_reference` block per name, carried as the raw
+block the adapter passes into a tool result. The API expands each into its tool's definition, so the model calls it
+by its own name in the same answer. This is the custom search Anthropic documents. Its own server-side search isn't
+used, because the SDK's adapter drops its blocks from the next request. A run on Haiku 5.5 with thinking on proved
+that the found tool is called, the request after it is accepted with its thinking, and the cache is read.
+
+### 7. Where the factory comes in
 
 `LlmClientFactory`, in core, is the registry that ties this together. It finds the provider by its name, wraps the
 client for caching, and asks the provider for its mapper and its markers. If a program handed it no providers at
@@ -98,7 +113,7 @@ all, it says every name is unknown.
 
 These are the types involved:
 
-![The types: AnthropicProvider makes core's four seams real, the client, the usage mapper, the cache marks and a resumed chat's thinking](diagrams/LouisAgent.Core.Anthropic-interface.svg)
+![The types: AnthropicProvider makes core's five seams real, the client, the usage mapper, the cache marks, a resumed chat's thinking and tool search](diagrams/LouisAgent.Core.Anthropic-interface.svg)
 
 ## Structure
 
@@ -109,6 +124,7 @@ src/engine/LouisAgent.Core.Anthropic/
 ├── AnthropicPromptCaching.cs   # the two cache markers (F4)
 ├── Thinking/ThinkingBudget.cs      # the budget swap for Claude models before 4.6
 ├── Thinking/AnthropicDropBlock.cs  # a resumed chat's thinking: the API asked to drop the blocks that fail
+├── ToolSearch/                 # tool search (F97.3): AnthropicToolSearch, its client, DeferredFunction, ToolReferences
 └── Messages/AnthropicErrorMessage.cs
 src/tests/engine/LouisAgent.Core.Anthropic.Tests/   # the provider, the budget and drop_block, the markers on the wire, the mapper, the lifetimes
 ```

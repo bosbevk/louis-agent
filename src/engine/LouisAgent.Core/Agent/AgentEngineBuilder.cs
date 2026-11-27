@@ -1,6 +1,7 @@
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Llm.Thinking;
+using LouisAgent.Core.Llm.ToolSearch;
 using LouisAgent.Core.Llm.UsageMapping;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Pricing.Rates;
@@ -40,6 +41,8 @@ public sealed class AgentEngineBuilder
     private TimeProvider? _clock;
     private ReplayStore? _replay;
     private IStaleThinking? _staleThinking;
+    private IToolSearch? _toolSearch;
+    private IReadOnlySet<string>? _kept;
     private string? _name;
     private ReasoningEffort? _thinking;
     private DisplayCurrency? _display;
@@ -123,6 +126,17 @@ public sealed class AgentEngineBuilder
         return this;
     }
 
+    /// <summary>
+    /// The provider's way of letting tools wait to be found (F97.3), and the tools the toolsets keep loaded; none
+    /// sends every tool as before.
+    /// </summary>
+    public AgentEngineBuilder WithToolSearch(IToolSearch? toolSearch, IReadOnlySet<string> kept)
+    {
+        _toolSearch = toolSearch;
+        _kept = kept;
+        return this;
+    }
+
     /// <summary>The name a trace gives this agent; null uses the host's service name.</summary>
     public AgentEngineBuilder WithName(string? name)
     {
@@ -157,7 +171,7 @@ public sealed class AgentEngineBuilder
     /// <summary>Builds the engine from the parts given so far.</summary>
     public AgentEngine Build() =>
         new(_skillProvider, _chatClient, _options, _supportsTools, _toolsets, _usageSink, _usageMapper,
-            _selfExtension, _concurrentToolCalls, _clock, _replay, _staleThinking)
+            _selfExtension, _concurrentToolCalls, _clock, _replay, _staleThinking, _toolSearch, _kept)
         {
             Name = _name ?? AgentLogging.ServiceName,
             Thinking = _thinking,

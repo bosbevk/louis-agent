@@ -142,7 +142,8 @@ public static class AgentHost
         RoleFiles.Check(agent, agent.DefaultVoice);
         var engines = new AgentEngineFactory(chatClient, agent, llm.ResolveSupportsTools(), ledger, usageMapper,
             display, llm.ResolveThinking(), rates: rates, sessionLlms: sessionLlms, catalog: catalog,
-            services: services, recordings: recordings, staleThinking: clientFactory.CreateStaleThinking(llm));
+            services: services, recordings: recordings, staleThinking: clientFactory.CreateStaleThinking(llm),
+            toolSearch: clientFactory.CreateToolSearch(llm));
         var engine = engines.GetOrCreate(engines.Available);
         var chosen = new LlmChosenHoles(llm, engine.SupportsTools ? "on" : "off", engine.Thinking?.Wire() ?? "off");
         Log.Log(LogLevel.Information, HostingLogMessage.LlmChosen, chosen);

@@ -1,5 +1,6 @@
 using LouisAgent.Composition.Packs;
 using LouisAgent.Core.Agent.Catalog;
+using LouisAgent.Core.Prompting.Headers;
 
 namespace LouisAgent.Core.Agent.Toolsets;
 
@@ -37,6 +38,13 @@ public sealed record ToolsetDefinition(
     IReadOnlyList<Type>? ToolTypes = null,
     bool ParallelSafe = false)
 {
+    /// <summary>
+    /// The tools this toolset keeps loaded when the rest wait to be found (F97.3): the ones its built-in skill names in
+    /// its header's <c>metadata.loaded</c>. None when it has no skill or the skill names none.
+    /// </summary>
+    public IReadOnlyList<string> Loaded =>
+        Skill is not null && PromptCatalog.Get(PackToolset.SkillFile(Skill))?.Header is { } header ? header.Loaded : [];
+
     /// <summary>
     /// A pack's toolset, as the engine holds it: the pack sees the context only through its contract.
     /// </summary>

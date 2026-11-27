@@ -14,4 +14,11 @@ public sealed record PromptHeader(
     RoleLevel? Level,
     IReadOnlyList<string> Toolsets,
     SkillLoad? Load = null,
-    string? Script = null);
+    string? Script = null)
+{
+    /// <summary>
+    /// The tools a toolset's built-in skill keeps loaded when the rest wait to be found (F97.3), from its
+    /// <c>metadata.loaded</c>; none when it names none.
+    /// </summary>
+    public IReadOnlyList<string> Loaded { get; init; } = [];
+}

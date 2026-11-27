@@ -5,6 +5,7 @@ using LouisAgent.Core.Hosting.Engines;
 using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Hosting.SessionLlms;
 using LouisAgent.Core.Llm.Thinking;
+using LouisAgent.Core.Llm.ToolSearch;
 using LouisAgent.Core.Llm.UsageMapping;
 using LouisAgent.Core.Pricing.Rates;
 using LouisAgent.Core.Usage.Sinks;
@@ -89,6 +90,12 @@ public sealed class AgentEngineFactory
     private readonly IStaleThinking? _staleThinking;
 
     /// <summary>
+    /// The instance's provider's way of letting tools wait to be found (F97.3); an engine on a session's own model
+    /// profile sends every tool.
+    /// </summary>
+    private readonly IToolSearch? _toolSearch;
+
+    /// <summary>
     /// The factory over the instance's model, settings, ledger, prices and packs: one store, one browser and one
     /// clock for every engine it builds.
     /// </summary>
@@ -96,10 +103,11 @@ public sealed class AgentEngineFactory
         IUsageSink? usageSink = null, IUsageMapper? usageMapper = null, DisplayCurrency? display = null,
         ReasoningEffort? thinking = null, HostServices? services = null, int capacity = DefaultCapacity,
         ExchangeRates? rates = null, IReadOnlyList<SessionLlm>? sessionLlms = null, AgentCatalog? catalog = null,
-        ReplayStore? recordings = null, IStaleThinking? staleThinking = null)
+        ReplayStore? recordings = null, IStaleThinking? staleThinking = null, IToolSearch? toolSearch = null)
     {
         Catalog = catalog ?? AgentCatalog.CoreOnly;
         _staleThinking = staleThinking;
+        _toolSearch = toolSearch;
         _chatClient = chatClient;
         _agent = agent;
         _agent.DefaultVoice ??= Catalog.DefaultVoice;
@@ -226,6 +234,7 @@ public sealed class AgentEngineFactory
             .WithClock(_clock)
             .WithReplay(_replay)
             .WithStaleThinking(model is null ? _staleThinking : null)
+            .WithToolSearch(model is null ? _toolSearch : null, resolved.SelectMany(t => t.Loaded).ToHashSet())
             .WithSkillsDirectory(SkillFolder.Find(_agent))
             .WithThinking(model is null ? _thinking : model.Thinking)
             .WithDisplay(_display)

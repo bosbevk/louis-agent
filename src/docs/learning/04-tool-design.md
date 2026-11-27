@@ -79,6 +79,43 @@ and what an MCP server would have to do for itself.
 Reuse before building held. The SDK's own `McpServerTool.Create` checks what a server would publish, instead of a
 hand-written mirror of its rules; it is a test-only package, kept in step with the MCP server's.
 
+## F97.3: a chat finds a tool when it needs it (2026-11-27)
+
+The coding agent sent all its tools, close to a hundred of them and about 17,000 tokens of definitions, with every
+request, and Anthropic writes that a model picks the right tool less well once it has more than thirty to fifty. So
+the question was how a chat can keep most of its tools out of sight without breaking the one thing FX4 protects, a
+chat's fixed tool list. Anthropic's answer fits exactly: every tool is still sent, but one marked `defer_loading`
+stays out of the model's context, and out of the cached prefix, until a search loads it.
+
+The research came first, at Louis's word, and settled three choices. Anthropic runs a search of its own, but the C#
+SDK's adapter drops its blocks from the next request, so we use the custom search it documents: our own `FindTool`,
+answering with `tool_reference` blocks, through a provider strategy, so OpenAI and Ollama send every tool as before.
+Each toolset's built-in skill names the few tools it keeps in sight (`metadata.loaded`), since the author of a
+toolset knows which of its tools are everyday ones, and the names were picked from the tool calls of every eval run
+kept here. And `TOOL_SEARCH` is `auto` by default, as Claude Code's own setting is, on only past ten tools that could
+wait, so the guide, whose toolsets keep nearly everything in sight, sends what it always did.
+
+A paid proof came before any of it, since no page said what deferred tools do to thinking and the cache: on Haiku 5.5
+with thinking on, the model called our search, then the tool it found, and the next message read the cache. Then the
+coding agent got its first eval, eight jobs that each need one tool, measured before and after. With search on, each
+request's prompt fell from about 42,100 tokens to about 26,100, 38% less, in 18 requests instead of 23, for $0.020
+against $0.021; the tools chosen were the same. The surprise was that the agent never needed `FindTool` in the eval:
+it called the waiting tools it wanted by their names, which the API accepted, though no page says it will. In a full
+chat it did search once, for a blame it couldn't see, and called the tool it found.
+
+What didn't work, twice, was the eval itself, and that is its own lesson. Its first "read a file" asked about a CSV,
+and the agent rightly used `ReadTable`. Its "list the projects" asked about one folder, and `DotNetListProjects` takes
+no folder, so the agent rightly used `FindFiles`. Both facts were the eval's mistakes, not the agent's. And one wrong
+turn was mine: I read a recording's system prompt as text, though it is kept as a hash, concluded the dotnet guide
+wasn't in the prompt, and offered a fix on that, until the replay itself said the prompt had changed. The tool search
+added no package: a plain word score in our code, no regex.
+
+What it cost, in all: about $0.13 of live runs, the proof, the coding eval's befores and afters, and the walk-through.
+It also closes F38, tool search "when a measured need comes", since the need is now measured.
+
+Concept: *4 Tool design* in the [goal](../GOAL.md): a tool is found by its name and its words, so the fewer a model
+has to read, the easier the right one is to pick; and an eval's fact has to name the tool the job really needs.
+
 ## F169.2: a heading's rank is markup first, and its size second (2026-11-21)
 
 **What it was.** The design review found that a docs page of the framework's site shouts: every heading was 74 on a

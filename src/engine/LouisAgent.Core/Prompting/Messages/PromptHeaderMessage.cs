@@ -21,7 +21,7 @@ public enum PromptHeaderMessage
 
     [Description(
         "{Path}: the header has '{Key}', which nothing reads. It takes name, description and metadata (level, " +
-        "toolsets, load).")]
+        "toolsets, load, script, loaded).")]
     [Holes(typeof(KeyUnknownHoles))]
     KeyUnknown,
 

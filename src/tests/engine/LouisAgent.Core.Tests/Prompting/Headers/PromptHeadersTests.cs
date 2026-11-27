@@ -84,6 +84,24 @@ public class PromptHeadersTests
         Assert.That((file.Header?.Level, file.Header?.Toolsets.Count), Is.EqualTo(((RoleLevel?)null, 0)));
     }
 
+    /// <summary>
+    /// A toolset's built-in skill names the tools it keeps loaded when the rest wait to be found (F97.3), a comma list;
+    /// one that names none keeps none.
+    /// </summary>
+    [Test]
+    public void AToolsetsSkill_NamesTheToolsItKeepsLoaded()
+    {
+        var named = PromptHeaders.Split("skills/git/SKILL.md",
+            "---\nname: git\ndescription: The git toolset.\nmetadata:\n  loaded: GetStatus, ShowCommit\n---\n# Git\n");
+        var none = PromptHeaders.Split("skills/web/SKILL.md", "---\nname: web\ndescription: The web.\n---\n# Web\n");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(named.Header!.Loaded, Is.EqualTo(new[] { "GetStatus", "ShowCommit" }));
+            Assert.That(none.Header!.Loaded, Is.Empty);
+        });
+    }
+
     /// <summary>A file with no header (the agent's own function files) is read whole.</summary>
     [TestCase("# Acme subagent: Local cook\n\nYou are …")]
     [TestCase("")]

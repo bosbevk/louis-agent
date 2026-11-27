@@ -1,6 +1,8 @@
 ---
 name: web
 description: The web toolset's guide, loaded with it. How to research on the internet with WebSearch and FetchUrl, and when to check the workspace first.
+metadata:
+  loaded: WebSearch, FetchUrl
 ---
 # Web Skills
 

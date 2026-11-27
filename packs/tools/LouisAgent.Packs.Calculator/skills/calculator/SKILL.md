@@ -1,6 +1,8 @@
 ---
 name: calculator
 description: The calculator toolset's guide, loaded with it. How to work out sums with Calculate instead of in your head.
+metadata:
+  loaded: Calculate
 ---
 # Calculator Skills
 

@@ -75,6 +75,15 @@ other optional keys allowed and ours strict (keys nothing reads).
   embedded prompt. Its header is there for the studio and for a person reading the file.
 - Phase 7's function skills take the same header, so the agent's own skills and the built-in prompts read alike.
 
+## Amended 2026-11-27 (F97.3): a toolset's skill names the tools it keeps loaded
+
+Louis approved one more key under `metadata`: `loaded`, a toolset's built-in skill only, the comma list of the few
+tools that toolset keeps in the model's sight when the rest wait to be found. `ToolsetDefinition.Loaded` reads it
+back, and a test holds that each name is one of that toolset's own tools, so a renamed tool can't leave a name that
+loads nothing. The strict reader takes it beside `level`, `toolsets`, `load` and `script`, and still refuses any key
+it doesn't know. That tool search is a strategy each provider gives or doesn't is ADR 0003's rule, which this doesn't
+change.
+
 ## Links
 
 TODO's *CL27 Prompt headers* · [0017](0017-skills-by-level.md) · [0018](0018-built-in-prompts-embedded.md) ·

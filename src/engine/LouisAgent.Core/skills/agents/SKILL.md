@@ -1,6 +1,8 @@
 ---
 name: agents
 description: The agents toolset's guide, loaded with it. How to ask another agent by its address and use its answer.
+metadata:
+  loaded: AskAgent, ReadAgentWork
 ---
 # Agents Skills
 

@@ -17,6 +17,8 @@
 
   <ItemGroup>
     <EmbeddedResource Include="agents\**\*.md" />
+    <!-- Its eval (F97.3): read with the catalogue at start-up, so a wrong file stops the host. -->
+    <EmbeddedResource Include="agents\**\*.eval.json" />
   </ItemGroup>
 
 </Project>

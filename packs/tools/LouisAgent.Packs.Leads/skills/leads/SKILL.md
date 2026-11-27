@@ -1,6 +1,8 @@
 ---
 name: leads
 description: The leads toolset's guide, loaded with it. When and how to tell the owner that someone is interested.
+metadata:
+  loaded: SendLead
 ---
 # Leads
 

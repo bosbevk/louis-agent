@@ -1,4 +1,5 @@
 using LouisAgent.Core.Anthropic.Messages;
+using LouisAgent.Core.Anthropic.ToolSearch;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Llm;
 using LouisAgent.Core.Llm.Caching;
@@ -64,6 +65,11 @@ public class AnthropicProviderTests
 
         Assert.That(client.GetService<PromptCachingChatClient>()?.Strategy, Is.TypeOf<AnthropicPromptCaching>());
     }
+
+    /// <summary>The provider's tool search is Anthropic's, through the factory as a host asks for it (F97.3).</summary>
+    [Test]
+    public void ToolSearch_IsAnthropics() =>
+        Assert.That(Factory().CreateToolSearch(Options()), Is.TypeOf<AnthropicToolSearch>());
 
     [Test]
     public void TheKeyMessage_NamesTheSetting() =>

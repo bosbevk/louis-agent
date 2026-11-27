@@ -39,7 +39,7 @@ public static class PromptHeaders
     private const string Fence = "---";
 
     private static readonly string[] Keys = ["name", "description", "metadata"],
-        MetadataKeys = ["level", "toolsets", "load", "script"];
+        MetadataKeys = ["level", "toolsets", "load", "script", "loaded"];
 
     /// <summary>The file's header, when it has one, and its body.</summary>
     public static PromptFile Split(string path, string text)
@@ -82,7 +82,8 @@ public static class PromptHeaders
         if (metadata is not null) Known(path, metadata, MetadataKeys);
         string? script = metadata is null ? null : Text(path, metadata, "script");
         return new PromptHeader(name, description, LevelOf(path, metadata), ToolsetsOf(path, metadata),
-            LoadOf(path, metadata), script);
+            LoadOf(path, metadata), script)
+        { Loaded = ListOf(path, metadata, "loaded") };
     }
 
     /// <summary>
@@ -143,8 +144,12 @@ public static class PromptHeaders
 
     /// <summary>The toolsets the prompt always loads, a comma list; none when it names none.</summary>
     private static IReadOnlyList<string> ToolsetsOf(string path, YamlMappingNode? metadata) =>
-        metadata is not null && Text(path, metadata, "toolsets") is { } toolsets
-            ? toolsets.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+        ListOf(path, metadata, "toolsets");
+
+    /// <summary>A metadata key's comma list, each name trimmed; none when the key isn't there.</summary>
+    private static IReadOnlyList<string> ListOf(string path, YamlMappingNode? metadata, string key) =>
+        metadata is not null && Text(path, metadata, key) is { } list
+            ? list.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
             : [];
 
     /// <summary>A key's text, or none when the mapping lacks it; a list or a mapping there refuses.</summary>
