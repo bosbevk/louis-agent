@@ -1,3 +1,4 @@
+using LouisAgent.Core.Anthropic.Failures;
 using LouisAgent.Core.Anthropic.Messages;
 using LouisAgent.Core.Anthropic.ToolSearch;
 using LouisAgent.Core.Config;
@@ -70,6 +71,13 @@ public class AnthropicProviderTests
     [Test]
     public void ToolSearch_IsAnthropics() =>
         Assert.That(Factory().CreateToolSearch(Options()), Is.TypeOf<AnthropicToolSearch>());
+
+    /// <summary>
+    /// The provider names its failures the Anthropic way, through the factory as the engine asks (F8).
+    /// </summary>
+    [Test]
+    public void Failures_AreAnthropics() =>
+        Assert.That(Factory().CreateFailures(Options()), Is.TypeOf<AnthropicFailures>());
 
     [Test]
     public void TheKeyMessage_NamesTheSetting() =>
