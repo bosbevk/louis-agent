@@ -1,6 +1,8 @@
 ---
 name: site
 description: The site toolset's guide, loaded with it. When and how to take the visitor to a place on this site by its address, show them a card, and offer them choices.
+metadata:
+  loaded: ShowPage, Offer, FindPlace, AskFor
 ---
 # Site
 

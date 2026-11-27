@@ -1,6 +1,8 @@
 ---
 name: docs
 description: The docs toolset's guide, loaded with it. How to find and read a project's own docs before answering about it.
+metadata:
+  loaded: SearchDocs, ReadDoc, ListDocs
 ---
 # Docs Skills
 

@@ -1,6 +1,8 @@
 ---
 name: python
 description: The python toolset's guide, loaded with it. How to run Python for data wrangling, calculations, parsing files and quick scripts.
+metadata:
+  loaded: PythonRun
 ---
 # Python Skills
 

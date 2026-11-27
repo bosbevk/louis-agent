@@ -1,6 +1,8 @@
 ---
 name: files
 description: The files toolset's guide, loaded with it. How to read, write and manage files in the workspace.
+metadata:
+  loaded: ReadWorkspaceFile, SearchWorkspace, FindFiles, WriteWorkspaceFile
 ---
 # Files Skills
 

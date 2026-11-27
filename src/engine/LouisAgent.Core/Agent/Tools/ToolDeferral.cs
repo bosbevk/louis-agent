@@ -25,7 +25,7 @@ internal sealed class ToolDeferral(ToolSearchMode mode, IReadOnlySet<string> kep
 
     /// <summary>The engine's own tools, which every chat that has them keeps loaded.</summary>
     private static readonly HashSet<string> EngineOwn =
-        ["FindTool", "GetToday", "UseSkill", "CreateSkill", "ReloadSkills"];
+        ["FindTool", "GetToday", "UseSkill", "CreateSkill", "ReloadSkills", "ReadSkill"];
 
     /// <summary>Decides, from the engine's registered tools, whether search is on and which tools wait.</summary>
     public void Decide(IEnumerable<string> registered, bool searchAvailable)

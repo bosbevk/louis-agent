@@ -1,6 +1,8 @@
 ---
 name: powershell
 description: The powershell toolset's guide, loaded with it. How to run PowerShell for Windows administration and for working with objects, JSON and CSV.
+metadata:
+  loaded: PowerShellRun
 ---
 # PowerShell Skills
 

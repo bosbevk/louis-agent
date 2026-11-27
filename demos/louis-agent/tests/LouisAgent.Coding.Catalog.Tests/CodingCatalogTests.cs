@@ -37,6 +37,27 @@ public class CodingCatalogTests
     }
 
     /// <summary>
+    /// Every tool a toolset keeps loaded when the rest wait to be found (F97.3) is one of that toolset's own, so a
+    /// renamed tool can't leave a name behind that loads nothing; and every pack's toolset names some.
+    /// </summary>
+    [Test]
+    public void EveryToolAToolsetKeepsLoaded_IsOneOfItsOwn()
+    {
+        var catalog = CodingPrompts.Catalog;
+
+        Assert.Multiple(() =>
+        {
+            foreach (var toolset in catalog.Toolsets.Where(t => !t.IsEngineProvided))
+            {
+                var own = catalog.ToolNamesOf([toolset]);
+                Assert.That(toolset.Loaded, Is.Not.Empty, $"{toolset.Name} keeps no tool loaded");
+                Assert.That(toolset.Loaded.Where(name => !own.Contains(name)), Is.Empty,
+                    $"{toolset.Name} keeps loaded a tool it doesn't have");
+            }
+        });
+    }
+
+    /// <summary>
     /// The triage team is there by name, with its own voice, and every pack it names is one the catalogue loads.
     /// </summary>
     [Test]

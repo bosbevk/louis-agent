@@ -1,6 +1,8 @@
 ---
 name: bash
 description: The bash toolset's guide, loaded with it. How to run shell scripts with the Bash tools, for pipelines, curl and Unix tooling.
+metadata:
+  loaded: BashRun
 ---
 # Bash Skills
 

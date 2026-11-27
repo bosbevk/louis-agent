@@ -10,7 +10,8 @@ namespace LouisAgent.Core.Tests.Agent.Tools;
 public class ToolDeferralTests
 {
     /// <summary>The engine's own tools, which always stay loaded.</summary>
-    private static readonly string[] EngineOwn = ["FindTool", "GetToday", "UseSkill", "CreateSkill", "ReloadSkills"];
+    private static readonly string[] EngineOwn =
+        ["FindTool", "GetToday", "UseSkill", "CreateSkill", "ReloadSkills", "ReadSkill"];
 
     /// <summary>A chat's tools: the engine's own, one kept loaded, and this many more.</summary>
     private static IEnumerable<string> Registered(int others) =>

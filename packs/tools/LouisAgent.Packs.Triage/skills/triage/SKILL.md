@@ -1,6 +1,8 @@
 ---
 name: triage
 description: The triage toolset's guide, loaded with it. How a triage role ends its work with a typed result, raises a case to a person, and reads a run back.
+metadata:
+  loaded: DecideCase, RaiseToPerson, ReadTriageRun, SortCase, ReportInvestigation, ReportReview
 ---
 # Triage
 

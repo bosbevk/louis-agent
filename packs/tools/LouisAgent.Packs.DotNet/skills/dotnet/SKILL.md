@@ -1,6 +1,8 @@
 ---
 name: dotnet
 description: The dotnet toolset's guide, loaded with it. How to build, test, run and debug .NET code with the DotNet tools instead of guessing.
+metadata:
+  loaded: DotNetBuild, DotNetTest
 ---
 # .NET Skills
 
