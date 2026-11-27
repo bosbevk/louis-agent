@@ -41,6 +41,7 @@ public sealed class ChatRunner(
     /// those agents sends it its page.
     /// </summary>
     public IReadOnlyList<WindowPage>? Windows { get; set; }
+
     public bool Streaming { get; private set; }
     public string? Notice { get; set; }
 
@@ -141,6 +142,7 @@ public sealed class ChatRunner(
 
         // Text arrives a few words at a time; redrawing every 50 ms is smooth, and not on every token.
         var redraw = new RedrawThrottle(_clock, RedrawEvery, () => Changed?.Invoke());
+        var started = _clock.GetUtcNow();
         try
         {
             // A turn the server paced is marked so, for its caption to leave the page's own pacer off (F156).
@@ -154,6 +156,11 @@ public sealed class ChatRunner(
                     ToolCalled?.Invoke(call);
                 redraw.Request();
             }
+
+            // Every turn the API ends, a cancelled one too, says why it stopped; a stream that closed without it was
+            // cut short, and says so with how long it ran, instead of passing for a whole answer (FX252).
+            if (turn.StopReason is null && turn.Error is null)
+                turn.Error = string.Format(text.AnswerCutShort, (int)(_clock.GetUtcNow() - started).TotalSeconds);
         }
         catch (AgentApiException ex) when (ex.Status == HttpStatusCode.NotFound)
         {

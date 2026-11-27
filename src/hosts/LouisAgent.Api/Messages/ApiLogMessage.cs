@@ -31,6 +31,11 @@ public enum ApiLogMessage
     [Holes(typeof(SessionOpenedByHoles))]
     SessionOpenedBy,
 
+    [Description("Session {Session} refused a message as still answering: its turn has run {Seconds} s, " +
+                 "cancelled: {Cancelled}")]
+    [Holes(typeof(TurnRefusedBusyHoles))]
+    TurnRefusedBusy,
+
     [Description("The page {Page} couldn't be rendered for search engines, so {Route} answers the plain shell until "
                  + "the next deploy")]
     [Holes(typeof(PagePrerenderFailedHoles))]

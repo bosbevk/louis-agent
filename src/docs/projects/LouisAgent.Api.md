@@ -174,8 +174,11 @@ The first is `shop-prices`, which takes Stats SA's two spreadsheets.
 ### 8. Sessions
 
 A session runs in memory, held by `AgentSessions`. It runs one turn at a time, so a second message while one is
-running gets a `409`. A turn is cancelled by `POST /v1/sessions/{id}/cancel`, or by the client disconnecting. Idle
-sessions are dropped from memory after 4 hours, each time a new one opens.
+running gets a `409`. A turn is cancelled by `POST /v1/sessions/{id}/cancel`, or by the client disconnecting. A
+cancelled turn still runs until the tool it is in returns, so a long build can keep a chat busy after the page let
+go. Each refusal is logged with how long the running turn has gone on and whether it was already cancelled, which
+tells a chat that is stuck from one that is only busy. Idle sessions are dropped from memory after 4 hours, each time
+a new one opens.
 
 Beside memory, every session is written to a store, so a restart doesn't end it. The store is one seam,
 `ISessionStore`, with two implementations: `InMemorySessionStore`, for tests and a developer's machine, and

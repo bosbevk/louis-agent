@@ -75,7 +75,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | FX59 | binary attachments sent as files, not text | Later |
 | FX60 | a continued specialist's ledger rows name the turn that continued it | Later |
 | FX61 | A site whose host has no `ACCOUNTS_SQL_URL` still calls `/account/me` and `/account/providers`, gets `index.html` back and dies on the JSON (the starter's login and chat pages show Blazor's error bar); the client should take a host without accounts as "nobody signed in" (found in CL58) | Fixes |
-| FX252 | The coding agent's chat page lost its Stop button during a ten-minute turn and took messages the server refused as "still answering" | Next, after F97.1 |
+| FX252 | The coding agent's chat page lost its Stop button during a ten-minute turn and took messages the server refused as "still answering"; logged since 2026-11-27, waiting for evidence | Waiting for evidence |
 | F90 | WhatsApp as a host | Later |
 | F92 | Voice: the person talks, our API turns it into text behind the chat's seam, the text lands in the box to check (Louis's pick B, 2026-11-11) | Later |
 | F45 | Knowledge and retrieval | Later |

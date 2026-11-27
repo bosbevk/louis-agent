@@ -29,9 +29,9 @@ public class ChatRunnerTests
         public int Changed, Ended;
 
         /// <summary>Builds it all; a gone session answers 404 on its message, and a paced one says so (F156).</summary>
-        public Harness(bool sessionGone = false, ChatText? text = null, bool paced = false)
+        public Harness(bool sessionGone = false, ChatText? text = null, bool paced = false, bool cutShort = false)
         {
-            var api = FixtureApi.Client(Settings, out Handler, sessionGone, paced);
+            var api = FixtureApi.Client(Settings, out Handler, sessionGone, paced, cutShort);
             Store = new ChatStore(Js, Settings);
             Runner = new ChatRunner(api, Store, text ?? new ChatText(),
                 () => api.CreateSessionAsync([SampleToolset.Alpha]), Clock);
@@ -135,6 +135,26 @@ public class ChatRunnerTests
                 "POST http://localhost/v1/sessions",
                 $"POST http://localhost/v1/sessions/{FixtureApi.SessionId}/messages"
             }));
+    }
+
+    /// <summary>
+    /// A stream that closes before the turn's end (FX252) says so on the turn, instead of ending as if the answer were
+    /// complete: the page used to drop its Stop button and say nothing while the agent was still working.
+    /// </summary>
+    [Test]
+    public async Task AStreamThatClosesBeforeTheTurnEnds_SaysSoOnTheTurn()
+    {
+        var h = new Harness(cutShort: true) { Runner = { Draft = SessionStreamFixture.Question } };
+
+        await h.Runner.SendAsync();
+
+        var turn = h.Runner.Chat!.Turns.Single();
+        Assert.Multiple(() =>
+        {
+            Assert.That(turn.StopReason, Is.Null, "the stop never came");
+            Assert.That(turn.Error, Is.EqualTo(string.Format(new ChatText().AnswerCutShort, 0)));
+            Assert.That(h.Runner.Streaming, Is.False);
+        });
     }
 
     /// <summary>The redraw is raised at most every 50 ms.</summary>

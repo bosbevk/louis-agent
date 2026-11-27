@@ -11,6 +11,7 @@ using LouisAgent.Api.Endpoints.Routing;
 using LouisAgent.Api.Messages;
 using LouisAgent.Api.Messages.Holes.Places;
 using LouisAgent.Api.Messages.Holes.Sessions;
+using LouisAgent.Api.Messages.Holes.Turns;
 using LouisAgent.Api.Sessions;
 using LouisAgent.Api.Sessions.Log;
 using LouisAgent.Api.Sessions.Requests;
@@ -150,7 +151,7 @@ internal sealed class SessionHandlers(AgentHostContext host)
     public async Task<WorkAnswer> GetSessionWork(string id, AgentSessions sessions)
     {
         if (await sessions.GetAsync(id) is not { } session) return RefuseUnknownSession(id);
-        if (session.IsBusy) return RefuseBusy(id);
+        if (session.IsBusy) return RefuseBusy(session);
         return TypedResults.Json(SessionWorkReply.Of(session), SessionJson.SnakeCase);
     }
 
@@ -181,7 +182,7 @@ internal sealed class SessionHandlers(AgentHostContext host)
         if (string.IsNullOrWhiteSpace(prompt)) return RefuseBadRequest(MessageText.Format(ApiUserText.EmptyMessage));
         // A photo or a PDF is checked and kept before the turn starts, so a refused one starts nothing (F171.1).
         if (!session.Files.TryKeep(request.Attachments ?? [], out string refusal)) return RefuseBadRequest(refusal);
-        if (!session.TryStartTurn(http.RequestAborted, out var turn)) return RefuseBusy(id);
+        if (!session.TryStartTurn(http.RequestAborted, out var turn)) return RefuseBusy(session);
 
         // The agents' windows on the visitor's screen, for an ask to one of them this turn (FX134).
         session.Windows = request.Windows ?? [];
@@ -227,10 +228,16 @@ internal sealed class SessionHandlers(AgentHostContext host)
         return ApiErrors.NotFound(MessageText.Format(ApiUserText.UnknownSession, unknown));
     }
 
-    /// <summary>The 409 for a session that is still answering, naming it in the address to cancel it.</summary>
-    private static JsonHttpResult<ApiError> RefuseBusy(string id)
+    /// <summary>
+    /// The 409 for a session that is still answering, naming it in the address to cancel it; logged with how long its
+    /// turn has run and whether it was cancelled, so a stuck chat can be told apart from a busy one (FX252).
+    /// </summary>
+    internal static JsonHttpResult<ApiError> RefuseBusy(AgentSession session)
     {
-        var busy = new SessionBusyHoles(id);
+        var refused =
+            new TurnRefusedBusyHoles(session.Id, session.TurnSeconds ?? 0, session.TurnCancelled ? "yes" : "no");
+        Log.Log(LogLevel.Warning, ApiLogMessage.TurnRefusedBusy, refused, tag: "API");
+        var busy = new SessionBusyHoles(session.Id);
         return ApiErrors.Conflict(MessageText.Format(ApiUserText.SessionBusy, busy));
     }
 
